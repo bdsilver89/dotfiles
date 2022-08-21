@@ -22,6 +22,50 @@ init() {
     src_conf=${src_conf:-$(cd -P "$(dirname "$0")" && pwd -P)}
     dst_conf=${dst_conf:-$DEFAULT_CONFIG/${src_conf##*/}}
     cmd=${cmd:-${src_conf##*/}}
+
+    is_wsl
+    distro
+}
+
+is_wsl() {
+  name="$(uname -r)"
+  if [[ "$name" =~ "microsoft-standard-WSL2" ]]; then
+    WSL=1
+  else
+    WSL=2
+  fi
+}
+
+distro() {
+  if [ -f /etc/os-release ]; then
+    # freedesktop.org and systemd
+    . /etc/os-release
+    OS=$NAME
+    VER=$VERSION_ID
+  elif type lsb_release >/dev/null 2>&1; then
+    # linuxbase.org
+    OS=$(lsb_release -si)
+    VER=$(lsb_release -sr)
+  elif [ -f /etc/lsb-release ]; then
+    # For some versions of Debian/Ubuntu without lsb_release command
+    . /etc/lsb-release
+    OS=$DISTRIB_ID
+    VER=$DISTRIB_RELEASE
+  elif [ -f /etc/debian_version ]; then
+    # Older Debian/Ubuntu/etc.
+    OS=Debian
+    VER=$(cat /etc/debian_version)
+  #elif [ -f /etc/SuSe-release ]; then
+  #  # Older SuSE/etc.
+  #  ...
+  #elif [ -f /etc/redhat-release ]; then
+  #  # Older Red Hat, CentOS, etc.
+  #  ...
+  else
+    # Fall back to uname, e.g. "Linux <version>", also works for BSD, etc.
+    OS=$(uname -s)
+    VER=$(uname -r)
+  fi
 }
 
 user() {
@@ -32,18 +76,13 @@ warn() {
     printf '[ \033[0;33m!!\033[0m ] %b\n' "$1"
 }
 
-
 info() {
     printf '[ \033[0;34m**\033[0m ] %b\n' "$1"
-
 }
-
 
 success() {
     printf '[ \033[0;32mOK\033[0m ] %b\n' "$1"
-
 }
-
 
 fail() {
     printf '[ \033[0;31mXX\033[0m ] %b\n' "$1"
@@ -56,7 +95,6 @@ link_file() {
     local current_src
 
     if [[ -f $dst || -d $dst || -L $dst ]]; then
-
         current_src=$(readlink "$dst")
 
         if [[ $current_src == "$src" ]]; then
@@ -68,11 +106,9 @@ link_file() {
 
             case $action in
             o)
-
                 overwrite=true
                 ;;
             b)
-
                 backup=true
                 ;;
             s)
@@ -81,7 +117,6 @@ link_file() {
             *) ;;
 
             esac
-
         fi
 
         if [[ $overwrite == true ]]; then
@@ -89,12 +124,10 @@ link_file() {
             success "Removed $dst"
         fi
 
-
         if [[ $backup == true ]]; then
             mv "$dst" "${dst}.backup"
             success "Moved $dst to ${dst}.backup"
         fi
-
 
         if [[ $skip == true ]]; then
 
@@ -102,15 +135,12 @@ link_file() {
         fi
     fi
 
-
     if [[ $skip != true ]]; then # "false" or empty
         if ln -s "$src" "$dst"; then
-
             success "Linked $src to $dst"
         else
             fail "Fail to link $src to $dst"
         fi
-
     fi
 }
 
@@ -135,7 +165,6 @@ install() {
     if [[ -z $src_conf ]]; then
         fail 'Without initialization, fail to install.'
         return 1
-
     fi
 
     if ! check; then
