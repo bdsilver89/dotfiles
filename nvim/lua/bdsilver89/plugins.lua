@@ -14,7 +14,7 @@ packer.startup(function(use)
   }
   use 'nvim-lualine/lualine.nvim' -- Statusline
   use 'nvim-lua/plenary.nvim' -- Common utilities
-  --use 'onsails/lspkind-nvim' -- vscode-like pictograms
+  use 'onsails/lspkind-nvim' -- vscode-like pictograms
   --use 'hrsh7th/cmp-buffer' -- nvim-cmp source for buffer words
   --use 'hrshi6th/cmp-nvim-lsp' -- nvim-cmp source for neovim's built-in LSP
   use 'hrsh7th/nvim-cmp' -- Completion
@@ -24,7 +24,7 @@ packer.startup(function(use)
   --use 'williamboman/mason.nvim'
   --use 'williamboman/mason-lspconfig.nvim'
 
-  --use 'glepnir/lspsaga.nvim' -- LSP UIs
+  use 'glepnir/lspsaga.nvim' -- LSP UIs
   --use 'L3MON4D3/LuaSnip'
   use {
     'nvim-treesitter/nvim-treesitter',
@@ -48,6 +48,8 @@ packer.startup(function(use)
     'neoclide/coc.nvim',
     branch = 'release'
   }
+
+  use 'tpope/vim-commentary'
 
   --use 'lewis6991/gitsigns.nvim'
   --use 'dinhhuy258/git.nvim' -- For git blame & browse
