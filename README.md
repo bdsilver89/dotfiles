@@ -59,6 +59,7 @@ The following language servers are used for lspconfig:
 - [rust_analyzer](https://github.com/rust-lang/rust-analyzer) - Rust
 - [cmake-language-server](https://github.com/regen100/cmake-language-server) - CMake
 - [clangd](https://github.com/clangd/clangd) - C/C++
+- [bashls](https://github.com/bash-lsp/bash-language-server) - Bash
 
 ## Shell setup
 
