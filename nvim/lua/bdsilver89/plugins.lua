@@ -53,4 +53,5 @@ packer.startup(function(use)
   use 'lukas-reineke/indent-blankline.nvim'
 
   use 'rcarriga/nvim-notify'
+  use 'kyazdani42/nvim-tree.lua'
 end)

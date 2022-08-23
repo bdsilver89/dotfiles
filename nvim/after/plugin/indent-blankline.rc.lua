@@ -40,13 +40,14 @@ blankline.setup({
 		"^if",
 		"^table",
 		"if_statement",
-		"while",
-		"for",
+		"^while",
+		"^for",
 		"type",
 		"var",
 		"import",
   },
   space_char_blankline = " ",
-
-  -- vim.cmd("autocmd CursorMoved * IndentBlankLineRefresh")
+  use_treesitter = true,
 })
+
+-- vim.cmd("autocmd CursorMoved * IndentBlankLineRefresh")
