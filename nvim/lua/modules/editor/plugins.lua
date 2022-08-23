@@ -9,9 +9,9 @@ editor["nvim-treesitter/nvim-treesitter"] = {
 }
 
 editor["folke/zen-mode.nvim"] = {
-    opt = true,
+  opt = true,
 	event = "BufReadPost",
-    config = conf.zen_mode,
+  config = conf.zen_mode,
 }
 editor["terrortylor/nvim-comment"] = {
 	opt = false,
@@ -27,5 +27,16 @@ editor["akinsho/toggleterm.nvim"] = {
 	event = "UIEnter",
 	config = conf.toggleterm,
 }
+editor["phaazon/hop.nvim"] = {
+  opt = true,
+  branch = "v2",
+  event = "BufReadPost",
+  config = conf.hop,
+}
+-- editor["rainbowhxch/accelerated-jk.nvim"] = {
+--   opt = true,
+--   event = "BufWinEnter",
+--   config = conf.accelerated_jk,
+-- }
 
 return editor

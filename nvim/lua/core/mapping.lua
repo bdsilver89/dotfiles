@@ -5,7 +5,7 @@ local map_cmd = bind.map_cmd
 
 -- default map
 local def_map = {
-	["n|x"] = map_cmd("_x"):with_noremap(),
+	-- ["n|x"] = map_cmd("_x"):with_noremap(),
 	-- Increment/decrement
 	["n|+"] = map_cmd("<C-a>"):with_noremap(),
 	["n|-"] = map_cmd("<C-x>"):with_noremap(),
