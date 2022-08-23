@@ -3,7 +3,6 @@ if (not status) then return end
 local actions = require('telescope.actions')
 local builtin = require("telescope.builtin")
 
-
 local function telescope_buffer_dir()
   return vim.fn.expand('%:p:h')
 end
@@ -15,7 +14,6 @@ telescope.setup {
     mappings = {
       n = {
         ["q"] = actions.close
-
       },
     },
   },
@@ -27,7 +25,6 @@ telescope.setup {
       mappings = {
         -- your custom insert mode mappings
         ["i"] = {
-
           ["<C-w>"] = function() vim.cmd('normal vbd') end,
         },
         ["n"] = {
@@ -39,7 +36,6 @@ telescope.setup {
           end
         },
       },
-
     },
   },
 }
@@ -64,19 +60,14 @@ vim.keymap.set('n', ';t', function()
 end)
 vim.keymap.set('n', ';;', function()
   builtin.resume()
-
 end)
-
 vim.keymap.set('n', ';e', function()
   builtin.diagnostics()
 end)
-
 vim.keymap.set("n", "sf", function()
   telescope.extensions.file_browser.file_browser({
     path = "%:p:h",
-
     cwd = telescope_buffer_dir(),
-
     respect_gitignore = false,
     hidden = true,
     grouped = true,

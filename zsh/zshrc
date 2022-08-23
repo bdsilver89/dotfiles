@@ -118,7 +118,7 @@ if command -v pyenv 1>/dev/null 2>&1; then
 fi
 
 # poetry setup
-export POETRY_ROOT="$HOME/.poetry/env"
+export POETRY_ROOT="$HOME/.poetry"
 export PATH="$POETRY_ROOT/bin:$PATH"
 
 # Go setup
@@ -127,7 +127,11 @@ export PATH="$GOROOT/bin:$PATH"
 export GOPATH=/home/brian/go
 export PATH="$GOPATH/bin:$PATH"
 
+# rust
 . "$HOME/.cargo/env"
+
+# rust analyzer
+export PATH="$HOME/.local/bin:$PATH"
 
 # NVM setup
 export NVM_DIR="$HOME/.nvm"

@@ -13,7 +13,6 @@ lualine.setup {
     lualine_a = { 'mode' },
     lualine_b = { 'branch' },
     lualine_c = { {
-
       'filename',
       file_status = true, -- displays file status (readonly status, modified status)
       path = 0 -- 0 = just filename, 1 = relative path, 2 = absolute path
@@ -24,7 +23,6 @@ lualine.setup {
       'encoding',
       'filetype'
     },
-
     lualine_y = { 'progress' },
     lualine_z = { 'location' }
   },
@@ -32,7 +30,6 @@ lualine.setup {
     lualine_a = {},
     lualine_b = {},
     lualine_c = { {
-
       'filename',
       file_status = true, -- displays file status (readonly status, modified status)
       path = 1 -- 0 = just filename, 1 = relative path, 2 = absolute path
