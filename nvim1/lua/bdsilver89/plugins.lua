@@ -8,6 +8,9 @@ vim.cmd [[packadd packer.nvim]]
 
 packer.startup(function(use)
   use 'wbthomason/packer.nvim'
+  
+  use 'dstein64/vim-startuptime'
+
   use {
     'svrana/neosolarized.nvim',
     requires = { 'tjdevries/colorbuddy.nvim' }
@@ -52,6 +55,13 @@ packer.startup(function(use)
 
   use 'lukas-reineke/indent-blankline.nvim'
 
-  use 'rcarriga/nvim-notify'
-  use 'kyazdani42/nvim-tree.lua'
+  -- use 'rcarriga/nvim-notify'
+  -- use 'kyazdani42/nvim-tree.lua'
+  
+  use {
+    'folke/trouble.nvim',
+    cmd = { "Trouble", "TroubleToggle", "TroubleRefresh" },
+  }
+
+  use 'nathom/filetype.nvim'
 end)

@@ -246,17 +246,17 @@ end
 function config.mason_install()
 	require("mason-tool-installer").setup({
 
-		-- a list of all tools you want to ensure are installed upon
-		-- start; they should be the names Mason uses for each tool
+-- 		-- a list of all tools you want to ensure are installed upon
+-- 		-- start; they should be the names Mason uses for each tool
 		ensure_installed = {
-			-- you can turn off/on auto_update per tool
-			"editorconfig-checker",
-			"stylua",
-			"black",
-			"prettier",
-			"shellcheck",
-			-- "shfmt",
-			"vint",
+-- 			-- you can turn off/on auto_update per tool
+-- 			"editorconfig-checker",
+-- 			"stylua",
+-- 			"black",
+-- 			"prettier",
+-- 			"shellcheck",
+-- 			-- "shfmt",
+-- 			"vint",
 		},
 
 		-- if set to true this will check each tool for updates. If updates

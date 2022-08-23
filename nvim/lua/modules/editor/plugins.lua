@@ -22,5 +22,10 @@ editor["norcalli/nvim-colorizer.lua"] = {
 	event = "BufReadPost",
 	config = conf.nvim_colorizer,
 }
+editor["akinsho/toggleterm.nvim"] = {
+	opt = true,
+	event = "UIEnter",
+	config = conf.toggleterm,
+}
 
 return editor

@@ -49,5 +49,20 @@ ui["SmiteshP/nvim-navic"] = {
 	after = "nvim-lspconfig",
 	config = conf.nvim_navic,
 }
+ui["kyazdani42/nvim-tree.lua"] = {
+	opt = true,
+	cmd = { "NvimTreeToggle" },
+	config = conf.nvim_tree,
+}
+ui["dstein64/nvim-scrollview"] = {
+	opt = true,
+	event = { "BufReadPost" },
+	config = conf.scrollview,
+}
+ui["j-hui/fidget.nvim"] = {
+	opt = true,
+	event = "BufReadPost",
+	config = conf.fidget,
+}
 
 return ui

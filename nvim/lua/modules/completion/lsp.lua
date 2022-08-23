@@ -15,7 +15,7 @@ mason_lsp.setup({
 		"bash-language-server",
 		-- "efm",
 		"lua-language-server",
-		-- "clangd",
+		"clangd",
 		"gopls",
 		"pyright",
 	},
@@ -219,31 +219,31 @@ nvim_lsp.html.setup({
 	on_attach = custom_attach,
 })
 
-local efmls = require("efmls-configs")
+-- local efmls = require("efmls-configs")
 
--- Init `efm-langserver` here.
+-- -- Init `efm-langserver` here.
 
-efmls.init({
-	on_attach = custom_attach,
-	capabilities = capabilities,
-	init_options = { documentFormatting = true, codeAction = true },
-})
+-- efmls.init({
+-- 	on_attach = custom_attach,
+-- 	capabilities = capabilities,
+-- 	init_options = { documentFormatting = true, codeAction = true },
+-- })
 
--- Require `efmls-configs-nvim`'s config here
+-- -- Require `efmls-configs-nvim`'s config here
 
-local vint = require("efmls-configs.linters.vint")
-local eslint = require("efmls-configs.linters.eslint")
-local flake8 = require("efmls-configs.linters.flake8")
-local shellcheck = require("efmls-configs.linters.shellcheck")
+-- local vint = require("efmls-configs.linters.vint")
+-- local eslint = require("efmls-configs.linters.eslint")
+-- local flake8 = require("efmls-configs.linters.flake8")
+-- local shellcheck = require("efmls-configs.linters.shellcheck")
 
-local black = require("efmls-configs.formatters.black")
-local luafmt = require("efmls-configs.formatters.stylua")
-local clangfmt = {
-	formatCommand = "clang-format -style='{BasedOnStyle: LLVM, IndentWidth: 4}'",
-	formatStdin = true,
-}
-local prettier = require("efmls-configs.formatters.prettier")
-local shfmt = require("efmls-configs.formatters.shfmt")
+-- local black = require("efmls-configs.formatters.black")
+-- local luafmt = require("efmls-configs.formatters.stylua")
+-- local clangfmt = {
+-- 	formatCommand = "clang-format -style='{BasedOnStyle: LLVM, IndentWidth: 4}'",
+-- 	formatStdin = true,
+-- }
+-- local prettier = require("efmls-configs.formatters.prettier")
+-- local shfmt = require("efmls-configs.formatters.shfmt")
 
 -- Add your own config for formatter and linter here
 

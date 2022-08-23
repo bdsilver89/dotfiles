@@ -51,24 +51,17 @@ local leader_map = function()
 end
 
 local load_core = function()
-	local install_path = vim.fn.stdpath "data" .. "/site/pack/packer/opt/packer.nvim"
-	if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
-		vim.api.nvim_set_hl(0, "NormalFloat", {})
-		print 'Cloning packer...'
-		vim.fn.system {"git", "clone", "--depth", "1", "https://github.com/wbthomason/packer.nvim", install_path}
-		vim.cmd "packadd packer.nvim"
-	end
--- 	local packer = require("core.packer")
---	createdir()
---	disable_distribution_plugins()
---	leader_map()
+	local packer = require("core.packer")
+	createdir()
+	disable_distribution_plugins()
+	leader_map()
 
---	packer.ensure_plugins()
---	require("core.options")
---	require("core.mapping")
---	require("keymap")
---	require("core.event")
---	packer.load_compile()
+	packer.ensure_plugins()
+	require("core.options")
+	require("core.mapping")
+	require("keymap")
+	require("core.event")
+	packer.load_compile()
 end
 
 load_core()
