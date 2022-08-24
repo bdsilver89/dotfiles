@@ -23,20 +23,19 @@ init() {
     dst_conf=${dst_conf:-$DEFAULT_CONFIG/${src_conf##*/}}
     cmd=${cmd:-${src_conf##*/}}
 
-    is_wsl
-    distro
+    check_os
+    info "Running on '$OS' '$VER'"
 }
 
-is_wsl() {
-  name="$(uname -r)"
-  if [[ "$name" =~ "microsoft-standard-WSL2" ]]; then
+check_os() {
+  kernel_name="$(uname -r)"
+  if [[ "$kernel_name" =~ "microsoft-standard-WSL2" ]]; then
     WSL=1
   else
     WSL=2
   fi
-}
-
-distro() {
+  
+  # distro check for linux
   if [ -f /etc/os-release ]; then
     # freedesktop.org and systemd
     . /etc/os-release
