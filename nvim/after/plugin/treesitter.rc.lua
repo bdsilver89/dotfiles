@@ -20,7 +20,13 @@ ts.setup {
    -- "swift",
     "css",
     "html",
-    "lua"
+    "lua",
+    "bash",
+    "cpp",
+    "c",
+    "rust",
+    "go",
+    "python",
   },
   autotag = {
     enable = true,
