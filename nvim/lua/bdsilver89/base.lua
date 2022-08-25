@@ -39,5 +39,13 @@ vim.api.nvim_create_autocmd("InsertLeave", {
   command = "set nopaste"
 })
 
+-- languages
+vim.api.nvim_create_autocmd('Filetype', {
+  pattern = '*.c,*.cpp,*.lua,*.go,*.rs,*.py,*.ts,*.tsx',
+  callback = function()
+    vim.cmd('syntax off')
+  end,
+})
+
 -- Add asterisks in block comments
 vim.opt.formatoptions:append { 'r' }

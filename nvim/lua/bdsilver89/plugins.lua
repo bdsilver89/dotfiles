@@ -64,4 +64,5 @@ packer.startup(function(use)
   }
 
   use 'nathom/filetype.nvim'
+  use 'mhartington/formatter.nvim'
 end)
