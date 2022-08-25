@@ -26,6 +26,20 @@ function config.dashboard()
       action = 'PackerUpdate',
     },
     {
+      icon = '  ',
+      icon_hl = { fg = z.red },
+      desc = 'Find Project                            ',
+      shortcut = 'SPC f p',
+      action = 'Telescope project',
+    },
+    {
+      icon = '  ',
+      icon_hl = { fg = z.red },
+      desc = 'File Frecency                           ',
+      shortcut = 'SPC f r',
+      action = 'Telescope frecency',
+    },
+    {
       icon = '  ',
       icon_hl = { fg = z.yellow },
       desc = 'Recently opened files                   ',
@@ -153,6 +167,12 @@ end
 
 function config.nvim_tree()
   require('nvim-tree').setup({
+    sync_root_with_cwd = true,
+    respect_buf_cwd = true,
+    update_focused_file = {
+      enable = true,
+      update_root = true,
+    },
     view = {
       width = 30,
       height = 30,

@@ -10,7 +10,24 @@ package({
     { 'nvim-lua/plenary.nvim', opt = true },
     { 'nvim-telescope/telescope-fzy-native.nvim', opt = true },
     { 'nvim-telescope/telescope-file-browser.nvim', opt = true },
+    --{ 'nvim-telescope/telescope-project.nvim', opt = true },
+    -- { 'nvim-telescope/telescope-frecency.nvim', opt = true, requires = { 'tami5/sqlite.lua', opt = true} },
   },
+})
+
+package({
+  'nvim-telescope/telescope-frecency.nvim',
+  opt = true,
+  after = 'telescope.nvim',
+  requires = {
+    'tami5/sqlite.lua',
+    opt = true,
+  }
+})
+
+package({
+  'nvim-telescope/telescope-project.nvim',
+  after = 'telescope-frecency.nvim'
 })
 
 package({
@@ -64,3 +81,7 @@ package({
   config = conf.hop,
 })
 
+package({
+  'ahmedkhalf/project.nvim',
+  config = conf.project,
+})

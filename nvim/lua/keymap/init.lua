@@ -65,6 +65,9 @@ nmap({
   { '<Leader>fo', cmd('Telescope oldfiles'), opts(noremap, silent) },
   { '<Leader>gc', cmd('Telescope git_commits'), opts(noremap, silent) },
   { '<Leader>gc', cmd('Telescope dotfiles path' .. home .. '/.dotfiles'), opts(noremap, silent) },
+  { '<Leader>fp', cmd('Telescope project'), opts(noremap, silent) },
+  { '<Leader>fr', cmd('Telescope frecency'), opts(noremap, silent)},
+  -- { '<Leader>fn', ':<C-u>:enew<CR>', opt(noremap, silent) },
   -- vim-operator-surround
   { 'sa', '<Plug>(operator-surround-append)', opts(noremap, silent) },
   { 'sd', '<Plug>(operator-surround-delete)', opts(noremap, silent) },

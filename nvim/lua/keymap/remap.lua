@@ -32,8 +32,9 @@ nmap({
   { 'te', cmd('tabedit'), opts(noremap)},
   { 'tc', cmd('tabclose'), opts(noremap)},
   -- split window
-  { 'ss', ':split<Return><C-w>w', opts(noremap) },
-  { 'sv', ':vsplit<Return><C-w>w', opts(noremap) },
+  { 'ss', ':split<Return><C-w>w<CR>', opts(noremap) },
+  { 'sv', ':vsplit<Return><C-w>w<CR>', opts(noremap) },
+  -- { 'se', ':<C-w>=<CR>', opts(noremap) },
   -- move window
   { '<Space>', '<C-w>w', opts(noremap) },
 })
