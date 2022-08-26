@@ -64,6 +64,10 @@ function keymap.cmd(str)
   return '<cmd>' .. str .. '<CR>'
 end
 
+function keymap.cr(str)
+  return str .. '<CR>'
+end
+
 -- visual
 function keymap.cu(str)
   return '<C-u><cmd>' .. str .. '<CR>'

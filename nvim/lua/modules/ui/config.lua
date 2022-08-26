@@ -5,7 +5,8 @@ function config.zephyr()
 end
 
 function config.galaxyline()
-  require('modules.ui.eviline')
+  -- require('modules.ui.eviline')
+  require('modules.ui.spaceline')
 end
 
 function config.dashboard()
@@ -116,7 +117,7 @@ function config.nvim_lualine()
       theme = 'solarized_dark',
       section_separators = { left = '', right = '' },
       component_separators = { left = '', right = '' },
-      disabled_filetypes = {}
+      disabled_filetypes = { 'NvimTree' },
     },
     sections = {
       lualine_a = { 'mode' },
@@ -148,20 +149,38 @@ function config.nvim_lualine()
       lualine_z = {},
     },
     tabline = {},
-    extensions = {},
+    extensions = {
+      "nvim-tree",
+      "toggleterm",
+    },
   })
 end
 
 function config.nvim_bufferline()
   require('bufferline').setup({
     options = {
-      mode = 'tabs',
+      mode = 'buffers',
+      diagnostics = 'nvim_lsp',
       seperator_style = 'slant',
       always_show_bufferline = false,
       show_buffer_close_icons = false,
       show_close_icon = false,
       color_icons = true,
-    }
+      offsets = {
+        {
+          filetype = 'NvimTree',
+          text = 'File Explorer',
+          highlight = 'Directory',
+          separator = true,
+        },
+        {
+          filetype = 'UndoTree',
+          text = 'Undo',
+          highlight = 'Directory',
+          seperator = true,
+        }
+      },
+    },
   })
 end
 
@@ -182,11 +201,13 @@ function config.nvim_tree()
       relativenumber = false,
       signcolumn = 'yes',
       hide_root_folder = false,
+      adaptive_size = true,
       mappings = {
         list = {
           { key = { 'l' }, action = 'edit' },
           { key = { 's' }, action = 'split' },
           { key = { 'v' }, action = 'vsplit' },
+          { key = { 'u' }, action = 'dir_up' },
         },
       },
     },
@@ -356,8 +377,7 @@ function config.toggleterm()
     	vim.api.nvim_set_option_value("foldmethod", "manual", { scope = "local" })
 	    vim.api.nvim_set_option_value("foldexpr", "0", { scope = "local" })
   	end,
-	  open_mapping = [[<C-\\]],
-    dir = '%:p:h',
+	  open_mapping = false,
 	  hide_numbers = true,
 	  shade_filetypes = {},
 	  shade_terminals = false,

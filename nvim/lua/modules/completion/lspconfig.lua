@@ -1,7 +1,21 @@
 local api = vim.api
 local lspconfig = require('lspconfig')
+local mason = require('mason')
+local mason_lsp = require('mason-lspconfig')
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
+
+mason.setup()
+mason_lsp.setup({
+  ensure_installed = {
+    'bash-language-server',
+    'lua-language-server',
+    'clangd',
+    'gopls',
+    'pyright',
+    'rust_analyzer',
+  }
+})
 
 if not packer_plugins['cmp-nvim-lsp'].loaded then
   vim.cmd([[packadd cmp-nvim-lsp]])
@@ -114,7 +128,7 @@ local servers = {
   'bashls',
   'cmake',
   "jsonls",
-  "yamls"
+  "yamlls"
 }
 
 lspconfig.tsserver.setup({

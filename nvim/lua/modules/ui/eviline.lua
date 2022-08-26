@@ -14,6 +14,7 @@ gls.left[1] = {
       return '▊ '
     end,
     highlight = { colors.blue, colors.bg },
+    separator = ''
   },
 }
 

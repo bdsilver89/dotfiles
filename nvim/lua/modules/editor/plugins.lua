@@ -82,6 +82,7 @@ package({
 })
 
 package({
-  'ahmedkhalf/project.nvim',
-  config = conf.project,
+  'terrortylor/nvim-comment',
+  event = 'BufReadPost',
+  config = conf.nvim_comment,
 })

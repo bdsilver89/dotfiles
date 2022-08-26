@@ -55,3 +55,11 @@ package({
   'MunifTanjim/prettier.nvim',
   config = conf.prettier,
 })
+
+package({
+  'williamboman/mason.nvim',
+})
+
+package({
+  'williamboman/mason-lspconfig.nvim'
+})

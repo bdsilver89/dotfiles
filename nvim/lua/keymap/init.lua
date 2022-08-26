@@ -9,8 +9,18 @@ require('keymap.config')
 
 imap({
   -- tab key
-  { '<TAB>', _G.smart_tab, opts(expr, silent, remap) },
-  { '<S-TAB>', _G.smart_shift_tab, opts(expr, silent, remap) },
+  -- { '<TAB>', _G.smart_tab, opts(expr, silent, remap) },
+  -- { '<S-TAB>', _G.smart_shift_tab, opts(expr, silent, remap) },
+  { '<C-\\>', cmd('<Esc><cmd>ToggleTerm direction=horizontal<CR>'), opts(noremap, silent)},
+  { '<F5>', cmd('<Esc><cmd>ToggleTerm direction=vertical<CR>'), opts(noremap, silent) },
+	{ '<A-d>', cmd('<Esc><cmd>ToggleTerm direction=float<CR>'), opts(noremap, silent) },
+})
+
+tmap({
+  { '<Esc><Esc>', [[<C-\><C-n>]], opts(noremap) },
+  { '<C-\\>', [[<C-\><C-n><cmd>ToggleTerm<CR>]], opts(noremap, silent)},
+  { '<F5>', [[<C-\><C-n><cmd>ToggleTerm direction=vertical<CR>]], opts(noremap, silent) },
+  { '<A-d>', [[<C-\><C-n><cmd>ToggleTerm direction=float<CR>]], opts(noremap, silent) },
 })
 
 nmap({
@@ -18,6 +28,7 @@ nmap({
   { '<Leader>pu', cmd('PackerUpdate'), opts(noremap, silent) },
   { '<Leader>pi', cmd('PackerInstall'), opts(noremap, silent) },
   { '<Leader>pc', cmd('PackerCompile'), opts(noremap, silent) },
+  { '<Leader>ps', cmd('PackerSync'), opts(noremap, silent) },
   -- Lsp
   { '<Leader>li', cmd('LspInfo'), opts(noremap, silent) },
   { '<Leader>ll', cmd('LspLog'), opts(noremap, silent) },
@@ -85,9 +96,9 @@ nmap({
   { '<Leader>cq', cmd('TroubleToggle quickfix'), opts(noremap, silent) },
   { '<Leader>cl', cmd('TroubleToggle loclist'), opts(noremap, silent) },
 	-- toggleterm
-	-- { '<C-\\>', ':[[execute v:count . "ToggleTerm direction=horizontal"]]<CR>', opts(noremap, silent) },
-	-- { '<F5>', cmd('ToggleTerm direction=vertical'), opts(noremap, silent) },
-	-- { '<A-d>', cmd('ToggleTerm direction=float'), opts(noremap, silent) },
+	{ '<C-\\>', cmd('ToggleTerm direction=horizontal'), opts(noremap, silent) },
+	{ '<F5>', cmd('ToggleTerm direction=vertical'), opts(noremap, silent) },
+	{ '<A-d>', cmd('ToggleTerm direction=float'), opts(noremap, silent) },
   -- bufferline
   { '<Leader>gb', cmd('BufferLinePick'), opts(noremap, silent) },
   { '<Tab>', cmd('BufferLineCycleNext'), opts(noremap, silent) },
@@ -103,12 +114,12 @@ nmap({
   { '<A-7>', cmd('BufferLineGoToBuffer 7'), opts(norempa, silent)},
   { '<A-8>', cmd('BufferLineGoToBuffer 8'), opts(norempa, silent)},
   { '<A-9>', cmd('BufferLineGoToBuffer 9'), opts(norempa, silent)},
+  -- hop
+  { '<Leader>w', cmd('HopWord'), opts(noremap)},
+  { '<Leader>j', cmd('HopLine'), opts(noremap)},
+  { '<Leader>k', cmd('HopLine'), opts(noremap)},
+  { '<Leader>c', cmd('HopChar1'), opts(noremap)},
+  { '<Leader>cc', cmd('HopChar2'), opts(noremap)},
+  -- tagbar
+  { '<F8>', cmd('TagbarToggle'), opts(noremap) },
 })
-
-nmap({ 'gcc', cmd('ComComment'), opts(noremap, silent) })
-xmap({ 'gcc', ':ComComment<CR>', opts(noremap, silent) })
-nmap({ 'gcj', cmd('ComAnnotation'), opts(noremap, silent) })
-
-tmap({ '<A-d>', [[<C-\><C-n>:Lspsaga close_floaterm<CR>]], opts(noremap, silent) })
-
-xmap({ 'ga', cu('Lspsaga code_action'), opts(noremap, silent) })

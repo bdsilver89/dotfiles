@@ -2,22 +2,22 @@ local package = require('core.pack').package
 local conf = require('modules.ui.config')
 
 package({
-	'glepnir/zephyr-nvim',
-	config = conf.zephyr,
-})
-
-package({
 	'glepnir/dashboard-nvim',
 	config = conf.dashboard,
 })
 
 package({
-	'glepnir/galaxyline.nvim',
-	config = conf.galaxyline,
-	requires = {
-		'kyazdani42/nvim-web-devicons',
-	},
+	'glepnir/zephyr-nvim',
+	config = conf.zephyr,
 })
+
+-- package({
+-- 	'glepnir/galaxyline.nvim',
+-- 	config = conf.galaxyline,
+-- 	requires = {
+-- 		'kyazdani42/nvim-web-devicons',
+-- 	},
+-- })
 
 -- package({
 -- 	'svrana/neosolarized.nvim',
@@ -25,10 +25,10 @@ package({
 -- 	config = conf.neosolarized,
 -- })
 
--- package({
--- 	'nvim-lualine/lualine.nvim',
--- 	config = conf.nvim_lualine,
--- })
+package({
+	'nvim-lualine/lualine.nvim',
+	config = conf.nvim_lualine,
+})
 
 package({
 	'akinsho/nvim-bufferline.lua',
@@ -85,4 +85,8 @@ package({
 	'akinsho/toggleterm.nvim',
   event = 'UIEnter',
 	config = conf.toggleterm,
+})
+
+package({
+  'preservim/tagbar',
 })
