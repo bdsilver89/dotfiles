@@ -103,17 +103,17 @@ nmap({
   { '<Leader>gb', cmd('BufferLinePick'), opts(noremap, silent) },
   { '<Tab>', cmd('BufferLineCycleNext'), opts(noremap, silent) },
   { '<S-Tab>', cmd('BufferLineCyclePrev'), opts(noremap, silent) },
-  -- { '<A-Tab>', cmd('BufferLineMoveNext'), opts(norempa, silent) },
-  -- { '<A-S-Tab>', cmd('BufferLineMoveNext'), opts(norempa, silent) },
-  { '<A-1>', cmd('BufferLineGoToBuffer 1'), opts(norempa, silent)},
-  { '<A-2>', cmd('BufferLineGoToBuffer 2'), opts(norempa, silent)},
-  { '<A-3>', cmd('BufferLineGoToBuffer 3'), opts(norempa, silent)},
-  { '<A-4>', cmd('BufferLineGoToBuffer 4'), opts(norempa, silent)},
-  { '<A-5>', cmd('BufferLineGoToBuffer 5'), opts(norempa, silent)},
-  { '<A-6>', cmd('BufferLineGoToBuffer 6'), opts(norempa, silent)},
-  { '<A-7>', cmd('BufferLineGoToBuffer 7'), opts(norempa, silent)},
-  { '<A-8>', cmd('BufferLineGoToBuffer 8'), opts(norempa, silent)},
-  { '<A-9>', cmd('BufferLineGoToBuffer 9'), opts(norempa, silent)},
+  -- { '<A-Tab>', cmd('BufferLineMoveNext'), opts(noremap, silent) },
+  -- { '<A-S-Tab>', cmd('BufferLineMoveNext'), opts(noremap, silent) },
+  { '<A-1>', cmd('BufferLineGoToBuffer 1'), opts(noremap, silent)},
+  { '<A-2>', cmd('BufferLineGoToBuffer 2'), opts(noremap, silent)},
+  { '<A-3>', cmd('BufferLineGoToBuffer 3'), opts(noremap, silent)},
+  { '<A-4>', cmd('BufferLineGoToBuffer 4'), opts(noremap, silent)},
+  { '<A-5>', cmd('BufferLineGoToBuffer 5'), opts(noremap, silent)},
+  { '<A-6>', cmd('BufferLineGoToBuffer 6'), opts(noremap, silent)},
+  { '<A-7>', cmd('BufferLineGoToBuffer 7'), opts(noremap, silent)},
+  { '<A-8>', cmd('BufferLineGoToBuffer 8'), opts(noremap, silent)},
+  { '<A-9>', cmd('BufferLineGoToBuffer 9'), opts(noremap, silent)},
   -- hop
   { '<Leader>w', cmd('HopWord'), opts(noremap)},
   { '<Leader>j', cmd('HopLine'), opts(noremap)},
@@ -122,4 +122,40 @@ nmap({
   { '<Leader>cc', cmd('HopChar2'), opts(noremap)},
   -- tagbar
   { '<F8>', cmd('TagbarToggle'), opts(noremap) },
+  -- dap
+  { '<F4>', cmd('lua require("dapui").toggle()'), opts(noremap) },
+  { '<F5>', cmd('lua require("dap").toggle_breakpoint()'), opts(noremap) },
+  { '<F9>', cmd('lua require("dap").continue()'), opts(noremap) },
+  
+  { '<F1>', cmd('lua require("dap").setp_over()'), opts(noremap) },
+  { '<F2>', cmd('lua require("dap").step_into()'), opts(noremap) },
+  { '<F3>', cmd('lua require("dap").step_out()'), opts(noremap) },
+  
+  { '<Leader>dsc', cmd('lua require("dap").continue()'), opts(noremap) },
+  { '<Leader>dsv', cmd('lua require("dap").step_over()'), opts(noremap) },
+  { '<Leader>dsi', cmd('lua require("dap").step_into()'), opts(noremap) },
+  { '<Leader>dso', cmd('lua require("dap").step_out()'), opts(noremap) },
+  
+  { '<Leader>dhh', cmd('lua require("dap.ui.variables").hover()'), opts(noremap) },
+  { '<Leader>dhv', cmd('lua require("dap.ui.variables").visual_hover()'), opts(noremap) },
+
+  { '<Leader>duh', cmd('lua require("dap.ui.widgets").hover()'), opts(noremap) },
+  { '<Leader>duf', cmd('lua local widgets=require("dap.ui.widgets");widgets.centered_float(widgets.scopes)'), opts(noremap) },
+
+  { '<Leader>dro', cmd('lua require("dap").repl.open()'), opts(noremap) },
+  { '<Leader>drl', cmd('lua require("dap").repl.run_last()'), opts(noremap) },
+
+  { '<Leader>dbc', cmd('lua require("dap").set_breakpoint(vim.fn.input("Breakpoint condition: "))'), opts(noremap) },
+  { '<Leader>dbm', cmd('lua require("dap").set_breakpoint({ nil, nil, vim.fn.input("log point message: ") })') , opts(noremap) },
+  { '<Leader>dbt', cmd('lua require("dap").toggle_breakpoint'), opts(noremap) },
+
+  { '<Leader>dc', cmd('lua require("dap.ui.variables").scopes()'), opts(noremap) },
+  { '<Leader>di', cmd('lua require("dapui").toggle'), opts(noremap) },
+
+  -- neotest
+  { '<Leader>tr', cmd('lua require("neotest").run.run()'), opts(noremap) },
+  { '<Leader>tf', cmd('lua require("neotest").run.run(vim.expand("%"))'), opts(noremap) },
+  { '<Leader>trd', cmd('lua require("neotest").run.run({strategy="dap"})'), opts(noremap) },
+  { '<Leader>ts', cmd('lua require("neotest).run.stop()'), opts(noremap) },
+  { '<Leader>ta', cmd('lua require("neotest").run.attach()'), opts(noremap) },
 })

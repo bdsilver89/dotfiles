@@ -90,3 +90,9 @@ package({
 package({
   'preservim/tagbar',
 })
+
+-- Uncomment for > Neovim 0.8
+-- package({
+--   'fgheng/winbar.nvim',
+--   config = conf.winbar,
+-- })

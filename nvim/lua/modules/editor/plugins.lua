@@ -2,6 +2,11 @@ local package = require('core.pack').package
 local conf = require('modules.editor.config')
 
 package({
+  'nvim-lua/plenary.nvim',
+  opt = false, 
+})
+
+package({
   'nvim-telescope/telescope.nvim',
   cmd = 'Telescope',
   config = conf.telescope,
@@ -86,3 +91,45 @@ package({
   event = 'BufReadPost',
   config = conf.nvim_comment,
 })
+
+package({
+  'mfussenegger/nvim-dap',
+  config = conf.nvim_dap,
+  module = 'dap',
+  cmd = {
+    'DapSetLogLevel',
+    'DapShowLog',
+    'DapContinue',
+    'DapToggleBreakpoint',
+    'DapToggleRepl',
+    'DapStepOver',
+    'DapStepInto',
+    'DapStepOut',
+    'DapTerminate',
+  },
+})
+
+package({
+  'rcarriga/nvim-dap-ui',
+  config = conf.nvim_dap_ui,
+  requires = {
+    'mfussenegger/nvim-dap',
+  },
+})
+
+-- package({
+--   'theHamsta/nvim-dap-virtual-text'
+-- })
+
+package({
+  'nvim-neotest/neotest',
+  config = conf.neotest,
+  requires = {
+    'nvim-lua/plenary.nvim',
+    'nvim-treesitter/nvim-treesitter',
+    'autoinemadec/FixCursorHold.nvim',
+    'nvim-neotest/neotest-plenary',
+  },
+})
+
+

@@ -1,7 +1,7 @@
 local config = {}
 
 function config.nvim_lsp()
-  require('modules.completion.lspconfig')
+  require('modules.completion.config.lspconfig')
 end
 
 function config.lspsaga()
@@ -14,33 +14,7 @@ function config.lspsaga()
 end
 
 function config.nvim_cmp()
-  local cmp = require('cmp')
-  cmp.setup({
-    preselect = cmp.PreselectMode.Item,
-    window = {
-      -- completion = cmp.config.window.bordered(),
-      -- documentation = cmp.config.window.bordered(),
-    },
-    formatting = {
-      fields = { 'abbr','kind', 'menu' },
-    },
-    -- You can set mappings if you want
-    mapping = cmp.mapping.preset.insert({
-      ['<C-e>'] = cmp.config.disable,
-      ['<CR>'] = cmp.mapping.confirm({ select = true }),
-    }),
-    snippet = {
-      expand = function(args)
-        require('luasnip').lsp_expand(args.body)
-      end,
-    },
-    sources = {
-      { name = 'nvim_lsp' },
-      { name = 'luasnip' },
-      { name = 'path' },
-      { name = 'buffer' },
-    },
-  })
+  require('modules.completion.config.nvim-cmp')
 end
 
 function config.lua_snip()
