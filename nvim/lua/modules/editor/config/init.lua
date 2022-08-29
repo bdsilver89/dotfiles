@@ -49,14 +49,11 @@ function config.nvim_dap_ui()
 end
 
 function config.neotest()
-  -- if not packer_plugins['plenary.nvim'].loaded then
-  --   vim.cmd([[packadd plenary.nvim]])
-  -- end
-  require('neotest').setup({
-    adapters = {
-      -- require('neotest-plenary'),
-    },
-  })
+  require('modules.editor.config.neotest-rc')
+end
+
+function config.neoscroll()
+  require('modules.editor.config.neoscroll-rc')
 end
 
 return config

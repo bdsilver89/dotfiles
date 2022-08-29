@@ -63,3 +63,10 @@ package({
 package({
   'williamboman/mason-lspconfig.nvim'
 })
+
+package({
+  'ray-x/lsp_signature.nvim',
+  requires = {
+    'glepnir/nvim-lspconfig'
+  },
+})

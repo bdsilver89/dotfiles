@@ -132,4 +132,18 @@ package({
   },
 })
 
+package({
+  'romainl/vim-cool',
+  event = { "CursorMoved", "InsertEnter" }
+})
 
+package({
+  'karb94/neoscroll.nvim',
+  event = 'BufReadPost',
+  config = conf.neoscroll,
+})
+
+package({
+  'luukvbaal/stabilize.nvim',
+  event = "BufReadPost",
+})

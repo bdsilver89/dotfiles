@@ -5,8 +5,18 @@ local z = require('zephyr')
 db.session_directory = home .. '/.cache/nvim/session'
 -- db.preview_command = 'cat | lolcat -F 0.3'
 -- db.preview_file_path = home .. '/.config/nvim/static/neovim.cat'
-db.preview_file_height = 12
-db.preview_file_width = 80
+-- db.preview_file_height = 12
+-- db.preview_file_width = 80
+
+db.custom_header = {
+  ' ███╗   ██╗ ███████╗ ██████╗  ██╗   ██╗ ██╗ ███╗   ███╗',
+  ' ████╗  ██║ ██╔════╝██╔═══██╗ ██║   ██║ ██║ ████╗ ████║',
+  ' ██╔██╗ ██║ █████╗  ██║   ██║ ██║   ██║ ██║ ██╔████╔██║',
+  ' ██║╚██╗██║ ██╔══╝  ██║   ██║ ╚██╗ ██╔╝ ██║ ██║╚██╔╝██║',
+  ' ██║ ╚████║ ███████╗╚██████╔╝  ╚████╔╝  ██║ ██║ ╚═╝ ██║',
+  ' ╚═╝  ╚═══╝ ╚══════╝ ╚═════╝    ╚═══╝   ╚═╝ ╚═╝     ╚═╝',
+}
+
 db.custom_center = {
   {
     icon = '  ',
@@ -61,7 +71,7 @@ db.custom_center = {
     icon = '  ',
     icon_hl = { fg = z.redwine },
     desc = 'Open Personal dotfiles                  ',
-    action = 'Telescope dotfiles path=' .. home .. '/.dotfiles',
+    action = 'Telescope dotfiles path=' .. home .. '/dotfiles',
     shortcut = 'SPC f d',
   },
 }
