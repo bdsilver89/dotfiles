@@ -3,7 +3,7 @@ local conf = require('modules.editor.config')
 
 package({
   'nvim-lua/plenary.nvim',
-  opt = false, 
+  opt = false,
 })
 
 package({

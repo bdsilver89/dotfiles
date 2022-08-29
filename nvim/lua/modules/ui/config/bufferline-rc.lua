@@ -2,24 +2,23 @@ require('bufferline').setup({
   options = {
     mode = 'buffers',
     diagnostics = 'nvim_lsp',
-    seperator_style = 'slant',
+    separator_style = 'slant',
     always_show_bufferline = false,
-    show_buffer_close_icons = false,
-    show_close_icon = false,
+    show_buffer_close_icons = true,
+    show_close_icon = true,
     color_icons = true,
     offsets = {
       {
         filetype = 'NvimTree',
         text = 'File Explorer',
-        highlight = 'Directory',
         separator = true,
         text_align = 'left',
       },
       -- {
       --   filetype = 'UndoTree',
       --   text = 'Undo',
-      --   highlight = 'Directory',
       --   seperator = true,
+      --   text_align = 'right'
       -- }
     },
   },
