@@ -49,6 +49,14 @@ function config.toggleterm()
   require('modules.ui.config.toggleterm-rc')
 end
 
+function config.nvim_navic()
+  require('modules.ui.config.navic-rc')
+end
+
+function config.notify()
+  require('modules.ui.config.notify-rc')
+end
+
 function config.winbar()
   require('modules.ui.config.winbar-rc')
 end

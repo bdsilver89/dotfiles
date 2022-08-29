@@ -91,8 +91,19 @@ package({
   'preservim/tagbar',
 })
 
+package({
+  'SmiteshP/nvim-navic',
+  config = conf.nvim_navic,
+})
+
+package({
+  'rcarriga/nvim-notify',
+  config = conf.notify,
+})
+
 -- Uncomment for > Neovim 0.8
 -- package({
 --   'fgheng/winbar.nvim',
 --   config = conf.winbar,
 -- })
+

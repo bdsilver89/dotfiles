@@ -2,11 +2,16 @@ local package = require('core.pack').package
 local conf = require('modules.tools.config')
 
 package({
-  'kristijanhusak/vim-dadbod-ui',
-  cmd = { 'DBUIToggle', 'DBUIAddConnection', 'DBUI', 'DBUIFindBuffer', 'DBUIRenameBuffer' },
-  config = conf.vim_dadbod_ui,
-  requires = { { 'tpope/vim-dadbod', opt = true } },
+  'lewis6991/impatient.nvim',
+  config = conf.impatient,
 })
+
+-- package({
+--   'kristijanhusak/vim-dadbod-ui',
+--   cmd = { 'DBUIToggle', 'DBUIAddConnection', 'DBUI', 'DBUIFindBuffer', 'DBUIRenameBuffer' },
+--   config = conf.vim_dadbod_ui,
+--   requires = { { 'tpope/vim-dadbod', opt = true } },
+-- })
 
 package({
   'editorconfig/editorconfig-vim',
@@ -28,3 +33,4 @@ package({
   'dstein64/vim-startuptime',
   cmd = 'StartupTime',
 })
+
