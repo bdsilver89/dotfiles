@@ -15,8 +15,6 @@ package({
     { 'nvim-lua/plenary.nvim', opt = true },
     { 'nvim-telescope/telescope-fzy-native.nvim', opt = true },
     { 'nvim-telescope/telescope-file-browser.nvim', opt = true },
-    --{ 'nvim-telescope/telescope-project.nvim', opt = true },
-    -- { 'nvim-telescope/telescope-frecency.nvim', opt = true, requires = { 'tami5/sqlite.lua', opt = true} },
   },
 })
 
@@ -36,6 +34,11 @@ package({
 })
 
 package({
+  'nvim-telescope/telescope-dap.nvim',
+  after = 'telescope-frecency.nvim',
+})
+
+package({
   'nvim-treesitter/nvim-treesitter',
   event = 'BufRead',
   run = ':TSUpdate',
@@ -48,27 +51,27 @@ package({
   after = 'nvim-treesitter'
 })
 
-package({
-  'glepnir/mcc.nvim',
-  ft = { 'c', 'cpp', 'go', 'rust' },
-  config = conf.mcc_nvim
-})
-
-package({
-  'kana/vim-operator-replace',
-  keys = { { 'x', 'p' } },
-  config = function()
-    vim.api.nvim_set_keymap('x', 'p', '<Plug>(operator-replace)', { silent = true })
-  end,
-  requires = 'kana/vim-operator-user',
-})
-
-package({
-  'rhysd/vim-operator-surround',
-  event = 'BufRead',
-  requires = 'kana/vim-operator-user'
-})
-
+-- package({
+--   'glepnir/mcc.nvim',
+--   ft = { 'c', 'cpp', 'go', 'rust' },
+--   config = conf.mcc_nvim
+-- })
+--
+-- package({
+--   'kana/vim-operator-replace',
+--   keys = { { 'x', 'p' } },
+--   config = function()
+--     vim.api.nvim_set_keymap('x', 'p', '<Plug>(operator-replace)', { silent = true })
+--   end,
+--   requires = 'kana/vim-operator-user',
+-- })
+--
+-- package({
+--   'rhysd/vim-operator-surround',
+--   event = 'BufRead',
+--   requires = 'kana/vim-operator-user'
+-- })
+--
 package({
   'antoinemadec/FixCursorHold.nvim',
   event = 'BufReadPre'
@@ -118,7 +121,13 @@ package({
 })
 
 -- package({
---   'theHamsta/nvim-dap-virtual-text'
+--   'theHamsta/nvim-dap-virtual-text',
+--   config = conf.nvim_dap_virtual_text,
+-- })
+
+-- package({
+--   'Pocco81/dap-buddy.nvim',
+--   config = conf.dap_buddy,
 -- })
 
 package({
@@ -135,12 +144,6 @@ package({
 package({
   'romainl/vim-cool',
   event = { "CursorMoved", "InsertEnter" }
-})
-
-package({
-  'karb94/neoscroll.nvim',
-  event = 'BufReadPost',
-  config = conf.neoscroll,
 })
 
 package({

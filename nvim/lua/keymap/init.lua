@@ -12,14 +12,14 @@ imap({
   -- { '<TAB>', _G.smart_tab, opts(expr, silent, remap) },
   -- { '<S-TAB>', _G.smart_shift_tab, opts(expr, silent, remap) },
   { '<C-\\>', cmd('<Esc><cmd>ToggleTerm direction=horizontal<CR>'), opts(noremap, silent)},
-  { '<F5>', cmd('<Esc><cmd>ToggleTerm direction=vertical<CR>'), opts(noremap, silent) },
+  { '<F6>', cmd('<Esc><cmd>ToggleTerm direction=vertical<CR>'), opts(noremap, silent) },
 	{ '<A-d>', cmd('<Esc><cmd>ToggleTerm direction=float<CR>'), opts(noremap, silent) },
 })
 
 tmap({
   { '<Esc><Esc>', [[<C-\><C-n>]], opts(noremap) },
   { '<C-\\>', [[<C-\><C-n><cmd>ToggleTerm<CR>]], opts(noremap, silent)},
-  { '<F5>', [[<C-\><C-n><cmd>ToggleTerm direction=vertical<CR>]], opts(noremap, silent) },
+  { '<F6>', [[<C-\><C-n><cmd>ToggleTerm direction=vertical<CR>]], opts(noremap, silent) },
   { '<A-d>', [[<C-\><C-n><cmd>ToggleTerm direction=float<CR>]], opts(noremap, silent) },
 })
 
@@ -70,7 +70,7 @@ nmap({
   { '<Leader>fb', cmd('Telescope file_browser'), opts(noremap, silent) },
   { '<Leader>fd', cmd('Telescope dotfiles'), opts(noremap, silent) },
   { '<Leader>ff', cmd('Telescope find_files'), opts(noremap, silent) },
-  { '<Leader>fg', cmd('Telescope gif_files'), opts(noremap, silent) },
+  { '<Leader>fg', cmd('Telescope git_files'), opts(noremap, silent) },
   { '<Leader>fw', cmd('Telescope grep_string'), opts(noremap, silent) },
   { '<Leader>fh', cmd('Telescope help_tags'), opts(noremap, silent) },
   { '<Leader>fo', cmd('Telescope oldfiles'), opts(noremap, silent) },
@@ -96,7 +96,7 @@ nmap({
   { '<Leader>cl', cmd('TroubleToggle loclist'), opts(noremap, silent) },
 	-- toggleterm
 	{ '<C-\\>', cmd('ToggleTerm direction=horizontal'), opts(noremap, silent) },
-	{ '<F5>', cmd('ToggleTerm direction=vertical'), opts(noremap, silent) },
+	{ '<F6>', cmd('ToggleTerm direction=vertical'), opts(noremap, silent) },
 	{ '<A-d>', cmd('ToggleTerm direction=float'), opts(noremap, silent) },
   -- bufferline
   { '<Leader>gb', cmd('BufferLinePick'), opts(noremap, silent) },
@@ -119,14 +119,12 @@ nmap({
   { '<Leader>k', cmd('HopLine'), opts(noremap)},
   { '<Leader>c', cmd('HopChar1'), opts(noremap)},
   { '<Leader>cc', cmd('HopChar2'), opts(noremap)},
-  -- tagbar
-  { '<F8>', cmd('TagbarToggle'), opts(noremap) },
   -- dap
   { '<F4>', cmd('lua require("dapui").toggle()'), opts(noremap) },
   { '<F5>', cmd('lua require("dap").toggle_breakpoint()'), opts(noremap) },
   { '<F9>', cmd('lua require("dap").continue()'), opts(noremap) },
 
-  { '<F1>', cmd('lua require("dap").setp_over()'), opts(noremap) },
+  { '<F1>', cmd('lua require("dap").step_over()'), opts(noremap) },
   { '<F2>', cmd('lua require("dap").step_into()'), opts(noremap) },
   { '<F3>', cmd('lua require("dap").step_out()'), opts(noremap) },
 
@@ -146,10 +144,10 @@ nmap({
 
   { '<Leader>dbc', cmd('lua require("dap").set_breakpoint(vim.fn.input("Breakpoint condition: "))'), opts(noremap) },
   { '<Leader>dbm', cmd('lua require("dap").set_breakpoint({ nil, nil, vim.fn.input("log point message: ") })') , opts(noremap) },
-  { '<Leader>dbt', cmd('lua require("dap").toggle_breakpoint'), opts(noremap) },
+  { '<Leader>dbt', cmd('lua require("dap").toggle_breakpoint()'), opts(noremap) },
 
   { '<Leader>dc', cmd('lua require("dap.ui.variables").scopes()'), opts(noremap) },
-  { '<Leader>di', cmd('lua require("dapui").toggle'), opts(noremap) },
+  { '<Leader>di', cmd('lua require("dapui").toggle()'), opts(noremap) },
 
   -- neotest
   { '<Leader>tr', cmd('lua require("neotest").run.run()'), opts(noremap) },

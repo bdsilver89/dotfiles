@@ -1,6 +1,6 @@
 require('trouble').setup({
   position = 'bottom',
-  height = 10,
+  height = 15,
   width = 50,
   icons = true,
   mode = 'document_diagnostics',

@@ -7,15 +7,19 @@ end
 function config.lspsaga()
   local saga = require('lspsaga')
   saga.init_lsp_saga({
-  --  symbol_in_winbar = {
-  --    enable = true,
-  --  },
+   symbol_in_winbar = {
+     enable = true,
+   },
   })
 end
 
 function config.nvim_cmp()
   require('modules.completion.config.nvim-cmp')
 end
+
+-- function config.mason_install()
+--   require('modules.completion.config.mason_install-rc')
+-- end
 
 function config.lua_snip()
   local ls = require('luasnip')
@@ -40,26 +44,26 @@ function config.auto_pairs()
   cmp.event:on('confirm_done', cmp_autopairs.on_confirm_done())
 end
 
-function prettier()
-  require('prettier').setup({
-    bin = 'prettierd',
-    filetypes = {
-      'css',
-      'javascript',
-      'javascriptreact',
-      'typescript',
-      'typescriptreact',
-      'json',
-      'yaml',
-      'scss',
-      'less',
-      'c',
-      'cpp',
-      'go',
-      'rust',
-      'python',
-    }
-  })
-end
+-- function prettier()
+--   require('prettier').setup({
+--     bin = 'prettierd',
+--     filetypes = {
+--       'css',
+--       'javascript',
+--       'javascriptreact',
+--       'typescript',
+--       'typescriptreact',
+--       'json',
+--       'yaml',
+--       'scss',
+--       'less',
+--       'c',
+--       'cpp',
+--       'go',
+--       'rust',
+--       'python',
+--     }
+--   })
+-- end
 
 return config

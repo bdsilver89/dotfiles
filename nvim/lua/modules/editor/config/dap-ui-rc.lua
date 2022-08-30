@@ -11,6 +11,7 @@ require("dapui").setup({
 		edit = "e",
 		repl = "r",
 	},
+  expand_lines = true,
 	layouts = {
 		{
 		  elements = {
@@ -37,7 +38,7 @@ require("dapui").setup({
 		},
 		{
       elements = { "repl" },
-      size = 10,
+      size = 0.25,
       position = "bottom",
     },
 	},
@@ -49,4 +50,7 @@ require("dapui").setup({
     },
 	},
 	windows = { indent = 1 },
+  render = {
+    max_type_length = nil,
+  },
 })

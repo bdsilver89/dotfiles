@@ -7,6 +7,21 @@ vim.cmd([[packadd telescope-fzy-native.nvim]])
 vim.cmd([[packadd telescope-project.nvim]])
 vim.cmd([[packadd telescope-frecency.nvim]])
 vim.cmd([[packadd telescope-file-browser.nvim]])
+vim.cmd([[packadd telescope-dap.nvim]])
+
+
+local telescope_actions = require("telescope.actions.set")
+local fixfolds = {
+  hidden = true,
+  attach_mappings = function(_)
+    telescope_actions.select:enhance({
+      post = function()
+        vim.cmd(':normal! xz')
+      end,
+    })
+    return true
+  end,
+}
 
 require('telescope').setup({
   defaults = {
@@ -45,10 +60,19 @@ require('telescope').setup({
       theme = "dropdown"
     }
   },
+  pickers = {
+    buffers = fixfolds,
+    find_files = fixfolds,
+    git_files = fixfolds,
+    grep_string = fixfolds,
+    live_grep = fixfolds,
+    oldfiles = fixfolds,
+  }
 })
 require('telescope').load_extension('fzy_native')
 require('telescope').load_extension('project')
 require('telescope').load_extension('frecency')
 require('telescope').load_extension('file_browser')
+require('telescope').load_extension('dap')
 require('telescope').load_extension('dotfiles')
 require('telescope').load_extension('gosource')

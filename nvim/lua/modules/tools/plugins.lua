@@ -1,11 +1,6 @@
 local package = require('core.pack').package
 local conf = require('modules.tools.config')
 
-package({
-  'lewis6991/impatient.nvim',
-  config = conf.impatient,
-})
-
 -- package({
 --   'kristijanhusak/vim-dadbod-ui',
 --   cmd = { 'DBUIToggle', 'DBUIAddConnection', 'DBUI', 'DBUIFindBuffer', 'DBUIRenameBuffer' },
@@ -16,11 +11,6 @@ package({
 package({
   'editorconfig/editorconfig-vim',
   ft = { 'go', 'typescript', 'javascript', 'vim', 'rust', 'zig', 'c', 'cpp' },
-})
-
-package({
-  'glepnir/coman.nvim',
-  after = 'nvim-treesitter'
 })
 
 package({

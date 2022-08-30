@@ -5,8 +5,8 @@ function config.zephyr()
 end
 
 function config.galaxyline()
-  -- require('modules.ui.eviline')
-  require('modules.ui.config.spaceline-rc')
+  require('modules.ui.config.eviline-rc')
+  -- require('modules.ui.config.spaceline-rc')
 end
 
 function config.dashboard()

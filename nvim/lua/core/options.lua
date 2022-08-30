@@ -132,6 +132,7 @@ opt.breakindentopt = 'shift:2,min:20'
 opt.wrap = false
 opt.linebreak = true
 opt.number = true
+opt.relativenumber = true
 opt.colorcolumn = '100'
 opt.foldenable = true
 opt.signcolumn = 'yes'

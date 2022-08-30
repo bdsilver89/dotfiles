@@ -51,10 +51,10 @@ package({
   config = conf.auto_pairs,
 })
 
-package({
-  'MunifTanjim/prettier.nvim',
-  config = conf.prettier,
-})
+-- package({
+--   'MunifTanjim/prettier.nvim',
+--   config = conf.prettier,
+-- })
 
 package({
   'williamboman/mason.nvim',
@@ -63,6 +63,11 @@ package({
 package({
   'williamboman/mason-lspconfig.nvim'
 })
+
+-- package({
+--   'WhoIsSethDaniel/mason-tool-installer.nvim',
+--   config = conf.mason_install,
+-- })
 
 package({
   'ray-x/lsp_signature.nvim',

@@ -27,10 +27,6 @@ local function load_dbs()
   return dbs
 end
 
-function config.impatient()
-  require('impatient')
-end
-
 -- function config.vim_dadbod_ui()
 --   if packer_plugins['vim-dadbod'] and not packer_plugins['vim-dadbod'].loaded then
 --     vim.cmd([[packadd vim-dadbod]])
@@ -46,8 +42,8 @@ end
 function config.template_nvim()
   local temp = require('template')
   temp.temp_dir = '~/.config/nvim/template'
-  temp.author = 'glepnir'
-  temp.email = 'glephunter@gmail.com'
+  temp.author = 'bdsilver89'
+  temp.email = ''
   if not packer_plugins['telescope.nvim'] then
     vim.cmd('packadd telescope.nvim')
     require('telescope').load_extension('find_template')

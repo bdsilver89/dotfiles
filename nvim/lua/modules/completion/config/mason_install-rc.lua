@@ -1,0 +1,11 @@
+-- require('mason-tool-installer').setup({
+--   ensure_installed = {
+--     'bash-language-server',
+--     'lua-language-server',
+--     'vim-language-server',
+--     'pyright',
+--     'rust_analyzer',
+--   },
+--   auto_update = true,
+--   run_on_start = true,
+-- })

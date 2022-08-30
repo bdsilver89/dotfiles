@@ -23,6 +23,32 @@ end
 -- vim.fn.sign_define("DapStopped", { text = "", texthl = "DapStopped", linehl = "", numhl = "" })
 
 -- add language specific configurations
+
+dap.adapters.lldb = {
+  type = 'executable',
+  command = '/usr/bin/lldb-vscode',
+  name = 'lldb'
+}
+
+dap.configurations.cpp = {
+  {
+    name = 'Launch',
+    type = 'lldb',
+    request = 'launch',
+    program = function()
+      return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. '/', 'file')
+    end,
+    cwd = "${workspaceFolder}",
+    stopOnEntry = false,
+    args = function()
+      return vim.fn.input("Additional args: ")
+    end,
+    runInTerminal = false,
+  },
+}
+
+dap.configurations.c = dap.configurations.cpp
+
 dap.adapters.go = function(callback, config)
   local stdout = vim.loop.new_pipe(false)
   local handle
