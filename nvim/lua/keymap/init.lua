@@ -29,6 +29,8 @@ nmap({
   { '<Leader>pi', cmd('PackerInstall'), opts(noremap, silent) },
   { '<Leader>pc', cmd('PackerCompile'), opts(noremap, silent) },
   { '<Leader>ps', cmd('PackerSync'), opts(noremap, silent) },
+  { '<Leader>pst', cmd('PackerStatus'), opts(noremap, silent) },
+  
   -- Lsp
   { '<Leader>li', cmd('LspInfo'), opts(noremap, silent) },
   { '<Leader>ll', cmd('LspLog'), opts(noremap, silent) },
@@ -43,6 +45,7 @@ nmap({
     cmd('lua require("lspsaga.action"").smart_scroll_with_saga(-1)'),
     opts(noremap, silent),
   },
+
   -- Lspsaga
   { '[e', cmd('Lspsaga diagnostic_jump_next'), opts(noremap, silent) },
   { ']e', cmd('Lspsaga diagnostic_jump_prev'), opts(noremap, silent) },
@@ -53,17 +56,20 @@ nmap({
   { 'gr', cmd('Lspsaga rename'), opts(noremap, silent) },
   { 'gh', cmd('Lspsaga lsp_finder'), opts(noremap, silent) },
   { '<Leader>o', cmd('LSoutlineToggle'), opts(noremap, silent) },
-  -- Lspsaga floaterminal
   -- { '<A-d>', cmd('Lspsaga open_floaterm'), opts(noremap, silent) },
   -- { '<Leader>g', cmd('Lspsaga open_floaterm lazygit'), opts(noremap, silent) },
+  
   -- dashboard create file
   { '<Leader>n', cmd('DashboardNewFile'), opts(noremap, silent) },
   { '<Leader>ss', cmd('SessionSave'), opts(noremap, silent) },
   { '<Leader>sl', cmd('SessionLoad'), opts(noremap, silent) },
+
   -- nvimtree
   { '<Leader>e', cmd('NvimTreeToggle'), opts(noremap, silent) },
+  
   -- dadbodui
-  { '<Leader>d', cmd('DBUIToggle'), opts(noremap, silent) },
+  -- { '<Leader>d', cmd('DBUIToggle'), opts(noremap, silent) },
+
   -- Telescope
   { '<Leader>b', cmd('Telescope buffers'), opts(noremap, silent) },
   { '<Leader>fa', cmd('Telescope live_grep'), opts(noremap, silent) },
@@ -78,15 +84,19 @@ nmap({
   { '<Leader>gc', cmd('Telescope dotfiles path' .. home .. '/.dotfiles'), opts(noremap, silent) },
   { '<Leader>fp', cmd('Telescope project'), opts(noremap, silent) },
   { '<Leader>fr', cmd('Telescope frecency'), opts(noremap, silent)},
+
   -- vim-operator-surround
-  { 'sa', '<Plug>(operator-surround-append)', opts(noremap, silent) },
-  { 'sd', '<Plug>(operator-surround-delete)', opts(noremap, silent) },
-  { 'sr', '<Plug>(operator-surround-replace)', opts(noremap, silent) },
+  -- { 'sa', '<Plug>(operator-surround-append)', opts(noremap, silent) },
+  -- { 'sd', '<Plug>(operator-surround-delete)', opts(noremap, silent) },
+  -- { 'sr', '<Plug>(operator-surround-replace)', opts(noremap, silent) },
+
   -- formatter
   { '<Leader>f', cmd('Format'), opts(noremap, silent) },
   { '<Leader>F', cmd('FormatWrite'), opts(noremap, silent)},
+
   -- undotree
   { '<Leader>u', cmd("UndotreeToggle"), opts(noremap, silent) },
+
   -- trouble
   { 'gt', cmd('TroubleToggle'), opts(noremap, silent) },
   { 'gR', cmd('TroubleToggle lsp_references'), opts(noremap, silent) },
@@ -94,10 +104,12 @@ nmap({
   { '<Leader>cw', cmd('TroubleToggle workspace_diagnostics'), opts(noremap, silent) },
   { '<Leader>cq', cmd('TroubleToggle quickfix'), opts(noremap, silent) },
   { '<Leader>cl', cmd('TroubleToggle loclist'), opts(noremap, silent) },
+
 	-- toggleterm
 	{ '<C-\\>', cmd('ToggleTerm direction=horizontal'), opts(noremap, silent) },
 	{ '<F6>', cmd('ToggleTerm direction=vertical'), opts(noremap, silent) },
 	{ '<A-d>', cmd('ToggleTerm direction=float'), opts(noremap, silent) },
+
   -- bufferline
   { '<Leader>gb', cmd('BufferLinePick'), opts(noremap, silent) },
   { '<Tab>', cmd('BufferLineCycleNext'), opts(noremap, silent) },
@@ -113,12 +125,14 @@ nmap({
   { '<A-7>', cmd('BufferLineGoToBuffer 7'), opts(noremap, silent)},
   { '<A-8>', cmd('BufferLineGoToBuffer 8'), opts(noremap, silent)},
   { '<A-9>', cmd('BufferLineGoToBuffer 9'), opts(noremap, silent)},
+
   -- hop
   { '<Leader>w', cmd('HopWord'), opts(noremap)},
   { '<Leader>j', cmd('HopLine'), opts(noremap)},
   { '<Leader>k', cmd('HopLine'), opts(noremap)},
   { '<Leader>c', cmd('HopChar1'), opts(noremap)},
   { '<Leader>cc', cmd('HopChar2'), opts(noremap)},
+
   -- dap
   { '<F4>', cmd('lua require("dapui").toggle()'), opts(noremap) },
   { '<F5>', cmd('lua require("dap").toggle_breakpoint()'), opts(noremap) },
