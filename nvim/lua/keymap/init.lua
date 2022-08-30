@@ -78,7 +78,6 @@ nmap({
   { '<Leader>gc', cmd('Telescope dotfiles path' .. home .. '/.dotfiles'), opts(noremap, silent) },
   { '<Leader>fp', cmd('Telescope project'), opts(noremap, silent) },
   { '<Leader>fr', cmd('Telescope frecency'), opts(noremap, silent)},
-  -- { '<Leader>fn', ':<C-u>:enew<CR>', opt(noremap, silent) },
   -- vim-operator-surround
   { 'sa', '<Plug>(operator-surround-append)', opts(noremap, silent) },
   { 'sd', '<Plug>(operator-surround-delete)', opts(noremap, silent) },
@@ -126,16 +125,16 @@ nmap({
   { '<F4>', cmd('lua require("dapui").toggle()'), opts(noremap) },
   { '<F5>', cmd('lua require("dap").toggle_breakpoint()'), opts(noremap) },
   { '<F9>', cmd('lua require("dap").continue()'), opts(noremap) },
-  
+
   { '<F1>', cmd('lua require("dap").setp_over()'), opts(noremap) },
   { '<F2>', cmd('lua require("dap").step_into()'), opts(noremap) },
   { '<F3>', cmd('lua require("dap").step_out()'), opts(noremap) },
-  
+
   { '<Leader>dsc', cmd('lua require("dap").continue()'), opts(noremap) },
   { '<Leader>dsv', cmd('lua require("dap").step_over()'), opts(noremap) },
   { '<Leader>dsi', cmd('lua require("dap").step_into()'), opts(noremap) },
   { '<Leader>dso', cmd('lua require("dap").step_out()'), opts(noremap) },
-  
+
   { '<Leader>dhh', cmd('lua require("dap.ui.variables").hover()'), opts(noremap) },
   { '<Leader>dhv', cmd('lua require("dap.ui.variables").visual_hover()'), opts(noremap) },
 

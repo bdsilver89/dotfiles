@@ -102,8 +102,12 @@ package({
 })
 
 -- Uncomment for > Neovim 0.8
--- package({
---   'fgheng/winbar.nvim',
---   config = conf.winbar,
--- })
+package({
+  'fgheng/winbar.nvim',
+  config = conf.winbar,
+  requires = {
+    'SmiteshP/nvim-navic',
+    'kyazdani42/nvim-web-devicons',
+  },
+})
 
