@@ -10,6 +10,9 @@ function config.lspsaga()
    symbol_in_winbar = {
      enable = true,
    },
+   show_outline = {
+     win_width = vim.o.columns * 0.40,
+   }
   })
 end
 

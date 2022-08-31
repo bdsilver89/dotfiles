@@ -30,7 +30,7 @@ nmap({
   { '<Leader>pc', cmd('PackerCompile'), opts(noremap, silent) },
   { '<Leader>ps', cmd('PackerSync'), opts(noremap, silent) },
   { '<Leader>pst', cmd('PackerStatus'), opts(noremap, silent) },
-  
+
   -- Lsp
   { '<Leader>li', cmd('LspInfo'), opts(noremap, silent) },
   { '<Leader>ll', cmd('LspLog'), opts(noremap, silent) },
@@ -58,7 +58,7 @@ nmap({
   { '<Leader>o', cmd('LSoutlineToggle'), opts(noremap, silent) },
   -- { '<A-d>', cmd('Lspsaga open_floaterm'), opts(noremap, silent) },
   -- { '<Leader>g', cmd('Lspsaga open_floaterm lazygit'), opts(noremap, silent) },
-  
+
   -- dashboard create file
   { '<Leader>n', cmd('DashboardNewFile'), opts(noremap, silent) },
   { '<Leader>ss', cmd('SessionSave'), opts(noremap, silent) },
@@ -66,7 +66,7 @@ nmap({
 
   -- nvimtree
   { '<Leader>e', cmd('NvimTreeToggle'), opts(noremap, silent) },
-  
+
   -- dadbodui
   -- { '<Leader>d', cmd('DBUIToggle'), opts(noremap, silent) },
 
