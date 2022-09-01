@@ -3,7 +3,7 @@ if not packer_plugins['plenary.nvim'].loaded then
   vim.cmd([[packadd popup.nvim]])
 end
 vim.cmd([[packadd sqlite.lua]])
-vim.cmd([[packadd telescope-fzy-native.nvim]])
+vim.cmd([[packadd telescope-fzf-native.nvim]])
 vim.cmd([[packadd telescope-project.nvim]])
 vim.cmd([[packadd telescope-frecency.nvim]])
 vim.cmd([[packadd telescope-file-browser.nvim]])
@@ -42,7 +42,8 @@ require('telescope').setup({
     },
   },
   extensions = {
-    fzy_native = {
+    fzf = {
+      fuzzy = true,
       override_generic_sorter = false,
       override_file_sorter = true,
     },
@@ -69,7 +70,8 @@ require('telescope').setup({
     oldfiles = fixfolds,
   }
 })
-require('telescope').load_extension('fzy_native')
+
+require('telescope').load_extension('fzf')
 require('telescope').load_extension('project')
 require('telescope').load_extension('frecency')
 require('telescope').load_extension('file_browser')
