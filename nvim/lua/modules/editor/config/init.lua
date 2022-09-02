@@ -8,6 +8,10 @@ function config.nvim_treesitter()
   require('modules.editor.config.treesitter-rc')
 end
 
+function config.nvim_treesitter_context()
+  require('modules.editor.config.treesitter-context-rc')
+end
+
 function config.mcc_nvim()
   require('mcc').setup({
     go = { ';', ':=', ';' },

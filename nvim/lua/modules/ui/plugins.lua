@@ -111,3 +111,6 @@ package({
   },
 })
 
+package({
+  'preservim/tagbar'
+})

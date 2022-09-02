@@ -48,7 +48,13 @@ package({
 
 package({
   'nvim-treesitter/nvim-treesitter-textobjects',
-  after = 'nvim-treesitter'
+  after = 'nvim-treesitter',
+})
+
+package({
+  'nvim-treesitter/nvim-treesitter-context',
+  after = 'nvim-treesitter',
+  config = conf.nvim_treesitter_context,
 })
 
 -- package({

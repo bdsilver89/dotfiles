@@ -55,7 +55,7 @@ nmap({
   { 'gs', cmd('Lspsaga signature_help'), opts(noremap, silent) },
   { 'gr', cmd('Lspsaga rename'), opts(noremap, silent) },
   { 'gh', cmd('Lspsaga lsp_finder'), opts(noremap, silent) },
-  { '<Leader>o', cmd('LSoutlineToggle'), opts(noremap, silent) },
+  -- { '<Leader>o', cmd('LSoutlineToggle'), opts(noremap, silent) },
   -- { '<A-d>', cmd('Lspsaga open_floaterm'), opts(noremap, silent) },
   -- { '<Leader>g', cmd('Lspsaga open_floaterm lazygit'), opts(noremap, silent) },
 
@@ -169,4 +169,7 @@ nmap({
   { '<Leader>trd', cmd('lua require("neotest").run.run({strategy="dap"})'), opts(noremap) },
   { '<Leader>ts', cmd('lua require("neotest).run.stop()'), opts(noremap) },
   { '<Leader>ta', cmd('lua require("neotest").run.attach()'), opts(noremap) },
+
+  -- tagbar
+  { '<F8>', cmd('TagbarToggle'), opts(noremap, silent) },
 })
