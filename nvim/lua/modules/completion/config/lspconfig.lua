@@ -121,8 +121,9 @@ local servers = {
   'pyright',
   'bashls',
   'cmake',
-  "jsonls",
-  "yamlls"
+  'jsonls',
+  'yamlls',
+  'sqlls',
 }
 
 lspconfig.tsserver.setup({

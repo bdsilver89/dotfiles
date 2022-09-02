@@ -107,6 +107,7 @@ opt.pumheight = 15
 opt.helpheight = 12
 opt.previewheight = 12
 opt.showcmd = false
+opt.wrap = false
 
 -- just for nightly
 opt.cmdheight = 1
