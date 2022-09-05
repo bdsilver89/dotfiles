@@ -11,6 +11,7 @@ keymap.set('n', '<C-a>', 'gg<S-v>G')
 
 -- new tab
 keymap.set('n', 'te', ':tabedit')
+keymap.set('n', 'tc', ':tabclose')
 
 -- split window
 keymap.set('n', 'ss', ':split<Return><C-w>w')

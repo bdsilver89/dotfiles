@@ -50,6 +50,7 @@ telescope.setup {
 
 -- telescope.load_extension("fzf")
 telescope.load_extension("file_browser")
+telescope.load_extension("git_worktree")
 
 vim.keymap.set('n', ';f',
   function()
@@ -58,21 +59,27 @@ vim.keymap.set('n', ';f',
       hidden = true
     })
   end)
+
 vim.keymap.set('n', ';r', function()
   builtin.live_grep()
 end)
+
 vim.keymap.set('n', '\\\\', function()
   builtin.buffers()
 end)
+
 vim.keymap.set('n', ';t', function()
   builtin.help_tags()
 end)
+
 vim.keymap.set('n', ';;', function()
   builtin.resume()
 end)
+
 vim.keymap.set('n', ';e', function()
   builtin.diagnostics()
 end)
+
 vim.keymap.set("n", "sf", function()
   telescope.extensions.file_browser.file_browser({
     path = "%:p:h",
@@ -86,3 +93,10 @@ vim.keymap.set("n", "sf", function()
   })
 end)
 
+vim.keymap.set("n", "sw", function()
+  telescope.extensions.git_worktree.git_worktrees()
+end, { noremap = true })
+
+vim.keymap.set("n", "gm", function()
+  telescope.extensions.git_worktree.create_git_worktree()
+end, { noremap = true })

@@ -25,6 +25,7 @@ packer.startup(function(use)
   use 'windwp/nvim-autopairs'
   use 'sbdchd/neoformat'
   use 'ThePrimeagen/harpoon'
+  use 'ThePrimeagen/git-worktree.nvim'
 
   -- lsp
   use 'neovim/nvim-lspconfig'
