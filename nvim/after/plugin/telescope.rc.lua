@@ -9,11 +9,10 @@ end
 
 local fb_actions = require "telescope".extensions.file_browser.actions
 
-vim.cmd([[packadd telescope-fzf-native.nvim]])
-
-
 telescope.setup {
   defaults = {
+    prompt_prefix = " >",
+    color_devicons = true,
     mappings = {
       n = {
         ["q"] = actions.close
@@ -22,8 +21,7 @@ telescope.setup {
   },
   extensions = {
     file_browser = {
-      theme = "dropdown",
-      -- disables netrw and use telescope-file-browser in its place
+      -- theme = "dropdown",
       hijack_netrw = true,
       mappings = {
         -- your custom insert mode mappings
@@ -40,19 +38,13 @@ telescope.setup {
         },
       },
     },
-    fzf = {
-      fuzzy = true,
-      override_generic_sorter = true,
-      override_file_sorter = true,
-    },
   },
 }
 
--- telescope.load_extension("fzf")
 telescope.load_extension("file_browser")
 telescope.load_extension("git_worktree")
 
-vim.keymap.set('n', ';f',
+vim.keymap.set('n', 'ff',
   function()
     builtin.find_files({
       no_ignore = false,
@@ -60,7 +52,7 @@ vim.keymap.set('n', ';f',
     })
   end)
 
-vim.keymap.set('n', ';r', function()
+vim.keymap.set('n', 'fw', function()
   builtin.live_grep()
 end)
 
@@ -68,7 +60,7 @@ vim.keymap.set('n', '\\\\', function()
   builtin.buffers()
 end)
 
-vim.keymap.set('n', ';t', function()
+vim.keymap.set('n', 'ht', function()
   builtin.help_tags()
 end)
 
@@ -80,20 +72,20 @@ vim.keymap.set('n', ';e', function()
   builtin.diagnostics()
 end)
 
-vim.keymap.set("n", "sf", function()
+vim.keymap.set("n", "fb", function()
   telescope.extensions.file_browser.file_browser({
     path = "%:p:h",
     cwd = telescope_buffer_dir(),
     respect_gitignore = false,
-    hidden = true,
+    hidden =  true,
     grouped = true,
     previewer = false,
-    initial_mode = "normal",
+    initial_mode = "insert",
     layout_config = { height = 40 }
   })
 end)
 
-vim.keymap.set("n", "sw", function()
+vim.keymap.set("n", "gw", function()
   telescope.extensions.git_worktree.git_worktrees()
 end, { noremap = true })
 

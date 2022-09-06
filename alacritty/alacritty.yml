@@ -56,76 +56,38 @@ font:
 
 draw_bold_text_with_bright_colors: false
 
-# colors:
-#   primary:
-    # background: '#262a33'
-    # foreground: '#bbc2cf'
-    # dim_foreground: '#828482'
-    #bright_foreground: '#eaeaea'
-  #cursor:
-  #  text: CellBackground
-  #  cursor: CellForeground
-  #vi_mode_cursor:
-  #  text: CellBackground
-  #  cursor: CellForeground
-  #search:
-    #matches:
-    #  foreground: '#000000'
-    #  background: '#ffffff'
-    #focused_match:
-    #  foreground: '#ffffff'
-    #  background: '#000000'
-  #hints:
-    #start:
-    #  foreground: '#1d1f21'
-    #end:
-    #  foreground: '#e9ff5e'
-    #  background: '#1d1f21'
-  #line_indicator:
-  #  foreground: None
-  #  background: None
-  #footer_bar:
-  #  background: '#c5c8c6'
-  #  foreground: '#1d1f21'
-  #selection:
-  #  text: CellBackground
-  #  background: CellForeground
-  # normal:
-  #  black:   '#000000'
-  #  red:     '#e95678'
-  #  green:   '#b5bd68'
-  #  yellow:  '#fac661'
-  #  blue:    '#61afef'
-  #  magenta: '#c678dd'
-  #  cyan:    '#36d0e0'
-  #  white:   '#c5c8c6'
-  #  green:   '#afd700'
-  #  grey:    '#928374'
-  #  brown:   '#c78665'
-  #  orange:  '#de841b'
-  #bright:
-  #  black:   '#666666'
-  #  red:     '#d54e53'
-  #  green:   '#b9ca4a'
-  #  yellow:  '#e7c547'
-  #  blue:    '#7aa6da'
-  #  magenta: '#c397d8'
-  #  cyan:    '#70c0b1'
-  #  white:   '#eaeaea'
+# TokyoNight Alacritty Colors
+colors:
+  # Default colors
+  primary:
+    background: '0x1a1b26'
+    foreground: '0xc0caf5'
+  
+  # Normal colors
+  normal:
+    black:   '0x15161e'
+    red:     '0xf7768e'
+    green:   '0x9ece6a'
+    yellow:  '0xe0af68'
+    blue:    '0x7aa2f7'
+    magenta: '0xbb9af7'
+    cyan:    '0x7dcfff'
+    white:   '0xa9b1d6'
 
-  # Dim colors
-  # If the dim colors are not set, they will be calculated automatically based
-  # on the `normal` colors.
-  #dim:
-  #  black:   '#131415'
-  #  red:     '#864343'
-  #  green:   '#777c44'
-  #  yellow:  '#9e824c'
-  #  blue:    '#556a7d'
-  #  magenta: '#75617b'
-  #  cyan:    '#5b7d78'
-  #  white:   '#828482'
-  #indexed_colors: []
+  # Bright colors
+  bright:
+    black:   '0x414868'
+    red:     '0xf7768e'
+    green:   '0x9ece6a'
+    yellow:  '0xe0af68'
+    blue:    '0x7aa2f7'
+    magenta: '0xbb9af7'
+    cyan:    '0x7dcfff'
+    white:   '0xc0caf5'
+
+  indexed_colors:
+    - { index: 16, color: '0xff9e64' }
+    - { index: 17, color: '0xdb4b4b' }
 
 bell:
   animation: EaseOutExpo
