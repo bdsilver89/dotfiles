@@ -38,7 +38,6 @@ packer.startup(function(use)
   use 'simrat39/symbols-outline.nvim'
   use 'L3MON4D3/LuaSnip'
 
-
   -- debug and testing
   -- use 'mfussenegger/nvim-dap'
   -- use 'rcarriga/nvim-dap-ui'
@@ -54,5 +53,5 @@ packer.startup(function(use)
   use 'williamboman/mason.nvim'
   use 'williamboman/mason-lspconfig.nvim'
   use 'mbbill/undotree'
-
+  use 'akinsho/toggleterm.nvim'
 end)

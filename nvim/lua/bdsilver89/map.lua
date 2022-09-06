@@ -2,6 +2,10 @@ local keymap = vim.keymap
 
 keymap.set('n', 'x', '"_x')
 
+-- move
+keymap.set('v', 'J', ":m '>+1<CR>gv=gv", {noremap = true})
+keymap.set('v', 'K', ":m '<-2<CR>gv=gv", {noremap = true})
+
 -- increment/decrement
 keymap.set('n', '+', '<C-a>')
 keymap.set('n', '-', '<C-x>')

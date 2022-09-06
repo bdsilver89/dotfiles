@@ -13,25 +13,25 @@ vim.keymap.set('n', '<C-f>', function()
   { noremap = true, silent = true }
 )
 
-vim.keymap.set('n', '<C-n>', function()
+vim.keymap.set('n', '<C-h>', function()
     require('harpoon.ui').nav_file(1)
   end,
   { noremap = true, silent = true }
 )
 
-vim.keymap.set('n', '<C-e>', function()
+vim.keymap.set('n', '<C-j>', function()
     require('harpoon.ui').nav_file(2)
   end,
   { noremap = true, silent = true }
 )
 
-vim.keymap.set('n', '<C-i>', function()
+vim.keymap.set('n', '<C-k>', function()
     require('harpoon.ui').nav_file(3)
   end,
   { noremap = true, silent = true }
 )
 
-vim.keymap.set('n', '<C-o>', function()
+vim.keymap.set('n', '<C-l>', function()
     require('harpoon.ui').nav_file(4)
   end,
   { noremap = true, silent = true }

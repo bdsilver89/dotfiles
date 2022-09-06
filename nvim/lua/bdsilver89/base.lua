@@ -31,6 +31,10 @@ vim.opt.wildignore:append { '*/node_modules/*' }
 vim.opt.updatetime = 50
 vim.opt.colorcolumn = '80'
 
+-- list
+vim.opt.list = true
+vim.opt.listchars='tab:» ,extends:›,precedes:‹,nbsp:·,trail:·'
+
 -- Undercurl
 vim.cmd([[let &t_Cs = "\e[4:3m"]])
 vim.cmd([[let &t_Ce = "\e[4:0m"]])
@@ -52,3 +56,4 @@ vim.opt.pumblend = 5
 vim.opt.background = 'dark'
 
 vim.g.mapleader = ' '
+
