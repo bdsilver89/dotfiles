@@ -7,8 +7,7 @@ do_install() {
         fail "WSL not yet supported. Please just copy alacritty.yml into Windows \"%APPDATA%\\alacritty\\alacritty.yml\""
 
     else
-        mkdir -p "$dst_conf" 2>/dev/null
-        link_file "$src_conf/alacritty.yml" "$dst_conf/$file"
+        link_file "$src_conf" "$dst_conf"
     fi
 }
 

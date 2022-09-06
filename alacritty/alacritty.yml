@@ -56,10 +56,10 @@ font:
 
 draw_bold_text_with_bright_colors: false
 
-colors:
-  primary:
-    background: '#262a33'
-    foreground: '#bbc2cf'
+# colors:
+#   primary:
+    # background: '#262a33'
+    # foreground: '#bbc2cf'
     # dim_foreground: '#828482'
     #bright_foreground: '#eaeaea'
   #cursor:
@@ -90,19 +90,19 @@ colors:
   #selection:
   #  text: CellBackground
   #  background: CellForeground
-  normal:
-   black:   '#000000'
-   red:     '#e95678'
-   green:   '#b5bd68'
-   yellow:  '#fac661'
-   blue:    '#61afef'
-   magenta: '#c678dd'
-   cyan:    '#36d0e0'
-   white:   '#c5c8c6'
-   green:   '#afd700'
-   grey:    '#928374'
-   brown:   '#c78665'
-   orange:  '#de841b'
+  # normal:
+  #  black:   '#000000'
+  #  red:     '#e95678'
+  #  green:   '#b5bd68'
+  #  yellow:  '#fac661'
+  #  blue:    '#61afef'
+  #  magenta: '#c678dd'
+  #  cyan:    '#36d0e0'
+  #  white:   '#c5c8c6'
+  #  green:   '#afd700'
+  #  grey:    '#928374'
+  #  brown:   '#c78665'
+  #  orange:  '#de841b'
   #bright:
   #  black:   '#666666'
   #  red:     '#d54e53'
