@@ -31,37 +31,19 @@ plugins=(git web-search zsh-autosuggestions)
 source $ZSH/oh-my-zsh.sh
 
 # export MANPATH="/usr/local/man:$MANPATH"
+export EDITOR='nvim'
 
-
-# Preferred editor for local and remote sessions
-if [[ -n $SSH_CONNECTION ]]; then
- export EDITOR='vim'
-else
-  export EDITOR='nvim'
-fi
-
-# exa alias if installed
-if exa &>/dev/null
-then
-  alias ls="exa"
-fi
-
-# bat alias if installed
-#if bat &>/dev/null
-#then
-#  alias cat="bat"
-#else if batcat &>/dev/null
-#  alaias cat="batcat"
-#fi
+alias ls="exa"
+alias cat="bat"
 
 alias ide="tmux split-window -v -p 30"
 
 # pyenv setup
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
-if command -v pyenv 1>/dev/null 2>&1; then
-	  eval "$(pyenv init -)"
-fi
+# export PYENV_ROOT="$HOME/.pyenv"
+# export PATH="$PYENV_ROOT/bin:$PATH"
+# if command -v pyenv 1>/dev/null 2>&1; then
+# 	  eval "$(pyenv init -)"
+# fi
 
 # poetry setup
 export POETRY_ROOT="$HOME/.poetry"
@@ -84,5 +66,4 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
-cd $HOME
-
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

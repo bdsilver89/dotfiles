@@ -1,0 +1,27 @@
+- name: Download Neovim
+  git:
+    repo: 'https://github.com/neovim/neovim.git'
+    dest: '{{ ansible_env.HOME }}/third-party/neovim'
+    update: yes
+    version: 'nightly'
+
+- name: Build Neovim
+  args:
+    chdir: '{{ ansible_env.HOME }}/third-party/neovim'
+  shell: 'make CMAKE_BUILD_TYPE=RelWithDebInfo -j'
+
+- name: Install Neovim
+  become: yes
+  become_user: root
+  args:
+    chdir: '{{ ansible_env.HOME }}/third-party/neovim'
+  shell: 'make install'
+
+- name: Download Neovim packer
+  git:
+    repo: 'https://github.com/wbthomason/packer.nvim'
+    dest: '{{ ansible_env.HOME }}/.local/share/nvim/site/pack/packer/start/packer.nvim'
+    depth: 1
+
+- name: Stow Neovim
+  shell: 'cd {{ ansible_env.HOME }}/dotfiles && stow nvim'

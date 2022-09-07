@@ -1,0 +1,8 @@
+  - name: Bootstrap dotfiles
+    hosts: local
+    gather_facts: true
+    tasks:
+      - import_tasks: tasks/core.yml
+      - import_tasks: tasks/zsh.yml
+      - import_tasks: tasks/tmux.yml
+      - import_tasks: tasks/nvim.yml

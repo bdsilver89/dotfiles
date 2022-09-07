@@ -1,0 +1,2 @@
+- name: Stow local bin
+  shell: 'cd {{ ansible_env.HOME }}/dotfiles && stow bin'
