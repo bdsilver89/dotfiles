@@ -43,6 +43,7 @@ telescope.setup {
 
 telescope.load_extension("file_browser")
 telescope.load_extension("git_worktree")
+telescope.load_extension("harpoon")
 
 vim.keymap.set('n', 'ff',
   function()
@@ -91,4 +92,8 @@ end, { noremap = true })
 
 vim.keymap.set("n", "gm", function()
   telescope.extensions.git_worktree.create_git_worktree()
+end, { noremap = true })
+
+vim.keymap.set("n", "hp", function()
+  telescope.extensions.harpoon.marks()
 end, { noremap = true })

@@ -26,8 +26,6 @@ packer.startup(function(use)
   use 'ThePrimeagen/harpoon'
   use 'ThePrimeagen/git-worktree.nvim'
 
-  use '~/tools/neoperforce'
-
   -- lsp
   use 'neovim/nvim-lspconfig'
   use 'hrsh7th/cmp-buffer'
@@ -38,21 +36,13 @@ packer.startup(function(use)
   use 'MunifTanjim/prettier.nvim'
   use 'simrat39/symbols-outline.nvim'
   use 'L3MON4D3/LuaSnip'
+  use 'williamboman/mason.nvim'
+  use 'williamboman/mason-lspconfig.nvim'
 
   -- debug and testing
   use 'mfussenegger/nvim-dap'
   use 'rcarriga/nvim-dap-ui'
   use 'theHamsta/nvim-dap-virtual-text'
-  -- testing is not super stable to setup, might just prefer running via terminal
-  -- use {
-  --   'nvim-neotest/neotest',
-  --   requires = {
-  --     -- 'nvim-neotest/neotest-go',
-  --     -- 'nvim-neotest/neotest-python',  -- pytest
-  --     'rouge8/neotest-rust',
-  --     'vim-test/vim-test' -- for extra test runners not covered by neotest
-  --   }
-  -- }
 
   -- ui
   use 'nvim-lualine/lualine.nvim'
@@ -61,8 +51,5 @@ packer.startup(function(use)
   use 'folke/tokyonight.nvim'
   use 'gruvbox-community/gruvbox'
   use 'lewis6991/gitsigns.nvim'
-  use 'williamboman/mason.nvim'
-  use 'williamboman/mason-lspconfig.nvim'
   use 'mbbill/undotree'
-  -- use 'akinsho/toggleterm.nvim'
 end)
