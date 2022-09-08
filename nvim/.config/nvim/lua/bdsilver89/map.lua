@@ -13,9 +13,9 @@ keymap.set('n', '-', '<C-x>')
 -- select all
 keymap.set('n', '<C-a>', 'gg<S-v>G')
 
--- new tab
-keymap.set('n', 'te', ':tabedit')
-keymap.set('n', 'tc', ':tabclose')
+-- new tab (use leader to avoid conflict with t til char)
+keymap.set('n', '<leader>te', ':tabedit')
+keymap.set('n', '<leader>tc', ':tabclose')
 
 -- split window
 keymap.set('n', 'ss', ':split<Return><C-w>w')

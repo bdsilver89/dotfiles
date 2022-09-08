@@ -45,7 +45,7 @@ telescope.load_extension("file_browser")
 telescope.load_extension("git_worktree")
 telescope.load_extension("harpoon")
 
-vim.keymap.set('n', 'ff',
+vim.keymap.set('n', '<leader>ff',
   function()
     builtin.find_files({
       no_ignore = false,
@@ -53,27 +53,27 @@ vim.keymap.set('n', 'ff',
     })
   end)
 
-vim.keymap.set('n', 'fw', function()
+vim.keymap.set('n', '<leader>fw', function()
   builtin.live_grep()
 end)
 
-vim.keymap.set('n', '\\\\', function()
+vim.keymap.set('n', '<leader>\\\\', function()
   builtin.buffers()
 end)
 
-vim.keymap.set('n', 'ht', function()
+vim.keymap.set('n', '<leader>ht', function()
   builtin.help_tags()
 end)
 
-vim.keymap.set('n', ';;', function()
+vim.keymap.set('n', '<leader>;;', function()
   builtin.resume()
 end)
 
-vim.keymap.set('n', ';e', function()
+vim.keymap.set('n', '<leader>;e', function()
   builtin.diagnostics()
 end)
 
-vim.keymap.set("n", "fb", function()
+vim.keymap.set("n", "<leader>fb", function()
   telescope.extensions.file_browser.file_browser({
     path = "%:p:h",
     cwd = telescope_buffer_dir(),
@@ -86,14 +86,14 @@ vim.keymap.set("n", "fb", function()
   })
 end)
 
-vim.keymap.set("n", "gw", function()
+vim.keymap.set("n", "<leader>gw", function()
   telescope.extensions.git_worktree.git_worktrees()
 end, { noremap = true })
 
-vim.keymap.set("n", "gm", function()
+vim.keymap.set("n", "<leader>gm", function()
   telescope.extensions.git_worktree.create_git_worktree()
 end, { noremap = true })
 
-vim.keymap.set("n", "hp", function()
+vim.keymap.set("n", "<leader>hp", function()
   telescope.extensions.harpoon.marks()
 end, { noremap = true })
