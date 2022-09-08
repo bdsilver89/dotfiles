@@ -1,0 +1,10 @@
+---
+- hosts: localhost
+  tasks:
+    - import_tasks: tasks/core-setup.yml
+    - import_tasks: tasks/zsh-setup.yml
+    - import_tasks: tasks/git-setup.yml
+    - import_tasks: tasks/tmux.yml
+    - import_tasks: tasks/rust-dev.yml
+    - import_tasks: tasks/alacritty.yml
+    - import_tasks: tasks/nvim.yml

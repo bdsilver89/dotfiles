@@ -1,0 +1,6 @@
+- name: Install
+  become: true
+  apt:
+    name: ["tmux", "wireshark", "fzf", "tldr", "ripgrep", "exa", "bat", "fd-find"]
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+

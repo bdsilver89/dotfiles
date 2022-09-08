@@ -1,15 +1,14 @@
 #!/usr/bin/env bash
 
+DOTFILES_ROOT=$(cd -P "$(dirname "$0")" && pwd -P)
 
-ROOTDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-ANSIBLEDIR="$ROOTDIR/ansible"
-HOSTS="$ANSIBLEDIR/hosts"
-PLAYBOOK="$ANSIBLEDIR/dotfiles.yml"
-
-# sudo yum install -y ansible
+# Install ansible
+# sudo apt-add-repository -y ppa:ansible/ansible
+# sudo apt-get update -y
+# sudo apt-get install -y curl git software-properties-common ansible
+sudo apt install ansible
 
 export ANSIBLE_LOCALHOST_WARNING=False
-# ansible-playbook -i "$HOSTS" "$PLAYBOOK" --ask-become-pass
-ansible-playbook -i "$HOSTS" "$PLAYBOOK"
 
-exit 0
+cd $DOTFILES_ROOT
+ansible-playbook -t core ansible/local.yml -K

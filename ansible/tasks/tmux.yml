@@ -1,17 +1,18 @@
+---
 - name: Install tmux
   become: yes
   become_user: root
   package:
     name: tmux
+  tags:
+    - install
+    - dotfiles
+    - tmux
 
-- name: Check if tmux plugin manager is installed
-  stat:
-    path: '{{ ansible_env.HOME }}/.tmux/plugins/tpm'
-  register: tpm_stat
 
-- name: Install tmux plugin manager
-  when: tpm_stat.stat.exists == False
-  shell: 'git clone https://github.com/tmux-plugins/tpm {{ ansible_env.HOME }}/.tmux/plugins/tpm'
-
-- name: Stow tmux
-  shell: cd ~/dotfiles && stow tmux
+- name: Stow tmux config
+  shell: 'cd {{ ansible_env.HOME }}/dotfiles && stow tmux'
+  tags:
+    - install
+    - dotfiles
+    - tmux

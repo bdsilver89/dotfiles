@@ -1,27 +1,54 @@
-- name: Download Neovim
-  git:
+- name: Clone Neovim (nightly)
+  ansible.builtin.git:
     repo: 'https://github.com/neovim/neovim.git'
-    dest: '{{ ansible_env.HOME }}/third-party/neovim'
+    dest: '{{ ansible_env.HOME }}/tools/neovim'
     update: yes
     version: 'nightly'
+  tags:
+    - install
+    - dotfiles
+    - neovim
 
 - name: Build Neovim
   args:
-    chdir: '{{ ansible_env.HOME }}/third-party/neovim'
+    chdir: '{{ ansible_env.HOME }}/tools/neovim'
   shell: 'make CMAKE_BUILD_TYPE=RelWithDebInfo -j'
+  tags:
+    - install
+    - dotfiles
+    - neovim
 
 - name: Install Neovim
   become: yes
   become_user: root
   args:
-    chdir: '{{ ansible_env.HOME }}/third-party/neovim'
+    chdir: '{{ ansible_env.HOME }}/tools/neovim'
   shell: 'make install'
+  tags:
+    - install
+    - dotfiles
+    - neovim
 
-- name: Download Neovim packer
-  git:
-    repo: 'https://github.com/wbthomason/packer.nvim'
-    dest: '{{ ansible_env.HOME }}/.local/share/nvim/site/pack/packer/start/packer.nvim'
-    depth: 1
+- name: Check for Neovim Packer
+  stat:
+    path: '{{ ansible_env.HOME }}/.local/share/nvim/site/pack/packer/start/packer.nvim'
+  register: packer_stat
+  tags:
+    - install
+    - dotfiles
+    - neovim
+
+- name: Download Neovim Packer
+  shell: "git clone --depth 1 https://github.com/wbthomason/packer.nvim {{ ansible_env.HOME }}/.local/share/nvim/site/pack/packer/start/packer.nvim"
+  when: packer_stat.stat.exists == False
+  tags:
+    - install
+    - dotfiles
+    - neovim
 
 - name: Stow Neovim
   shell: 'cd {{ ansible_env.HOME }}/dotfiles && stow nvim'
+  tags:
+    - install
+    - dotfiles
+    - neovim
