@@ -3,7 +3,14 @@ local keymap = vim.keymap
 keymap.set('n', 'x', '"_x')
 
 -- paste from yank register without deleting from yank register
-keymap.set('x', '<leader>p', "\"_dP")
+keymap.set('x', '<leader>p', "\"_dP", {noremap = true})
+
+keymap.set('n', "Y", "yg$", {noremap = true})
+keymap.set('n', "n", "nzzzv", {noremap = true})
+keymap.set('n', "N", "Nzzzv", {noremap = true})
+keymap.set('n', "J", "mzJ`z", {noremap = true})
+keymap.set('n', "<C-d>", "<C-d>zz", {noremap = true})
+keymap.set('n', "<C-u>", "<C-u>zz", {noremap = true})
 
 -- move
 keymap.set('v', 'J', ":m '>+1<CR>gv=gv", {noremap = true})
