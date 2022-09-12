@@ -2,6 +2,9 @@ local keymap = vim.keymap
 
 keymap.set('n', 'x', '"_x')
 
+-- paste from yank register without deleting from yank register
+keymap.set('x', '<leader>p', "\"_dP")
+
 -- move
 keymap.set('v', 'J', ":m '>+1<CR>gv=gv", {noremap = true})
 keymap.set('v', 'K', ":m '<-2<CR>gv=gv", {noremap = true})
