@@ -4,6 +4,9 @@ vim.scriptencoding = 'utf-8'
 vim.opt.encoding = 'utf-8'
 vim.opt.fileencoding = 'utf-8'
 
+vim.opt.guicursor = ""
+vim.opt.errorbells = false
+
 vim.wo.number = true
 vim.wo.relativenumber = true
 
