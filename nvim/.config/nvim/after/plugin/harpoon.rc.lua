@@ -32,7 +32,7 @@ vim.keymap.set('n', '<leader>i', function()
   { noremap = true, silent = true }
 )
 
-vim.keymap.set('n', '<leader>l', function()
+vim.keymap.set('n', '<leader>o', function()
     require('harpoon.ui').nav_file(4)
   end,
   { noremap = true, silent = true }

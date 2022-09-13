@@ -19,6 +19,8 @@ keymap.set('v', 'K', ":m '<-2<CR>gv=gv", {noremap = true})
 -- increment/decrement
 keymap.set('n', '+', '<C-a>')
 keymap.set('n', '-', '<C-x>')
+keymap.set('x', '+', '<C-a>')
+keymap.set('x', '-', '<C-x>')
 
 -- select all
 keymap.set('n', '<C-a>', 'gg<S-v>G')
