@@ -1,6 +1,8 @@
 local status, bufferline = pcall(require, "bufferline")
 if (not status) then return end
 
+local nnoremap = require('bdsilver89.keymap').nnoremap
+
 bufferline.setup({
   options = {
     mode = "tabs",
@@ -32,6 +34,6 @@ bufferline.setup({
   },
 })
 
-vim.keymap.set('n', '<Tab>', '<Cmd>BufferLineCycleNext<CR>', {})
-vim.keymap.set('n', '<S-Tab>', '<Cmd>BufferLineCyclePrev<CR>', {})
+nnoremap('<Tab>', '<Cmd>BufferLineCycleNext<CR>')
+nnoremap('<S-Tab>', '<Cmd>BufferLineCyclePrev<CR>')
 

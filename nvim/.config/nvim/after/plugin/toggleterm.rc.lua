@@ -1,6 +1,10 @@
 local status, toggleterm = pcall(require, 'toggleterm')
 if (not status) then return end
 
+local Remap = require('bdsilver89.keymap')
+local nnoremap = Remap.nnoremap
+local tnoremap = Remap.tnoremap
+local inoremap = Remap.inoremap
 
 
 toggleterm.setup({
@@ -26,23 +30,31 @@ toggleterm.setup({
 	start_in_insert = true,
 	insert_mappings = true, -- whether or not the open mapping applies in insert mode
 	persist_size = true,
-	direction = "horizontal",
+	direction = "vertical",
 	close_on_exit = true, -- close the terminal window when the process exits
 	shell = vim.o.shell, -- change the default shell
 })
 
-function _G.set_terminal_keymaps()
-  local opts = { buffer = 0 }
-  vim.keymap.set('t', '<esc>', [[<C-\><C-n>]], opts)
-  vim.keymap.set('t', 'jk', [[<C-\><C-n>]], opts)
-  vim.keymap.set('t', '<C-h>', [[<Cmd>wincmd h<CR>]], opts)
-  vim.keymap.set('t', '<C-j>', [[<Cmd>wincmd j<CR>]], opts)
-  vim.keymap.set('t', '<C-k>', [[<Cmd>wincmd k<CR>]], opts)
-  vim.keymap.set('t', '<C-l>', [[<Cmd>wincmd l<CR>]], opts)
-end
-vim.cmd('autocmd! TermOpen term://* lua set_terminal_keymaps()')
+vim.api.nvim_create_autocmd('TermOpen', {
+  pattern = 'term://*',
+  callback = function()
+    local opts = { buffer = 0 }
+    tnoremap('<Esc>', [[<C-\><C-n>]], opts)
+    tnoremap('<C-h>', [[<Cmd>wincmd h<CR>]], opts)
+    tnoremap('<C-j>', [[<Cmd>wincmd j<CR>]], opts)
+    tnoremap('<C-k>', [[<Cmd>wincmd k<CR>]], opts)
+    tnoremap('<C-l>', [[<Cmd>wincmd l<CR>]], opts)
+  end,
+})
 
--- vim.cmd('autocmd! TermOpen term://*toggleterm# tnoremap <silent><c-t> <cmd>exe v:count1 . "ToggleTerm"<CR>')
---
--- vim.keymap.set('n', '<C-t>', '<Cmd>exe v:count1 . "ToggleTerm"<CR>', { noremap = true, silent = true})
--- vim.keymap.set('i', '<C-t>', '<Esc><Cmd>exe v:count1 . "ToggleTerm"<CR>', { noremap = true, silent = true})
+vim.api.nvim_create_autocmd('TermEnter', {
+  pattern = 'term://*toggleterm*',
+  callback = function()
+    local opts = { silent = true }
+    tnoremap('<C-t>', [[<Cmd>exe v:count1 . "ToggleTerm"<CR>]], opts)
+  end,
+})
+
+local opts = { silent = true }
+nnoremap('<C-t>', [[<Cmd>exe v:count1 . "ToggleTerm"<CR>]], opts)
+inoremap('<C-t>', [[<Esc><Cmd>exe v:count1 . "ToggleTerm"<CR>]], opts)

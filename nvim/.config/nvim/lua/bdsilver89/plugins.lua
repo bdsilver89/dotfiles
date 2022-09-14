@@ -24,6 +24,7 @@ packer.startup(function(use)
   use 'sbdchd/neoformat'
   use 'ThePrimeagen/harpoon'
   use 'ThePrimeagen/git-worktree.nvim'
+  use 'akinsho/toggleterm.nvim'
 
   -- lsp
   use 'neovim/nvim-lspconfig'

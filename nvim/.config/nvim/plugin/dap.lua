@@ -4,6 +4,8 @@ if (not status) then return end
 local dapui = require('dapui')
 local daptext = require('nvim-dap-virtual-text')
 
+local nnoremap = require('bdsilver89.keymap').nnoremap
+
 daptext.setup({})
 dapui.setup({
   layouts = {
@@ -139,14 +141,14 @@ dap.configurations.rust = dap.configurations.cpp
 --   },
 -- }
 
-vim.keymap.set('n', '<F12>', function() dapui.toggle() end, { noremap = true })
+nnoremap('<F12>', function() dapui.toggle() end)
 
-vim.keymap.set('n', '<leader><leader>', function() dap.close() end, { noremap = true })
-vim.keymap.set('n', '<F1>', function() dap.continue() end, { noremap = true })
-vim.keymap.set('n', '<F2>', function() dap.step_over() end, { noremap = true })
-vim.keymap.set('n', '<F3>', function() dap.step_out() end, { noremap = true })
-vim.keymap.set('n', '<F4>', function() dap.step_into() end, { noremap = true })
+nnoremap('<leader><leader>', function() dap.close() end)
+nnoremap('<F1>', function() dap.continue() end)
+nnoremap('<F2>', function() dap.step_over() end)
+nnoremap('<F3>', function() dap.step_out() end)
+nnoremap('<F4>', function() dap.step_into() end)
 
-vim.keymap.set('n', '<leader>b', function() dap.toggle_breakpoint() end, { noremap = true })
-vim.keymap.set('n', '<leader>B', function() dap.set_breakpoint(vim.fn.input('Breakpoint condition: ')) end, { noremap = true })
-vim.keymap.set('n', '<leader>rc', function() dap.run_to_cursor() end, { noremap = true })
+nnoremap('<leader>b', function() dap.toggle_breakpoint() end)
+nnoremap('<leader>B', function() dap.set_breakpoint(vim.fn.input('Breakpoint condition: ')) end)
+nnoremap('<leader>rc', function() dap.run_to_cursor() end)

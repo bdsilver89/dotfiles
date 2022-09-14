@@ -1,1 +1,3 @@
-vim.keymap.set('n', '<leader>u', '<Cmd>UndotreeToggle<CR>', {})
+local nnoremap = require('bdsilver89.keymap').nnoremap
+
+nnoremap('<leader>u', '<Cmd>UndotreeToggle<CR>')
