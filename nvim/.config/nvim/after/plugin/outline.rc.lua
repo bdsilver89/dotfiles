@@ -1,6 +1,11 @@
 local status, outline = pcall(require, 'symbols-outline')
 if (not status) then return end
 
-outline.setup()
+local nnoremap = require('bdsilver89.keymap').nnoremap
 
-vim.keymap.set('n', 'so', "<Cmd>SymbolsOutline<CR>", {})
+outline.setup({
+  highlight_hovered_item = true,
+  show_guides = true,
+})
+
+nnoremap('<leader>so', '<Cmd>SymbolsOutline<CR>')

@@ -1,168 +1,106 @@
 local status, nvim_lsp = pcall(require, 'lspconfig')
 if (not status) then return end
 
-local protocol = require('vim.lsp.protocol')
+local Remap = require('bdsilver89.keymap')
+local nnoremap = Remap.nnoremap
+local inoremap = Remap.inoremap
 
-local on_attach = function(client, bufnr)
-  local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities.textDocument.completion.completionItem.snippetSupport = true
 
-  local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
-
-  --Enable completion triggered by <c-x><c-o>
-  buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
-
-  -- Mappings.
-  local opts = { noremap = true, silent = true }
-
-  -- See `:help vim.lsp.*` for documentation on any of the below functions
-  buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
-  --buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
-  buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-  --buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
+local function config(_config)
+  return vim.tbl_deep_extend('force', {
+    capabilities = require('cmp_nvim_lsp').update_capabilities(
+      vim.lsp.protocol.make_client_capabilities()),
+    on_attach = function()
+      -- most of this is covered by lspsaga, but this is here for reference
+      -- or for a less 'popup' based experience
+      -- nnoremap('gd', function() vim.lsp.buf.definition() end)
+      nnoremap('gd', function() vim.lsp.buf.declaration() end)
+      nnoremap('gi', function() vim.lsp.buf.implementation() end)
+      -- nnoremap('K', function() vim.lsp.buf.hover() end)
+      -- nnoremap('<leader>vws', function() vim.lsp.buf.workspace_symbol() end)
+      -- nnoremap('<leader>vd', function() vim.diagnostic.open_float() end)
+      -- nnoremap('[d', function() vim.diagnostic.goto_next() end)
+      -- nnoremap(']d', function() vim.diagnostic.goto_prev() end)
+      -- nnoremap('<leader>vca', function() vim.lsp.buf.code_action() end)
+      -- nnoremap('<leader>vco', function() vim.lsp.buf.code_action({
+      --   filter = function(code_action)
+      --     if not code_action or not code_action.data then
+      --       return false
+      --     end
+      --
+      --     local data = code_action.data.id
+      --     return string.sub(data, #data - 1, #data) == ':0'
+      --   end,
+      --   apply = true
+      -- }) end)
+      -- nnoremap('<leader>vrr', function() vim.lsp.buf.references() end)
+      -- nnoremap('<leader>vrn', function() vim.lsp.buf.rename() end)
+      -- inoremap('<C-h>', function() vim.lsp.buf.signature_help() end)
+    end,
+  }, _config or {})
 end
 
-protocol.CompletionItemKind = {
-  '', -- Text
-  '', -- Method
-  '', -- Function
-  '', -- Constructor
-  '', -- Field
-  '', -- Variable
-  '', -- Class
-  'ﰮ', -- Interface
-  '', -- Module
-  '', -- Property
-  '', -- Unit
-  '', -- Value
-  '', -- Enum
-  '', -- Keyword
-  '﬌', -- Snippet
-  '', -- Color
-  '', -- File
-  '', -- Reference
-  '', -- Folder
-  '', -- EnumMember
-  '', -- Constant
-  '', -- Struct
-  '', -- Event
-  'ﬦ', -- Operator
-  '', -- TypeParameter
-}
+nvim_lsp.tsserver.setup(config())
 
--- Set up completion using nvim_cmp with LSP source
-local capabilities = require('cmp_nvim_lsp').update_capabilities(
-  vim.lsp.protocol.make_client_capabilities()
-)
+nvim_lsp.solang.setup(config())
 
-nvim_lsp.flow.setup {
-  on_attach = on_attach,
-  capabilities = capabilities
-}
+nvim_lsp.tailwindcss.setup(config())
 
-nvim_lsp.tsserver.setup {
-  on_attach = on_attach,
-  filetypes = { "typescript", "typescriptreact", "typescript.tsx" },
-  cmd = { "typescript-language-server", "--stdio" },
-  capabilities = capabilities
-}
+nvim_lsp.pyright.setup(config())
 
-nvim_lsp.sourcekit.setup {
-  on_attach = on_attach,
-}
+nvim_lsp.dockerls.setup(config())
 
-nvim_lsp.sumneko_lua.setup {
-  on_attach = on_attach,
-  settings = {
-    Lua = {
-      diagnostics = {
-        -- Get the language server to recognize the `vim` global
-        globals = { 'vim' },
-      },
+nvim_lsp.bashls.setup(config())
 
-      workspace = {
-        -- Make the server aware of Neovim runtime files
-        library = vim.api.nvim_get_runtime_file("", true),
-        checkThirdParty = false
-      },
-    },
-  },
-}
+nvim_lsp.sqlls.setup(config())
 
-nvim_lsp.tailwindcss.setup {}
+nvim_lsp.jsonls.setup(config())
 
-nvim_lsp.gopls.setup {
-  on_attach = on_attach,
-  cmd = { 'gopls', '--remote=auto' },
-  capabilities = capabilities
-}
+nvim_lsp.yamlls.setup(config())
 
-nvim_lsp.pyright.setup {
-  on_attach = on_attach,
-  capabilities = capabilities
-}
+nvim_lsp.cmake.setup(config())
 
-nvim_lsp.dockerls.setup {
-  on_attach = on_attach,
-  capabilities = capabilities
-}
-
-nvim_lsp.bashls.setup {
-  on_attach = on_attach,
-  capabilities = capabilities
-}
-
-nvim_lsp.sqlls.setup {
-  on_attach = on_attach,
-  capabilities = capabilities
-}
-
-nvim_lsp.jsonls.setup {
-  on_attach = on_attach,
-  capabilities = capabilities
-}
-
-nvim_lsp.yamlls.setup {
-  on_attach = on_attach,
-  capabilities = capabilities
-}
-
-nvim_lsp.cmake.setup {
-  on_attach = on_attach,
-  capabilities = capabilities
-}
-
-nvim_lsp.clangd.setup {
-  on_attach = on_attach,
+nvim_lsp.clangd.setup(config({
   cmd = {
     'clangd',
     '--background-index',
     '--suggest-missing-includes',
     '--clang-tidy',
     '--header-insertion=iwyu',
-  },
-  capabilities = capabilities
-}
-
-nvim_lsp.rust_analyzer.setup {
-  on_attach = on_attach,
-  capabilities = capabilities,
-  settings = {
-    imports = {
-      granulaarity = {
-        group = 'module',
-      },
-      prefix = 'self',
-    },
-    cargo = {
-      buildScripts = {
-        enable = true,
-      },
-    },
-    procMacro = {
-      enable = true,
-    }
   }
-}
+}))
+
+nvim_lsp.gopls.setup(config({
+  cmd = { 'gopls', 'serve' },
+  settings = {
+    gopls = {
+      analyses = {
+        unusedparams = true,
+      },
+      staticcheck = true,
+    },
+  },
+}))
+
+nvim_lsp.rust_analyzer.setup(config({
+  cmd = { 'rustup', 'run', 'nightly', 'rust-analyzer' },
+}))
+
+nvim_lsp.sumneko_lua.setup(config({
+  settings = {
+    Lua = {
+      diagnostics = {
+        globals = { 'vim' },
+      },
+      workspace = {
+        library = vim.api.nvim_get_runtime_file("", true),
+        checkThirdParty = false
+      },
+    },
+  },
+}))
 
 vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
   vim.lsp.diagnostic.on_publish_diagnostics, {
@@ -170,8 +108,7 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
   update_in_insert = false,
   virtual_text = { spacing = 4, prefix = "●" },
   severity_sort = true,
-}
-)
+})
 
 -- Diagnostic symbols in the sign column (gutter)
 local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }

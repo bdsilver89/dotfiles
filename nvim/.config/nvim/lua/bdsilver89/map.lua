@@ -1,47 +1,52 @@
-local keymap = vim.keymap
+local Remap = require('bdsilver89.keymap')
+local nnoremap = Remap.nnoremap
+local vnoremap = Remap.vnoremap
+-- local inoremap = Remap.inoremap
+local xnoremap = Remap.xnoremap
+-- local nmap = Remap.nmap
 
-keymap.set('n', 'x', '"_x')
+nnoremap('x', '"_x')
 
 -- paste from yank register without deleting from yank register
-keymap.set('x', '<leader>p', "\"_dP", {noremap = true})
+xnoremap('<leader>p', "\"_dP")
 
-keymap.set('n', "Y", "yg$", {noremap = true})
-keymap.set('n', "n", "nzzzv", {noremap = true})
-keymap.set('n', "N", "Nzzzv", {noremap = true})
-keymap.set('n', "J", "mzJ`z", {noremap = true})
-keymap.set('n', "<C-d>", "<C-d>zz", {noremap = true})
-keymap.set('n', "<C-u>", "<C-u>zz", {noremap = true})
+nnoremap("Y", "yg$")
+nnoremap("n", "nzzzv")
+nnoremap("N", "Nzzzv")
+nnoremap("J", "mzJ`z")
+nnoremap("<C-d>", "<C-d>zz")
+nnoremap("<C-u>", "<C-u>zz")
 
 -- move
-keymap.set('v', 'J', ":m '>+1<CR>gv=gv", {noremap = true})
-keymap.set('v', 'K', ":m '<-2<CR>gv=gv", {noremap = true})
+vnoremap('J', ":m '>+1<CR>gv=gv")
+vnoremap('K', ":m '<-2<CR>gv=gv")
 
 -- increment/decrement
-keymap.set('n', '+', '<C-a>')
-keymap.set('n', '-', '<C-x>')
-keymap.set('x', '+', '<C-a>')
-keymap.set('x', '-', '<C-x>')
+nnoremap('+', '<C-a>')
+nnoremap('-', '<C-x>')
+xnoremap('+', '<C-a>')
+xnoremap('-', '<C-x>')
 
 -- select all
-keymap.set('n', '<C-a>', 'gg<S-v>G')
+nnoremap('<C-a>', 'gg<S-v>G')
 
 -- new tab (use leader to avoid conflict with t til char)
-keymap.set('n', '<leader>te', ':tabedit')
-keymap.set('n', '<leader>tc', ':tabclose')
+nnoremap('<leader>te', ':tabedit')
+nnoremap('<leader>tc', ':tabclose')
 
 -- split window
-keymap.set('n', 'ss', ':split<Return><C-w>w')
-keymap.set('n', 'sv', ':vsplit<Return><C-w>w')
+nnoremap('ss', ':split<Return><C-w>w')
+nnoremap('sv', ':vsplit<Return><C-w>w')
 
 -- move window
-keymap.set('n', '<Space>', '<C-w>w')
-keymap.set('n', 'sh', '<C-w>h')
-keymap.set('n', 'sj', '<C-w>j')
-keymap.set('n', 'sk', '<C-w>k')
-keymap.set('n', 'sl', '<C-w>l')
+-- nnoremap('<Space>', '<C-w>w') -- wow this is slow
+nnoremap('sh', '<C-w>h')
+nnoremap('sj', '<C-w>j')
+nnoremap('sk', '<C-w>k')
+nnoremap('sl', '<C-w>l')
 
 -- resize window
-keymap.set('n', '<C-w><left>', '<C-w><')
-keymap.set('n', '<C-w><right>', '<C-w>>')
-keymap.set('n', '<C-w><up>', '<C-w><+')
-keymap.set('n', '<C-w><down>', '<C-w>-')
+nnoremap('<C-w><left>', '<C-w><')
+nnoremap('<C-w><right>', '<C-w>>')
+nnoremap('<C-w><up>', '<C-w>+')
+nnoremap('<C-w><down>', '<C-w>-')

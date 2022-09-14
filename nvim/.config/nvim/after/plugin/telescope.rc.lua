@@ -1,22 +1,27 @@
 local status, telescope = pcall(require, "telescope")
 if (not status) then return end
+
 local actions = require('telescope.actions')
 local builtin = require("telescope.builtin")
+local Remap = require('bdsilver89.keymap')
+local nnoremap = Remap.nnoremap
 
-local function telescope_buffer_dir()
-  return vim.fn.expand('%:p:h')
-end
-
-local fb_actions = require "telescope".extensions.file_browser.actions
-
-telescope.setup {
+telescope.setup({
   defaults = {
+    file_sorter = require('telescope.sorters').get_fzy_sorter,
     prompt_prefix = " >",
     color_devicons = true,
+    file_previewer = require('telescope.previewers').vim_buffer_cat.new,
+    grep_previewer = require('telescope.previewers').vim_buffer_vimgrep.new,
+    qflist_previewer = require('telescope.previewers').vim_buffer_qflist.new,
     mappings = {
       n = {
         ["q"] = actions.close
       },
+      i = {
+        ["<C-x>"] = false,
+        ["<C-q>"] = actions.send_to_qflist,
+      }
     },
   },
   extensions = {
@@ -24,76 +29,55 @@ telescope.setup {
       -- theme = "dropdown",
       hijack_netrw = true,
       mappings = {
-        -- your custom insert mode mappings
         ["i"] = {
           ["<C-w>"] = function() vim.cmd('normal vbd') end,
-        },
-        ["n"] = {
-          -- your custom normal mode mappings
-          ["N"] = fb_actions.create,
-          ["h"] = fb_actions.goto_parent_dir,
-          ["/"] = function()
-            vim.cmd('startinsert')
-          end
         },
       },
     },
   },
-}
+})
 
 telescope.load_extension("file_browser")
 telescope.load_extension("git_worktree")
-telescope.load_extension("harpoon")
 
-vim.keymap.set('n', '<leader>ff',
-  function()
-    builtin.find_files({
-      no_ignore = false,
-      hidden = true
-    })
-  end)
+nnoremap('<C-p>', ':Telescope')
 
-vim.keymap.set('n', '<leader>fw', function()
-  builtin.live_grep()
-end)
+nnoremap('<leader>fw', function() builtin.grep_string() end)
 
-vim.keymap.set('n', '<leader>\\\\', function()
-  builtin.buffers()
-end)
+nnoremap('<leader>fg', function() builtin.live_grep() end)
 
-vim.keymap.set('n', '<leader>ht', function()
-  builtin.help_tags()
-end)
+nnoremap('<leader>ff', function() builtin.find_files() end)
 
-vim.keymap.set('n', '<leader>;;', function()
-  builtin.resume()
-end)
+nnoremap('<leader>bb', function() builtin.buffers() end)
 
-vim.keymap.set('n', '<leader>;e', function()
-  builtin.diagnostics()
-end)
+nnoremap('<leader>ht', function() builtin.help_tags() end)
 
-vim.keymap.set("n", "<leader>fb", function()
+nnoremap('<leader>fb', function()
   telescope.extensions.file_browser.file_browser({
     path = "%:p:h",
-    cwd = telescope_buffer_dir(),
+    cwd = vim.fn.expand('%:p:h'),
     respect_gitignore = false,
-    hidden =  true,
+    hidden = true,
     grouped = true,
-    previewer = false,
+    -- previewer = false,
     initial_mode = "insert",
-    layout_config = { height = 40 }
+    -- layout_config = { height = 40 }
   })
 end)
 
-vim.keymap.set("n", "<leader>gw", function()
+nnoremap('<leader>vrc', function()
+  builtin.find_files({
+    prompt_title = '< Dotfiles >',
+    cwd = vim.env.DOTFILES,
+    hidden = true,
+  })
+end)
+
+nnoremap('<leader>gw', function()
   telescope.extensions.git_worktree.git_worktrees()
-end, { noremap = true })
+end)
 
-vim.keymap.set("n", "<leader>gm", function()
+nnoremap('<leader>gm', function()
   telescope.extensions.git_worktree.create_git_worktree()
-end, { noremap = true })
+end)
 
-vim.keymap.set("n", "<leader>hp", function()
-  telescope.extensions.harpoon.marks()
-end, { noremap = true })

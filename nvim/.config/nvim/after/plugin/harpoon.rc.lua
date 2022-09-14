@@ -38,32 +38,32 @@ vim.keymap.set('n', '<leader>o', function()
   { noremap = true, silent = true }
 )
 
--- commands and terminals
+-- commands and.tmuxinals
 vim.keymap.set('n', '<leader>M', function()
     require('harpoon.cmd-ui').toggle_quick_menu()
   end,
   { noremap = true, silent = true} )
 
 vim.keymap.set('n', '<leader>t', function()
-    require('harpoon.term').gotoTerminal(1)
+    require('harpoon.tmux').gotoTerminal(1)
   end,
   { noremap = true, silent = true }
 )
 
 vim.keymap.set('n', '<leader>s', function()
-    require('harpoon.term').gotoTerminal(2)
+    require('harpoon.tmux').gotoTerminal(2)
   end,
   { noremap = true, silent = true }
 )
 
 vim.keymap.set('n', '<leader>r', function()
-    require('harpoon.term').gotoTerminal(3)
+    require('harpoon.tmux').gotoTerminal(3)
   end,
   { noremap = true, silent = true }
 )
 
 vim.keymap.set('n', '<leader>a', function()
-    require('harpoon.term').gotoTerminal(4)
+    require('harpoon.tmux').gotoTerminal(4)
   end,
   { noremap = true, silent = true }
 )
