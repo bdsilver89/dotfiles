@@ -1,9 +1,11 @@
 - name: Clone Neovim (nightly)
+  # when: nvim_repo_stat.stat.exists == False
   ansible.builtin.git:
     repo: 'https://github.com/neovim/neovim.git'
     dest: '{{ ansible_env.HOME }}/tools/neovim'
     update: yes
     version: 'nightly'
+    force: yes # needed when nightly tag is checked out
   tags:
     - install
     - dotfiles
