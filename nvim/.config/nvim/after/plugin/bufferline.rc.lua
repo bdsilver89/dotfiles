@@ -1,7 +1,8 @@
 local status, bufferline = pcall(require, "bufferline")
 if (not status) then return end
 
-local nnoremap = require('bdsilver89.keymap').nnoremap
+local Remap = require('bdsilver89.keymap')
+local nnoremap = Remap.nnoremap
 
 bufferline.setup({
   options = {

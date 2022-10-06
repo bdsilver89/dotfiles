@@ -11,24 +11,52 @@ dapui.setup({
   layouts = {
     {
       elements = {
+        'repl',
         'console',
       },
-      size = 7,
+      size = 0.25,
       position = 'bottom',
     },
     {
       elements = {
         { id = 'scopes', size = 0.25 },
         'watches',
+        'breakpoints',
+        'stacks'
       },
       size = 40,
       position = 'left',
-    }
+    },
   },
+  controls = {
+    enabled = true,
+    element = 'repl',
+    icons = {
+      pause = "",
+      play = "",
+      step_into = "",
+      step_over = "",
+      step_out = "",
+      step_back = "",
+      run_last = "↻",
+      terminate = "□",
+    },
+  },
+  windows = {
+    indent = 1
+  },
+  floating = {
+    max_height = nil,
+    max_width = nil,
+    border = 'single',
+    mappings = {
+      close = { 'q', '<Esc>' }
+    }
+  }
 })
 
 dap.listeners.after.event_initialized["dapui_config"] = function()
-  dapui.open(1)
+  dapui.open()
 end
 
 dap.listeners.after.event_terminated["dapui_config"] = function()

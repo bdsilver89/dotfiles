@@ -12,7 +12,7 @@ packer.startup(function(use)
   -- tools
   use 'nvim-lua/plenary.nvim'
   use 'nvim-lua/popup.nvim'
-  use 'antoinemadec/FixCursorHold.nvim'
+  -- use 'antoinemadec/FixCursorHold.nvim'
   use { 'dstein64/vim-startuptime', cmd = 'StartupTime' }
 
   -- editor

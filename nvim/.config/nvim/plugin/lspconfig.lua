@@ -60,6 +60,8 @@ nvim_lsp.jsonls.setup(config())
 
 nvim_lsp.yamlls.setup(config())
 
+nvim_lsp.marksman.setup(config())
+
 nvim_lsp.cmake.setup(config())
 
 nvim_lsp.clangd.setup(config({
@@ -86,6 +88,18 @@ nvim_lsp.gopls.setup(config({
 
 nvim_lsp.rust_analyzer.setup(config({
   cmd = { 'rustup', 'run', 'nightly', 'rust-analyzer' },
+  settings = {
+    ["rust-analyzer"] = {
+      cargo = {
+        runBuildScripts = true,
+        allFeatures = true,
+      },
+      lruCapacity = 1024,
+      procMacro = {
+        enable = true,
+      },
+    }
+  },
 }))
 
 nvim_lsp.sumneko_lua.setup(config({
