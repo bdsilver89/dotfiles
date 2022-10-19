@@ -3,4 +3,4 @@
 sudo sh -c "echo 1 > '/proc/sys/vm/drop_caches'"
 sudo sh -c "swapoff -a"
 sudo sh -c "swapon -a"
-printf '\n%s\n' 'WSL ram cache and swap cleared'
+printf '%s\n' 'WSL ram cache cleared'
