@@ -21,7 +21,7 @@ packer.startup(function(use)
   use 'nvim-telescope/telescope.nvim'
   use 'nvim-telescope/telescope-file-browser.nvim'
   use 'terrortylor/nvim-comment'
-  use 'sbdchd/neoformat'
+  -- use 'sbdchd/neoformat'
   use 'ThePrimeagen/harpoon'
   use 'ThePrimeagen/git-worktree.nvim'
   use 'akinsho/toggleterm.nvim'

@@ -25,6 +25,7 @@ local function config(_config)
       -- nnoremap(']d', function() vim.diagnostic.goto_prev() end)
       -- nnoremap('<leader>vca', function() vim.lsp.buf.code_action() end)
       -- nnoremap('<leader>vco', function() vim.lsp.buf.code_action({
+      nnoremap('<leader>fm', function() vim.lsp.buf.format({ async = true }) end)
       --   filter = function(code_action)
       --     if not code_action or not code_action.data then
       --       return false
