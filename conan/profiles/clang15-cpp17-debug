@@ -1,0 +1,17 @@
+[settings]
+os=Linux
+os_build=Linux
+arch=x86_64
+arch_build=x86_64
+compiler=clang
+compiler.version=15
+compiler.libcxx=libc++
+compiler.cppstd=17
+build_type=Debug
+
+[options]
+[build_requires]
+
+[env]
+CC=/lib/llvm-15/bin/clang
+CXX=/lib/llvm-15/bin/clang++
