@@ -12,8 +12,7 @@ packer.startup(function(use)
   -- tools
   use 'nvim-lua/plenary.nvim'
   use 'nvim-lua/popup.nvim'
-  -- use 'antoinemadec/FixCursorHold.nvim'
-  use { 'dstein64/vim-startuptime', cmd = 'StartupTime' }
+  use 'lewis6991/impatient.nvim'
 
   -- editor
   use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
@@ -21,15 +20,17 @@ packer.startup(function(use)
   use 'nvim-telescope/telescope.nvim'
   use 'nvim-telescope/telescope-file-browser.nvim'
   use 'terrortylor/nvim-comment'
-  -- use 'sbdchd/neoformat'
   use 'ThePrimeagen/harpoon'
   use 'ThePrimeagen/git-worktree.nvim'
   use 'akinsho/toggleterm.nvim'
+  use 'danymat/neogen'
 
   -- lsp
   use 'neovim/nvim-lspconfig'
   use 'hrsh7th/cmp-buffer'
   use 'hrsh7th/cmp-nvim-lsp'
+  use 'hrsh7th/cmp-path'
+  use 'hrsh7th/cmp-calc'
   use 'hrsh7th/nvim-cmp'
   use 'onsails/lspkind-nvim'
   use 'glepnir/lspsaga.nvim'
@@ -37,6 +38,7 @@ packer.startup(function(use)
   use 'L3MON4D3/LuaSnip'
   use 'williamboman/mason.nvim'
   use 'williamboman/mason-lspconfig.nvim'
+  use 'rafamadriz/friendly-snippets'
 
   -- debug and testing
   use 'mfussenegger/nvim-dap'
@@ -51,4 +53,5 @@ packer.startup(function(use)
   use 'gruvbox-community/gruvbox'
   use 'lewis6991/gitsigns.nvim'
   use 'mbbill/undotree'
+  use 'rcarriga/nvim-notify'
 end)

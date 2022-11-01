@@ -1,3 +1,4 @@
+require('impatient')
 require('bdsilver89.base')
 require('bdsilver89.map')
 require('bdsilver89.plugins')
@@ -23,11 +24,11 @@ autocmd('TextYankPost', {
   end,
 })
 
-autocmd({'BufWritePre'}, {
-  group = bdsilver89_group,
-  pattern = '*',
-  command = '%s/\\s\\+$//e',
-})
+-- autocmd({'BufWritePre'}, {
+--   group = bdsilver89_group,
+--   pattern = '*',
+--   command = '%s/\\s\\+$//e',
+-- })
 
 vim.g.netrw_browse_split = 0
 vim.g.netrw_banner = 0

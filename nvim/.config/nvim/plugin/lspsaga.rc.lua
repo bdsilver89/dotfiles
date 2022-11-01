@@ -58,9 +58,9 @@ vim.api.nvim_create_autocmd('User', {
 
 nnoremap('[d', '<Cmd>Lspsaga diagnostic_jump_next<CR>')
 nnoremap(']d', '<Cmd>Lspsaga diagnostic_jump_prev<CR>')
-nnoremap('K', '<Cmd>Lspsaga hover_doc<CR>')
+-- nnoremap('K', '<Cmd>Lspsaga hover_doc<CR>')
 nnoremap('gf', '<Cmd>Lspsaga lsp_finder<CR>')
-inoremap('<C-h>', '<Cmd>Lspsaga signature_help<CR>')
+inoremap('<C-k>', '<Cmd>Lspsaga signature_help<CR>')
 nnoremap('gp', '<Cmd>Lspsaga peek_definition<CR>')
 nnoremap('gr', '<Cmd>Lspsaga rename<CR>')
 nnoremap('gca', '<Cmd>Lspsaga code_action<CR>')

@@ -35,6 +35,9 @@ bufferline.setup({
   },
 })
 
-nnoremap('<Tab>', '<Cmd>BufferLineCycleNext<CR>')
-nnoremap('<S-Tab>', '<Cmd>BufferLineCyclePrev<CR>')
+-- nnoremap('<Tab>', '<Cmd>BufferLineCycleNext<CR>')
+-- nnoremap('<S-Tab>', '<Cmd>BufferLineCyclePrev<CR>')
+
+nnoremap('<Leader>tl', '<Cmd>BufferLineCycleNext<CR>')
+nnoremap('<Leader>th', '<Cmd>BufferLineCyclePrev<CR>')
 
