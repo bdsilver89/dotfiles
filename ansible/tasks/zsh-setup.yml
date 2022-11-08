@@ -21,9 +21,18 @@
     - dotfiles
     - zsh
 
-- name:
+- name: Download and install oh-my-zsh
   shell: 'curl -L https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh > {{ ansible_env.HOME }}/.oh-my-installer && chmod +x {{ ansible_env.HOME }}/.oh-my-installer && {{ ansible_env.HOME }}/.oh-my-installer'
   when: oh_my_stat.stat.exists == False
+  become: yes
+  become_user: root
+  tags:
+    - install
+    - dotfiles
+    - zsh
+
+- name: Download and install starship
+  shell: 'curl -sS https://starship.rs/install.sh | sh'
   become: yes
   become_user: root
   tags:
@@ -41,8 +50,12 @@
     - zsh
 
 - name: Stow zsh config
-  shell: "cd {{ ansible_env.HOME }}/dotfiles && stow zsh"
+  shell: 'cd {{ ansible_env.HOME }}/dotfiles && stow zsh'
   tags:
     - install
     - dotfiles
     - zsh
+
+- name: Stow starship config
+  shell: 'cd {{ ansible_env.HOME }}/dotfiles && stow starship'
+
