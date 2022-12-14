@@ -1,0 +1,8 @@
+- name: Install (yum)
+  yum:
+    name: tmux
+  become: yes
+  become_user: root
+  become_method: sudo
+
+

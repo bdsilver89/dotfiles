@@ -1,0 +1,10 @@
+- name: Add asdf plugin
+  command: asdf plugin-add neovim
+  register: asdf_add_neovim
+  failed_when: asdf_add_neovim == 1
+
+- name: "Install {{ nvim_version }}"
+  command: "asdf install neovim {{ nvim_version }}"
+
+- name: "Det global version to {{ nvim_version }}"
+  command: "asdf global neovim {{ nvim_version }}"

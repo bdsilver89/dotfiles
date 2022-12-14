@@ -26,7 +26,7 @@ ZSH_THEME="eastwood"
 # Uncomment the following line to enable command auto-correction.
 # ENABLE_CORRECTION="true"
 
-plugins=(git web-search zsh-autosuggestions)
+plugins=(asdf git web-search zsh-autosuggestions)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -56,7 +56,7 @@ export PATH="$GOPATH/bin:$PATH"
 # rust
 . "$HOME/.cargo/env"
 
-# rust analyzer
+# local bin
 export PATH="$HOME/.local/bin:$PATH"
 
 # NVM setup
@@ -64,6 +64,17 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
+# C++
+export CMAKE_GENERATOR="Ninja"
+export CONAN_CMAKE_GENERATOR="Ninja"
+
+export VCPKG_ROOT="$HOME/tools/vcpkg"
+export PATH="$VCPKG_ROOT:$PATH"
+
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 eval "$(starship init zsh)"
+
+autoload bashcompinit
+bashcompinit
+source /home/brian/tools/vcpkg/scripts/vcpkg_completion.zsh

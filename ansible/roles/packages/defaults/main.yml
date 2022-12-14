@@ -1,0 +1,9 @@
+package_upgrade: yes
+
+apt_packages:
+  - ansible
+  - stow
+apt_remove_packages: []
+
+rhel_packages: []
+rhel_remove_packages: []

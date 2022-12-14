@@ -1,0 +1,11 @@
+- name: Add asdf plugin
+  command: asdf plugin-add nodejs
+  register: asdf_add_nodejs
+  failed_when: asdf_add_nodejs == 1
+
+- name: Install
+  command: "asdf install nodejs {{ item }}"
+  loop: "{{ nodejs_versions }}"
+
+- name: Set global version
+  command: "asdf global nodejs {{ nodejs_global_version }}"

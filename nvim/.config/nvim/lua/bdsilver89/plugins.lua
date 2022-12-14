@@ -39,6 +39,7 @@ packer.startup(function(use)
   use 'williamboman/mason.nvim'
   use 'williamboman/mason-lspconfig.nvim'
   use 'rafamadriz/friendly-snippets'
+  use 'folke/trouble.nvim'
 
   -- debug and testing
   use 'mfussenegger/nvim-dap'

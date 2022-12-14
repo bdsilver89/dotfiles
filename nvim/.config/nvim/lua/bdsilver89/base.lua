@@ -31,6 +31,8 @@ vim.opt.backspace = { 'start', 'eol', 'indent' }
 vim.opt.path:append { '**' } -- Finding files - Search down into subfolders
 vim.opt.wildignore:append { '*/node_modules/*' }
 
+-- vim.opt.undofile = true
+
 vim.opt.updatetime = 50
 vim.opt.colorcolumn = '80'
 

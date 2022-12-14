@@ -13,5 +13,5 @@ build_type=Release
 [build_requires]
 
 [env]
-CC=/lib/llvm-15/bin/clang
-CXX=/lib/llvm-15/bin/clang++
+CC=/usr/bin/clang-15
+CXX=/usr/bin/clang++-15

@@ -13,5 +13,5 @@ build_type=Debug
 [build_requires]
 
 [env]
-CC=/lib/llvm-14/bin/clang
-CXX=/lib/llvm-14/bin/clang++
+CC=/usr/bin/clang-14
+CXX=/usr/bin/clang++-14
