@@ -2,6 +2,8 @@
 
 DOTFILES_ROOT=$(cd -P "$(dirname "$0")" && pwd -P)
 
+echo "Bootstrapping dotfiles..."
+
 if ! [ -x "$(command -v ansible)" ]; then
   if [ -f /etc/lsb-release ]; then
     echo "Installing ansible for debian"
