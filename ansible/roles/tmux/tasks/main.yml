@@ -2,3 +2,8 @@
   when: ansible_os_family == "Debian"
 - import_tasks: redhat.yml
   when: ansible_os_family == "RedHat"
+
+- name: Stow config
+  command: "stow tmux"
+  args:
+    chdir: "{{ ansible_env.HOME }}/dotfiles"

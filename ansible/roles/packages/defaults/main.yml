@@ -2,8 +2,23 @@ package_upgrade: yes
 
 apt_packages:
   - ansible
+  - build-essential
+  - ninja-build
+  - pkg-config
   - stow
+  - tree
+  - vim
 apt_remove_packages: []
 
-rhel_packages: []
+rhel_packages:
+  - ansible
+  - bzip2
+  - libffi
+  - libsqlite3x
+  - ninja-build
+  - readline
+  - stow
+  - tree
+  - util-linux-user
+  - vim
 rhel_remove_packages: []

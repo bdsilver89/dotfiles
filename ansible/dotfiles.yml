@@ -4,12 +4,18 @@
     - role: packages
       tags:
         - packages
+    - role: zsh
+      tags:
+        - zsh
     - role: tmux
       tags:
         - tmux
     - role: asdf
       tags:
         - asdf
+    - role: tools
+      tags:
+        - tools
     - role: nvim
       tags:
         - nvim
@@ -19,6 +25,9 @@
     - role: nodejs
       tags:
         - nodejs
-    - role: golang
+    # - role: golang
+    #   tags:
+    #     - golang
+    - role: cpp
       tags:
-        - golang
+        cpp

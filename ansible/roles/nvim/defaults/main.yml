@@ -1,1 +1,2 @@
-nvim_version: nightly
+nvim_version: ref:v0.8.1
+nvim_install_plugins: yes

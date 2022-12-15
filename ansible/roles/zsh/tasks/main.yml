@@ -1,0 +1,49 @@
+- name: Install
+  package:
+    name: zsh
+    state: present
+  become: yes
+  become_user: root
+  become_method: sudo
+
+- name: Change default shell
+  become: yes
+  user:
+    name: "{{ ansible_user_id }}"
+    shell: /bin/zsh
+
+- name: Check for oh-my-zsh
+  stat:
+    path: "{{ ansible_env.HOME }}/.oh-my-zsh"
+  register: omz_stat
+
+- name: Remove old oh-my-zsh
+  file:
+    path: "{{ ansible_env.HOME }}/.oh-my-zsh"
+    state: absent
+  when: omz_stat.stat.exists
+
+- name: Install oh-my-zsh
+  shell: 'sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" -y'
+
+- name: Install extra oh-my-zsh plugins
+  git:
+    repo: "{{ item.repo }}"
+    dest: "{{ ansible_env.HOME }}/.oh-my-zsh/plugins/{{ item.name }}"
+  loop: "{{ zsh_plugins }}"
+ 
+- name: Check for zshrc
+  stat:
+    path: "{{ ansible_env.HOME }}/.zshrc"
+  register: zshrc_stat
+
+- name: Remove old zshrc
+  file:
+    path: "{{ ansible_env.HOME }}/.zshrc"
+    state: absent
+  when: zshrc_stat.stat.exists
+ 
+- name: Stow config
+  command: "stow zsh"
+  args:
+    chdir: "{{ ansible_env.HOME }}/dotfiles"

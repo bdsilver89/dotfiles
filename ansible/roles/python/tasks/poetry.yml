@@ -1,6 +1,10 @@
 - name: Add asdf plugin for poetry
-  command: asdf plugin-add poetry
+  command: "{{ ansible_env.HOME }}/.asdf/bin/asdf plugin add poetry"
   register: asdf_add_python_poetry
   failed_when: asdf_add_python_poetry == 1
 
+- name: Install poetry
+  command: "{{ ansible_env.HOME }}/.asdf/bin/asdf install poetry latest"
 
+- name: Set global poetry version
+  command: "{{ ansible_env.HOME }}/.asdf/bin/asdf global poetry latest"

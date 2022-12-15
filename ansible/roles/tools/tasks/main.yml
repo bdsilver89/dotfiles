@@ -1,0 +1,15 @@
+- name: Add asdf plugins
+  command: "{{ ansible_env.HOME }}/.asdf/bin/asdf plugin add {{ item }}"
+  register: utils_asdf_add
+  failed_when: utils_asdf_add == 1
+  loop: "{{ tools }}"
+
+- name: Install
+  command: "{{ ansible_env.HOME }}/.asdf/bin/asdf install {{ item }} latest"
+  loop: "{{ tools }}"
+
+- name: Set global version
+  command: "{{ ansible_env.HOME }}/.asdf/bin/asdf global {{ item }} latest"
+  loop: "{{ tools }}"
+
+

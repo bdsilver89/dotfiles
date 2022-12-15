@@ -1,11 +1,11 @@
 - name: Add asdf plugin
-  command: asdf plugin-add golang
+  command: "{{ ansible_env.HOME }}/.asdf/bin/asdf plugin-add golang"
   register: asdf_add_golang
   failed_when: asdf_add_golang == 1
 
 - name: Install
-  command: "asdf install golang {{ item }}"
+  command: "{{ ansible_env.HOME }}/.asdf/bin/asdf install golang {{ item }}"
   loop: "{{ golang_versions }}"
 
 - name: Set global version 
-  command: "asdf global golang {{ golang_global_version }}"
+  command: "{{ ansible_env.HOME }}/.asdf/bin/asdf global golang {{ golang_global_version }}"

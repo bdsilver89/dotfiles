@@ -1,17 +1,17 @@
 - name: Add asdf plugin
-  command: asdf plugin-add python
+  command: "{{ ansible_env.HOME }}/.asdf/bin/asdf plugin add python"
   register: asdf_add_python
   failed_when: asdf_add_python == 1
 
 - name: Install python3
-  command: "asdf install python {{ item }}"
+  command: "{{ ansible_env.HOME }}/.asdf/bin/asdf install python {{ item }}"
   loop: "{{ python3_versions }}"
 
 - name: Install python2
-  command: "asdf install python {{ python2_version }}"
+  command: "{{ ansible_env.HOME }}/.asdf/bin/asdf install python {{ python2_version }}"
 
 - name: Set global version
-  command: "asdf global python {{ python3_global_version }} {{ python2_version }}"
+  command: "{{ ansible_env.HOME }}/.asdf/bin/asdf global python {{ python3_global_version }} {{ python2_version }}"
 
 - import_tasks: poetry.yml
   when: python_poetry_install

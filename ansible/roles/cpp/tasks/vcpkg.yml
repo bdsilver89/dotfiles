@@ -1,0 +1,12 @@
+- name: Install vcpkg
+  git:
+    repo: "https://github.com/microsoft/vcpkg.git"
+    dest: "{{ ansible_env.HOME }}/tools/vcpkg"
+
+- name: Bootstrap vcpkg
+  command: "{{ ansible_env.HOME }}/tools/vcpkg/bootstrap-vcpkg.sh --disableMetrics"
+
+# - name: Integrate vcpkg
+#   command: "{{ ansible_env.HOME }}/tools/vcpkg/vcpkg integrate install"
+#   when: cpp_integrate_vcpkg
+

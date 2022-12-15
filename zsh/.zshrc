@@ -31,50 +31,77 @@ plugins=(asdf git web-search zsh-autosuggestions)
 source $ZSH/oh-my-zsh.sh
 
 # export MANPATH="/usr/local/man:$MANPATH"
-export EDITOR='nvim'
 
-alias ls="exa"
-alias cat="bat"
+# general aliases
+alias cl="clear"
+alias pg="ps -ef | grep"
+alias pkill!="pkill -9 -f"
 
-alias ide="tmux split-window -v -p 30"
+# editor setup
+if [ -x "$(command -v nvim)" ]; then
+  export EDITOR='nvim'
+  # add asdf update aliases if 
+  if [ -x "$(command -v asdf)" ]; then
+    alias update-nvim-stable='asdf uninstall neovim ref:stable && asdf install ref:stable'
+    alias update-nvim-nightly='asdf uninstall neovim ref:nightly && asdf install ref:nightly'
+    alias update-nvim-master='asdf uninstall neovim ref:master && asdf install ref:master'
+  fi
+elif [ -x "$(command -v vim)" ]; then
+  export EDITOR='vim'
+else
+  export EDITOR='vi'
+fi
+
+# tool setup
+if [ -x "$(command -v exa)" ]; then
+  alias ls="exa"
+fi
+if [ -x "$(command -v bat)" ]; then
+  alias cat="bat"
+fi
+if [ -x "$(command -v tmux)" ]; then
+  alias ide="tmux split-window -v -p 30"
+fi
+if [ -x "$(command -v starship)" ]; then
+  eval "(starship init zsh)"
+fi
 
 # pyenv setup
-export PYENV_ROOT="$HOME/.pyenv"
-command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init -)"
+# export PYENV_ROOT="$HOME/.pyenv"
+# command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
+# eval "$(pyenv init -)"
 
 # poetry setup
-export POETRY_ROOT="$HOME/.poetry"
-export PATH="$POETRY_ROOT/bin:$PATH"
+# export POETRY_ROOT="$HOME/.poetry"
+# export PATH="$POETRY_ROOT/bin:$PATH"
 
 # Go setup
-export GOROOT=/usr/local/go
-export PATH="$GOROOT/bin:$PATH"
-export GOPATH=/home/brian/go
-export PATH="$GOPATH/bin:$PATH"
+# export GOROOT=/usr/local/go
+# export PATH="$GOROOT/bin:$PATH"
+# export GOPATH=/home/brian/go
+# export PATH="$GOPATH/bin:$PATH"
 
 # rust
-. "$HOME/.cargo/env"
+# . "$HOME/.cargo/env"
 
 # local bin
-export PATH="$HOME/.local/bin:$PATH"
+# export PATH="$HOME/.local/bin:$PATH"
 
 # NVM setup
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+# export NVM_DIR="$HOME/.nvm"
+# [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+# [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 # C++
 export CMAKE_GENERATOR="Ninja"
 export CONAN_CMAKE_GENERATOR="Ninja"
-
 export VCPKG_ROOT="$HOME/tools/vcpkg"
 export PATH="$VCPKG_ROOT:$PATH"
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+if [ -f $VCPKG_ROOT ]; then
+  source $VCPKG_ROOT/scripts/vcpkg_completion.zsh
+fi
 
-eval "$(starship init zsh)"
-
-autoload bashcompinit
-bashcompinit
-source /home/brian/tools/vcpkg/scripts/vcpkg_completion.zsh
+# autoload bashcompinit
+# bashcompinit
+# source /home/brian/tools/vcpkg/scripts/vcpkg_completion.zsh

@@ -1,0 +1,6 @@
+tools:
+  - exa
+  - bat
+  - fd
+  - fzf
+  - ripgrep
