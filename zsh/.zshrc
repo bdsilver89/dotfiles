@@ -40,7 +40,7 @@ alias pkill!="pkill -9 -f"
 # editor setup
 if [ -x "$(command -v nvim)" ]; then
   export EDITOR='nvim'
-  # add asdf update aliases if 
+  # add asdf update aliases if
   if [ -x "$(command -v asdf)" ]; then
     alias update-nvim-stable='asdf uninstall neovim ref:stable && asdf install ref:stable'
     alias update-nvim-nightly='asdf uninstall neovim ref:nightly && asdf install ref:nightly'
@@ -105,3 +105,4 @@ fi
 # autoload bashcompinit
 # bashcompinit
 # source /home/brian/tools/vcpkg/scripts/vcpkg_completion.zsh
+eval "$(starship init zsh)"
