@@ -1,10 +1,7 @@
-local status, lualine = pcall(require, "lualine")
-if (not status) then return end
-
-lualine.setup {
-  options = {
+require('lualine').setup {
+ options = {
     icons_enabled = true,
-    theme = 'tokyonight',
+    -- theme = 'tokyonight',
     section_separators = { left = '', right = '' },
     component_separators = { left = '', right = '' },
     disabled_filetypes = {}
@@ -28,6 +25,7 @@ lualine.setup {
   },
   inactive_sections = {
     lualine_a = {},
+
     lualine_b = {},
     lualine_c = { {
       'filename',
