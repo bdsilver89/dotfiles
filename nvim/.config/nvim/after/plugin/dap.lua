@@ -29,15 +29,15 @@ dapui.setup({
     enabled = true,
     element = 'repl',
     icons = {
-      pause = "",
+      pause = '',
 
-      play = "",
-      step_into = "",
-      step_over = "",
-      step_out = "",
-      step_back = "",
-      run_last = "↻",
-      terminate = "□",
+      play = '',
+      step_into = '',
+      step_over = '',
+      step_out = '',
+      step_back = '',
+      run_last = '↻',
+      terminate = '□',
     },
   },
   windows = {
@@ -53,29 +53,29 @@ dapui.setup({
   }
 })
 
-dap.listeners.after.event_initialized["dapui_config"] = function()
+dap.listeners.after.event_initialized['dapui_config'] = function()
   dapui.open()
 end
 
-dap.listeners.after.event_terminated["dapui_config"] = function()
+dap.listeners.after.event_terminated['dapui_config'] = function()
   dapui.close()
 end
 
-dap.listeners.after.event_exited["dapui_config"] = function()
+dap.listeners.after.event_exited['dapui_config'] = function()
   dapui.close()
 end
 
-vim.keymap.set('n', '<F12>', function() dapui.toggle() end)
-vim.keymap.set('n', '<F1>', function() dapui.continue() end)
-vim.keymap.set('n', '<F2>', function() dapui.step_over() end)
-vim.keymap.set('n', '<F3>', function() dapui.step_out() end)
-vim.keymap.set('n', '<F4>', function() dapui.step_into() end)
+vim.keymap.set('n', '<F12>', function() dapui.toggle() end, { desc = 'DAP: Toggle UI' })
+vim.keymap.set('n', '<F1>', function() dapui.continue() end, { desc = 'DAP: Continue' })
+vim.keymap.set('n', '<F2>', function() dapui.step_over() end, { desc = 'DAP: Step over' })
+vim.keymap.set('n', '<F3>', function() dapui.step_out() end, { desc = 'DAP: Step out' })
+vim.keymap.set('n', '<F4>', function() dapui.step_into() end, { desc = 'DAP: Step into' })
 
-vim.keymap.set('n', '<leader>b', function() dap.toggle_breakpoint() end)
+vim.keymap.set('n', '<leader>b', function() dap.toggle_breakpoint() end, { desc = 'DAP: Toggle breakpoint' })
 vim.keymap.set('n', '<leader>B', function()
-    dap.set_breakpoint(vim.fn.input('Breakpoint condition: '))
-end)
-vim.keymap.set('n', '<leader>rc', function() dap.run_to_cursor() end)
+  dap.set_breakpoint(vim.fn.input('Breakpoint condition: '))
+end, { desc = 'DAP: Breakpoint' })
+vim.keymap.set('n', '<leader>rc', function() dap.run_to_cursor() end, { desc = 'DAP: Run to cursor' })
 
 -- vim.keymap.set('n', '<leader><leader>', function() dapui.close() end)
 
@@ -90,7 +90,7 @@ dap.configurations.cpp = {
     name = 'Launch',
     type = 'lldb',
     request = 'launch',
-    program = function ()
+    program = function()
       return vim.fn.input('Path to executable: ', vim.loop.cwd() .. '/', 'file')
     end,
     cwd = '${workspaceFolder}',

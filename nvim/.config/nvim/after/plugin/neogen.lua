@@ -7,7 +7,8 @@ neogen.setup {
 
 vim.keymap.set('n', '<leader>ngf', function()
   neogen.generate({type = 'func'})
-end)
+end, { desc = '[N]eo[g]en: [F]unction docs' })
+
 vim.keymap.set('n', '<leader>ngc', function()
   neogen.generate({type = 'class'})
-end)
+end, { desc = '[N]eo[g]en: [C]lass docs' })
