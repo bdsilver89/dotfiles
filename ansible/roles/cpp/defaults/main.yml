@@ -1,4 +1,4 @@
-cpp_install_cmake: no
+cpp_install_cmake: yes
 cpp_cmake_versions:
   - latest
 cpp_cmake_global_version: latest

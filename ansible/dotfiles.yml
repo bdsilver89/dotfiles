@@ -28,6 +28,9 @@
     # - role: golang
     #   tags:
     #     - golang
+    - role: rust
+      tags:
+        rust
     - role: cpp
       tags:
         cpp

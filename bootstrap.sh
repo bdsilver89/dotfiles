@@ -2,8 +2,6 @@
 
 DOTFILES_ROOT=$(cd -P "$(dirname "$0")" && pwd -P)
 
-echo "Bootstrapping dotfiles..."
-
 if ! [ -x "$(command -v ansible)" ]; then
   if [ -f /etc/lsb-release ]; then
     echo "Installing ansible for debian"
@@ -21,9 +19,13 @@ if ! [ -x "$(command -v ansible)" ]; then
   fi
 fi
 
-tags="${1}"
-if [ -z $tags ]; then
+tags="$@"
+if [ "$#" -eq 0 ]; then
   tags="all"
+else
+  # sed -e '/s\s\+/,/g' $tags
+  tags="${tags// /,}"
 fi
 
+echo "Boostrapping [$tags]"
 cd $DOTFILES_ROOT && ansible-playbook -i ansible/hosts ansible/dotfiles.yml -K --tags ${tags}
