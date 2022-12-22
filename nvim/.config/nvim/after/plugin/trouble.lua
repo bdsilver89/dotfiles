@@ -1,4 +1,7 @@
-require('trouble').setup()
+local status, trouble = pcall(require, 'trouble')
+if (not status) then return end
+
+trouble.setup()
 
 vim.keymap.set("n", "<leader>xx", "<cmd>TroubleToggle<cr>",
   {silent = true, noremap = true}

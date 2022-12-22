@@ -1,4 +1,7 @@
-require('nvim-treesitter.configs').setup {
+local status, treesitter_configs = pcall(require, 'nvim-treesitter.configs')
+if (not status) then return end
+
+treesitter_configs.setup {
   ensure_installed = {
     "help",
     "javascript",
@@ -77,7 +80,10 @@ require('nvim-treesitter.configs').setup {
   },
 }
 
-require('treesitter-context').setup {
+local status, treesitter_context = pcall(require, 'treesitter.context')
+if (not status) then return end
+
+treesitter_context.setup {
   enable = true,
   throttle = true,
   max_lines = 0,

@@ -1,5 +1,15 @@
+local status, telescope = pcall(require, 'telescope')
+if (not status) then return end
+
 local builtin = require('telescope.builtin')
-local telescope = require('telescope')
+
+telescope.setup {
+  extensions = {
+    file_browser = {
+      hijack_netrw = true,
+    },
+  },
+}
 
 telescope.load_extension('fzf')
 

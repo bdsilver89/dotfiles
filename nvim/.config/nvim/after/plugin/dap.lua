@@ -1,6 +1,10 @@
-local dap = require('dap')
-local dapui = require('dapui')
-local daptext = require('nvim-dap-virtual-text')
+local dap_status, dap = pcall(require, 'dap')
+local dapui_status, dapui = pcall(require, 'dapui')
+local daptext_status, daptext = pcall(require, 'nvim-dap-virtual-text')
+
+if (not dap_status or not dapui_status or not daptext_status) then
+  return
+end
 
 daptext.setup({})
 

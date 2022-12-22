@@ -1,16 +1,18 @@
-vim.g.loaded = 1
-vim.g.loaded_netrwPlugin = 1
+-- vim.g.loaded = 1
+-- vim.g.loaded_netrwPlugin = 1
 
-require('nvim-tree').setup {
+local status, nvim_tree = pcall(require, 'nvim-tree')
+if (not status) then return end
+
+nvim_tree.setup {
   sort_by = 'case_sensitive',
+  hijack_netrw = false,
   view = {
     mappings = {
       list = {
         { key = 'u', action = 'dir_up' }
       }
     },
-    -- side = right,
-    -- width = 40,
     adaptive_size = true,
   },
   renderer = {
