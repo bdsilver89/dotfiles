@@ -12,4 +12,3 @@
   command: "{{ ansible_env.HOME }}/.asdf/bin/asdf global {{ item }} latest"
   loop: "{{ tools }}"
 
-
