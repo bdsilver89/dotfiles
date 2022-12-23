@@ -81,11 +81,8 @@ fi
 # export GOPATH=/home/brian/go
 # export PATH="$GOPATH/bin:$PATH"
 
-# rust
-# . "$HOME/.cargo/env"
-
 # local bin
-# export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
 
 # NVM setup
 # export NVM_DIR="$HOME/.nvm"
