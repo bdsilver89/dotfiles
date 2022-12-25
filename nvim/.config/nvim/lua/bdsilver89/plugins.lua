@@ -49,6 +49,7 @@ require('packer').startup(function(use)
   use 'tpope/vim-sleuth'
   use 'nvim-tree/nvim-tree.lua'
   use 'folke/trouble.nvim'
+  use 'akinsho/toggleterm.nvim'
 
   -- git
   use 'tpope/vim-fugitive'
