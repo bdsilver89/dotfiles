@@ -1,4 +1,4 @@
--- Install packer
+--- Install packer
 local install_path = vim.fn.stdpath 'data' .. '/site/pack/packer/start/packer.nvim'
 local is_bootstrap = false
 if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
@@ -9,6 +9,8 @@ end
 
 require('packer').startup(function(use)
   use 'wbthomason/packer.nvim'
+
+  use 'lewis6991/impatient.nvim'
 
   -- telescope
   use {
@@ -43,10 +45,12 @@ require('packer').startup(function(use)
   use 'p00f/nvim-ts-rainbow'
 
   -- editor and workflow
+  use 'tpope/vim-sleuth'
+  use 'tpope/vim-speeddating'
+  use 'tpope/vim-surround'
   use 'ThePrimeagen/harpoon'
   use 'numToStr/Comment.nvim'
   use 'mbbill/undotree'
-  use 'tpope/vim-sleuth'
   use 'nvim-tree/nvim-tree.lua'
   use 'folke/trouble.nvim'
   use 'akinsho/toggleterm.nvim'
@@ -59,7 +63,7 @@ require('packer').startup(function(use)
   -- ui
   use 'navarasu/onedark.nvim'
   use 'nvim-lualine/lualine.nvim'
-  -- use 'akinsho/bufferline.nvim'
+  use 'akinsho/bufferline.nvim'
   use 'lewis6991/gitsigns.nvim'
   use 'nvim-tree/nvim-web-devicons'
   use 'lukas-reineke/indent-blankline.nvim'
