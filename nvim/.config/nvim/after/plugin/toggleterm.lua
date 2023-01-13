@@ -11,5 +11,5 @@ toggleterm.setup({
       return 20
     end
   end,
-  open_mapping = '<leader>\\'
+  open_mapping = '<leader>\\\\'
 })
