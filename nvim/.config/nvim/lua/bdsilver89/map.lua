@@ -24,6 +24,8 @@ vim.keymap.set('n', '<C-a>', 'gg<S-v>G', { desc = 'Highlight entire buffer conte
 vim.keymap.set('n', '<leader>[', '<C-o>', { desc = 'Prev in jumplist' })
 vim.keymap.set('n', '<leader>]', '<C-i>', { desc = 'Next in jumplist' })
 
+vim.keymap.set('t', '<Esc>', [[<C-\><C-n>]], { desc = 'Exit terminal insert mode with Esc key' })
+
 -- new tab (use leader to avoid conflict with t til char)
 -- vim.keymap.set('n', '<leader>te', ':tabedit')
 -- vim.keymap.set('n', '<leader>tc', ':tabclose')
