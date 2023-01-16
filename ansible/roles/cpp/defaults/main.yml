@@ -20,9 +20,10 @@ cpp_apt_packages:
   - clangd
   - libc++-dev
   - libc++1
-  - libc++1-dev
   - libc++abi-dev
+  - libc++abi1
   - libclang-dev
+  - libclang1
   - liblldb-dev
   - lldb
   - llvm
