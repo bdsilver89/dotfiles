@@ -66,28 +66,8 @@ if [ -x "$(command -v starship)" ]; then
   eval "(starship init zsh)"
 fi
 
-# pyenv setup
-# export PYENV_ROOT="$HOME/.pyenv"
-# command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
-# eval "$(pyenv init -)"
-
-# poetry setup
-# export POETRY_ROOT="$HOME/.poetry"
-# export PATH="$POETRY_ROOT/bin:$PATH"
-
-# Go setup
-# export GOROOT=/usr/local/go
-# export PATH="$GOROOT/bin:$PATH"
-# export GOPATH=/home/brian/go
-# export PATH="$GOPATH/bin:$PATH"
-
 # local bin
 export PATH="$HOME/.local/bin:$PATH"
-
-# NVM setup
-# export NVM_DIR="$HOME/.nvm"
-# [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-# [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 # C++
 export CMAKE_GENERATOR="Ninja"
