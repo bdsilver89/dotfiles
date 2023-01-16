@@ -102,4 +102,3 @@ fi
 # autoload bashcompinit
 # bashcompinit
 # source /home/brian/tools/vcpkg/scripts/vcpkg_completion.zsh
-eval "$(starship init zsh)"
