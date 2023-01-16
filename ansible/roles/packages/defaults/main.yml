@@ -3,10 +3,13 @@ package_upgrade: yes
 apt_packages:
   - ansible
   - build-essential
+  - gettext
   - libb2-dev
   - libncurses-dev
   - libssl-dev
   - libsqlite3-dev
+  - libtool
+  - libtool-bin
   - ninja-build
   - pkg-config
   - stow

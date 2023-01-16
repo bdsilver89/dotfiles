@@ -2,6 +2,9 @@
 .netrwhist
 .git
 packer_compiled.lua
+bin/.local/share
+bin/.local/state
+
 
 *.o
 \#*#
