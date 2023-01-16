@@ -14,12 +14,12 @@
   args:
     chdir: "{{ ansible_env.HOME }}/dotfiles"
 
-- name: Download packer
-  git:
-    repo: "https://github.com/wbthomason/packer.nvim"
-    dest: "{{ ansible_env.HOME }}/.local/share/nvim/site/pack/packer/start/packer.nvim"
-    update: yes
-    depth: 1
+# - name: Download packer
+#   git:
+#     repo: "https://github.com/wbthomason/packer.nvim"
+#     dest: "{{ ansible_env.HOME }}/.local/share/nvim/site/pack/packer/start/packer.nvim"
+#     update: yes
+#     depth: 1
 
 #- name: Packer sync
 # shell: '{{ ansible_env.HOME }}/.asdf/shims/nvim +PackerSync'

@@ -9,7 +9,29 @@ cpp_integrate_vcpkg: yes
 cpp_install_conan: yes
 cpp_conan_version: latest
 
-cpp_apt_packages: []
+cpp_apt_packages:
+  - gcc
+  - g++
+  - gdb
+  - clang
+  - clang-format
+  - clang-tidy
+  - clang-tools
+  - clangd
+  - libc++-dev
+  - libc++1
+  - libc++1-dev
+  - libc++abi-dev
+  - libclang-dev
+  - liblldb-dev
+  - lldb
+  - llvm
+  - llvm-dev
+  - llvm-runtime
+  - lld
+  - cppcheck
+  - libunwind-dev
+
 cpp_rhel_packages:
   # - clang
   # - clang-devel
