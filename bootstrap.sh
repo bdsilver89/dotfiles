@@ -5,9 +5,9 @@ DOTFILES_ROOT=$(cd -P "$(dirname "$0")" && pwd -P)
 if ! [ -x "$(command -v ansible)" ]; then
   if [ -f /etc/lsb-release ]; then
     echo "Installing ansible for debian"
-    # sudo apt-add-repository -y ppa:ansible/ansible
-    # sudo apt-get update -y
-    # sudo apt-get install -y curl git software-properties-common ansible
+    sudo apt-add-repository -y ppa:ansible/ansible
+    sudo apt-get update -y
+    sudo apt-get install -y curl git software-properties-common ansible
     sudo apt install ansible -y
 
   elif [ -f /etc/redhat-release ]; then

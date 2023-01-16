@@ -3,11 +3,17 @@ package_upgrade: yes
 apt_packages:
   - ansible
   - build-essential
+  - libb2-dev
+  - libncurses-dev
+  - libssl-dev
+  - libsqlite3-dev
   - ninja-build
   - pkg-config
   - stow
   - tree
+  - unzip
   - vim
+  - zip
 apt_remove_packages: []
 
 rhel_packages:
