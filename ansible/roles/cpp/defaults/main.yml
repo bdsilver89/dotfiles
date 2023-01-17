@@ -32,6 +32,7 @@ cpp_apt_packages:
   - lld
   - cppcheck
   - libunwind-dev
+  - lcov
 
 cpp_rhel_packages:
   # - clang
