@@ -4,7 +4,8 @@
 export ZSH="$HOME/.oh-my-zsh"
 
 # ZSH_THEME="agnoster"
-ZSH_THEME="eastwood"
+# ZSH_THEME="eastwood"
+ZSH_THEME="robbyrussell"
 
 # Uncomment one of the following lines to change the auto-update behavior
 # zstyle ':omz:update' mode disabled  # disable automatic updates
@@ -72,7 +73,7 @@ export PATH="$HOME/.local/bin:$PATH"
 # C++
 export CMAKE_GENERATOR="Ninja"
 export CONAN_CMAKE_GENERATOR="Ninja"
-export VCPKG_ROOT="$HOME/tools/vcpkg"
+export VCPKG_ROOT="$HOME/vcpkg"
 export PATH="$VCPKG_ROOT:$PATH"
 
 if [ -f $VCPKG_ROOT ]; then
