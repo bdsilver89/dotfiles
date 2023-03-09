@@ -1,16 +1,18 @@
 -- stylua: ignore
 
 return {
-  -- add gruvbox
-  -- { "ellisonleao/gruvbox.nvim" },
+  { "ellisonleao/gruvbox.nvim" },
+  { "shaunsingh/oxocarbon.nvim" },
+  { "catppuccin/nvim", name = "catppuccin"},
+
 
   -- Configure LazyVim to load gruvbox
-  -- {
-  --   "LazyVim/LazyVim",
-  --   opts = {
-  --     colorscheme = "gruvbox",
-  --   },
-  -- },
+  {
+    "LazyVim/LazyVim",
+    opts = {
+      colorscheme = "gruvbox",
+    },
+  },
 
   -- change trouble config
   {
@@ -30,6 +32,14 @@ return {
     config = function()
       require('Comment').setup()
     end,
+  },
+
+  {
+    'echasnovski/mini.ai',
+    enabled = false,
+  },
+  {
+    'tpope/vim-sleuth'
   },
 
   -- add symbols-outline
@@ -52,27 +62,27 @@ return {
   },
 
   -- change some telescope options and a keymap to browse plugin files
-  {
-    "nvim-telescope/telescope.nvim",
-    keys = {
-      -- add a keymap to browse plugin files
-      -- stylua: ignore
-      {
-        "<leader>fp",
-        function() require("telescope.builtin").find_files({ cwd = require("lazy.core.config").options.root }) end,
-        desc = "Find Plugin File",
-      },
-    },
-    -- change some options
-    opts = {
-      defaults = {
-        layout_strategy = "horizontal",
-        layout_config = { prompt_position = "top" },
-        sorting_strategy = "ascending",
-        winblend = 0,
-      },
-    },
-  },
+  -- {
+  --   "nvim-telescope/telescope.nvim",
+  --   keys = {
+  --     -- add a keymap to browse plugin files
+  --     -- stylua: ignore
+  --     {
+  --       "<leader>fp",
+  --       function() require("telescope.builtin").find_files({ cwd = require("lazy.core.config").options.root }) end,
+  --       desc = "Find Plugin File",
+  --     },
+  --   },
+  --   -- change some options
+  --   opts = {
+  --     defaults = {
+  --       layout_strategy = "horizontal",
+  --       layout_config = { prompt_position = "top" },
+  --       sorting_strategy = "ascending",
+  --       winblend = 0,
+  --     },
+  --   },
+  -- },
 
   -- add telescope-fzf-native
   {
@@ -144,9 +154,9 @@ return {
     opts = {
       ensure_installed = {
         "bash",
-	"c",
-	"cpp",
-	"go",
+        "c",
+        "cpp",
+        "go",
         "help",
         "html",
         "javascript",
@@ -157,7 +167,7 @@ return {
         "python",
         "query",
         "regex",
-	"rust",
+        "rust",
         "tsx",
         "typescript",
         "vim",
@@ -250,4 +260,109 @@ return {
       })
     end,
   },
+
+  {
+    "mfussenegger/nvim-dap",
+    dependencies = {
+      { "rcarriga/nvim-dap-ui"},
+      { "theHamsta/nvim-dap-virtual-text"},
+      { "nvim-telescope/telescope-dap.nvim"},
+      { "jbyuki/one-small-step-for-vimkind"},
+    },
+    keys = {
+      { "<leader>dR",function() require("dap").run_to_cursor() end, desc = "Run to cursor"},
+      { "<leader>dE",function() require("dapui").eval(vim.fn.input("[Expression] > ")) end, desc = "Evaluate input"},
+      { "<leader>dC",function() require("dap").set_breakpoint(vim.fn.input("[Condition] > ")) end, desc = "Conditional breakpoint"},
+      { "<leader>dU",function() require("dap").toggle() end, desc = "Toggle IU"},
+      { "<leader>db",function() require("dap").step_back() end, desc = "Step back"},
+      { "<leader>dc",function() require("dap").continue() end, desc = "Continue"},
+      { "<leader>dd",function() require("dap").disconnect() end, desc = "Disconnect"},
+      { "<leader>de",function() require("dapui").eval() end, mode = { "n", "v"}, desc = "Evaluate"},
+      { "<leader>dg",function() require("dap").session() end, desc = "Get session"},
+      { "<leader>dh",function() require("dap,ui.widgets").hover() end, desc = "Hover variables"},
+      { "<leader>dS",function() require("dap.ui.widgets").scopes() end, desc = "Scopes"},
+      { "<leader>di",function() require("dap").step_into() end, desc = "Step into"},
+      { "<leader>do",function() require("dap").step_over() end, desc = "Step over"},
+      { "<leader>dp",function() require("dap").pause.toggle() end, desc = "Pause"},
+      { "<leader>dq",function() require("dap").close() end, desc = "Quit"},
+      { "<leader>dr",function() require("dap").repl.toggle() end, desc = "Toggle REPL"},
+      { "<leader>ds",function() require("dap").continue() end, desc = "Start"},
+      { "<leader>dt",function() require("dap").toggle_breakpoint() end, desc = "Toggle breakpoint"},
+      { "<leader>dx",function() require("dap").terminate() end, desc = "Terminate"},
+      { "<leader>du",function() require("dap").step_out() end, desc = "Step out"},
+    },
+    config = function()
+      require("telescope").load_extensions("dap")
+
+      require("nvim-dap-virtual-text").setup({
+        commented = true,
+      })
+
+      local dap = require("dap")
+      local dapui = require("dapui")
+      dapui.setup({})
+      dap.listeners.after.event_initialized["dapui_config"] = function()
+        dapui.open()
+      end
+      dap.listeners.before.event_terminated["dapui_config"] = function()
+        dapui.close()
+      end
+      dap.listeners.before.event_exited["dapui_config"] = function()
+        dapui.close()
+      end
+
+      dap.adapters.codelldb = {
+        type = "sever",
+        port = "${port}",
+        executable = {
+          command = vim.fn.stdpath("data") .. "/mason/bin/codelldb",
+          args = { "--port", "${port}"},
+        },
+      }
+
+      dap.configurations.cpp = {
+        {
+          name = "Launch codelldb",
+          type = "codelldb",
+          request = "launch",
+          program = function()
+            return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
+          end,
+          args = function()
+            return vim.fn.split(vim.fn.input("Program arguments: "))
+          end,
+          cwd = "${workspaceFolder}",
+          stopOnEntry = false,
+          runInTerminal = true,
+        }
+      }
+      dap.configurations.c = dap.configurations.cpp
+      dap.configurations.rust = dap.configurations.cpp
+
+    end,
+  },
+
+  {
+    'nvim-neotest/neotest',
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-treesitter/nvim-treesitter",
+      "nvim-neotest/neotest-python",
+      "nvim-neotest/neotest-go",
+      -- "nvim-neotest/neotest-jest",
+      -- "nvim-neotest/neotest-dart",
+      "rouge8/neotest-rust",
+    },
+    config = function()
+      require("neotest").setup({
+        adapters = {
+          require("neotest-python"),
+          require("neotest-go"),
+          -- require("neotest-jest"),
+          -- require("neotest-dart"),
+          require("neotest-rust"),
+        },
+      })
+    end,
+  }
 }

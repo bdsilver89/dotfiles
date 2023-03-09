@@ -5,6 +5,8 @@ packer_compiled.lua
 bin/.local/share
 bin/.local/state
 
+lazy-lock.json
+
 
 *.o
 \#*#
