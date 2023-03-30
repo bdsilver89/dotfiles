@@ -64,7 +64,10 @@ if [ -x "$(command -v tmux)" ]; then
   alias ide="tmux split-window -v -p 30"
 fi
 if [ -x "$(command -v starship)" ]; then
-  eval "(starship init zsh)"
+  eval "$(starship init zsh)"
+fi
+if [ -x "$(command -v zoxide)" ]; then
+  eval "$(zoxide init zsh)"
 fi
 
 # local bin
