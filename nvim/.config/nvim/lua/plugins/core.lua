@@ -14,6 +14,10 @@ return {
     },
   },
 
+  {
+    "christoomey/vim-tmux-navigator",
+  },
+
   -- change trouble config
   {
     "folke/trouble.nvim",
@@ -157,7 +161,7 @@ return {
         "c",
         "cpp",
         "go",
-        "help",
+        -- "help",
         "html",
         "javascript",
         "json",
