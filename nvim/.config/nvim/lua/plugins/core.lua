@@ -1,16 +1,18 @@
 -- stylua: ignore
 
 return {
-  { "ellisonleao/gruvbox.nvim" },
-  { "shaunsingh/oxocarbon.nvim" },
-  { "catppuccin/nvim", name = "catppuccin"},
+  {
+    "felipeagc/fleet-theme-nvim",
+    dependencies = {
+      "rktjmp/lush.nvim",
+    },
+  },
 
-
-  -- Configure LazyVim to load gruvbox
+  -- Configure LazyVim to load theme
   {
     "LazyVim/LazyVim",
     opts = {
-      colorscheme = "tokyonight",
+      colorscheme = "fleet",
     },
   },
 
@@ -132,6 +134,7 @@ return {
       servers = {
         -- tsserver will be automatically installed with mason and loaded with lspconfig
         tsserver = {},
+        clangd = {},
       },
       -- you can do any additional lsp server setup here
       -- return true if you don't want this server to be setup with lspconfig
@@ -188,6 +191,8 @@ return {
     opts = function(_, opts)
       -- add tsx and treesitter
       vim.list_extend(opts.ensure_installed, {
+          "c",
+          "cpp",
           "tsx",
           "typescript",
       })
@@ -369,4 +374,14 @@ return {
       })
     end,
   },
+
+  {
+    "danymat/neogen",
+    dependencies = "nvim-treesitter/nvim-treesitter",
+    config = true,
+    keys = {
+      { "<leader>nf", function() require("neogen").generate({ type = "func"} ) end, desc = "Neogen generate function docs"},
+      { "<leader>nc", function() require("neogen").generate({ type = "class"} ) end, desc = "Neogen generate class docs"},
+    }
+  }
 }

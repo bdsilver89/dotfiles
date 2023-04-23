@@ -117,6 +117,10 @@ fi
 export CMAKE_GENERATOR="Ninja"
 export CONAN_CMAKE_GENERATOR="Ninja"
 
+if [[ `uname` == "Darwin" ]]; then
+  export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
+fi
+
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
 
@@ -133,7 +137,9 @@ alias pg="ps -ef | grep"
 alias pkill!="pkill -9 -f"
 
 if [ -x "$(command -v exa)" ]; then
-  alias ls="exa"
+  alias ls="exa --icons --git"
+  alias l="exa -l --icons --git -a"
+  alias lt="exa --tree --level=2 --long --icons --git"
 fi
 if [ -x "$(command -v bat)" ]; then
   alias cat="bat"
