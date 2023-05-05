@@ -1,4 +1,3 @@
-
 local function map(mode, lhs, rhs, opts)
   local keys = require("lazy.core.handler").handlers.keys
 
@@ -68,7 +67,8 @@ map("n", "<leader>bb", "<cmd>e #e<cr>", { desc = "Switch to alternate buffer" })
 
 map({ "i", "n" }, "<esc>", "<cmd>noh<cr><esc>", { desc = "Escape and clear hlsearch" })
 
-map("n", "<leader>ur", "<cmd>nohlsearch<bar>diffupdate<bar>normal! <c-L><cr>", { desc = "Redraw/clear hlsearch/diff update" })
+map("n", "<leader>ur", "<cmd>nohlsearch<bar>diffupdate<bar>normal! <c-L><cr>",
+  { desc = "Redraw/clear hlsearch/diff update" })
 
 -- sane use of n and N
 map("n", "n", "'Nn'[v:searchforward]", { expr = true, desc = "Next search result" })
@@ -88,6 +88,8 @@ map("v", "<", "<gv")
 map("v", ">", ">gv")
 
 map("n", "<leader>l", "<cmd>:Lazy<cr>", { desc = "Lazy" })
+
+map("t", "<esc><esc>", "<c-\\><c-n>", { desc = "Enter normal mode" })
 
 if vim.fn.has("nvim-0.9") == 1 then
   map("n", "<leader>ui", vim.show_pos, { desc = "Inspect Pos" })

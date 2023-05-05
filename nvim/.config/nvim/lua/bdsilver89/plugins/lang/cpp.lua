@@ -19,6 +19,7 @@ return {
     opts = function(_, opts)
       table.insert(opts.ensure_installed, "cmakelint")
       table.insert(opts.ensure_installed, "cmake-language-server")
+      table.insert(opts.ensure_installed, "clang-format")
     end,
   },
   {
