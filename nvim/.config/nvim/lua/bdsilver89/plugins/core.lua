@@ -5,5 +5,6 @@ return {
   { import = "bdsilver89.plugins.lsp" },
   { import = "bdsilver89.plugins.vcs" },
   { import = "bdsilver89.plugins.dap" },
+  { import = "bdsilver89.plugins.test" },
   { import = "bdsilver89.plugins.lang" },
 }

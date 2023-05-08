@@ -20,6 +20,8 @@ return {
       table.insert(opts.ensure_installed, "cmakelint")
       table.insert(opts.ensure_installed, "cmake-language-server")
       table.insert(opts.ensure_installed, "clang-format")
+      table.insert(opts.ensure_installed, "codelldb")
+      table.insert(opts.ensure_installed, "cpptools")
     end,
   },
   {
@@ -33,5 +35,24 @@ return {
       end
       -- nls.builtins.diagnostics.cpplint })
     end,
+  },
+  {
+    "madskjeldgaard/cppman.nvim",
+    event = "VeryLazy",
+    dependencies = {
+      "MunifTanjim/nui.nvim",
+    },
+    keys = {
+      {
+        "<leader>cpm",
+        function() require("cppman").open_cppman_for(vim.fn.expand("<cword>")) end,
+        desc = "Cppman cword"
+      },
+      {
+        "<leader>cps",
+        function() require("cppman").input() end,
+        desc = "Cppman search"
+      },
+    },
   },
 }
