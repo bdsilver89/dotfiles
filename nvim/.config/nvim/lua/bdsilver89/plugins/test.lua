@@ -19,9 +19,10 @@ return {
     "nvim-neotest/neotest",
     dependencies = {
       "vim-test/vim-test",
-      "nvim-neotest/neotest-vim-test",
+      "nvim-neotest/neotest-go",
       "nvim-neotest/neotest-python",
       "nvim-neotest/neotest-plenary",
+      "nvim-neotest/neotest-vim-test",
       "rouge8/neotest-rust",
     },
     keys = {
@@ -48,6 +49,7 @@ return {
           require("neotest-python")({ dap = { justMyCode = false } }),
           require("neotest-plenary"),
           require("neotest-rust"),
+          require("neotest-go"),
         },
         consumers = {
           overseer = require("neotest.consumers.overseer"),

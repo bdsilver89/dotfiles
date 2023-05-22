@@ -34,6 +34,15 @@ return {
   {
     "rcarriga/nvim-notify",
     event = "VeryLazy",
+    keys = {
+      {
+        "<leader>un",
+        function()
+          require("notify").dismiss({ silent = true, pending = true })
+        end,
+        desc = "Dismiss all Notifications",
+      },
+    },
     opts = {
       -- background_colour = "#A3CCBE",
       timeout = 3000,
