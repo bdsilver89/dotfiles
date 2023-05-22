@@ -27,16 +27,25 @@ vim.api.nvim_create_autocmd("VimResized", {
 vim.api.nvim_create_autocmd("FileType", {
   group = augroup("close_with_q"),
   pattern = {
-    "PlenaryTestPopup",
+    "checkhealth",
     "fugitive",
+    "git",
+    "gitcommit",
     "help",
     "lspinfo",
     "man",
+    "neotest-output",
+    "neotest-summary",
     "notify",
+    "OverseerForm",
+    "OverseerList",
+    "PlenaryTestPopup",
     "qf",
+    "query",
     "spectre_panel",
     "startuptime",
-    "checkhealth",
+    "toggleterm",
+    "vim"
   },
   callback = function(event)
     vim.bo[event.buf].buflisted = false

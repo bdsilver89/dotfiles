@@ -1,3 +1,5 @@
+vim.g.mapleader = " "
+vim.g.maplocalleader = " "
 
 vim.opt.autowrite = true
 vim.opt.clipboard = "unnamedplus"
@@ -48,4 +50,3 @@ vim.opt.wrap = false
 if vim.fn.has("nvim-0.9.0") == 1 then
   vim.opt.shortmess:append({ C = true })
 end
-

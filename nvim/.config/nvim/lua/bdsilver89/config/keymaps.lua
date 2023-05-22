@@ -64,11 +64,17 @@ map("v", "<a-j>", ":m '>+1<cr>gv=gv", { desc = "Move down" })
 map("v", "<a-k>", ":m '<-2<cr>gv=gv", { desc = "Move up" })
 
 map("n", "<leader>bb", "<cmd>e #e<cr>", { desc = "Switch to alternate buffer" })
+map("n", "<leader>br", "<cmd>e!<cr>", { desc = "Reload" })
+map("n", "<leader>bc", "<cmd>close<cr>", { desc = "Close" })
 
 map({ "i", "n" }, "<esc>", "<cmd>noh<cr><esc>", { desc = "Escape and clear hlsearch" })
 
-map("n", "<leader>ur", "<cmd>nohlsearch<bar>diffupdate<bar>normal! <c-L><cr>",
-  { desc = "Redraw/clear hlsearch/diff update" })
+map(
+  "n",
+  "<leader>ur",
+  "<cmd>nohlsearch<bar>diffupdate<bar>normal! <c-L><cr>",
+  { desc = "Redraw/clear hlsearch/diff update" }
+)
 
 -- sane use of n and N
 map("n", "n", "'Nn'[v:searchforward]", { expr = true, desc = "Next search result" })
