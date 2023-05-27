@@ -126,10 +126,15 @@ return {
   {
     "nvimdev/lspsaga.nvim",
     event = "VeryLazy",
-    opts = {
-      symbol_in_winbar = {
-        separator = "  ",
-      },
+    config = true,
+  },
+  {
+    "utilyre/barbecue.nvim",
+    event = "VeryLazy",
+    dependencies = {
+      "neovim/nvim-lspconfig",
+      "SmiteshP/nvim-navic",
+      "nvim-tree/nvim-web-devicons",
     },
     config = true,
   },

@@ -10,7 +10,6 @@ vim.opt.cursorline = true
 vim.opt.expandtab = true
 vim.opt.foldenable = true
 vim.opt.foldlevel = 99
-vim.opt.foldcolumn = vim.fn.has("nvim-0.9") == 1 and "1" or nil
 vim.opt.foldlevelstart = 99
 -- vim.opt.formatoptions = "jcroqlnt"
 vim.opt.grepformat = "%f:%l:%c:%m"
@@ -35,7 +34,6 @@ vim.opt.smartcase = true
 vim.opt.smartindent = true
 vim.opt.spelllang = { "en" }
 vim.opt.splitbelow = true
-vim.opt.splitkeep = vim.fn.has("nvim-0.9") == 1 and "screen" or nil
 vim.opt.splitright = true
 vim.opt.tabstop = 2
 vim.opt.termguicolors = true
@@ -49,4 +47,6 @@ vim.opt.wrap = false
 
 if vim.fn.has("nvim-0.9.0") == 1 then
   vim.opt.shortmess:append({ C = true })
+  vim.opt.foldcolumn = "1"
+  vim.opt.splitkeep = "screen"
 end
