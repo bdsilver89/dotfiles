@@ -102,14 +102,6 @@ return {
       automatic_setup = false,
     },
   },
-  -- {
-  --   "utilyre/barbecue.nvim",
-  --   event = "VeryLazy",
-  --   dependencies = {
-  --   },
-  --   enabled = false,
-  --   config = true,
-  -- },
   {
     "folke/trouble.nvim",
     cmd = { "TroubleToggle", "Trouble" },
@@ -122,11 +114,6 @@ return {
     opts = {
       use_diagnostic_signs = true,
     },
-  },
-  {
-    "nvimdev/lspsaga.nvim",
-    event = "VeryLazy",
-    config = true,
   },
   {
     "utilyre/barbecue.nvim",
