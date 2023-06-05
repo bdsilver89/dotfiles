@@ -7,6 +7,14 @@ local function get_codelldb()
   return codelldb_path, liblldb_path
 end
 
+local function get_cpptools()
+  local mason_registry = require("mason-registry")
+  local codelldb = mason_registry.get_package("cpptools")
+  local extension_path = codelldb:get_install_path() .. "/extension/"
+  local cpptools_path = extension_path .. "debugAdapters/bin/OpenDebugAD7"
+  return cpptools_path
+end
+
 return {
   {
     "nvim-treesitter/nvim-treesitter",
@@ -17,7 +25,7 @@ return {
   {
     "williamboman/mason.nvim",
     opts = function(_, opts)
-      vim.list_extend(opts.ensure_installed, { "codelldb" })
+      vim.list_extend(opts.ensure_installed, { "codelldb", "cpptools" })
     end,
   },
   {
@@ -82,7 +90,7 @@ return {
     opts = {
       setup = {
         codelldb = function()
-          local codelldb_path, liblldb_path = get_codelldb()
+          local codelldb_path = get_codelldb()
           local dap = require("dap")
           dap.adapters.codelldb = {
             type = "server",
@@ -94,18 +102,43 @@ return {
               -- detached = false,
             },
           }
-          dap.configurations.cpp = {
-            {
-              name = "Launch file",
-              type = "codelldb",
-              request = "launch",
-              program = function()
-                return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
-              end,
-              cwd = "${workspaceFolder}",
-              stopOnEntry = false,
-            },
+
+          vim.list_extend(dap.configurations.cpp, {
+            name = "Launch file (codelldb)",
+            type = "codelldb",
+            request = "launch",
+            program = function()
+              return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
+            end,
+            cwd = "${workspaceFolder}",
+            stopOnEntry = true,
+          })
+
+          dap.configurations.c = dap.configurations.cpp
+          dap.configurations.rust = dap.configurations.cpp
+        end,
+        cpptools = function()
+          local cpptools_path = get_cpptools()
+          local dap = require("dap")
+
+          dap.adapters.cpptools = {
+            id = "cppdbg",
+            type = "executable",
+            command = cpptools_path,
           }
+
+          vim.list_extend(dap.configurations.cpp, {
+            name = "Launch file (cppdbg)",
+            type = "cppdbg",
+            request = "launch",
+            program = function()
+              return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
+            end,
+            cwd = "${workspaceFolder}",
+
+            stopOnEntry = true,
+          })
+
           dap.configurations.c = dap.configurations.cpp
           dap.configurations.rust = dap.configurations.cpp
         end,

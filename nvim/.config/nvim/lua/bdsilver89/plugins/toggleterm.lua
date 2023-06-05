@@ -2,7 +2,10 @@ return {
   "akinsho/toggleterm.nvim",
   keys = {
     { "[[<c-\\>]]" },
-    { "<leader>0", "<cmd2ToggleTerm<cr>", desc = "Terminal #2" },
+    { "<leader>1", "<cmd>1ToggleTerm<cr>", desc = "Terminal #1" },
+    { "<leader>2", "<cmd>2ToggleTerm<cr>", desc = "Terminal #2" },
+    { "<leader>3", "<cmd>3ToggleTerm<cr>", desc = "Terminal #3" },
+    { "<leader>4", "<cmd>4ToggleTerm<cr>", desc = "Terminal #4" },
   },
   cmd = { "ToggleTerm", "TermExec" },
   opts = {
@@ -20,6 +23,6 @@ return {
       name_formatter = function(term)
         return term.name
       end,
-    }
+    },
   },
 }

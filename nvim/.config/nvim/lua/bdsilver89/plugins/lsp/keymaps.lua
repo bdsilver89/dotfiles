@@ -28,6 +28,8 @@ function M.on_attach(client, buffer)
   end, { desc = "Code Action", has = "codeAction" })
 
   local format = require("bdsilver89.plugins.lsp.format").format
+  local format_toggle = require("bdsilver89.plugins.lsp.format").toggle
+  self:map("<leader>cF", format_toggle, { desc = "Toggle formatting", has = "documentFormatting" })
   self:map("<leader>cf", format, { desc = "Format Document", has = "documentFormatting" })
   self:map("<leader>cf", format, { desc = "Format Range", mode = "v", has = "documentFormatting" })
 

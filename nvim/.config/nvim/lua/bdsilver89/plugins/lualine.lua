@@ -3,6 +3,9 @@ local icons = require("bdsilver89.config.icons")
 
 return {
   "nvim-lualine/lualine.nvim",
+  dependencies = {
+    "SmiteshP/nvim-navic",
+  },
   event = "VeryLazy",
   opts = {
     options = {
@@ -43,7 +46,7 @@ return {
           symbols = {
             modified = "  ",
             readonly = "",
-            unnamed = "" 
+            unnamed = "",
           },
         },
         {
@@ -109,5 +112,5 @@ return {
       "neo-tree",
       "lazy",
     },
-  }
+  },
 }

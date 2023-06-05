@@ -1,3 +1,11 @@
+-- check for .vscode/launch.json file in working directory to load
+local function load_launchjs()
+  local launch_json_path = vim.loop.cwd() .. "/.vscode/launch.json"
+  if vim.fn.filereadable(launch_json_path) then
+    require("dap.ext.vscode").load_launchjs(launch_json_path)
+  end
+end
+
 return {
   {
     "mfussenegger/nvim-dap",
@@ -14,9 +22,9 @@ return {
       { "<leader>dR", function() require("dap").run_to_cursor() end, desc = "Run to Cursor", },
       { "<leader>dE", function() require("dapui").eval(vim.fn.input "[Expression] > ") end, desc = "Evaluate Input", },
       { "<leader>dC", function() require("dap").set_breakpoint(vim.fn.input "[Condition] > ") end, desc = "Conditional Breakpoint", },
+      { "<leader>dT", function() require("dap").clear_breakpoints() end, desc = "Clear Breakpoints", },
       { "<leader>dU", function() require("dapui").toggle() end, desc = "Toggle UI", },
       { "<leader>db", function() require("dap").step_back() end, desc = "Step Back", },
-      { "<leader>dc", function() require("dap").continue() end, desc = "Continue", },
       { "<leader>dd", function() require("dap").disconnect() end, desc = "Disconnect", },
       { "<leader>de", function() require("dapui").eval() end, mode = {"n", "v"}, desc = "Evaluate", },
       { "<leader>dg", function() require("dap").session() end, desc = "Get Session", },
@@ -28,10 +36,25 @@ return {
       { "<leader>dp", function() require("dap").pause.toggle() end, desc = "Pause", },
       { "<leader>dq", function() require("dap").close() end, desc = "Quit", },
       { "<leader>dr", function() require("dap").repl.toggle() end, desc = "Toggle REPL", },
-      { "<leader>ds", function() require("dap").continue() end, desc = "Start", },
       { "<leader>dt", function() require("dap").toggle_breakpoint() end, desc = "Toggle Breakpoint", },
       { "<leader>dx", function() require("dap").terminate() end, desc = "Terminate", },
       { "<leader>du", function() require("dap").step_out() end, desc = "Step Out", },
+      {
+        "<leader>dc",
+        function()
+          load_launchjs()
+          require("dap").continue()
+        end,
+        desc = "Continue",
+      },
+      {
+        "<leader>ds",
+        function()
+          load_launchjs()
+          require("dap").continue()
+        end,
+        desc = "Start",
+      },
     },
     opts = {
       setup = {

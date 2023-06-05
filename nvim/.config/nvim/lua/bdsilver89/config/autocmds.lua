@@ -2,7 +2,7 @@ local function augroup(name)
   return vim.api.nvim_create_augroup("bdsilver89_" .. name, { clear = true })
 end
 
-vim.api.nvim_create_autocmd("FocusGained", {
+vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
   group = augroup("checktime"),
   command = "checktime",
   desc = "Check for file changes",
@@ -21,7 +21,7 @@ vim.api.nvim_create_autocmd("VimResized", {
   callback = function()
     vim.cmd("tabdo wincmd =")
   end,
-  desc = "Resize splits on window resize"
+  desc = "Resize splits on window resize",
 })
 
 vim.api.nvim_create_autocmd("FileType", {
@@ -45,7 +45,7 @@ vim.api.nvim_create_autocmd("FileType", {
     "spectre_panel",
     "startuptime",
     "toggleterm",
-    "vim"
+    "vim",
   },
   callback = function(event)
     vim.bo[event.buf].buflisted = false

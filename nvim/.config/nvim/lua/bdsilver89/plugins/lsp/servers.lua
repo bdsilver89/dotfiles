@@ -75,7 +75,7 @@ function M.setup(_, opts)
     require("lspconfig")[server].setup(server_opts)
   end
 
-  -- TODO: bun?
+  -- TODO: bun/deno?
 
   -- get all servers avaiable through mason lspconfig
   local have_mason, mlsp = pcall(require, "mason-lspconfig")

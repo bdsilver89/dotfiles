@@ -1,5 +1,6 @@
 return {
   "MunifTanjim/nui.nvim",
+  "SmiteshP/nvim-navic",
   {
     "nvim-tree/nvim-web-devicons",
     dependencies = {
@@ -7,7 +8,7 @@ return {
     },
     config = function()
       require("nvim-web-devicons").setup({
-        override = require("nvim-material-icon").get_icons()
+        override = require("nvim-material-icon").get_icons(),
       })
     end,
   },
@@ -17,18 +18,18 @@ return {
     opts = {
       input = { relative = "editor" },
       select = {
-        backend = {"telescope", "fzf", "builtin" },
+        backend = { "telescope", "fzf", "builtin" },
       },
     },
---    init = function()
---      vim.ui.select = function(...)
---        require("lazy").load({ plugins = { "dressing.nvim" } })
---        return vim.ui.select(...)
---      end
---      vim.ui.input = function(...)
---        require("lazy").load({ plugins = { "dressing.nvim" } })
---        return vim.ui.input(...)
---      end
---    end()
+    --    init = function()
+    --      vim.ui.select = function(...)
+    --        require("lazy").load({ plugins = { "dressing.nvim" } })
+    --        return vim.ui.select(...)
+    --      end
+    --      vim.ui.input = function(...)
+    --        require("lazy").load({ plugins = { "dressing.nvim" } })
+    --        return vim.ui.input(...)
+    --      end
+    --    end()
   },
 }
