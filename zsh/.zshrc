@@ -73,7 +73,7 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 # ZSH_CUSTOM=/path/to/new-custom-folder
 
 # Which plugins would you like to load?
-plugins=(asdf git web-search zsh-autosuggestions zsh-syntax-highlighting)
+plugins=(asdf git vi-mode web-search zsh-autosuggestions zsh-syntax-highlighting)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -149,6 +149,8 @@ fi
 if [ -x "$(command -v zoxide)" ]; then
   eval "$(zoxide init zsh)"
 fi
+
+bindkey -v
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
