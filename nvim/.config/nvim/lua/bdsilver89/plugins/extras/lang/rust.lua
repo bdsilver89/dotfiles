@@ -15,6 +15,12 @@ local function get_cpptools()
   return cpptools_path
 end
 
+-- this one is a little special since the cpp debuggers are shared with this
+local langs_config = require("bdsilver89.config.lang").langs
+if not langs_config.rust and not langs_config.cpp then
+  return {}
+end
+
 return {
   {
     "nvim-treesitter/nvim-treesitter",

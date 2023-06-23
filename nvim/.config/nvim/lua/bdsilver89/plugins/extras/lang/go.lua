@@ -4,6 +4,10 @@ local function get_delve()
   return dlv:get_install_path() .. "/dlv"
 end
 
+if not require("bdsilver89.config.lang").langs.go then
+  return {}
+end
+
 return {
   {
     "nvim-treesitter/nvim-treesitter",

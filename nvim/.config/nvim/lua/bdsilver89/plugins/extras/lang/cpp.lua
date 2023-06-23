@@ -6,6 +6,10 @@ local function get_codelldb()
   return codelldb_path
 end
 
+if not require("bdsilver89.config.lang").langs.cpp then
+  return {}
+end
+
 return {
   -- NOTE: do not add c/cpp debugging configuration here! Rust configuration handles setup of codelldb debugger for all three languages
   {

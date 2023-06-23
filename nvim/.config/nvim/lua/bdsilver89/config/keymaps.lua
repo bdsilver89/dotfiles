@@ -13,6 +13,7 @@ map("n", "<c-u>", "<c-u>zz")
 
 map("n", "<leader>p", [["_dP]])
 
+-- better up/down
 map("n", "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
 map("n", "k", "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
 
@@ -40,7 +41,7 @@ map("n", "<leader><tab>l", "<cmd>tablast<cr>", { desc = "Last tab" })
 map("n", "<leader><tab>f", "<cmd>tabfirst<cr>", { desc = "First tab" })
 map("n", "<leader><tab><tab>", "<cmd>tabnew<cr>", { desc = "New tab" })
 map("n", "<leader><tab>]", "<cmd>tabnext<cr>", { desc = "Next tab" })
-map("n", "<leader><tab>d", "<cmd>tapclose<cr>", { desc = "Close tab" })
+map("n", "<leader><tab>d", "<cmd>tabclose<cr>", { desc = "Close tab" })
 map("n", "<leader><tab>[", "<cmd>tabprev<cr>", { desc = "Prev tab" })
 
 -- buffers
@@ -63,7 +64,7 @@ map("i", "<a-k>", "<esc><cmd>m .-2<cr>==gi", { desc = "Move up" })
 map("v", "<a-j>", ":m '>+1<cr>gv=gv", { desc = "Move down" })
 map("v", "<a-k>", ":m '<-2<cr>gv=gv", { desc = "Move up" })
 
-map("n", "<leader>bb", "<cmd>e #e<cr>", { desc = "Switch to alternate buffer" })
+map("n", "<leader>bb", "<cmd>e#<cr>", { desc = "Switch to alternate buffer" })
 map("n", "<leader>br", "<cmd>e!<cr>", { desc = "Reload" })
 map("n", "<leader>bc", "<cmd>close<cr>", { desc = "Close" })
 
@@ -93,10 +94,46 @@ map("i", ";", ";<c-g>u")
 map("v", "<", "<gv")
 map("v", ">", ">gv")
 
+-- lazy.nvim
 map("n", "<leader>l", "<cmd>:Lazy<cr>", { desc = "Lazy" })
 
-map("t", "<esc><esc>", "<c-\\><c-n>", { desc = "Enter normal mode" })
+-- new file
+map("n", "<leader>fn", "<cmd>enew<cr>", { desc = "New File" })
+
+map("n", "<leader>xl", "<cmd>lopen<cr>", { desc = "Location List" })
+map("n", "<leader>xq", "<cmd>copen<cr>", { desc = "Quickfix List" })
+
+if not require("bdsilver89.utils").has("trouble.nvim") then
+  map("n", "[q", vim.cmd.cprev, { desc = "Previous quickfix" })
+  map("n", "]q", vim.cmd.cnext, { desc = "Next quickfix" })
+end
+
+-- toggle options
+-- stylua: ignore start
+map("n", "<leader>uf", require("bdsilver89.plugins.lsp.format").toggle, { desc = "Toggle format on save" })
+map("n", "<leader>us", function() require("bdsilver89.utils").toggle("spell") end, { desc = "Toggle spelling" })
+map("n", "<leader>uw", function() require("bdsilver89.utils").toggle("wrap") end, { desc = "Toggle word wrap" })
+map("n", "<leader>ul", function() require("bdsilver89.utils").toggle("relativenumber", true) end, { desc = "Toggle relative line numbers" })
+local conceallevel = vim.o.conceallevel > 0 and vim.o.conceallevel or 3
+map("n", "<leader>uc", function() require("bdsilver89.utils").toggle("conceallevel", false, {0, conceallevel}) end, { desc = "Toggle conceallevel" })
+if vim.lsp.buf.inlay_hint then
+   map("n", "<leader>uh", function() vim.lsp.buf.inlay_hint(0, nil) end, { desc = "Toggle inlay hints" })
+end
+-- stylua: ignore end
+
+-- TODO: lazygit shortcut
+
+-- quit
+map("n", "<leader>qq", "<cmd>qa<cr>", { desc = "Quit all" })
+
+-- highlights under cursor
+if vim.fn.has("nvim-0.9.0") == 1 then
+  map("n", "<leader>ui", vim.show_pos, { desc = "Inspect Pos" })
+end
 
 if vim.fn.has("nvim-0.9") == 1 then
   map("n", "<leader>ui", vim.show_pos, { desc = "Inspect Pos" })
 end
+
+-- terminal mappings
+map("t", "<esc><esc>", "<c-\\><c-n>", { desc = "Enter normal mode" })

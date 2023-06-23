@@ -1,6 +1,7 @@
 return {
   {
     "ggandor/leap.nvim",
+    enabled = false,
     keys = {
       { "s", mode = { "n", "x", "o" }, desc = "Leap forward to" },
       { "S", mode = { "n", "x", "o" }, desc = "Leap backward to" },
@@ -18,6 +19,7 @@ return {
   },
   {
     "ggandor/flit.nvim",
+    enabled = false,
     keys = function()
       local ret = {}
       for _, key in ipairs({ "f", "F", "t", "T" }) do
@@ -27,6 +29,38 @@ return {
     end,
     opts = {
       labled_modes = "nx",
+    },
+  },
+  {
+    "folke/flash.nvim",
+    enabled = true,
+    event = "VeryLazy",
+    opts = {},
+    keys = {
+      {
+        "s",
+        mode = { "n", "x", "o" },
+        function()
+          require("flash").jump()
+        end,
+        desc = "Flash",
+      },
+      {
+        "S",
+        mode = { "n", "x", "o" },
+        function()
+          require("flash").treesitter()
+        end,
+        desc = "Flash Treesitter",
+      },
+      {
+        "r",
+        mode = "o",
+        function()
+          require("flash").remote()
+        end,
+        desc = "Remote Flash",
+      },
     },
   },
 }

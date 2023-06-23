@@ -23,6 +23,10 @@ return {
       "nvim-neotest/neotest-python",
       "nvim-neotest/neotest-plenary",
       "nvim-neotest/neotest-vim-test",
+      {
+        name = "neotest-cpp",
+        dir = "/Users/brian/Developer/projects/neovim_plugins/neotest-cpp/develop",
+      },
       "rouge8/neotest-rust",
     },
     keys = {
@@ -50,14 +54,15 @@ return {
           require("neotest-plenary"),
           require("neotest-rust"),
           require("neotest-go"),
+          require("neotest-cpp"),
         },
-        consumers = {
-          overseer = require("neotest.consumers.overseer"),
-        },
-        overseer = {
-          enabled = true,
-          force_default = true,
-        },
+        -- consumers = {
+        --   overseer = require("neotest.consumers.overseer"),
+        -- },
+        -- overseer = {
+        --   enabled = true,
+        --   force_default = true,
+        -- },
       }
       require("neotest").setup(opts)
     end,

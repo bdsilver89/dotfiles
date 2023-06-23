@@ -5,6 +5,15 @@ M.root_patterns = {
   "lua",
 }
 
+---@param bufnr number?
+---@return boolean
+function M.valid_buffer(bufnr)
+  if not bufnr or bufnr < 1 then
+    return false
+  end
+  return vim.api.nvim_buf_is_valid(bufnr) and vim.bo[bufnr].buflisted
+end
+
 function M.on_attach(on_attach)
   vim.api.nvim_create_autocmd("LspAttach", {
     callback = function(args)
@@ -99,6 +108,28 @@ function M.telescope(builtin, opts)
       end
     end
     require("telescope.builtin")[builtin](opts)
+  end
+end
+
+---@param option string
+---@param silent boolean?
+---@param values {[1]: any, [2]: any}
+function M.toggle(option, silent, values)
+  if values then
+    if vim.opt_local[option]:get() == values[1] then
+      vim.opt_local[option] = values[2]
+    else
+      vim.opt_local[option] = values[1]
+    end
+    return M.info("Set " .. option .. " to " .. vim.opt_local[option]:get(), { title = "Option" })
+  end
+  vim.opt_local[option] = not vim.opt_local[option]:get()
+  if not silent then
+    if vim.opt_local[option]:get() then
+      M.info("Enabled " .. option, { title = "Option" })
+    else
+      M.warn("Disabled " .. option, { title = "Option" })
+    end
   end
 end
 

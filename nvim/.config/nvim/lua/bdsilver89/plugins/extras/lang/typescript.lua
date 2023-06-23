@@ -1,3 +1,7 @@
+if not require("bdsilver89.config.lang").langs.typescript then
+  return {}
+end
+
 return {
   {
     "nvim-treesitter/nvim-treesitter",

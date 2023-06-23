@@ -13,11 +13,17 @@ return {
         require("telescope").load_extension("fzf")
       end,
     },
+    {
+      "debugloop/telescope-undo.nvim",
+      config = function()
+        require("telescope").load_extension("undo")
+      end,
+    },
   },
   keys = {
     { "<leader>,", "<cmd>Telescope buffers show_all_buffers=true<cr>", desc = "Switch buffer" },
     { "<leader>/", Util.telescope("live_grep"), desc = "Grep (root dir)" },
-    { "<leader>:", "<cmd>Telescope commnd_history<cr>", desc = "Command history" },
+    { "<leader>:", "<cmd>Telescope command_history<cr>", desc = "Command history" },
     { "<leader>fb", "<cmd>Telescope buffers<cr>", desc = "Buffers" },
     { "<leader>ff", Util.telescope("files"), desc = "Find files (root dir)" },
     { "<leader>fF", Util.telescope("files", { cwd = false }), desc = "Find files (cwd)" },
@@ -39,6 +45,8 @@ return {
     { "<leader>sM", "<cmd>Telescope man_pages<cr>", desc = "Man pages" },
     -- { "<leader>sm", "<cmd>Telescope marks<cr>", desc = "Marks" },
     { "<leader>so", "<cmd>Telescope vim_options<cr>", desc = "Options" },
+    { "<leader>su", "<cmd>Telescope undo<cr>", desc = "Undo" },
+
     -- { "<leader>sp", "<cmd>Telescope lazy<cr>", desc = "Plugins" },
     -- { "<leader>ss", "<cmd>Telescope luasnip<cr>", desc = "Snippets" },
     -- { "<leader>sR", "<cmd>Telescope resume<cr>", desc = "Resume" },

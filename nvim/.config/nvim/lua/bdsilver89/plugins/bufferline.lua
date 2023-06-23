@@ -55,9 +55,9 @@ return {
       },
     },
   },
-  {
-    "tiagovla/scope.nvim",
-    event = "VeryLazy",
-    opts = {},
-  },
+  -- {
+  --   "tiagovla/scope.nvim",
+  --   event = "VeryLazy",
+  --   opts = {},
+  -- },
 }
