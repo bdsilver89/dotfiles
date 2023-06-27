@@ -3,7 +3,6 @@ local Util = require("bdsilver89.utils")
 return {
   "nvim-telescope/telescope.nvim",
   cmd = "Telescope",
-  version = false,
   dependencies = {
     {
       "nvim-telescope/telescope-fzf-native.nvim",
@@ -90,37 +89,45 @@ return {
       desc = "Goto symbol (workspace)",
     },
   },
-  opts = {
-    defaults = {
-      prompt_prefix = " ",
-      selection_caret = " ",
-      layout_strategy = "horizontal",
-      layout_config = {
-        prompt_position = "top",
-      },
-      sorting_strategy = "ascending",
-      winblend = 0,
-      mappings = {
-        i = {
-          ["<c-down>"] = function(...)
-            return require("telescope.actions").cycle_history_next(...)
-          end,
-          ["<c-up>"] = function(...)
-            return require("telescope.actions").cycle_history_prev(...)
-          end,
-          ["<c-f>"] = function(...)
-            return require("telescope.actions").preview_scrolling_down(...)
-          end,
-          ["<c-b>"] = function(...)
-            return require("telescope.actions").preview_scrolling_up(...)
-          end,
+  opts = function()
+    local actions = require("telescope.actions")
+    return {
+      defaults = {
+        prompt_prefix = " ",
+        selection_caret = " ",
+        path_display = {
+          "truncate",
         },
-        n = {
-          ["q"] = function(...)
-            return require("telescope.actions").close(...)
-          end,
+        layout_strategy = "horizontal",
+        layout_config = {
+          -- prompt_position = "top",
+          horizontal = { prompt_position = "top", preview_width = 0.55 },
+          vertical = { mirror = false },
+          width = 0.87,
+          height = 0.80,
+          preview_cutoff = 120,
+        },
+        sorting_strategy = "ascending",
+        winblend = 0,
+        mappings = {
+          i = {
+            ["<c-down>"] = actions.cycle_history_next,
+            ["<c-up>"] = actions.cycle_history_prev,
+            ["<c-f>"] = actions.preview_scrolling_down,
+            ["<c-b>"] = actions.preview_scrolling_up,
+          },
+          n = {
+            ["q"] = actions.close,
+          },
         },
       },
-    },
-  },
+    }
+  end,
+  config = function(_, opts)
+    local telescope = require("telescope")
+    telescope.setup(opts)
+
+    telescope.load_extension("notify")
+    telescope.load_extension("fzf")
+  end,
 }

@@ -1,6 +1,8 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
+vim.g.icons_enabled = 1
+
 vim.opt.autowrite = true
 vim.opt.clipboard = "unnamedplus"
 vim.opt.cmdheight = 0
@@ -16,7 +18,7 @@ vim.opt.grepformat = "%f:%l:%c:%m"
 vim.opt.grepprg = "rg --vimgrep"
 vim.opt.ignorecase = true
 vim.opt.inccommand = "nosplit"
-vim.opt.laststatus = 0
+vim.opt.laststatus = 3
 vim.opt.list = true
 vim.opt.mouse = "a"
 vim.opt.number = true
@@ -29,6 +31,7 @@ vim.opt.shiftround = true
 vim.opt.shiftwidth = 2
 vim.opt.shortmess:append({ W = true, s = true, I = true, c = true })
 vim.opt.showtabline = 2
+vim.opt.showcmdloc = "statusline"
 vim.opt.sidescrolloff = 8
 vim.opt.signcolumn = "yes"
 vim.opt.smartcase = true

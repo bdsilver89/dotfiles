@@ -5,11 +5,10 @@ return {
     dependencies = {
       { "folke/neoconf.nvim", cmd = "Neoconf", config = true },
       { "folke/neodev.nvim", opts = { library = { plugins = { "neotest", "nvim-dap-ui" }, types = true } } },
-      -- { "smjonas/inc-rename.nvim", config = true },
       "williamboman/mason.nvim",
       "williamboman/mason-lspconfig.nvim",
       "jay-babu/mason-null-ls.nvim",
-      "SmiteshP/nvim-navbuddy",
+      "SmiteshP/nvim-navic",
     },
     opts = {
       servers = {
@@ -33,16 +32,7 @@ return {
         },
       },
     },
-    setup = {
-      lua_ls = function(_, _)
-        --   local lsp_utils = require("bdsilver89.plugins.lsp.utils")
-        --   lsp_utils.on_attach(function(client, buffer)
-        --     if client.name == "lua_ls" then
-        --       vim.keymap
-        --     end
-        --   end)
-      end,
-    },
+    setup = {},
     config = function(plugin, opts)
       require("bdsilver89.plugins.lsp.servers").setup(plugin, opts)
     end,
@@ -115,23 +105,44 @@ return {
     },
   },
   {
-    "SmiteshP/nvim-navbuddy",
-    dependencies = {
-      "SmiteshP/nvim-navic",
-      "MunifTanjim/nui.nvim",
-    },
-    opts = {
-      lsp = {
-        auto_attach = true,
-      },
-    },
+    "stevearc/aerial.nvim",
     keys = {
       {
         "<leader>cn",
         function()
-          require("nvim-navbuddy").open()
+          require("aerial").nav_toggle()
         end,
         desc = "Code Navigation",
+      },
+      {
+        "<leader>ct",
+        function()
+          require("aerial").toggle()
+        end,
+        desc = "Code Navigation Tree",
+      },
+    },
+    opts = {
+      attach_mode = "global",
+      backends = { "lsp", "treesitter", "markdown", "man" },
+      layout = { min_width = 28 },
+      show_guides = true,
+      filter_kind = false,
+      guides = {
+        mid_item = "├ ",
+        last_item = "└ ",
+        nested_top = "│ ",
+        whitespace = "  ",
+      },
+      keymaps = {
+        ["[y"] = "actions.prev",
+        ["]y"] = "actions.next",
+        ["[Y"] = "actions.prev_up",
+        ["]Y"] = "actions.next_up",
+        ["{"] = false,
+        ["}"] = false,
+        ["[["] = false,
+        ["]]"] = false,
       },
     },
   },

@@ -1,6 +1,7 @@
 return {
   {
     "akinsho/bufferline.nvim",
+    enabled = true,
     event = "VeryLazy",
     opts = {
       options = {
@@ -14,12 +15,12 @@ return {
         always_show_bufferline = true,
         separator_style = "slant" or "padded_slant",
         color_icons = true,
-        diagnostics_indicator = function(_, _, diag)
-          local icons = require("bdsilver89.config.icons").diagnostics
-          local ret = (diag.error and icons.Error .. diag.error .. " " or "")
-            .. (diag.warning and icons.Warn .. diag.warning or "")
-          return vim.trim(ret)
-        end,
+        -- diagnostics_indicator = function(_, _, diag)
+        --   local icons = require("bdsilver89.config.icons").diagnostics
+        --   local ret = (diag.error and icons.Error .. diag.error .. " " or "")
+        --     .. (diag.warning and icons.Warn .. diag.warning or "")
+        --   return vim.trim(ret)
+        -- end,
         offsets = {
           {
             filetype = "neo-tree",

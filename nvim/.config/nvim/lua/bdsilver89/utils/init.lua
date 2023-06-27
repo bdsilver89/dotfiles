@@ -133,6 +133,40 @@ function M.toggle(option, silent, values)
   end
 end
 
+--- Get an icon from the internal icons pool if it is available
+---@param kind string The icon icon
+---@param padding? integer Padding to add to the end of the icon
+---@param no_fallback? boolean Whether or not to disable the fallback text icon
+---@return any|nil
+function M.get_icon(kind, padding, no_fallback)
+  if not vim.g.icons_enabled and no_fallback then
+    return ""
+  end
+  local icon_pack = vim.g.icons_enabled and "icons" or "text_icons"
+  if not M[icon_pack] then
+    M.icons = require("bdsilver89.config.icons.nerd")
+    M.text_icons = require("bdsilver89.config.icons.text")
+  end
+  local icon = M[icon_pack] and M[icon_pack][kind]
+  return icon and icon .. string.rep(" ", padding or 0) or ""
+end
+
+--- Get an icon spinner table if it is available (Icon1, Icon2, Icon3, etc.)
+---@param kind string The base icon to check for a sequence of
+---@return string[]|nil
+function M.get_spinner(kind, ...)
+  local spinner = {}
+  repeat
+    local icon = M.get_icon(("%s%d"):format(kind, #spinner + 1), ...)
+    if icon ~= "" then
+      table.insert(spinner, icon)
+    end
+  until not icon or icon == ""
+  if #spinner > 0 then
+    return spinner
+  end
+end
+
 function M.notify(msg, opts)
   if vim.in_fast_event() then
     return vim.schedule(function()

@@ -1,13 +1,40 @@
 return {
   "MunifTanjim/nui.nvim",
-  "SmiteshP/nvim-navic",
   {
     "nvim-tree/nvim-web-devicons",
-    dependencies = { "DaikyXendo/nvim-material-icon" },
+    -- dependencies = { "DaikyXendo/nvim-material-icon" },
     config = function()
       require("nvim-web-devicons").setup({
-        override = require("nvim-material-icon").get_icons(),
+        -- override = require("nvim-material-icon").get_icons(),
       })
+    end,
+  },
+  {
+    "onsails/lspkind.nvim",
+    opts = {
+      mode = "symbol",
+      symbol_map = {
+        Array = "󰅪",
+        Boolean = "⊨",
+        Class = "󰌗",
+        Constructor = "",
+        Key = "󰌆",
+        Namespace = "󰅪",
+        Null = "NULL",
+        Number = "#",
+        Object = "󰀚",
+        Package = "󰏗",
+        Property = "",
+        Reference = "",
+        Snippet = "",
+        String = "󰀬",
+        TypeParameter = "󰊄",
+        Unit = "",
+      },
+      menu = {},
+    },
+    config = function(_, opts)
+      require("lspkind").init(opts)
     end,
   },
   {
@@ -55,5 +82,58 @@ return {
       require("notify").setup(opts)
       vim.notify = require("notify")
     end,
+  },
+  {
+    "folke/noice.nvim",
+    enabled = false,
+    event = "VeryLazy",
+    opts = {
+      lsp = {
+        override = {
+          ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+          ["vim.lsp.util.stylize_markdown"] = true,
+          ["cmp.entry.get_documentation"] = true,
+        },
+      },
+      presets = {
+        bottom_search = true,
+        command_palette = true,
+        long_message_to_split = true,
+        inc_rename = true,
+        lsp_doc_border = true,
+      },
+    },
+    keys = {
+      {
+        "<S-Enter>",
+        function()
+          require("noice").redirect(vim.fn.getcmdline())
+        end,
+        mode = "c",
+        desc = "Redirect Cmdline",
+      },
+      {
+        "<c-f>",
+        function()
+          if not require("noice.lsp").scroll(4) then
+            return "<c-f>"
+          end
+        end,
+        silent = true,
+        expr = true,
+        desc = "Scroll forward",
+      },
+      {
+        "<c-b>",
+        function()
+          if not require("noice.lsp").scroll(-4) then
+            return "<c-b>"
+          end
+        end,
+        silent = true,
+        expr = true,
+        desc = "Scroll backward",
+      },
+    },
   },
 }

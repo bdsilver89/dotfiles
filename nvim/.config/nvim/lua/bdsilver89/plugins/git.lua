@@ -1,20 +1,20 @@
 return {
-  {
-    "sindrets/diffview.nvim",
-    cmd = { "DiffviewOpen", "DiffviewClose", "DiffviewToggleFiles", "DiffviewFocusFiles" },
-    config = true,
-  },
-  {
-    "TimUntersberger/neogit",
-    cmd = "Neogit",
-    opts = {
-      integrations = { diffview = true },
-      disable_commit_confirmation = true,
-    },
-    keys = {
-      { "<leader>gs", "<cmd>Neogit kind=tab<cr>", desc = "Status" },
-    },
-  },
+  -- {
+  --   "sindrets/diffview.nvim",
+  --   cmd = { "DiffviewOpen", "DiffviewClose", "DiffviewToggleFiles", "DiffviewFocusFiles" },
+  --   config = true,
+  -- },
+  -- {
+  --   "TimUntersberger/neogit",
+  --   cmd = "Neogit",
+  --   opts = {
+  --     integrations = { diffview = true },
+  --     disable_commit_confirmation = true,
+  --   },
+  --   keys = {
+  --     { "<leader>gs", "<cmd>Neogit kind=tab<cr>", desc = "Status" },
+  --   },
+  -- },
   {
     "tpope/vim-fugitive",
     cmd = { "Git", "GBrowse", "Gdiffsplit", "Gvdiffsplit" },
@@ -104,26 +104,26 @@ return {
       end,
     },
   },
-  {
-    "mattn/vim-gist",
-    dependencies = { "mattn/webapi-vim" },
-    cmd = { "Gist" },
-    config = function()
-      vim.g.gist_open_browser_after_post = 1
-    end,
-  },
-  {
-    "rawnly/gist.nvim",
-    cmd = { "CreateGist", "CreateGistFromFile" },
-  },
-  {
-    "aaronhallaert/advanced-git-search.nvim",
-    config = function()
-      require("telescope").load_extension("advanced_git_search")
-    end,
-    dependencies = {
-      "nvim-telescope/telescope.nvim",
-      "tpope/vim-fugitive",
-    },
-  },
+  -- {
+  --   "mattn/vim-gist",
+  --   dependencies = { "mattn/webapi-vim" },
+  --   cmd = { "Gist" },
+  --   config = function()
+  --     vim.g.gist_open_browser_after_post = 1
+  --   end,
+  -- },
+  -- {
+  --   "rawnly/gist.nvim",
+  --   cmd = { "CreateGist", "CreateGistFromFile" },
+  -- },
+  -- {
+  --   "aaronhallaert/advanced-git-search.nvim",
+  --   config = function()
+  --     require("telescope").load_extension("advanced_git_search")
+  --   end,
+  --   dependencies = {
+  --     "nvim-telescope/telescope.nvim",
+  --     "tpope/vim-fugitive",
+  --   },
+  -- },
 }

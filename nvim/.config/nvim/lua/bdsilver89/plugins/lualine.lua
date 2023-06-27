@@ -1,8 +1,8 @@
-local Util = require("bdsilver89.utils")
-local icons = require("bdsilver89.config.icons")
+local Utils = require("bdsilver89.utils")
 
 return {
   "nvim-lualine/lualine.nvim",
+  enabled = true,
   dependencies = {
     "SmiteshP/nvim-navic",
   },
@@ -25,10 +25,10 @@ return {
         {
           "diagnostics",
           symbols = {
-            error = icons.diagnostics.Error,
-            warn = icons.diagnostics.Warn,
-            info = icons.diagnostics.Info,
-            hint = icons.diagnostics.Hint,
+            error = Utils.get_icon("DiagnosticError"),
+            warn = Utils.get_icon("DiagnosticWarn"),
+            info = Utils.get_icon("DiagnosticInfo"),
+            hint = Utils.get_icon("DiagnosticHint"),
           },
         },
         {
@@ -82,19 +82,19 @@ return {
           cond = function()
             return package.loaded["dap"] and require("dap").status() ~= ""
           end,
-          color = Util.fg("Debug"),
+          color = Utils.fg("Debug"),
         },
         {
           require("lazy.status").updates,
           cond = require("lazy.status").has_updates,
-          color = Util.fg("Special"),
+          color = Utils.fg("Special"),
         },
         {
           "diff",
           symbols = {
-            added = icons.git.added,
-            modified = icons.git.modified,
-            removed = icons.git.removed,
+            added = Utils.get_icon("GitAdd"),
+            modified = Utils.get_icon("GitChange"),
+            removed = Utils.get_icon("GitDelete"),
           },
         },
       },

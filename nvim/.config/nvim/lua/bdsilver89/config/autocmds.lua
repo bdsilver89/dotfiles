@@ -27,6 +27,8 @@ vim.api.nvim_create_autocmd("VimResized", {
 vim.api.nvim_create_autocmd("FileType", {
   group = augroup("close_with_q"),
   pattern = {
+    "aerial",
+    "aerial-nav",
     "checkhealth",
     "fugitive",
     "git",
@@ -45,6 +47,7 @@ vim.api.nvim_create_autocmd("FileType", {
     "spectre_panel",
     "startuptime",
     "toggleterm",
+    "Trouble",
     "vim",
   },
   callback = function(event)

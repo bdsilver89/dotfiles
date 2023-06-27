@@ -1,3 +1,7 @@
+if vim.loader and vim.fn.has("nvim-0.9.1") == 1 then
+  vim.loader.enable()
+end
+
 require("bdsilver89.config.options")
 require("bdsilver89.config.lazy")
 
@@ -17,3 +21,5 @@ if vim.fn.argc(-1) == 0 then
 else
   setup()
 end
+
+vim.cmd.colorscheme("nightfox")

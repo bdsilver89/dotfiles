@@ -1,4 +1,9 @@
 return {
+  "nvim-lua/plenary.nvim",
+  -- {
+  --   "stevearc/resession.nvim",
+  --   opts = {},
+  -- },
   {
     "echasnovski/mini.bufremove",
     keys = {
@@ -17,25 +22,6 @@ return {
         desc = "Delete (force)",
       },
     },
-  },
-  {
-    "echasnovski/mini.indentscope",
-    event = { "BufReadPre", "BufNewFile" },
-    opts = {
-      symbol = "│",
-      options = { try_as_border = true },
-    },
-    init = function()
-      vim.api.nvim_create_autocmd("FileType", {
-        pattern = { "help", "alpha", "dashboard", "neo-tree", "Trouble", "lazy", "mason" },
-        callback = function()
-          vim.b.miniindentscope_disable = true
-        end,
-      })
-    end,
-    config = function(_, opts)
-      require("mini.indentscope").setup(opts)
-    end,
   },
   {
     "echasnovski/mini.pairs",
@@ -140,56 +126,137 @@ return {
     end,
   },
   {
-    "echasnovski/mini.files",
+    "folke/flash.nvim",
+    enabled = true,
     event = "VeryLazy",
-    opts = {
-      windows = {
-        preview = true,
-      },
-      options = {
-        use_as_default_explorer = false,
-      },
-    },
+    opts = {},
     keys = {
       {
-        "<leader>fm",
+        "s",
+        mode = { "n", "x", "o" },
         function()
-          require("mini.files").open(require("bdsilver89.utils").get_root(), true)
+          require("flash").jump()
         end,
-        desc = "Open mini.files (directory of current file)",
+        desc = "Flash",
       },
       {
-        "<leader>fM",
+        "S",
+        mode = { "n", "x", "o" },
         function()
-          require("mini.files").open(vim.loop.cwd(), true)
+          require("flash").treesitter()
         end,
-        desc = "Open mini.files (cwd)",
+        desc = "Flash Treesitter",
+      },
+      {
+        "r",
+        mode = "o",
+        function()
+          require("flash").remote()
+        end,
+        desc = "Remote Flash",
+      },
+    },
+  },
+  {
+    "akinsho/toggleterm.nvim",
+    keys = {
+      { "[[<c-\\>]]" },
+      { "<leader>1", "<cmd>1ToggleTerm<cr>", desc = "Terminal #1" },
+      { "<leader>2", "<cmd>2ToggleTerm<cr>", desc = "Terminal #2" },
+      { "<leader>3", "<cmd>3ToggleTerm<cr>", desc = "Terminal #3" },
+      { "<leader>4", "<cmd>4ToggleTerm<cr>", desc = "Terminal #4" },
+    },
+    cmd = { "ToggleTerm", "TermExec" },
+    opts = {
+      size = 20,
+      hide_numbers = true,
+      open_mapping = [[<c-\\>]],
+      shade_filetypes = {},
+      shade_terminals = false,
+      shading_factor = 0.3,
+      start_in_insert = true,
+      persist_size = true,
+      direction = "float",
+      winbar = {
+        enabled = true,
+        name_formatter = function(term)
+          return term.name
+        end,
+      },
+    },
+  },
+  {
+    "folke/which-key.nvim",
+    event = "VeryLazy",
+    opts = {
+      setup = {
+        show_help = true,
+        plugins = { spelling = true },
+        key_labels = { ["<leader>"] = "SPC" },
+        triggers = "auto",
+        window = {
+          border = "single",
+          position = "bottom",
+          margin = { 1, 0, 1, 0 },
+          padding = { 1, 1, 1, 1 },
+          winblend = 0,
+        },
+        layout = {
+          height = { min = 4, max = 25 },
+          width = { min = 20, max = 50 },
+          spacing = 3,
+          align = "left",
+        },
+      },
+      defaults = {
+        prefix = "<leader>",
+        mode = { "n", "v" },
+        ["<tab>"] = { name = "+Tabs" },
+        -- a = { name = "+AI" },
+        b = { name = "+Buffer" },
+        d = { name = "+Debug" },
+        D = { name = "+Database" },
+        f = { name = "+File/Find" },
+        h = { name = "+Help" },
+        j = { name = "+Jump" },
+        g = { name = "+Git", h = { name = "Hunk" }, t = { name = "Toggle" } },
+        -- n = { name = "+Notes" },
+        o = { name = "+Overseer" },
+        -- p = { name = "+Project" },
+        q = { name = "+Quit" },
+        t = { name = "+Test", N = { name = "Neotest" } },
+        -- stylua: ignore
+        s = {
+          name = "+Search",
+          c = { function() require("utils.coding").cht() end, "Cheatsheets", },
+          o = { function() require("utils.coding").stack_overflow() end, "Stack Overflow", },
+        },
+        u = { "+UserSettings" },
+        -- v = { name = "+View" },
+        w = { "+Window" },
+        x = { "+Trouble" },
+        c = {
+          name = "+Code",
+          g = { name = "Annotation" },
+          x = {
+            name = "Swap Next",
+            f = "Function",
+            p = "Parameter",
+            c = "Class",
+          },
+          X = {
+            name = "Swap Previous",
+            f = "Function",
+            p = "Parameter",
+            c = "Class",
+          },
+        },
       },
     },
     config = function(_, opts)
-      require("mini.files").setup(opts)
-
-      local show_dotfiles = true
-      local filter_show = function(fs_entry)
-        return true
-      end
-      local filter_hide = function(fs_entry)
-        return not vim.startswith(fs_entry.name, ".")
-      end
-
-      local toggle_dotfiles = function()
-        show_dotfiles = not show_dotfiles
-        local new_filter = show_dotfiles and filter_show or filter_hide
-        require("mini.files").refresh({ content = { filter = new_filter } })
-      end
-
-      vim.api.nvim_create_autocmd("User", {
-        pattern = "MiniFilesBufferCreate",
-        callback = function()
-          local buf_id = args.data.buf_id
-          vim.keymap.set("n", "g.", toggle_dotfiles, { buffer = buf_id })
-        end,
-      })
+      local wk = require("which-key")
+      wk.setup(opts.setup)
+      wk.register(opts.defaults)
     end,
   },
 }
