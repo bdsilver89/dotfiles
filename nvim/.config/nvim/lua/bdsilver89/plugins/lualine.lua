@@ -2,7 +2,7 @@ local Utils = require("bdsilver89.utils")
 
 return {
   "nvim-lualine/lualine.nvim",
-  enabled = true,
+  enabled = false,
   dependencies = {
     "SmiteshP/nvim-navic",
   },
@@ -49,14 +49,14 @@ return {
             unnamed = "",
           },
         },
-        {
-          function()
-            return require("nvim-navic").get_location()
-          end,
-          cond = function()
-            return package.loaded["nvim-navic"] and require("nvim-navic").is_available()
-          end,
-        },
+        -- {
+        --   function()
+        --     return require("nvim-navic").get_location()
+        --   end,
+        --   cond = function()
+        --     return package.loaded["nvim-navic"] and require("nvim-navic").is_available()
+        --   end,
+        -- },
       },
       lualine_x = {
         {
