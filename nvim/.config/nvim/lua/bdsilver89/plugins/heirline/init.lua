@@ -9,6 +9,8 @@ return {
     local conditions = require("heirline.conditions")
     local utils = require("heirline.utils")
 
+    local get_icon = require("bdsilver89.utils").get_icon
+
     --- Blend two rgb colors using alpha
     ---@param color1 string | number first color
     ---@param color2 string | number second color
@@ -32,25 +34,25 @@ return {
       return blend(color, "#000000", n)
     end
 
-    local icons = {
-      -- ✗   󰅖 󰅘 󰅚 󰅙 󱎘 
-      close = "󰅙 ",
-      dir = "󰉋 ",
-      lsp = " ", --   
-      vim = " ",
-    }
+    -- local icons = {
+    --   -- ✗   󰅖 󰅘 󰅚 󰅙 󱎘 
+    --   close = "󰅙 ",
+    --   dir = "󰉋 ",
+    --   lsp = " ", --   
+    --   vim = " ",
+    -- }
 
     local icons = {
       -- ✗   󰅖 󰅘 󰅚 󰅙 󱎘 
-      close = "󰅙 ",
-      dir = "󰉋 ",
-      lsp = " ", --   
-      vim = " ",
-      debug = " ",
-      err = vim.fn.sign_getdefined("DiagnosticSignError")[1].text,
-      warn = vim.fn.sign_getdefined("DiagnosticSignWarn")[1].text,
-      info = vim.fn.sign_getdefined("DiagnosticSignInfo")[1].text,
-      hint = vim.fn.sign_getdefined("DiagnosticSignHint")[1].text,
+      close = get_icon("TabClose") .. " ",
+      dir = get_icon("FolderClose") .. " ",
+      lsp = get_icon("ActiveLsp") .. " ",
+      vim = get_icon("Vim") .. " ",
+      debug = get_icon("Debugger") .. " ",
+      err = get_icon("DiagnosticError") .. " ",
+      warn = get_icon("DiagnosticWarn") .. " ",
+      info = get_icon("DiagnosticInfo") .. " ",
+      hint = get_icon("DiagnosticHint") .. " ",
     }
 
     local separators = {
@@ -632,13 +634,13 @@ return {
           return vim.b.term_title
         end,
       },
-      {
-        provider = function()
-          local id = require("terminal"):current_term_index()
-          return " " .. (id or "Exited")
-        end,
-        hl = { bold = true, fg = "blue" },
-      },
+      -- {
+      --   provider = function()
+      --     local id = require("terminal"):current_term_index()
+      --     return " " .. (id or "Exited")
+      --   end,
+      --   hl = { bold = true, fg = "blue" },
+      -- },
     }
 
     local Spell = {

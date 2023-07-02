@@ -4,6 +4,7 @@ return {
   --   "stevearc/resession.nvim",
   --   opts = {},
   -- },
+  { "NMAC427/guess-indent.nvim", event = { "BufReadPre", "BufNewFile" } },
   {
     "echasnovski/mini.bufremove",
     keys = {
@@ -25,7 +26,7 @@ return {
   },
   {
     "echasnovski/mini.pairs",
-    event = "VeryLazy",
+    event = { "BufReadPost", "BufNewFile" },
     opts = {},
   },
   {
@@ -61,7 +62,7 @@ return {
   },
   {
     "echasnovski/mini.ai",
-    event = "VeryLazy",
+    event = { "BufReadPost", "BufNewFile" },
     dependencies = {
       "nvim-treesitter-textobjects",
     },
@@ -128,7 +129,7 @@ return {
   {
     "folke/flash.nvim",
     enabled = true,
-    event = "VeryLazy",
+    event = { "BufReadPost", "BufNewFile" },
     opts = {},
     keys = {
       {

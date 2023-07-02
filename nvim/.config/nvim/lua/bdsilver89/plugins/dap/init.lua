@@ -64,16 +64,17 @@ return {
       },
     },
     config = function(plugin, opts)
-      -- local icons = require("bdsilver89.config.icons")
-      -- vim.api.nvim_set_hl(0, "DapStoppedLine", { default = true, link = "Visual" })
-
-      -- for name, sign in pairs(icons.dap) do
-      --   sign = type(sign) == "table" and sign or { sign }
-      --   vim.fn.sign_define(
-      --     "Dap" .. name,
-      --     { text = sign[1], texthl = sign[2] or "DiagnosticInfo", linehl = sign[3], numhl = sign[3] }
-      --   )
-      -- end
+      local utils = require("bdsilver89.utils")
+      local signs = {
+        { name = "DapStopped", text = utils.get_icon("DapStopped"), texthl = "DiagnosticWarn" },
+        { name = "DapBreakpoint", text = utils.get_icon("DapBreakpoint"), texthl = "DiagnosticInfo" },
+        { name = "DapBreakpointRejected", text = utils.get_icon("DapBreakpointRejected"), texthl = "DiagnosticError" },
+        { name = "DapBreakpointCondition", text = utils.get_icon("DapBreakpointCondition"), texthl = "DiagnosticInfo" },
+        { name = "DapLogPoint", text = utils.get_icon("DapLogPoint"), texthl = "DiagnosticInfo" },
+      }
+      for _, sign in ipairs(signs) do
+        vim.fn.sign_define(sign.name, sign)
+      end
 
       require("nvim-dap-virtual-text").setup({
         commented = true,

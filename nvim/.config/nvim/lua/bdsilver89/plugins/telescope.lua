@@ -20,7 +20,7 @@ return {
     },
   },
   keys = {
-    { "<leader>,", "<cmd>Telescope buffers show_all_buffers=true<cr>", desc = "Switch buffer" },
+    { "<leader>,", "<cmd>Telescope buffers spow_all_buffers=true<cr>", desc = "Switch buffer" },
     { "<leader>/", Util.telescope("live_grep"), desc = "Grep (root dir)" },
     { "<leader>:", "<cmd>Telescope command_history<cr>", desc = "Command history" },
     { "<leader>fb", "<cmd>Telescope buffers<cr>", desc = "Buffers" },
@@ -43,6 +43,7 @@ return {
     { "<leader>sk", "<cmd>Telescope keymaps<cr>", desc = "Keymaps" },
     { "<leader>sM", "<cmd>Telescope man_pages<cr>", desc = "Man pages" },
     -- { "<leader>sm", "<cmd>Telescope marks<cr>", desc = "Marks" },
+    { "<leader>sn", "<cmd>Telescope notify<cr>", desc = "Notify messages" },
     { "<leader>so", "<cmd>Telescope vim_options<cr>", desc = "Options" },
     { "<leader>su", "<cmd>Telescope undo<cr>", desc = "Undo" },
 

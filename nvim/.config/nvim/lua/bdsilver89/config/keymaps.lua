@@ -8,8 +8,16 @@ local function map(mode, lhs, rhs, opts)
   end
 end
 
+map("v", "J", ":m '>+1<CR>gv=gv")
+map("v", "K", ":m '<-2<CR>gv=gv")
+
+map("n", "J", "mzJ`z")
+
 map("n", "<c-d>", "<c-d>zz")
 map("n", "<c-u>", "<c-u>zz")
+
+map("n", "n", "nzz")
+map("n", "N", "Nzz")
 
 map("n", "<leader>p", [["_dP]])
 

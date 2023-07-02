@@ -54,62 +54,62 @@ return {
       require("mini.indentscope").setup(opts)
     end,
   },
-  {
-    "echasnovski/mini.files",
-    event = "VeryLazy",
-    opts = {
-      windows = {
-        preview = true,
-      },
-      options = {
-        use_as_default_explorer = false,
-      },
-    },
-    keys = {
-      {
-        "<leader>fm",
-        function()
-          require("mini.files").open(require("bdsilver89.utils").get_root(), true)
-        end,
-        desc = "Open mini.files (directory of current file)",
-      },
-      {
-        "<leader>fM",
-        function()
-          require("mini.files").open(vim.loop.cwd(), true)
-        end,
-        desc = "Open mini.files (cwd)",
-      },
-    },
-    config = function(_, opts)
-      require("mini.files").setup(opts)
-
-      local show_dotfiles = true
-      local filter_show = function(fs_entry)
-        return true
-      end
-      local filter_hide = function(fs_entry)
-        return not vim.startswith(fs_entry.name, ".")
-      end
-
-      local toggle_dotfiles = function()
-        show_dotfiles = not show_dotfiles
-        local new_filter = show_dotfiles and filter_show or filter_hide
-        require("mini.files").refresh({ content = { filter = new_filter } })
-      end
-
-      vim.api.nvim_create_autocmd("User", {
-        pattern = "MiniFilesBufferCreate",
-        callback = function(args)
-          local buf_id = args.data.buf_id
-          vim.keymap.set("n", "g.", toggle_dotfiles, { buffer = buf_id })
-        end,
-      })
-    end,
-  },
+  -- {
+  --   "echasnovski/mini.files",
+  --   event = { "BufReadPost", "BufNewFile" },
+  --   opts = {
+  --     windows = {
+  --       preview = true,
+  --     },
+  --     options = {
+  --       use_as_default_explorer = false,
+  --     },
+  --   },
+  --   keys = {
+  --     {
+  --       "<leader>fm",
+  --       function()
+  --         require("mini.files").open(require("bdsilver89.utils").get_root(), true)
+  --       end,
+  --       desc = "Open mini.files (directory of current file)",
+  --     },
+  --     {
+  --       "<leader>fM",
+  --       function()
+  --         require("mini.files").open(vim.loop.cwd(), true)
+  --       end,
+  --       desc = "Open mini.files (cwd)",
+  --     },
+  --   },
+  --   config = function(_, opts)
+  --     require("mini.files").setup(opts)
+  --
+  --     local show_dotfiles = true
+  --     local filter_show = function(fs_entry)
+  --       return true
+  --     end
+  --     local filter_hide = function(fs_entry)
+  --       return not vim.startswith(fs_entry.name, ".")
+  --     end
+  --
+  --     local toggle_dotfiles = function()
+  --       show_dotfiles = not show_dotfiles
+  --       local new_filter = show_dotfiles and filter_show or filter_hide
+  --       require("mini.files").refresh({ content = { filter = new_filter } })
+  --     end
+  --
+  --     vim.api.nvim_create_autocmd("User", {
+  --       pattern = "MiniFilesBufferCreate",
+  --       callback = function(args)
+  --         local buf_id = args.data.buf_id
+  --         vim.keymap.set("n", "g.", toggle_dotfiles, { buffer = buf_id })
+  --       end,
+  --     })
+  --   end,
+  -- },
   {
     "nvim-neo-tree/neo-tree.nvim",
-    event = "VeryLazy",
+    -- event = "VeryLazy",
     cmd = "Neotree",
     keys = {
       {
@@ -198,7 +198,6 @@ return {
 
   {
     "ThePrimeagen/harpoon",
-    event = "VeryLazy",
     dependencies = {
       "nvim-telescope/telescope.nvim",
     },
@@ -223,14 +222,9 @@ return {
         enter_on_sendcmd = true,
       },
     },
-    init = function()
+    config = function(_, opts)
+      require("harpoon").setup(opts)
       require("telescope").load_extension("harpoon")
     end,
   },
-  -- {
-  --   "Bekaboo/dropbar.nvim",
-  --   enabled = false,
-  --   lazy = false,
-  --   enabled = vim.fn.has("nvim-0.10.0") == 1,
-  -- },
 }

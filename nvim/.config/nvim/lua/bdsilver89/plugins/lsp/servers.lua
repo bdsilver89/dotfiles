@@ -2,23 +2,13 @@ local M = {}
 
 local lsp_utils = require("bdsilver89.plugins.lsp.utils")
 local utils = require("bdsilver89.utils")
--- local icons = require("bdsilver89.config.icons")
 
 local function lsp_init()
   local signs = {
-    -- { name = "DiagnosticSignError", text = icons.diagnostics.Error },
-    -- { name = "DiagnosticSignWarn", text = icons.diagnostics.Warn },
-    -- { name = "DiagnosticSignHint", text = icons.diagnostics.Hint },
-    -- { name = "DiagnosticSignInfo", text = icons.diagnostics.Info },
-    { name = "DiagnosticSignError", text = utils.get_icon("DiagnosticError"), texthl = "DiagnosticSignError"},
-    { name = "DiagnosticSignWarn", text = utils.get_icon("DiagnosticWarn"), texthl = "DiagnosticSignWarn"},
-    { name = "DiagnosticSignHint", text = utils.get_icon("DiagnosticHint"), texthl = "DiagnosticSignHint"},
-    { name = "DiagnosticSignInfo", text = utils.get_icon("DiagnosticInfo"), texthl = "DiagnosticSignInfo"},
-    { name = "DapStopped", text = utils.get_icon("DapStopped"), texthl = "DiagnosticWarn"},
-    { name = "DapBreakpoint", text = utils.get_icon("DapBreakpoint"), texthl = "DiagnosticInfo"},
-    { name = "DapBreakpointRejected", text = utils.get_icon("DapBreakpointRejected"), texthl = "DiagnosticError"},
-    { name = "DapBreakpointCondition", text = utils.get_icon("DapBreakpointCondition"), texthl = "DiagnosticInfo"},
-    { name = "DapLogPoint", text = utils.get_icon("DapLogPoint"), texthl = "DiagnosticInfo"},
+    { name = "DiagnosticSignError", text = utils.get_icon("DiagnosticError"), texthl = "DiagnosticSignError" },
+    { name = "DiagnosticSignWarn", text = utils.get_icon("DiagnosticWarn"), texthl = "DiagnosticSignWarn" },
+    { name = "DiagnosticSignHint", text = utils.get_icon("DiagnosticHint"), texthl = "DiagnosticSignHint" },
+    { name = "DiagnosticSignInfo", text = utils.get_icon("DiagnosticInfo"), texthl = "DiagnosticSignInfo" },
   }
   for _, sign in ipairs(signs) do
     vim.fn.sign_define(sign.name, sign)
