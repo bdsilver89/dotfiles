@@ -1,29 +1,15 @@
 return {
   "nvim-lua/plenary.nvim",
-  -- {
-  --   "stevearc/resession.nvim",
-  --   opts = {},
-  -- },
   { "NMAC427/guess-indent.nvim", event = { "BufReadPre", "BufNewFile" } },
-  {
-    "echasnovski/mini.bufremove",
-    keys = {
-      {
-        "<leader>bd",
-        function()
-          require("mini.bufremove").delete(0, false)
-        end,
-        desc = "Delete",
-      },
-      {
-        "<leader>bD",
-        function()
-          require("mini.bufremove").delete(0, true)
-        end,
-        desc = "Delete (force)",
-      },
-    },
-  },
+  -- {
+  --   "ethanholz/nvim-lastplace",
+  --   event = "VeryLazy",
+  --   opts = {
+  --     lastplace_ignore_buftype = { "quickfix", "nofile", "help" },
+  --     -- lastplace_ignore_filetype = {}
+  --     lastplace_open_folds = true,
+  --   },
+  -- },
   {
     "echasnovski/mini.pairs",
     event = { "BufReadPost", "BufNewFile" },
@@ -128,7 +114,6 @@ return {
   },
   {
     "folke/flash.nvim",
-    enabled = true,
     event = { "BufReadPost", "BufNewFile" },
     opts = {},
     keys = {

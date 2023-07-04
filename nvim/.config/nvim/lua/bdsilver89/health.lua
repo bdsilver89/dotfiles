@@ -1,22 +1,14 @@
 local M = {}
 
-local health = {
-  start = vim.health.start or vim.health.report_start,
-  ok = vim.health.ok or vim.health.report_ok,
-  warn = vim.health.warn or vim.health.report_warn,
-  error = vim.health.error or vim.health.report_error,
-  info = vim.health.info or vim.health.report_info,
-}
-
 function M.check()
-  health.start("bdsilver89")
+  vim.health.start("bdsilver89")
 
   if vim.version().prerelease then
-    health.warn("Neovim nightly not fully supported and may introduce breaking changes")
+    vim.health.warn("Neovim nightly not fully supported and may introduce breaking changes")
   elseif vim.fn.has("nvim-0.8") == 1 then
-    health.ok("Using Neovim >= 0.8")
+    vim.health.ok("Using Neovim >= 0.8")
   else
-    health.error("Neovim >= 0.8 is required")
+    vim.health.error("Neovim >= 0.8 is required")
   end
 
   local programs = {
@@ -37,7 +29,7 @@ function M.check()
 
   for _, program in ipairs(programs) do
     local commands = type(program.cmd) == "string" and { program.cmd } or program.cmd
-    ---@cast commands string[]
+    ---@cast commands string
 
     local name = table.concat(commands, "/")
     local found = false
@@ -50,9 +42,9 @@ function M.check()
     end
 
     if found then
-      health.ok(("`%s` is installed: %s"):format(name, program.msg))
+      vim.health.ok(("`%s` is installed: %s"):format(name, program.msg))
     else
-      health.warn(("`%s` is not installed: %s"):format(name, program.msg))
+      vim.health.warn(("`%s` is not installed: %s"):format(name, program.msg))
     end
   end
 end

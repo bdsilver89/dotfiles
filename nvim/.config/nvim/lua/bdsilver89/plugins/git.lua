@@ -15,13 +15,13 @@ return {
   --     { "<leader>gs", "<cmd>Neogit kind=tab<cr>", desc = "Status" },
   --   },
   -- },
-  {
-    "tpope/vim-fugitive",
-    cmd = { "Git", "GBrowse", "Gdiffsplit", "Gvdiffsplit" },
-    dependencies = {
-      "tpope/vim-rhubarb",
-    },
-  },
+  -- {
+  --   "tpope/vim-fugitive",
+  --   cmd = { "Git", "GBrowse", "Gdiffsplit", "Gvdiffsplit" },
+  --   dependencies = {
+  --     "tpope/vim-rhubarb",
+  --   },
+  -- },
   {
     "lewis6991/gitsigns.nvim",
     event = "BufReadPre",

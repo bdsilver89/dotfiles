@@ -111,6 +111,20 @@ function M.telescope(builtin, opts)
   end
 end
 
+function M.lazygit_toggle()
+  local Terminal = require("toggleterm.terminal").Terminal
+  local lazygit = Terminal:new({
+    cmd = "lazygit",
+    hidden = true,
+    direction = "float",
+    on_open = function(_)
+      vim.cmd([[startinsert!]])
+    end,
+    on_close = function(_) end,
+  })
+  lazygit:toggle()
+end
+
 ---@param option string
 ---@param silent boolean?
 ---@param values {[1]: any, [2]: any}

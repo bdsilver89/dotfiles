@@ -1,42 +1,6 @@
 return {
   "MunifTanjim/nui.nvim",
-  {
-    "nvim-tree/nvim-web-devicons",
-    -- dependencies = { "DaikyXendo/nvim-material-icon" },
-    config = function()
-      require("nvim-web-devicons").setup({
-        -- override = require("nvim-material-icon").get_icons(),
-      })
-    end,
-  },
-  {
-    "onsails/lspkind.nvim",
-    opts = {
-      mode = "symbol",
-      symbol_map = {
-        Array = "󰅪",
-        Boolean = "⊨",
-        Class = "󰌗",
-        Constructor = "",
-        Key = "󰌆",
-        Namespace = "󰅪",
-        Null = "NULL",
-        Number = "#",
-        Object = "󰀚",
-        Package = "󰏗",
-        Property = "",
-        Reference = "",
-        Snippet = "",
-        String = "󰀬",
-        TypeParameter = "󰊄",
-        Unit = "",
-      },
-      menu = {},
-    },
-    config = function(_, opts)
-      require("lspkind").init(opts)
-    end,
-  },
+  "nvim-tree/nvim-web-devicons",
   {
     "lukas-reineke/indent-blankline.nvim",
     event = { "BufReadPost", "BufNewFile" },
@@ -85,7 +49,7 @@ return {
   },
   {
     "folke/noice.nvim",
-    enabled = true,
+    enabled = false,
     event = "VeryLazy",
     opts = {
       lsp = {

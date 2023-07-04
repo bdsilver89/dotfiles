@@ -23,10 +23,6 @@ return {
       "nvim-neotest/neotest-python",
       "nvim-neotest/neotest-plenary",
       "nvim-neotest/neotest-vim-test",
-      {
-        name = "neotest-cpp",
-        dir = "/Users/brian/Developer/projects/neovim_plugins/neotest-cpp/develop",
-      },
       "rouge8/neotest-rust",
     },
     keys = {
@@ -45,31 +41,99 @@ return {
       { "<leader>tNs", "<cmd>w|lua require('neotest').run.stop()<cr>", desc = "Stop" },
       { "<leader>tNS", "<cmd>w|lua require('neotest').summary.toggle()<cr>", desc = "Summary" },
     },
-    config = function()
-      local opts = {
-        adapters = {
-          -- require("neotest-vim-test")({ ignore_file_types = { "python", "vim", "lua" } }),
-          require("neotest-vim-test"),
-          require("neotest-python")({ dap = { justMyCode = false } }),
-          require("neotest-plenary"),
-          require("neotest-rust"),
-          require("neotest-go"),
-          require("neotest-cpp"),
+    opts = {
+      adapters = {
+        -- "neotest-vim-test",
+        --       require("neotest-python")({ dap = { justMyCode = false } }),
+        --       require("neotest-plenary"),
+        --       require("neotest-rust"),
+        --       require("neotest-go"),
+      },
+      status = {
+        virtual_text = true,
+      },
+      output = {
+        open_on_run = true,
+      },
+      quickfix = {
+        open = function()
+          if require("bdsilver89.utils").has("trouble.nvim") then
+            vim.cmd([[Trouble quickfix]])
+          else
+            vim.cmd("copen")
+          end
+        end,
+      },
+      -- consumers = {
+      --   overseer = require("neotest.consumers.overseer"),
+      -- },
+      -- overseer = {
+      --   enabled = true,
+      --   force_default = true,
+      -- }
+    },
+    config = function(_, opts)
+      local neotest_ns = vim.api.nvim_create_namespace("neotest")
+      vim.diagnostic.config({
+        virtual_text = {
+          format = function(diagnostic)
+            local message = diagnostic.message:gsub("\n", " "):gsub("\t", " "):gsub("%s+", " "):gsub("^%s+", "")
+            return message
+          end,
         },
-        -- consumers = {
-        --   overseer = require("neotest.consumers.overseer"),
-        -- },
-        -- overseer = {
-        --   enabled = true,
-        --   force_default = true,
-        -- },
-      }
+      }, neotest_ns)
+
+      if opts.adapters then
+        local adapters = {}
+        for name, config in pairs(opts.adapters or {}) do
+          if type(name) == "number" then
+            if type(config) == "string" then
+              config = require(config)
+            end
+            adapters[#adapters + 1] = config
+          elseif config ~= false then
+            local adapter = require(name)
+            if type(config) == "table" and not vim.tbl_isempty(config) then
+              local meta = getmetatable(adapter)
+              if adapter.setup then
+                adapter.setup(config)
+              elseif meta and meta.__call then
+                adapter(config)
+              else
+                error("Adapter " .. name .. " does not support setup")
+              end
+            end
+            adapters[#adapters + 1] = adapter
+          end
+        end
+        opts.adapters = adapters
+      end
+
       require("neotest").setup(opts)
+
+      --   local opts = {
+      --     adapters = {
+      --       -- require("neotest-vim-test")({ ignore_file_types = { "python", "vim", "lua" } }),
+      --       require("neotest-vim-test"),
+      --       require("neotest-python")({ dap = { justMyCode = false } }),
+      --       require("neotest-plenary"),
+      --       require("neotest-rust"),
+      --       require("neotest-go"),
+      --     },
+      --     -- consumers = {
+      --     --   overseer = require("neotest.consumers.overseer"),
+      --     -- },
+      --     -- overseer = {
+      --     --   enabled = true,
+      --     --   force_default = true,
+      --     -- },
+      --   }
+      --   require("neotest").setup(opts)
     end,
   },
-  {
-    "andythigpen/nvim-coverage",
-    cmd = "Coverage",
-    config = true,
-  },
+  -- {
+  --   "andythigpen/nvim-coverage",
+  --   cmd = "Coverage",
+  --   config = true,
+  -- },
 }

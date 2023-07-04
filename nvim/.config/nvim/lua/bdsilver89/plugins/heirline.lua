@@ -871,17 +871,17 @@ return {
 
     local WinBar = {
       fallthrough = false,
-      -- {
-      --     condition = function()
-      --         return conditions.buffer_matches({
-      --             buftype = { "nofile", "prompt", "help", "quickfix" },
-      --             filetype = { "^git.*", "fugitive" },
-      --         })
-      --     end,
-      --     init = function()
-      --         vim.opt_local.winbar = nil
-      --     end,
-      -- },
+      {
+        condition = function()
+          return conditions.buffer_matches({
+            buftype = { "nofile", "prompt", "help", "quickfix" },
+            filetype = { "^git.*", "fugitive" },
+          })
+        end,
+        init = function()
+          vim.opt_local.winbar = nil
+        end,
+      },
       {
         condition = function()
           return conditions.buffer_matches({ buftype = { "terminal" } })

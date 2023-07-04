@@ -14,7 +14,6 @@ vim.opt.rtp:prepend(vim.env.LAZY or lazypath)
 require("lazy").setup({
   spec = {
     { import = "bdsilver89.plugins" },
-    { import = "bdsilver89.plugins.extras.db" },
     { import = "bdsilver89.plugins.extras.lang" },
   },
   defaults = {

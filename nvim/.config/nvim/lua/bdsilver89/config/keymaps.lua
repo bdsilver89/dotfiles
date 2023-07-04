@@ -1,3 +1,5 @@
+local utils = require("bdsilver89.utils")
+
 local function map(mode, lhs, rhs, opts)
   local keys = require("lazy.core.handler").handlers.keys
 
@@ -8,14 +10,16 @@ local function map(mode, lhs, rhs, opts)
   end
 end
 
+-- visual mode line shift up/down
 map("v", "J", ":m '>+1<CR>gv=gv")
 map("v", "K", ":m '<-2<CR>gv=gv")
 
+-- basic line join
 map("n", "J", "mzJ`z")
 
+-- centering when jumping
 map("n", "<c-d>", "<c-d>zz")
 map("n", "<c-u>", "<c-u>zz")
-
 map("n", "n", "nzz")
 map("n", "N", "Nzz")
 
@@ -65,13 +69,17 @@ else
   map("n", "]b", "<cmd>bnext<cr>", { desc = "Next buffer" })
 end
 
-map("n", "<a-j>", "<cmd>m .+1<cr>==", { desc = "Move down" })
-map("n", "<a-k>", "<cmd>m .-2<cr>==", { desc = "Move up" })
-map("i", "<a-j>", "<esc><cmd>m .+1<cr>==gi", { desc = "Move down" })
-map("i", "<a-k>", "<esc><cmd>m .-2<cr>==gi", { desc = "Move up" })
-map("v", "<a-j>", ":m '>+1<cr>gv=gv", { desc = "Move down" })
-map("v", "<a-k>", ":m '<-2<cr>gv=gv", { desc = "Move up" })
+map("n", "<leader>bd", "<cmd>bdelete<cr>", { desc = "Delete buffer" })
+map("n", "<leader>bD", "<cmd>bdelete!<cr>", { desc = "Delete buffer" })
 
+-- map("n", "<a-j>", "<cmd>m .+1<cr>==", { desc = "Move down" })
+-- map("n", "<a-k>", "<cmd>m .-2<cr>==", { desc = "Move up" })
+-- map("i", "<a-j>", "<esc><cmd>m .+1<cr>==gi", { desc = "Move down" })
+-- map("i", "<a-k>", "<esc><cmd>m .-2<cr>==gi", { desc = "Move up" })
+-- map("v", "<a-j>", ":m '>+1<cr>gv=gv", { desc = "Move down" })
+-- map("v", "<a-k>", ":m '<-2<cr>gv=gv", { desc = "Move up" })
+
+-- buffer shortcuts
 map("n", "<leader>bb", "<cmd>e#<cr>", { desc = "Switch to alternate buffer" })
 map("n", "<leader>br", "<cmd>e!<cr>", { desc = "Reload" })
 map("n", "<leader>bc", "<cmd>close<cr>", { desc = "Close" })
@@ -111,7 +119,7 @@ map("n", "<leader>fn", "<cmd>enew<cr>", { desc = "New File" })
 map("n", "<leader>xl", "<cmd>lopen<cr>", { desc = "Location List" })
 map("n", "<leader>xq", "<cmd>copen<cr>", { desc = "Quickfix List" })
 
-if not require("bdsilver89.utils").has("trouble.nvim") then
+if not utils.has("trouble.nvim") then
   map("n", "[q", vim.cmd.cprev, { desc = "Previous quickfix" })
   map("n", "]q", vim.cmd.cnext, { desc = "Next quickfix" })
 end
@@ -119,27 +127,24 @@ end
 -- toggle options
 -- stylua: ignore start
 map("n", "<leader>uf", require("bdsilver89.plugins.lsp.format").toggle, { desc = "Toggle format on save" })
-map("n", "<leader>us", function() require("bdsilver89.utils").toggle("spell") end, { desc = "Toggle spelling" })
-map("n", "<leader>uw", function() require("bdsilver89.utils").toggle("wrap") end, { desc = "Toggle word wrap" })
-map("n", "<leader>ul", function() require("bdsilver89.utils").toggle("relativenumber", true) end, { desc = "Toggle relative line numbers" })
+map("n", "<leader>us", function() utils.toggle("spell") end, { desc = "Toggle spelling" })
+map("n", "<leader>uw", function() utils.toggle("wrap") end, { desc = "Toggle word wrap" })
+map("n", "<leader>ul", function() utils.toggle("relativenumber", true) end, { desc = "Toggle relative line numbers" })
 local conceallevel = vim.o.conceallevel > 0 and vim.o.conceallevel or 3
-map("n", "<leader>uc", function() require("bdsilver89.utils").toggle("conceallevel", false, {0, conceallevel}) end, { desc = "Toggle conceallevel" })
+map("n", "<leader>uc", function() utils.toggle("conceallevel", false, {0, conceallevel}) end, { desc = "Toggle conceallevel" })
 if vim.lsp.buf.inlay_hint then
    map("n", "<leader>uh", function() vim.lsp.buf.inlay_hint(0, nil) end, { desc = "Toggle inlay hints" })
 end
 -- stylua: ignore end
 
--- TODO: lazygit shortcut
+-- stylua: ignore
+map("n", "<leader>gg", function() utils.lazygit_toggle() end, { desc = "Lazygit" })
 
 -- quit
 map("n", "<leader>qq", "<cmd>qa<cr>", { desc = "Quit all" })
 
 -- highlights under cursor
 if vim.fn.has("nvim-0.9.0") == 1 then
-  map("n", "<leader>ui", vim.show_pos, { desc = "Inspect Pos" })
-end
-
-if vim.fn.has("nvim-0.9") == 1 then
   map("n", "<leader>ui", vim.show_pos, { desc = "Inspect Pos" })
 end
 
