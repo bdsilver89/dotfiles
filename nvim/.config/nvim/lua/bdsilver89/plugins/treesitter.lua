@@ -42,6 +42,7 @@ return {
     ensure_installed = {
       "bash",
       "html",
+      "ini",
       "lua",
       "luadoc",
       "luap",
@@ -50,6 +51,7 @@ return {
       "org",
       "query",
       "regex",
+      "toml",
       "vim",
       "vimdoc",
       "yaml",

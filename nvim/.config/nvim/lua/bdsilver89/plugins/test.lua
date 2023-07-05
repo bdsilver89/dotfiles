@@ -19,9 +19,9 @@ return {
     "nvim-neotest/neotest",
     dependencies = {
       "vim-test/vim-test",
-      "nvim-neotest/neotest-go",
+      -- "nvim-neotest/neotest-go",
       "nvim-neotest/neotest-python",
-      "nvim-neotest/neotest-plenary",
+      -- "nvim-neotest/neotest-plenary",
       "nvim-neotest/neotest-vim-test",
       "rouge8/neotest-rust",
     },
@@ -31,7 +31,7 @@ return {
         "<cmd>w|lua require('neotest').run.run({vim.fn.expand('%'), strategy = 'dap'})<cr>",
         desc = "Debug File",
       },
-      { "<leader>tNL", "<cmd>w|lua require('neotest').run.run_last({strategy = 'dap'})<cr>", desc = "Debug Last" },
+      -- { "<leader>tNL", "<cmd>w|lua require('neotest').run.run_last({strategy = 'dap'})<cr>", desc = "Debug Last" },
       { "<leader>tNa", "<cmd>w|lua require('neotest').run.attach()<cr>", desc = "Attach" },
       { "<leader>tNf", "<cmd>w|lua require('neotest').run.run(vim.fn.expand('%'))<cr>", desc = "File" },
       { "<leader>tNl", "<cmd>w|lua require('neotest').run.run_last()<cr>", desc = "Last" },
@@ -40,14 +40,23 @@ return {
       { "<leader>tNo", "<cmd>w|lua require('neotest').output.open({ enter = true })<cr>", desc = "Output" },
       { "<leader>tNs", "<cmd>w|lua require('neotest').run.stop()<cr>", desc = "Stop" },
       { "<leader>tNS", "<cmd>w|lua require('neotest').summary.toggle()<cr>", desc = "Summary" },
+      {
+        "<leader>tNd",
+        function()
+          require("neotest").run.run({ strategy = "dap" })
+        end,
+        desc = "Debug ",
+      },
     },
     opts = {
       adapters = {
-        -- "neotest-vim-test",
-        --       require("neotest-python")({ dap = { justMyCode = false } }),
-        --       require("neotest-plenary"),
-        --       require("neotest-rust"),
-        --       require("neotest-go"),
+        ["neotest-vim-test"] = {},
+        -- ["neotest-go"] = {},
+        ["neotest-python"] = {
+          dap = { justMyCode = false },
+        },
+        -- ["neotest-plenary"] = {},
+        ["neotest-rust"] = {},
       },
       status = {
         virtual_text = true,
@@ -131,9 +140,4 @@ return {
       --   require("neotest").setup(opts)
     end,
   },
-  -- {
-  --   "andythigpen/nvim-coverage",
-  --   cmd = "Coverage",
-  --   config = true,
-  -- },
 }

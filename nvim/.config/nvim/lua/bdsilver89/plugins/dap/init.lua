@@ -10,12 +10,35 @@ return {
   {
     "mfussenegger/nvim-dap",
     dependencies = {
-      { "rcarriga/nvim-dap-ui" },
-      { "theHamsta/nvim-dap-virtual-text" },
+      {
+        "rcarriga/nvim-dap-ui",
+        opts = {},
+        config = function(_, opts)
+          local dap = require("dap")
+          local dapui = require("dapui")
+          dapui.setup({})
+
+          dap.listeners.after.event_initialized["dapui_config"] = function()
+            dapui.open()
+          end
+          dap.listeners.before.event_terminated["dapui_config"] = function()
+            dapui.close()
+          end
+          dap.listeners.before.event_exited["dapui_config"] = function()
+            dapui.close()
+          end
+        end,
+      },
+      {
+        "theHamsta/nvim-dap-virtual-text",
+        opts = {
+          commented = true,
+        },
+      },
       { "nvim-telescope/telescope-dap.nvim" },
-      { "jbyuki/one-small-step-for-vimkind" },
+      -- { "jbyuki/one-small-step-for-vimkind" },
       { "jay-babu/mason-nvim-dap.nvim" },
-      { "LiadOz/nvim-dap-repl-highlights", opts = {} },
+      -- { "LiadOz/nvim-dap-repl-highlights", opts = {} },
     },
     -- stylua: ignore
     keys = {
@@ -74,24 +97,6 @@ return {
       }
       for _, sign in ipairs(signs) do
         vim.fn.sign_define(sign.name, sign)
-      end
-
-      require("nvim-dap-virtual-text").setup({
-        commented = true,
-      })
-
-      local dap = require("dap")
-      local dapui = require("dapui")
-      dapui.setup({})
-
-      dap.listeners.after.event_initialized["dapui_config"] = function()
-        dapui.open()
-      end
-      dap.listeners.before.event_terminated["dapui_config"] = function()
-        dapui.close()
-      end
-      dap.listeners.before.event_exited["dapui_config"] = function()
-        dapui.close()
       end
 
       for k, _ in pairs(opts.setup) do

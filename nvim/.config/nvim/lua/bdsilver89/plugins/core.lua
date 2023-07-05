@@ -12,7 +12,7 @@ return {
   -- },
   {
     "echasnovski/mini.pairs",
-    event = { "BufReadPost", "BufNewFile" },
+    event = "VeryLazy",
     opts = {},
   },
   {
