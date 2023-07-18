@@ -150,6 +150,10 @@ if [ -x "$(command -v zoxide)" ]; then
   eval "$(zoxide init zsh)"
 fi
 
+if [ -d "$HOME/.cargo/env" ]; then
+  source  $HOME/.cargo/env
+fi
+
 bindkey -v
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
