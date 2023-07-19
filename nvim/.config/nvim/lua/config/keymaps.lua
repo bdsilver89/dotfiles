@@ -1,3 +1,5 @@
+local utils = require("config.utils")
+
 local function map(mode, lhs, rhs, opts)
   opts = opts or {}
   opts.silent = opts.silent ~= false
@@ -67,10 +69,10 @@ map("n", "<leader>|", "<c-w>v", { desc = "Split window vertical" })
 --  map("n", "[b", "<cmd>BufferLineCyclePrev<cr>", { desc = "Prev buffer" })
 --  map("n", "]b", "<cmd>BufferLineCycleNext<cr>", { desc = "Next buffer" })
 --else
-  map("n", "<s-h>", "<cmd>bprevious<cr>", { desc = "Prev buffer" })
-  map("n", "<s-l>", "<cmd>bnext<cr>", { desc = "Next buffer" })
-  map("n", "[b", "<cmd>bprevious<cr>", { desc = "Prev buffer" })
-  map("n", "]b", "<cmd>bnext<cr>", { desc = "Next buffer" })
+map("n", "<s-h>", "<cmd>bprevious<cr>", { desc = "Prev buffer" })
+map("n", "<s-l>", "<cmd>bnext<cr>", { desc = "Next buffer" })
+map("n", "[b", "<cmd>bprevious<cr>", { desc = "Prev buffer" })
+map("n", "]b", "<cmd>bnext<cr>", { desc = "Next buffer" })
 --end
 --map("n", "<leader>bd", "<cmd>bdelete<cr>", { desc = "Delete buffer" })
 --map("n", "<leader>bD", "<cmd>bdelete!<cr>", { desc = "Delete buffer (force)" })
@@ -98,7 +100,8 @@ map("t", "<c-_>", "<cmd>close<cr>", { desc = "which_key_ignore" })
 
 map({ "i", "n" }, "<esc>", "<cmd>noh<cr><esc>", { desc = "Escape and clear hlsearch" })
 
-map("n", "<leader>ur", "<cmd>nohlsearch<bar>diffupdate<bar>normal! <c-L><cr>", { desc = "Redraw/clear hlsearch/diff update" })
+map("n", "<leader>ur", "<cmd>nohlsearch<bar>diffupdate<bar>normal! <c-L><cr>",
+  { desc = "Redraw/clear hlsearch/diff update" })
 
 if vim.fn.has("nvim-0.9.0") == 1 then
   map("n", "<leader>ui", vim.show_pos, { desc = "Inspect position" })
@@ -108,17 +111,19 @@ map("n", "<leader>qq", "<cmd>qa<cr>", { desc = "Quit all" })
 
 -- toggle options
 
---map("n", "<leader>us", function() utils.toggle("spell") end, { desc = "Toggle spelling" })
---map("n", "<leader>uw", function() utils.toggle("wrap") end, { desc = "Toggle word wrap" })
---map("n", "<leader>ud", function() utils.toggle_diagnostics() end, { desc = "Toggle diagnostics" })
---map("n", "<leader>ul", function()
---  utils.toggle("relativenumber", true)
---  util.toggle("number", true)
---end, { desc = "Toggle line numbers" })
+map("n", "<leader>us", function() utils.toggle("spell") end, { desc = "Toggle spelling" })
+map("n", "<leader>uw", function() utils.toggle("wrap") end, { desc = "Toggle word wrap" })
+map("n", "<leader>ud", function() utils.toggle_diagnostics() end, { desc = "Toggle diagnostics" })
+map("n", "<leader>ul", function()
+  utils.toggle("relativenumber", true)
+  utils.toggle("number", true)
+end, { desc = "Toggle line numbers" })
 
+map("n", "<leader>K", "<cmd>norm! K<cr>", { desc = "Keywordprg" })
 
 local conceallevel = vim.o.conceallevel > 0 and vim.o.conceallevel or 3
-map("n", "<leader>uc", function() utils.toggle("conceallevel", false, { 0, conceallevel }) end, { desc = "Toggle conceallevel" })
+map("n", "<leader>uc", function() utils.toggle("conceallevel", false, { 0, conceallevel }) end,
+  { desc = "Toggle conceallevel" })
 
 if vim.lsp.inlay_hint then
   map("n", "<leader>uh", function() vim.lsp.inlay_hint(0, nil) end, { desc = "Toggle inlay hints" })

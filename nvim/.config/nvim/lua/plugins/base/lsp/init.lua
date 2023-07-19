@@ -3,6 +3,12 @@ return {
     "neovim/nvim-lspconfig",
     event = { "BufReadPre", "BufReadPost" },
     dependencies = {
+      {
+        "folke/neoconf.nvim",
+        cmd = "Neoconf",
+        config = false,
+        dependencies = { "nvim-lspconfig" }
+      },
       { "williamboman/mason.nvim" },
       { "williamboman/mason-lspconfig.nvim" },
       { "hrsh7th/cmp-nvim-lsp" },
@@ -35,9 +41,12 @@ return {
     config = function(_, opts)
       local utils = require("config.utils")
 
-      -- TODO: neoconf setup/configuration?
+      if utils.has("neoconf.nvim") then
+        local plugin = require("lazy.core.config").spec.plugins["neoconf.nvim"]
+        require("neoconf").setup(require("lazy.core.plugin").values(plugin, opts, false))
+      end
 
-      -- TODO: formatting
+      require("plugins.base.lsp.format").setup(opts)
 
       utils.on_attach(function(client, buffer)
         require("plugins.base.lsp.keymaps").on_attach(client, buffer)
