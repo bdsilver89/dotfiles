@@ -95,7 +95,7 @@ return {
       "williamboman/mason.nvim",
       opts = function(_, opts)
         if type(opts.ensure_installed) == "table" then
-          vim.list_extend(opts.ensure_installed, { "codelldb" })
+          vim.list_extend(opts.ensure_installed, { "codelldb", "cpptools" })
         end
       end,
     },
@@ -115,12 +115,21 @@ return {
           },
         }
       end
+      if not dap.adapters["cppdbg"] then
+        require("dap").adapters["cppdbg"] = {
+          id = "cppdbg",
+          type = "executable",
+          command = require("mason-registry").get_package("cpptools"):get_install_path() ..
+              "/extension/debugAdapters/bin/OpenDebugAD7"
+
+        }
+      end
       for _, lang in ipairs({ "c", "cpp" }) do
         dap.configurations[lang] = {
           {
             type = "codelldb",
             request = "launch",
-            name = "Launch file",
+            name = "Launch file (codelldb)",
             program = function()
               return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
             end,
@@ -129,10 +138,19 @@ return {
           {
             type = "codelldb",
             request = "attach",
-            name = "Attach to process",
+            name = "Attach to process (codelldb)",
             processId = require("dap.utils").pick_process,
             cwd = "${workspaceFolder}",
           },
+          {
+            type = "cppdbg",
+            request = "launch",
+            name = "Launch file (cppdbg)",
+            program = function()
+              return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
+            end,
+            cwd = "${workspaceFolder}",
+          }
         }
       end
     end,
