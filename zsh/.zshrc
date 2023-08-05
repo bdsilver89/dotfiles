@@ -142,12 +142,36 @@ if [ -x "$(command -v exa)" ]; then
   alias ls="exa --icons --git"
   alias l="exa -l --icons --git -a"
   alias lt="exa --tree --level=2 --long --icons --git"
+
+  cx() { cd "$@" && l; }
 fi
+
 if [ -x "$(command -v bat)" ]; then
   alias cat="bat"
 fi
+
 if [ -x "$(command -v zoxide)" ]; then
   eval "$(zoxide init zsh)"
+fi
+
+if [ -x "$(command -v ranger)" ]; then
+
+  function ranger() {
+    local IFS=$'\t\n'
+    local tempfile="$(mktemp -t tmp.XXXXXX)"
+    local ranger_cmd=(
+      command
+      ranger
+      --cmd="map Q chain shell echo %d > "$tempfile"; quitall"
+    )
+
+    ${ranger_cmd[@]} "$@"
+    if [[ -f "$tempfile" ]] && [[ "$(cat -- "$tempfile")" != "$(echo -n `pwd`)" ]]; then
+      cd -- "$(cat "$tempfile")" || return
+    fi
+    command rm -f -- "$tempfile" 2>/dev/null
+  }
+  alias rr='ranger'
 fi
 
 if [ -d "$HOME/.cargo/env" ]; then
