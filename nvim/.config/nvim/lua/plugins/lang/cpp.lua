@@ -2,7 +2,7 @@ return {
   {
     "nvim-treesitter/nvim-treesitter",
     opts = function(_, opts)
-      vim.list_extend(opts.ensure_installed, { "c", "cpp", "cmake", "make", "ninja" })
+      vim.list_extend(opts.ensure_installed, { "c", "cpp" })
     end,
   },
   {
@@ -40,19 +40,22 @@ return {
     "neovim/nvim-lspconfig",
     opts = {
       servers = {
-        cmake = {},
         clangd = {
           keys = {
             { "<leader>cR", "<cmd>ClangdSwitchSourceHeader<cr>", desc = "Switch Source/Header (C/C++)" },
           },
-          root_dir = function(...)
+          root_dir = function(fname)
             -- using a root .clang-format or .clang-tidy file messes up projects, so remove them
             return require("lspconfig.util").root_pattern(
-              "compile_commands.json",
-              "compile_flags.txt",
-              "configure.ac",
-              ".git"
-            )(...)
+                  "Makefile",
+                  "configure.ac",
+                  "configure.in",
+                  "config.h.in",
+                  "meson.build",
+                  "meson_options.txt",
+                  "build.ninja"
+                )(fname) or require("lspconfig.util").root_pattern("compile_commands.json", "compile_flags.txt")(fname)
+                or require("lspconfig.util").find_git_ancestor(fname)
           end,
           capabilities = {
             offsetEncoding = { "utf-16" },

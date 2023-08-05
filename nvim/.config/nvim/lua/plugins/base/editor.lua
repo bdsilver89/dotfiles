@@ -6,7 +6,7 @@ return {
     -- stylua: ignore
     keys = {
       { "<leader>bd", function() require("mini.bufremove").delete(0, false) end, desc = "Delete Buffer" },
-      { "<leader>bD", function() require("mini.bufremove").delete(0, true) end, desc = "Delete Buffer (Force)" },
+      { "<leader>bD", function() require("mini.bufremove").delete(0, true) end,  desc = "Delete Buffer (Force)" },
     },
   },
   {
@@ -18,12 +18,12 @@ return {
       },
     },
     keys = {
-      { "gcc", mode = "n", desc = "Comment toggle current line" },
+      { "gcc", mode = "n",          desc = "Comment toggle current line" },
       { "gc",  mode = { "n", "o" }, desc = "Comment toggle linewise" },
-      { "gc",  mode = "x", desc = "Comment toggle linewise (visual)" },
-      { "gbc", mode = "n", desc = "Comment toggle current block" },
+      { "gc",  mode = "x",          desc = "Comment toggle linewise (visual)" },
+      { "gbc", mode = "n",          desc = "Comment toggle current block" },
       { "gb",  mode = { "n", "o" }, desc = "Comment toggle blockwise" },
-      { "gb",  mode = "x", desc = "Comment toggle blockwise (visual)" },
+      { "gb",  mode = "x",          desc = "Comment toggle blockwise (visual)" },
     },
     config = function(_, _)
       require("Comment").setup({
@@ -38,11 +38,23 @@ return {
     opts = {},
     -- stylua: ignore
     keys = {
-      { "s", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash" },
+      { "s", mode = { "n", "x", "o" }, function() require("flash").jump() end,       desc = "Flash" },
       { "S", mode = { "n", "o", "x" }, function() require("flash").treesitter() end, desc = "Flash treesitter" },
-      { "r", mode = "o", function() require("flash").remote() end, desc = "Remote flash" },
-      { "R", mode = { "x", "o" }, function() require("flash").treesitter_search() end, desc = "Treesitter search" },
-      { "<c-s>", mode = "c", function() require("flash").toggle() end, desc = "Toggle flash search" },
+      { "r", mode = "o",               function() require("flash").remote() end,     desc = "Remote flash" },
+      {
+        "R",
+        mode = { "x", "o" },
+        function() require("flash").treesitter_search() end,
+        desc =
+        "Treesitter search"
+      },
+      {
+        "<c-s>",
+        mode = "c",
+        function() require("flash").toggle() end,
+        desc =
+        "Toggle flash search"
+      },
     },
   },
   {
@@ -63,38 +75,38 @@ return {
       },
     },
     keys = {
-      { "<leader>,", "<cmd>Telescope buffers show_all_buffers=true<cr>", desc = "Switch Buffer" },
-      { "<leader>/", utils.telescope("live_grep"), desc = "Grep (root dir)" },
-      { "<leader>:", "<cmd>Telescope command_history<cr>", desc = "Command History" },
-      { "<leader><space>", utils.telescope("files"), desc = "Find Files (root dir)" },
+      { "<leader>,",       "<cmd>Telescope buffers show_all_buffers=true<cr>",        desc = "Switch Buffer" },
+      { "<leader>/",       utils.telescope("live_grep"),                              desc = "Grep (root dir)" },
+      { "<leader>:",       "<cmd>Telescope command_history<cr>",                      desc = "Command History" },
+      { "<leader><space>", utils.telescope("files"),                                  desc = "Find Files (root dir)" },
       -- find
-      { "<leader>fb", "<cmd>Telescope buffers<cr>", desc = "Buffers" },
-      { "<leader>ff", utils.telescope("files"), desc = "Find Files (root dir)" },
-      { "<leader>fF", utils.telescope("files", { cwd = false }), desc = "Find Files (cwd)" },
-      { "<leader>fr", "<cmd>Telescope oldfiles<cr>", desc = "Recent" },
-      { "<leader>fR", utils.telescope("oldfiles", { cwd = vim.loop.cwd() }), desc = "Recent (cwd)" },
+      { "<leader>fb",      "<cmd>Telescope buffers<cr>",                              desc = "Buffers" },
+      { "<leader>ff",      utils.telescope("files"),                                  desc = "Find Files (root dir)" },
+      { "<leader>fF",      utils.telescope("files", { cwd = false }),                 desc = "Find Files (cwd)" },
+      { "<leader>fr",      "<cmd>Telescope oldfiles<cr>",                             desc = "Recent" },
+      { "<leader>fR",      utils.telescope("oldfiles", { cwd = vim.loop.cwd() }),     desc = "Recent (cwd)" },
       -- git
-      { "<leader>gc", "<cmd>Telescope git_commits<CR>", desc = "commits" },
-      { "<leader>gs", "<cmd>Telescope git_status<CR>", desc = "status" },
+      { "<leader>gc",      "<cmd>Telescope git_commits<CR>",                          desc = "commits" },
+      { "<leader>gs",      "<cmd>Telescope git_status<CR>",                           desc = "status" },
       -- search
-      { "<leader>sa", "<cmd>Telescope autocommands<cr>", desc = "Auto Commands" },
-      { "<leader>sb", "<cmd>Telescope current_buffer_fuzzy_find<cr>", desc = "Buffer" },
-      { "<leader>sc", "<cmd>Telescope command_history<cr>", desc = "Command History" },
-      { "<leader>sC", "<cmd>Telescope commands<cr>", desc = "Commands" },
-      { "<leader>sd", "<cmd>Telescope diagnostics bufnr=0<cr>", desc = "Document diagnostics" },
-      { "<leader>sD", "<cmd>Telescope diagnostics<cr>", desc = "Workspace diagnostics" },
-      { "<leader>sg", utils.telescope("live_grep"), desc = "Grep (root dir)" },
-      { "<leader>sG", utils.telescope("live_grep", { cwd = false }), desc = "Grep (cwd)" },
-      { "<leader>sh", "<cmd>Telescope help_tags<cr>", desc = "Help Pages" },
-      { "<leader>sH", "<cmd>Telescope highlights<cr>", desc = "Search Highlight Groups" },
-      { "<leader>sk", "<cmd>Telescope keymaps<cr>", desc = "Key Maps" },
-      { "<leader>sM", "<cmd>Telescope man_pages<cr>", desc = "Man Pages" },
-      { "<leader>sm", "<cmd>Telescope marks<cr>", desc = "Jump to Mark" },
-      { "<leader>so", "<cmd>Telescope vim_options<cr>", desc = "Options" },
-      { "<leader>sR", "<cmd>Telescope resume<cr>", desc = "Resume" },
-      { "<leader>sw", utils.telescope("grep_string"), desc = "Word (root dir)" },
-      { "<leader>sW", utils.telescope("grep_string", { cwd = false }), desc = "Word (cwd)" },
-      { "<leader>uC", utils.telescope("colorscheme", { enable_preview = true }), desc = "Colorscheme with preview" },
+      { "<leader>sa",      "<cmd>Telescope autocommands<cr>",                         desc = "Auto Commands" },
+      { "<leader>sb",      "<cmd>Telescope current_buffer_fuzzy_find<cr>",            desc = "Buffer" },
+      { "<leader>sc",      "<cmd>Telescope command_history<cr>",                      desc = "Command History" },
+      { "<leader>sC",      "<cmd>Telescope commands<cr>",                             desc = "Commands" },
+      { "<leader>sd",      "<cmd>Telescope diagnostics bufnr=0<cr>",                  desc = "Document diagnostics" },
+      { "<leader>sD",      "<cmd>Telescope diagnostics<cr>",                          desc = "Workspace diagnostics" },
+      { "<leader>sg",      utils.telescope("live_grep"),                              desc = "Grep (root dir)" },
+      { "<leader>sG",      utils.telescope("live_grep", { cwd = false }),             desc = "Grep (cwd)" },
+      { "<leader>sh",      "<cmd>Telescope help_tags<cr>",                            desc = "Help Pages" },
+      { "<leader>sH",      "<cmd>Telescope highlights<cr>",                           desc = "Search Highlight Groups" },
+      { "<leader>sk",      "<cmd>Telescope keymaps<cr>",                              desc = "Key Maps" },
+      { "<leader>sM",      "<cmd>Telescope man_pages<cr>",                            desc = "Man Pages" },
+      { "<leader>sm",      "<cmd>Telescope marks<cr>",                                desc = "Jump to Mark" },
+      { "<leader>so",      "<cmd>Telescope vim_options<cr>",                          desc = "Options" },
+      { "<leader>sR",      "<cmd>Telescope resume<cr>",                               desc = "Resume" },
+      { "<leader>sw",      utils.telescope("grep_string"),                            desc = "Word (root dir)" },
+      { "<leader>sW",      utils.telescope("grep_string", { cwd = false }),           desc = "Word (cwd)" },
+      { "<leader>uC",      utils.telescope("colorscheme", { enable_preview = true }), desc = "Colorscheme with preview" },
       {
         "<leader>ss",
         utils.telescope("lsp_document_symbols", {
@@ -216,7 +228,7 @@ return {
         desc = "Explorer NeoTree (cwd)",
       },
       { "<leader>e", "<leader>fe", desc = "Explorer NeoTree (root dir)", remap = true },
-      { "<leader>E", "<leader>fE", desc = "Explorer NeoTree (cwd)", remap = true },
+      { "<leader>E", "<leader>fE", desc = "Explorer NeoTree (cwd)",      remap = true },
     },
     deactivate = function()
       vim.cmd([[Neotree close]])
@@ -356,10 +368,10 @@ return {
     cmd = { "TroubleToggle", "Trouble" },
     opts = { use_diagnostic_signs = true },
     keys = {
-      { "<leader>xx", "<cmd>TroubleToggle document_diagnostics<cr>", desc = "Document diagnostics (Trouble)" },
+      { "<leader>xx", "<cmd>TroubleToggle document_diagnostics<cr>",  desc = "Document diagnostics (Trouble)" },
       { "<leader>xX", "<cmd>TroubleToggle workspace_diagnostics<cr>", desc = "Workspace diagnostics (Trouble)" },
-      { "<leader>xL", "<cmd>TroubleToggle loclist<cr>", desc = "Location list (Trouble)" },
-      { "<leader>xQ", "<cmd>TroubleToggle quickfix<cr>", desc = "Quickfix list (Trouble)" },
+      { "<leader>xL", "<cmd>TroubleToggle loclist<cr>",               desc = "Location list (Trouble)" },
+      { "<leader>xQ", "<cmd>TroubleToggle quickfix<cr>",              desc = "Quickfix list (Trouble)" },
       {
         "[q",
         function()
@@ -397,12 +409,12 @@ return {
     config = true,
     -- stylua: ignore
     keys = {
-      { "]t", function() require("todo-comments").jump_next() end, desc = "Next todo comment" },
-      { "[t", function() require("todo-comments").jump_next() end, desc = "Next todo comment" },
-      { "<leader>xt", "<cmd>TodoTrouble<cr>", desc = "Todo (Trouble)" },
-      { "<leader>xT", "<cmd>TodoTrouble keywords=TODO,FIX,FIXME<cr>", desc = "Todo/Fix/Fixme (Trouble)" },
-      { "<leader>st", "<cmd>TodoTelescope<cr>", desc = "Todo" },
-      { "<leader>sT", "<cmd>TodoTelescope keywords=TODO,FIX,FIXME<cr>", desc = "Todo/Fix/Fixme" },
+      { "]t",         function() require("todo-comments").jump_next() end, desc = "Next todo comment" },
+      { "[t",         function() require("todo-comments").jump_next() end, desc = "Next todo comment" },
+      { "<leader>xt", "<cmd>TodoTrouble<cr>",                              desc = "Todo (Trouble)" },
+      { "<leader>xT", "<cmd>TodoTrouble keywords=TODO,FIX,FIXME<cr>",      desc = "Todo/Fix/Fixme (Trouble)" },
+      { "<leader>st", "<cmd>TodoTelescope<cr>",                            desc = "Todo" },
+      { "<leader>sT", "<cmd>TodoTelescope keywords=TODO,FIX,FIXME<cr>",    desc = "Todo/Fix/Fixme" },
     },
   },
   {
@@ -416,12 +428,12 @@ return {
       local plugin = require("lazy.core.config").spec.plugins["mini.surround"]
       local opts = require("lazy.core.plugin").values(plugin, "opts", false)
       local mappings = {
-        { opts.mappings.add, desc = "Add surrounding", mode = { "n", "v" } },
-        { opts.mappings.delete, desc = "Delete surrounding" },
-        { opts.mappings.find, desc = "Find right surrounding" },
-        { opts.mappings.find_left, desc = "Find left surrounding" },
-        { opts.mappings.highlight, desc = "Highlight surrounding" },
-        { opts.mappings.replace, desc = "Replace surrounding" },
+        { opts.mappings.add,            desc = "Add surrounding",                   mode = { "n", "v" } },
+        { opts.mappings.delete,         desc = "Delete surrounding" },
+        { opts.mappings.find,           desc = "Find right surrounding" },
+        { opts.mappings.find_left,      desc = "Find left surrounding" },
+        { opts.mappings.highlight,      desc = "Highlight surrounding" },
+        { opts.mappings.replace,        desc = "Replace surrounding" },
         { opts.mappings.update_n_lines, desc = "Update minisurround.config.n_lines" },
       }
       mappings = vim.tbl_filter(function(m)
@@ -509,21 +521,21 @@ return {
     dependencies = {
       "nvim-telescope/telescope.nvim",
     },
-  --stylua: ignore
-  keys = {
-    { "<leader>ja", function() require("harpoon.mark").add_file() end,        desc = "Add file" },
-    { "<leader>jm", function() require("harpoon.ui").toggle_quick_menu() end, desc = "Menu" },
-    { "<leader>j1", function() require("harpoon.ui").nav_file(1) end,         desc = "Nav file 1" },
-    { "<leader>j2", function() require("harpoon.ui").nav_file(2) end,         desc = "Nav file 2" },
-    { "<leader>j3", function() require("harpoon.ui").nav_file(3) end,         desc = "Nav file 3" },
-    { "<leader>j4", function() require("harpoon.ui").nav_file(4) end,         desc = "Nav file 4" },
-    { "<leader>j5", function() require("harpoon.ui").nav_file(5) end,         desc = "Nav file 5" },
-    { "<leader>j6", function() require("harpoon.ui").nav_file(6) end,         desc = "Nav file 6" },
-    { "<leader>j7", function() require("harpoon.ui").nav_file(7) end,         desc = "Nav file 7" },
-    { "<leader>j8", function() require("harpoon.ui").nav_file(8) end,         desc = "Nav file 8" },
-    { "<leader>j9", function() require("harpoon.ui").nav_file(9) end,         desc = "Nav file 9" },
-    { "<leader>sj", "<cmd>Telescope harpoon marks<cr>",                       desc = "Jumps" },
-  },
+    --stylua: ignore
+    keys = {
+      { "<leader>ja", function() require("harpoon.mark").add_file() end,        desc = "Add file" },
+      { "<leader>jm", function() require("harpoon.ui").toggle_quick_menu() end, desc = "Menu" },
+      { "<leader>j1", function() require("harpoon.ui").nav_file(1) end,         desc = "Nav file 1" },
+      { "<leader>j2", function() require("harpoon.ui").nav_file(2) end,         desc = "Nav file 2" },
+      { "<leader>j3", function() require("harpoon.ui").nav_file(3) end,         desc = "Nav file 3" },
+      { "<leader>j4", function() require("harpoon.ui").nav_file(4) end,         desc = "Nav file 4" },
+      { "<leader>j5", function() require("harpoon.ui").nav_file(5) end,         desc = "Nav file 5" },
+      { "<leader>j6", function() require("harpoon.ui").nav_file(6) end,         desc = "Nav file 6" },
+      { "<leader>j7", function() require("harpoon.ui").nav_file(7) end,         desc = "Nav file 7" },
+      { "<leader>j8", function() require("harpoon.ui").nav_file(8) end,         desc = "Nav file 8" },
+      { "<leader>j9", function() require("harpoon.ui").nav_file(9) end,         desc = "Nav file 9" },
+      { "<leader>sj", "<cmd>Telescope harpoon marks<cr>",                       desc = "Jumps" },
+    },
     opts = {
       global_settings = {
         save_on_toggle = true,
@@ -550,16 +562,16 @@ return {
     },
     -- stylua: ignore
     keys = {
-      { "<leader>cgd", function() require("neogen").generate() end, desc = "Annotation" },
+      { "<leader>cgd", function() require("neogen").generate() end,                   desc = "Annotation" },
       { "<leader>cgc", function() require("neogen").generate({ type = "class" }) end, desc = "Class" },
-      { "<leader>cgf", function() require("neogen").generate({ type = "func" }) end, desc = "Function" },
-      { "<leader>cgt", function() require("neogen").generate({ type = "type" }) end, desc = "Type" },
+      { "<leader>cgf", function() require("neogen").generate({ type = "func" }) end,  desc = "Function" },
+      { "<leader>cgt", function() require("neogen").generate({ type = "type" }) end,  desc = "Type" },
     },
   },
   {
     "akinsho/toggleterm.nvim",
     keys = {
-      { "<leader>ct", desc = "Toggleterm" },
+      { "<leader>ct", desc = "Toggleterm", mode = "n" },
     },
     cmd = { "ToggleTerm", "TermExec" },
     opts = {

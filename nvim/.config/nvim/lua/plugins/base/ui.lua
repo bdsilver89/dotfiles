@@ -87,13 +87,26 @@ return {
     event = "VeryLazy",
     -- stylua: ignore
     keys = {
-      { "<s-enter>", function() require("noice").redirect(vim.fn.getcmdline()) end, mode = "c", desc = "Redirect cmdline" },
-      { "<leader>snl", function() require("noice").cmd("last") end, desc = "Noice last message" },
-      { "<leader>snh", function() require("noice").cmd("history") end, desc = "Noice history" },
-      { "<leader>sna", function() require("noice").cmd("all") end, desc = "Noice all" },
-      { "<leader>snd", function() require("noice").cmd("dismiss") end, desc = "Noice dismiss all" },
-      { "<c-f>",  function() if not require("noice.lsp").scoll(4) then return "<c-f>" end end, silent = true, expr = true, desc = "Scroll forward", mode = {"i", "n", "s"} },
-      { "<c-b>",  function() if not require("noice.lsp").scoll(-4) then return "<c-b>" end end, silent = true, expr = true, desc = "Scroll backward", mode = {"i", "n", "s"} },
+      { "<s-enter>",   function() require("noice").redirect(vim.fn.getcmdline()) end,                mode = "c",
+                                                                                                                                   desc =
+        "Redirect cmdline" },
+      { "<leader>snl", function() require("noice").cmd("last") end,                                  desc =
+      "Noice last message" },
+      { "<leader>snh", function() require("noice").cmd("history") end,                               desc =
+      "Noice history" },
+      { "<leader>sna", function() require("noice").cmd("all") end,                                   desc = "Noice all" },
+      { "<leader>snd", function() require("noice").cmd("dismiss") end,                               desc =
+      "Noice dismiss all" },
+      { "<c-f>",       function() if not require("noice.lsp").scoll(4) then return "<c-f>" end end,  silent = true,
+                                                                                                                                   expr = true,
+                                                                                                                                                             desc =
+        "Scroll forward",                                                                                                                                                            mode = {
+        "i", "n", "s" } },
+      { "<c-b>",       function() if not require("noice.lsp").scoll(-4) then return "<c-b>" end end, silent = true,
+                                                                                                                                   expr = true,
+                                                                                                                                                             desc =
+        "Scroll backward",                                                                                                                                                           mode = {
+        "i", "n", "s" } },
     },
     opts = {
       lsp = {
@@ -108,9 +121,9 @@ return {
           filter = {
             event = "msg_show",
             any = {
-              { find =  "%d+L, %d+B" },
-              { find =  "; after #%d+" },
-              { find =  "; before #%d+" },
+              { find = "%d+L, %d+B" },
+              { find = "; after #%d+" },
+              { find = "; before #%d+" },
             },
           },
           view = "mini",
@@ -322,7 +335,7 @@ return {
             end,
           },
           "Trouble",
-          { ft = "qf", title = "QuickFix" },
+          { ft = "qf",                title = "QuickFix" },
           {
             ft = "help",
             size = { height = 20 },
@@ -330,7 +343,7 @@ return {
               return vim.bo[buf] == "help"
             end,
           },
-          { ft = "spectre_panel", size = { height = 0.4 } },
+          { ft = "spectre_panel",     size = { height = 0.4 } },
           { title = "Neotest Output", ft = "neotest-output-panel", size = { height = 15 } },
         },
         left = {

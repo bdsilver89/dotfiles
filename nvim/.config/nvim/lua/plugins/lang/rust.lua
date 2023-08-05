@@ -38,7 +38,7 @@ return {
         local extension_path = codelldb:get_install_path() .. "/extension/"
         local codelldb_path = extension_path .. "adapter/codelldb"
         local liblldb_path = vim.fn.has("mac") == 1 and extension_path .. "lldb/lib/liblldb.dylib"
-          or extension_path .. "lldb/lib/liblldb.so"
+            or extension_path .. "lldb/lib/liblldb.so"
         adapter = require("rust-tools.dap").get_codelldb_adapter(codelldb_path, liblldb_path)
       end
       return {
@@ -66,9 +66,9 @@ return {
       servers = {
         rust_analyzer = {
           keys = {
-            { "K", "<cmd>RustHoverActions<cr>", desc = "Hover Actions (Rust)" },
-            { "<leader>cR", "<cmd>RustCodeAction<cr>", desc = "Code Action (Rust)" },
-            { "<leader>dr", "<cmd>RustDebuggables<cr>", desc = "Run Debuggables (Rust)" },
+            { "K",          "<cmd>RustHoverActions<cr>", desc = "Hover Actions (Rust)" },
+            { "<leader>cR", "<cmd>RustCodeAction<cr>",   desc = "Code Action (Rust)" },
+            { "<leader>dr", "<cmd>RustDebuggables<cr>",  desc = "Run Debuggables (Rust)" },
           },
           settings = {
             ["rust-analyzer"] = {
