@@ -1,7 +1,7 @@
 return {
   {
     "folke/tokyonight.nvim",
-    --lazy = false,
+    lazy = false,
     priority = 1000,
   },
   {
@@ -16,22 +16,22 @@ return {
   {
     "rose-pine/neovim",
     name = "rose-pine",
-    --lazy = false,
+    lazy = false,
     priority = 1000,
   },
   {
     "rebelot/kanagawa.nvim",
-    --lazy = false,
+    lazy = false,
     priority = 1000,
   },
   {
     "EdenEast/nightfox.nvim",
-    --lazy = false,
+    lazy = false,
     priority = 1000,
   },
   {
     "Everblush/nvim",
-    --lazy = false,
+    lazy = false,
     priority = 1000,
   },
 }

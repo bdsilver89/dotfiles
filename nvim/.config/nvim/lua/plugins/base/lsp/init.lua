@@ -30,7 +30,7 @@ return {
       },
       capabilities = {},
       autoformat = true,
-      format_notify= false,
+      format_notify = false,
       format = {
         formatting_options = nil,
         timeout_ms = nil,
@@ -82,14 +82,14 @@ return {
 
       if type(opts.diagnostics.virtual_text) == "table" and opts.diagnostics.virtual_text.prefix == "icons" then
         opts.diagnostics.virtual_text.prefix = vim.fn.has("nvim-0.10.0") == 0 and "●"
-          or function(diagnostic)
-            local icons = require("config.icons").diagnostics
-            for d, icon in pairs(icons) do
-              if diagnostic.severity == vim.diagnostic.severity[d:upper()] then
-                return icon
+            or function(diagnostic)
+              local icons = require("config.icons").diagnostics
+              for d, icon in pairs(icons) do
+                if diagnostic.severity == vim.diagnostic.severity[d:upper()] then
+                  return icon
+                end
               end
             end
-          end
       end
 
       vim.diagnostic.config(vim.deepcopy(opts.diagnostics))
@@ -144,7 +144,6 @@ return {
       if have_mason then
         mlsp.setup({ ensure_installed = ensure_installed, handlers = { setup } })
       end
-
     end,
   },
   {
@@ -182,8 +181,33 @@ return {
     opts = function()
       return {
         root_dir = require("null-ls.utils").root_pattern(".null-ls-root", ".neoconf.json", "Makefile", ".git"),
-        sources = { },
+        sources = {},
       }
     end,
+  },
+  {
+    "SmiteshP/nvim-navic",
+    dependencies = {
+      "neovim/nvim-lspconfig",
+    },
+    opts = {
+      lsp = {
+        auto_attach = true,
+      }
+    }
+  },
+  {
+    "SmiteshP/nvim-navbuddy",
+    dependencies = {
+      "neovim/nvim-lspconfig",
+    },
+    keys = {
+      { "<leader>cn", "<cmd>Navbuddy<cr>", desc = "Code navigation" },
+    },
+    opts = {
+      lsp = {
+        auto_attach = true,
+      }
+    }
   },
 }
