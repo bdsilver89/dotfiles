@@ -1,5 +1,26 @@
 return {
   {
+    "ThePrimeagen/git-worktree.nvim",
+    dependeices = {
+      "nvim-telescope/telescope.nvim"
+    },
+    keys = {
+      {
+        "<leader>gws",
+        "<cmd>lua require('telescope').extensions.git_worktree.git_worktrees()<cr>",
+        desc = "Show worktree"
+      },
+    },
+    config = function(_, opts)
+      require("git-worktree").setup()
+      require("telescope").load_extension("git_worktree")
+
+      -- vim.api.nvim_create_user_command("GitWorktreeCreate", function() end, {})
+      -- vim.api.nvim_create_user_command("GitWorktreeSwitch", function() end, {})
+      -- vim.api.nvim_create_user_command("GitWorktreeDelete", function() end, {})
+    end,
+  },
+  {
     "lewis6991/gitsigns.nvim",
     event = { "BufReadPre", "BufNewFile" },
     opts = {
