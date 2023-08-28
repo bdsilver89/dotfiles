@@ -87,26 +87,52 @@ return {
     event = "VeryLazy",
     -- stylua: ignore
     keys = {
-      { "<s-enter>",   function() require("noice").redirect(vim.fn.getcmdline()) end,                mode = "c",
-                                                                                                                                   desc =
-        "Redirect cmdline" },
-      { "<leader>snl", function() require("noice").cmd("last") end,                                  desc =
-      "Noice last message" },
-      { "<leader>snh", function() require("noice").cmd("history") end,                               desc =
-      "Noice history" },
-      { "<leader>sna", function() require("noice").cmd("all") end,                                   desc = "Noice all" },
-      { "<leader>snd", function() require("noice").cmd("dismiss") end,                               desc =
-      "Noice dismiss all" },
-      { "<c-f>",       function() if not require("noice.lsp").scoll(4) then return "<c-f>" end end,  silent = true,
-                                                                                                                                   expr = true,
-                                                                                                                                                             desc =
-        "Scroll forward",                                                                                                                                                            mode = {
-        "i", "n", "s" } },
-      { "<c-b>",       function() if not require("noice.lsp").scoll(-4) then return "<c-b>" end end, silent = true,
-                                                                                                                                   expr = true,
-                                                                                                                                                             desc =
-        "Scroll backward",                                                                                                                                                           mode = {
-        "i", "n", "s" } },
+      {
+        "<s-enter>",
+        function() require("noice").redirect(vim.fn.getcmdline()) end,
+        mode = "c",
+        desc =
+        "Redirect cmdline"
+      },
+      {
+        "<leader>snl",
+        function() require("noice").cmd("last") end,
+        desc =
+        "Noice last message"
+      },
+      {
+        "<leader>snh",
+        function() require("noice").cmd("history") end,
+        desc =
+        "Noice history"
+      },
+      { "<leader>sna", function() require("noice").cmd("all") end, desc = "Noice all" },
+      {
+        "<leader>snd",
+        function() require("noice").cmd("dismiss") end,
+        desc =
+        "Noice dismiss all"
+      },
+      {
+        "<c-f>",
+        function() if not require("noice.lsp").scoll(4) then return "<c-f>" end end,
+        silent = true,
+        expr = true,
+        desc =
+        "Scroll forward",
+        mode = {
+          "i", "n", "s" }
+      },
+      {
+        "<c-b>",
+        function() if not require("noice.lsp").scoll(-4) then return "<c-b>" end end,
+        silent = true,
+        expr = true,
+        desc =
+        "Scroll backward",
+        mode = {
+          "i", "n", "s" }
+      },
     },
     opts = {
       lsp = {
@@ -136,6 +162,60 @@ return {
         inc_rename = true,
       },
     },
+  },
+  {
+    "akinsho/bufferline.nvim",
+    event = "VeryLazy",
+    opts = function()
+      -- some custom behavior to get offests to work with edgy
+      local offset = require("bufferline.offset")
+      if not offset.edgy then
+        local get = offset.get
+        offset.get = function()
+          if package.loaded.edgy then
+            local layout = require("edgy.config").layout
+            local ret = { left = "", left_size = 0, right = "", right_size = 0 }
+            for _, pos in ipairs({ "left", "right" }) do
+              local sb = layout[pos]
+              if sb and #sb.wins > 0 then
+                local title = " Sidebar" .. string.rep(" ", sb.bounds.width - 8)
+                ret[pos] = "%#EdgyTitle#" .. title .. "%*" .. "%#WinSeparator#|%*"
+                ret[pos .. "_size"] = sb.bounds.width
+              end
+            end
+            ret.total_size = ret.left_size + ret.right_size
+            if ret.total_size > 0 then
+              return ret
+            end
+          end
+          return get()
+        end
+        offset.edgy = true
+      end
+      return {
+        options = {
+          -- stylua: ignore
+          close_command = function(n) require("mini.bufremove").delete(n, false) end,
+          -- stylua: ignore
+          right_mouse_command = function(n) require("mini.bufremove").delete(n, false) end,
+          diagnostics = "nvim_lsp",
+          always_show_bufferline = true,
+          separator_style = "slant",
+          diagnostics_indicator = function(_, _, diag)
+            local icons = require("config.icons").diagnostics
+            local ret = (diag.error and icons.Error .. diag.error .. " " or "") ..
+                (diag.warning and icons.Warn .. diag.warning or "")
+            return vim.trim(ret)
+          end,
+          offsets = {
+            filetype = "neo-tree",
+            text = "Neo-tree",
+            highlight = "Directory",
+            text_align = "left",
+          },
+        }
+      }
+    end,
   },
   {
     "nvim-lualine/lualine.nvim",
@@ -248,60 +328,6 @@ return {
       }
     end,
   },
-  -- {
-  --   "echasnovski/mini.starter",
-  --   event = "VimEnter",
-  --   opts = function()
-  --     local pad = string.rep(" ", 22)
-  --     local function new_section(name, action, section)
-  --     end
-  --
-  --     local starter = require("mini.starter")
-  --     local config = {
-  --       evaluate_single = true,
-  --       -- header = "",
-  --       items = {
-  --         new_section("Find file", "Telescope find_files", "Telescope"),
-  --         new_section("Grep text",    "Telescope live_grep",  "Telescope"),
-  --         new_section("init.lua",     "e $MYVIMRC",           "Config"),
-  --         new_section("Lazy",         "Lazy",                 "Config"),
-  --         new_section("New file",     "ene | startinsert",    "Built-in"),
-  --         new_section("Quit",         "qa",                   "Built-in"),
-  --         new_section("Projects", "Telescope projects", "Telescope"),
-  --       },
-  --       content_hooks = {
-  --         starter.gen_hook.adding_bullet(pad .. "░ ", false),
-  --         starter.gen_hook.aligning("center", "center"),
-  --       },
-  --     }
-  --     return config
-  --   end,
-  --   config = function(_, opts)
-  --     if vim.o.filetype == "lazy" then
-  --       vim.cmd.close()
-  --       vim.api.nvim_create_autocmd("User", {
-  --         pattern = "MiniStarterOpened",
-  --         callback = function()
-  --           require("lazy").show()
-  --         end,
-  --       })
-  --     end
-  --
-  --     local starter = require("mini.starter")
-  --     starter.setup(opts)
-  --
-  --     vim.api.nvim_create_autocmd("User", {
-  --       pattern = "LazyVimStarted",
-  --       callback = function()
-  --         local stats = require("lazy").stats()
-  --         local ms = (math.floor(stats.startuptime * 100 + 0.5) / 100)
-  --         local pad_footer = string.rep(" ", 8)
-  --         starter.config.footer = pad_footer .. "⚡ Neovim loaded " .. stats.count .. " plugins in " .. ms .. "ms"
-  --         pcall(starter.footer)
-  --       end,
-  --     })
-  --   end,
-  -- }
   {
     "folke/edgy.nvim",
     event = "VeryLazy",
