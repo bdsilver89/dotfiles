@@ -117,10 +117,13 @@ fi
 export CMAKE_GENERATOR="Ninja"
 export CONAN_CMAKE_GENERATOR="Ninja"
 
-# use llvm and gcc from homebrew on mac
 if [[ `uname` == "Darwin" ]]; then
+  # use llvm and gcc from homebrew on mac
   export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
   export PATH="/opt/homebrew/opt/gcc/bin:$PATH"
+
+  # local flutter repo
+  export PATH="$HOME/Developer/tools/flutter/bin/:$PATH"
 fi
 
 # Compilation flags
@@ -143,7 +146,10 @@ if [ -x "$(command -v exa)" ]; then
   alias l="exa -l --icons --git -a"
   alias lt="exa --tree --level=2 --long --icons --git"
 
-  cx() { cd "$@" && l; }
+  cx() { cd "$@" && exa -l --icons --git -a; }
+
+else
+  cx() { cd "$@" && ll; }
 fi
 
 if [ -x "$(command -v bat)" ]; then
