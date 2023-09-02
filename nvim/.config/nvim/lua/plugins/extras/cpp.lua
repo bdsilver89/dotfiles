@@ -9,29 +9,27 @@ return {
     "p00f/clangd_extensions.nvim",
     config = function() end,
     opts = {
-      extensions = {
-        inlay_hints = {
-          inline = false,
+      inlay_hints = {
+        inline = false,
+      },
+      ast = {
+        --These require codicons (https://github.com/microsoft/vscode-codicons)
+        role_icons = {
+          type = "",
+          declaration = "",
+          expression = "",
+          specifier = "",
+          statement = "",
+          ["template argument"] = "",
         },
-        ast = {
-          --These require codicons (https://github.com/microsoft/vscode-codicons)
-          role_icons = {
-            type = "",
-            declaration = "",
-            expression = "",
-            specifier = "",
-            statement = "",
-            ["template argument"] = "",
-          },
-          kind_icons = {
-            Compound = "",
-            Recovery = "",
-            TranslationUnit = "",
-            PackExpansion = "",
-            TemplateTypeParm = "",
-            TemplateTemplateParm = "",
-            TemplateParamObject = "",
-          },
+        kind_icons = {
+          Compound = "",
+          Recovery = "",
+          TranslationUnit = "",
+          PackExpansion = "",
+          TemplateTypeParm = "",
+          TemplateTemplateParm = "",
+          TemplateParamObject = "",
         },
       },
     },
@@ -81,7 +79,7 @@ return {
       clangd = function(_, opts)
         local clangd_ext_opts = require("config.utils").opts("clangd_extensions.nvim")
         require("clangd_extensions").setup(vim.tbl_deep_extend("force", clangd_ext_opts or {}, { server = opts }))
-        return true
+        return false
       end,
     },
   },
