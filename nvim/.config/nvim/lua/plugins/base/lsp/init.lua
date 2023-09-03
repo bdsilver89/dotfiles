@@ -12,6 +12,7 @@ return {
       { "williamboman/mason.nvim" },
       { "williamboman/mason-lspconfig.nvim" },
       { "hrsh7th/cmp-nvim-lsp" },
+      "SmiteshP/nvim-navic",
     },
     ---@class PluginLspOpts
     opts = {
@@ -200,6 +201,7 @@ return {
     "SmiteshP/nvim-navbuddy",
     dependencies = {
       "neovim/nvim-lspconfig",
+      "SmiteshP/nvim-navic"
     },
     keys = {
       { "<leader>cn", "<cmd>Navbuddy<cr>", desc = "Code navigation" },
