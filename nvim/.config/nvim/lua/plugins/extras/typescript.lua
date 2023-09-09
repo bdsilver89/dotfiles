@@ -9,28 +9,30 @@ return {
     "neovim/nvim-lspconfig",
     dependencies = { "jose-elias-alvarez/typescript.nvim" },
     opts = {
-      tsserver = {
-        keys = {
-          { "<leader>co", "<cmd>TypescriptOrganizeImports<cr>", desc = "Organize imports" },
-          { "<leader>cR", "<cmd>TypescriptRenameFile<cr>", desc = "Rename file" },
-        },
-        settings = {
-          typescript = {
-            format = {
-              indentSize = vim.o.shiftwidth,
-              convertTabsToSpaces = vim.o.expandtab,
-              tabSize = vim.o.tabstop,
-            },
+      servers = {
+        tsserver = {
+          keys = {
+            { "<leader>co", "<cmd>TypescriptOrganizeImports<cr>", desc = "Organize imports" },
+            { "<leader>cR", "<cmd>TypescriptRenameFile<cr>",      desc = "Rename file" },
           },
-          javascript = {
-            format = {
-              indentSize = vim.o.shiftwidth,
-              convertTabsToSpaces = vim.o.expandtab,
-              tabSize = vim.o.tabstop,
+          settings = {
+            typescript = {
+              format = {
+                indentSize = vim.o.shiftwidth,
+                convertTabsToSpaces = vim.o.expandtab,
+                tabSize = vim.o.tabstop,
+              },
             },
-          },
-          completions = {
-            completeFunctionCalls = true,
+            javascript = {
+              format = {
+                indentSize = vim.o.shiftwidth,
+                convertTabsToSpaces = vim.o.expandtab,
+                tabSize = vim.o.tabstop,
+              },
+            },
+            completions = {
+              completeFunctionCalls = true,
+            },
           },
         },
       },
@@ -72,7 +74,7 @@ return {
             -- Make sure to update this path to point to your installation
             args = {
               require("mason-registry").get_package("js-debug-adapter"):get_install_path()
-                .. "/js-debug/src/dapDebugServer.js",
+              .. "/js-debug/src/dapDebugServer.js",
               "${port}",
             },
           },

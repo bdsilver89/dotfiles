@@ -15,17 +15,7 @@ return {
     "neovim/nvim-lspconfig",
     opts = {
       servers = {
-        html = {
-          filetypes = {
-            "html",
-            "javascript",
-            "javascriptreact",
-            "javascript.jsx",
-            "typescript",
-            "typescriptreact",
-            "typescript.tsx",
-          },
-        },
+        html = {},
         emmet_ls = {
           init_options = {
             html = {
@@ -60,8 +50,8 @@ return {
     opts = {},
     cmd = { "CccPick", "CccConvert", "CccHighlighterEnable", "CccHighlighterDisable", "CccHighlighterToggle" },
     keys = {
-      { "<leader>zCp", "<cmd>CccPick<cr>", desc = "Pick" },
-      { "<leader>zCc", "<cmd>CccConvert<cr>", desc = "Convert" },
+      { "<leader>zCp", "<cmd>CccPick<cr>",              desc = "Pick" },
+      { "<leader>zCc", "<cmd>CccConvert<cr>",           desc = "Convert" },
       { "<leader>zCh", "<cmd>CccHighlighterToggle<cr>", desc = "Toggle Highlighter" },
     },
   },
