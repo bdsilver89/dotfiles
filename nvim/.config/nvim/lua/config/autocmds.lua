@@ -17,9 +17,7 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 vim.api.nvim_create_autocmd("VimResized", {
   group = augroup("resize"),
   callback = function()
-    local current_tab = vim.fn.tapbagenr()
     vim.cmd("tabdo wincmd =")
-    vim.cmd("tabnext " .. current_tab)
   end,
 })
 
