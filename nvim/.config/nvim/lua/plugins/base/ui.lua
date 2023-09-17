@@ -1,6 +1,12 @@
 return {
   "MunifTanjim/nui.nvim",
   {
+    "echasnovski/mini.map",
+    keys = {
+      { "<leader>um", function() require("mini.map").toggle() end, desc = "Toggle mini map" },
+    }
+  },
+  {
     "lukas-reineke/indent-blankline.nvim",
     event = { "BufReadPost", "BufNewFile" },
     opts = {
@@ -22,6 +28,7 @@ return {
         pattern = {
           "help",
           "neo-tree",
+          "NvimTree",
           "Trouble",
           "lazy",
           "mason",
@@ -208,8 +215,10 @@ return {
             return vim.trim(ret)
           end,
           offsets = {
-            filetype = "neo-tree",
-            text = "Neo-tree",
+            -- filetype = "neo-tree",
+            -- text = "Neo-tree",
+            filetype = "NvimTree",
+            text = "NvimTree",
             highlight = "Directory",
             text_align = "left",
           },
@@ -352,14 +361,6 @@ return {
               return vim.api.nvim_win_get_config(win).relative == ""
             end,
           },
-          {
-            ft = "lazyterm",
-            title = "LazyTerm",
-            size = { height = 0.4 },
-            filter = function(buf)
-              return not vim.b[buf].lazyterm_cmd
-            end,
-          },
           "Trouble",
           { ft = "qf",                title = "QuickFix" },
           {
@@ -373,39 +374,42 @@ return {
           { title = "Neotest Output", ft = "neotest-output-panel", size = { height = 15 } },
         },
         left = {
-          {
-            title = "Neo-Tree",
-            ft = "neo-tree",
-            filter = function(buf)
-              return vim.b[buf].neo_tree_source == "filesystem"
-            end,
-            pinned = true,
-            open = function()
-              vim.api.nvim_input("<esc><space>e")
-            end,
-            size = { height = 0.5 },
-          },
-          { title = "Neotest Summary", ft = "neotest-summary" },
-          {
-            title = "Neo-Tree Git",
-            ft = "neo-tree",
-            filter = function(buf)
-              return vim.b[buf].neo_tree_source == "git_status"
-            end,
-            pinned = true,
-            open = "Neotree position=right git_status",
-          },
-          {
-            title = "Neo-Tree Buffers",
-            ft = "neo-tree",
-            filter = function(buf)
-              return vim.b[buf].neo_tree_source == "buffers"
-            end,
-            pinned = true,
-            open = "Neotree position=top buffers",
-          },
-          "neo-tree",
+          "NvimTree",
         },
+        -- left = {
+        --   {
+        --     title = "Neo-Tree",
+        --     ft = "neo-tree",
+        --     filter = function(buf)
+        --       return vim.b[buf].neo_tree_source == "filesystem"
+        --     end,
+        --     pinned = true,
+        --     open = function()
+        --       vim.api.nvim_input("<esc><space>e")
+        --     end,
+        --     size = { height = 0.5 },
+        --   },
+        --   { title = "Neotest Summary", ft = "neotest-summary" },
+        --   {
+        --     title = "Neo-Tree Git",
+        --     ft = "neo-tree",
+        --     filter = function(buf)
+        --       return vim.b[buf].neo_tree_source == "git_status"
+        --     end,
+        --     pinned = true,
+        --     open = "Neotree position=right git_status",
+        --   },
+        --   {
+        --     title = "Neo-Tree Buffers",
+        --     ft = "neo-tree",
+        --     filter = function(buf)
+        --       return vim.b[buf].neo_tree_source == "buffers"
+        --     end,
+        --     pinned = true,
+        --     open = "Neotree position=top buffers",
+        --   },
+        --   "neo-tree",
+        -- },
         keys = {
           -- increase width
           ["<c-Right>"] = function(win)

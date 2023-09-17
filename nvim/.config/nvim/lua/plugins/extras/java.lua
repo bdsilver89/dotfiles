@@ -1,7 +1,5 @@
 local utils = require("config.utils")
 
-local java_filetypes = { "java" }
-
 local function extend_or_override(config, custom, ...)
   if type(custom) == "function" then
     config = custom(config, ...) or config
@@ -32,10 +30,12 @@ return {
   },
   {
     "neovim/nvim-lspconfig",
-    dependencies = { "folke/which-key.nvim", "mfussenegger/nvim-jdtls" },
+    dependencies = { "folke/which-key.nvim" },
     opts = {
       servers = {
-        jdtls = {},
+        jdtls = {
+          filetypes = { "java" },
+        },
       },
       setup = {
         jdtls = function()
@@ -47,7 +47,7 @@ return {
   {
     "mfussenegger/nvim-jdtls",
     dependencies = { "folke/which-key.nvim" },
-    ft = java_filetypes,
+    ft = { "java" },
     opts = function()
       return {
         -- How to find the root dir for a given filename. The default comes from
@@ -142,7 +142,7 @@ return {
       -- depending on filetype, so this autocmd doesn't run for the first file.
       -- For that, we call directly below.
       vim.api.nvim_create_autocmd("FileType", {
-        pattern = java_filetypes,
+        pattern = "java",
         callback = attach_jdtls,
       })
 

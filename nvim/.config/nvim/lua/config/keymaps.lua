@@ -63,17 +63,17 @@ map("n", "<leader>-", "<c-w>s", { desc = "Split window horizontal" })
 map("n", "<leader>|", "<c-w>v", { desc = "Split window vertical" })
 
 -- buffers
--- if require("config.utils").has("bufferline.nvim") then
---  map("n", "<s-h>", "<cmd>BufferLineCyclePrev<cr>", { desc = "Prev buffer" })
---  map("n", "<s-l>", "<cmd>BufferLineCycleNext<cr>", { desc = "Next buffer" })
---  map("n", "[b", "<cmd>BufferLineCyclePrev<cr>", { desc = "Prev buffer" })
---  map("n", "]b", "<cmd>BufferLineCycleNext<cr>", { desc = "Next buffer" })
---else
-map("n", "<s-h>", "<cmd>bprevious<cr>", { desc = "Prev buffer" })
-map("n", "<s-l>", "<cmd>bnext<cr>", { desc = "Next buffer" })
-map("n", "[b", "<cmd>bprevious<cr>", { desc = "Prev buffer" })
-map("n", "]b", "<cmd>bnext<cr>", { desc = "Next buffer" })
---end
+if require("config.utils").has("bufferline.nvim") then
+  map("n", "<s-h>", "<cmd>BufferLineCyclePrev<cr>", { desc = "Prev buffer" })
+  map("n", "<s-l>", "<cmd>BufferLineCycleNext<cr>", { desc = "Next buffer" })
+  map("n", "[b", "<cmd>BufferLineCyclePrev<cr>", { desc = "Prev buffer" })
+  map("n", "]b", "<cmd>BufferLineCycleNext<cr>", { desc = "Next buffer" })
+else
+  map("n", "<s-h>", "<cmd>bprevious<cr>", { desc = "Prev buffer" })
+  map("n", "<s-l>", "<cmd>bnext<cr>", { desc = "Next buffer" })
+  map("n", "[b", "<cmd>bprevious<cr>", { desc = "Prev buffer" })
+  map("n", "]b", "<cmd>bnext<cr>", { desc = "Next buffer" })
+end
 --map("n", "<leader>bd", "<cmd>bdelete<cr>", { desc = "Delete buffer" })
 --map("n", "<leader>bD", "<cmd>bdelete!<cr>", { desc = "Delete buffer (force)" })
 map("n", "<leader>bb", "<cmd>e#<cr>", { desc = "Alternate buffer" })
