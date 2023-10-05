@@ -1,7 +1,7 @@
 return {
   {
     "ThePrimeagen/git-worktree.nvim",
-    dependeices = {
+    dependenncies = {
       "nvim-telescope/telescope.nvim"
     },
     keys = {

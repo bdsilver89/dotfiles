@@ -9,10 +9,8 @@ return {
   {
     "lukas-reineke/indent-blankline.nvim",
     event = { "BufReadPost", "BufNewFile" },
-    opts = {
-      show_trailing_blankline_indent = false,
-      show_current_context = true,
-    },
+    opts = {},
+    main = "ibl",
   },
   {
     "echasnovski/mini.indentscope",
