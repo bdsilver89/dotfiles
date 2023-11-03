@@ -1,8 +1,0 @@
-tools:
-  - exa
-  - bat
-  - fd
-  - fzf
-  - ripgrep
-  - lazygit
-  - zoxide

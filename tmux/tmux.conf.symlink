@@ -1,0 +1,111 @@
+set-option -g default-terminal "xterm-256color"
+set-option -ga terminal-overrides ",xterm-256color:Tc"
+set -g mouse on
+
+set -g prefix C-a
+unbind C-b
+bind-key C-a send-prefix
+
+unbind %
+bind | split-window -h -c "#{pane_current_path}"
+
+unbind '"'
+bind - split-window -v -c "#{pane_current_path}"
+
+unbind r
+bind r source-file ~/.tmux.conf \; display-message "Reloaded tmux config"
+
+bind h select-pane -L
+bind j select-pane -D
+bind k select-pane -U
+bind l select-pane -R
+
+bind -n M-Left select-pane -L
+bind -n M-Right select-pane -R
+bind -n M-Up select-pane -U
+bind -n M-Down select-pane -D
+
+bind -r m resize-pane -Z
+
+bind -n S-Left previous-window
+bind -n S-Right next-window
+
+bind -n M-H previous-window
+bind -n M-L next-window
+
+bind-key J command-prompt -p "join pane from: " "join-pane -h -s '%%'"
+bind-key S command-prompt -p "send pane to: " "join-pane -h -t '%%'"
+bind-key B break-pane
+
+bind-key -r f run-shell "tmux neww ~/.local/bin/tmux-sessionizer"
+
+# start windows/panes at 1 instead of 0 (easier to use number row keys)
+set -g base-index 1
+setw -g pane-base-index 1
+set-window-option -g pane-base-index 1
+setw -g automatic-rename on
+set -g renumber-windows on
+
+set -g focus-events on
+set -g set-titles on
+set -g monitor-activity off
+set -g visual-activity on
+
+set-window-option -g mode-keys vi
+
+bind-key -T copy-mode-vi v send -X begin-selection
+bind-key -T copy-mode-vi C-v send -X rectange-toggle
+bind-key -T copy-mode-vi y send -X copy-selection-and-cancel
+
+unbind -T copy-mode-vi MouseDragEnd1Pane
+
+# UI
+set -g status-interval 3
+set -g status-left "#[fg=blue,bold,bg=#1e1e2e]  #S   "
+set -g status-right "#[fg=#b4befe,bold,bg=#1e1e2e]%a %Y-%m-%d 󱑒 %l:%M %p"
+# set -ga status-right "#($HOME/.config/tmux/scripts/cal.sh)"
+set -g status-justify left
+set -g status-left-length 200
+set -g status-right-length 200
+set -g status-position top
+set -g status-style 'bg=#1e1e2e' # transparent
+set -g window-status-current-format '#[fg=magenta,bg=#1e1e2e] *#I #W'
+set -g window-status-format '#[fg=gray,bg=#1e1e2e] #I #W'
+set -g window-status-last-style 'fg=white,bg=black'
+set -g default-terminal "${TERM}"
+set -g message-command-style bg=default,fg=yellow
+set -g message-style bg=default,fg=yellow
+set -g mode-style bg=default,fg=yellow
+set -g pane-active-border-style 'fg=magenta,bg=default'
+set -g pane-border-style 'fg=brightblack,bg=default'
+
+# tpm plugin options
+set -g @fzf-url-fzf-options '-p 60%,30% --prompt="   " --border-label=" Open URL "'
+set -g @fzf-url-history-limit '2000'
+set -g @t-bind 'K'
+set -g @t-fzf-find-binding 'ctrl-l:change-prompt(  )+reload(fd -H -d 2 -t d -E .Trash . ~)'
+set -g @t-fzf-prompt '  '
+set -g @tmux-last-color on
+set -g @tmux-last-pager 'less -r'
+set -g @tmux-last-pager 'less'
+set -g @tmux-last-prompt-pattern ' '
+set -g @tmux-nerd-font-window-name-shell-icon ''
+set -g @tmux-nerd-font-window-name-show-name false
+
+# tpm plugins
+set -g @plugin 'tmux-plugins/tpm'
+set -g @plugin 'tmux-plugins/tmux-sensible'
+# set -g @plugin 'tmux-plugins/tmux-continuum'
+# set -g @plugin 'tmux-plugins/tmux-resurrect'
+set -g @plugin 'tmux-plugins/tmux-yank'
+
+set -g @plugin 'christoomey/vim-tmux-navigator'
+set -g @plugin 'fcsonline/tmux-thumbs'
+set -g @plugin 'joshmedeski/t-smart-tmux-session-manager'
+set -g @plugin 'sainnhe/tmux-fzf'
+set -g @plugin 'joshmedeski/tmux-nerd-font-window-name'
+set -g @plugin 'mskelton/tmux-last'
+
+# Initialize TMUX plugin manager
+run '~/.tmux/plugins/tpm/tpm'
+

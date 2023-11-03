@@ -1,5 +1,0 @@
-python3_versions:
-  - latest
-python3_global_version: latest
-python2_version: 2.7.16
-python_poetry_install: no

@@ -1,2 +1,0 @@
-zsh_plugins:
-  - { name: "zsh-autosuggestions", repo: "https://github.com/zsh-users/zsh-autosuggestions.git" }

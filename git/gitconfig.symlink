@@ -1,0 +1,12 @@
+[user]
+  name = "Brian Silver"
+  email = "github@briansilver.net"
+[init]
+  defaultBranch = main
+[core]
+  editor = nvim
+  ignorecase = false
+[color]
+  ui = auto
+[web]
+  browser = google-chrome
