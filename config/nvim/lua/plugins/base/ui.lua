@@ -1,94 +1,6 @@
-local Utils = require("utils")
 return {
   "nvim-tree/nvim-web-devicons",
   "MunifTanjim/nui.nvim",
-  -- {
-  --   "nvim-lualine/lualine.nvim",
-  --   event = "VeryLazy",
-  --   enabled = false,
-  --   opts = function()
-  --     return {
-  --       extensions = { "neo-tree", "lazy" },
-  --       options = {
-  --         theme = "auto",
-  --         icons_enabled = true,
-  --         component_separators = "|",
-  --         section_separators = "",
-  --         globalstatus = true,
-  --         disabled_filetypes = { statusline = { "dashboard", "alpha", "starter" } },
-  --       },
-  --       sections = {
-  --         lualine_a = {
-  --           "mode",
-  --         },
-  --         lualine_b = {
-  --           "branch",
-  --           {
-  --             "diff",
-  --             symbols = {
-  --               added = Utils.icons.git.added,
-  --               modified = Utils.icons.git.modified,
-  --               removed = Utils.icons.git.removed,
-  --             },
-  --             source = function()
-  --               local gitsigns = vim.b.gitsigns_status_dict
-  --               if gitsigns then
-  --                 return {
-  --                   added = gitsigns.added,
-  --                   modified = gitsigns.changed,
-  --                   removed = gitsigns.removed,
-  --                 }
-  --               end
-  --             end,
-  --           },
-  --         },
-  --         lualine_c = {
-  --           {
-  --             "diagnostics",
-  --             symbols = {
-  --               error = Utils.icons.diagnostics.Error,
-  --               warn = Utils.icons.diagnostics.Warn,
-  --               info = Utils.icons.diagnostics.Info,
-  --               hint = Utils.icons.diagnostics.Hint,
-  --             },
-  --           },
-  --           { "filetype", icon_only = true, separator = "", padding = { left = 1, right = 0 } },
-  --           { "filename" },
-  --         },
-  --         lualine_x = {
-  --           -- stylua: ignore
-  --           {
-  --             function() return require("noice").api.status.command.get() end,
-  --             cond = function() return package.loaded["noice"] and require("noice").api.status.command.has() end,
-  --           },
-  --           -- stylua: ignore
-  --           {
-  --             function() return require("noice").api.status.mode.get() end,
-  --             cond = function() return package.loaded["noice"] and require("noice").api.status.mode.has() end,
-  --           },
-  --           -- stylua: ignore
-  --           {
-  --             function() return Utils.icons.misc.dap .. " " .. require("dap").status() end,
-  --             cond = function() return package.loaded["dap"] and require("dap").status() ~= "" end,
-  --           },
-  --           {
-  --             require("lazy.status").updates,
-  --             cond = require("lazy.status").has_updates,
-  --           },
-  --         },
-  --         lualine_y = {
-  --           { "progress", separator = " ", padding = { left = 1, right = 0 } },
-  --           { "location", padding = { left = 0, right = 1 } },
-  --         },
-  --         lualine_z = {
-  --           function()
-  --             return " " .. os.date("%R")
-  --           end,
-  --         },
-  --       },
-  --     }
-  --   end,
-  -- },
   {
     "rcarriga/nvim-notify",
     keys = {
@@ -116,7 +28,6 @@ return {
       end
     end,
   },
-  -- noice
   {
     "folke/noice.nvim",
     event = "VeryLazy",
@@ -166,11 +77,9 @@ return {
   },
   {
     "lukas-reineke/indent-blankline.nvim",
-    -- event = { "BufReadPost", "BufNewFile" },
     event = "LazyFile",
     main = "ibl",
     opts = {
-      -- indent,
       scope = {
         show_start = false,
         show_end = false,
@@ -241,7 +150,6 @@ return {
               "Startuptime: " .. ms .. " ms",
               "Plugins: " .. stats.loaded .. " loaded / " .. stats.count .. " installed",
             }
-            -- return { "⚡ Neovim loaded " .. stats.loaded .. "/" .. stats.count .. " plugins in " .. ms .. "ms" }
           end,
         },
       }
@@ -267,6 +175,7 @@ return {
   },
   {
     "folke/zen-mode.nvim",
+    enabled = false,
     keys = {
       {
         "<leader>zz",
@@ -282,6 +191,7 @@ return {
   },
   {
     "folke/twilight.nvim",
+    enabled = false,
     event = "LazyFile",
     opts = {},
   },
@@ -294,20 +204,20 @@ return {
     },
     opts = function()
       return {
-        keys = {
-          ["<c-right>"] = function(win)
-            win:resize("width", 2)
-          end,
-          ["<c-left>"] = function(win)
-            win:resize("width", -2)
-          end,
-          ["<c-up>"] = function(win)
-            win:resize("height", 2)
-          end,
-          ["<c-down>"] = function(win)
-            win:resize("height", -2)
-          end,
-        },
+        -- keys = {
+        --   ["<c-right>"] = function(win)
+        --     win:resize("width", 2)
+        --   end,
+        --   ["<c-left>"] = function(win)
+        --     win:resize("width", -2)
+        --   end,
+        --   ["<c-up>"] = function(win)
+        --     win:resize("height", 2)
+        --   end,
+        --   ["<c-down>"] = function(win)
+        --     win:resize("height", -2)
+        --   end,
+        -- },
         bottom = {
           "Trouble",
           {

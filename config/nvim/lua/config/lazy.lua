@@ -75,10 +75,7 @@ require("lazy").setup({
   },
   install = {
     colorschemes = {
-      "tokyonight",
       "catppuccin",
-      "kanagawa",
-      "onedark",
     },
   },
   performance = {

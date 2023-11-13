@@ -3,54 +3,39 @@ return {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
     cmd = { "TSUpdateSync", "TSUpdate", "TSInstall" },
-    -- event = { "BufReadPost", "BufNewFile" },
-    event = { "LazyFile", "VeryLazy" },
+    event = { "LazyFile" },
     dependencies = {
-      -- "JoosephAlviste/nvim-ts-context-commentstring",
-      "nvim-treesitter/nvim-treesitter-context",
       "nvim-treesitter/nvim-treesitter-textobjects",
-      {
-        "windwp/nvim-ts-autotag",
-        opts = {
-          autotag = { enable_close_on_slash = false },
-        },
-      },
-      {
-        "windwp/nvim-autopairs",
-        opts = {
-          check_ts = true,
-          enable_check_bracket_line = false,
-          -- ts_config
-          -- disable_filetype
-          -- disable_in_macro
-          -- ignored_next_char
-          -- enable_moveright
-          -- enable_afterquote
-          map_c_w = false,
-          map_bs = true,
-          disable_in_visualblock = false,
-          -- fast_wrap
-        },
-      },
     },
+    init = function(plugin)
+      require("lazy.core.loader").add_to_rtp(plugin)
+      require("nvim-treesitter.query_predicates")
+    end,
     opts = {
-      autotag = { enable = true },
-      -- TODO: context-commentstring
-      -- highlight = {
-      -- enable = true,
-      --   disable = function(_, bufnr) return vim.b[bufnr].large_buf end,
-      -- },
+      highlight = {
+        enable = true,
+        additional_vim_regex_highlighting = {},
+      },
+      indent = {
+        enable = true,
+      },
+      ensure_installed = {
+        "diff",
+        "ini",
+        "query",
+        "regex",
+        "vim",
+        "vimdoc",
+      },
       incremental_selection = {
         enable = true,
         keymaps = {
           init_selection = "<c-space>",
           node_incremental = "<c-space>",
-          scope_incremental = "<c-s>",
-          node_decremental = "<m-space>",
+          scope_incremental = false,
+          node_decremental = "<bs>",
         },
       },
-      indent = { enable = true },
-      auto_install = { enable = false },
       textobjects = {
         select = {
           enable = true,
@@ -110,54 +95,6 @@ return {
           },
         },
       },
-      ensure_installed = {
-        -- "bash",
-        -- "c",
-        -- "cmake",
-        -- "cpp",
-        -- "css",
-        -- "dockerfile",
-        "diff",
-        -- "go",
-        -- "gomod",
-        -- "gowork",
-        -- "gosum",
-        "graphql",
-        -- "hcl",
-        -- "html",
-        "ini",
-        -- "java",
-        -- "javascript",
-        -- "json",
-        -- "json5",
-        -- "jsonc",
-        -- "lua",
-        -- "luadoc",
-        -- "luap",
-        -- "make",
-        -- "markdown",
-        -- "markdown_inline",
-        -- "meson",
-        -- "ninja",
-        -- "norg",
-        -- "proto",
-        -- "python",
-        "query",
-        "regex",
-        -- "ron",
-        -- "rst",
-        -- "rust",
-        -- "scss",
-        -- "sql",
-        -- "terraform",
-        -- "toml",
-        -- "tsx",
-        "vim",
-        "vimdoc",
-        -- "xml",
-        -- "yaml",
-        -- "zig",
-      },
     },
     config = function(_, opts)
       if type(opts.ensure_installed) == "table" then
@@ -172,5 +109,44 @@ return {
       end
       require("nvim-treesitter.configs").setup(opts)
     end,
+  },
+  {
+    "nvim-treesitter/nvim-treesitter-context",
+    event = "LazyFile",
+    keys = {
+      {
+        "<leader>ut",
+        function()
+          local Utils = require("utils")
+          local tsc = require("treesitter-context")
+          tsc.toggle()
+          if Utils.get_upvalue(tsc.toggle, "enabled") then
+            Utils.log.info("Enabled treesitter context", { title = "Option" })
+          else
+            Utils.log.warn("Disabled treesitter context", { title = "Option" })
+          end
+        end,
+        desc = "Toggle treesitter context",
+      },
+    },
+    opts = {
+      mode = "cursor",
+      max_lines = 3,
+    },
+  },
+  {
+    "windwp/nvim-ts-autotag",
+    event = "LazyFile",
+  },
+  {
+    "windwp/nvim-autopairs",
+    event = "LazyFile",
+    opts = {
+      check_ts = true,
+      enable_check_bracket_line = false,
+      map_c_w = false,
+      map_bs = true,
+      disable_in_visualblock = false,
+    },
   },
 }

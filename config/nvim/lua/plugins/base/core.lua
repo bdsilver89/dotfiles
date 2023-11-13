@@ -13,4 +13,9 @@ return {
       vim.g.tmux_navigator_no_mappings = 1
     end,
   },
+  {
+    "stevearc/overseer.nvim",
+    cmd = { "OverseerBuild", "OverseerToggle", "OverseerRun" },
+    opts = {},
+  },
 }

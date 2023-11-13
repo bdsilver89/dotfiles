@@ -6,13 +6,13 @@ return {
     },
     keys = {
       { "<leader>cf", "<cmd>Format<cr>", desc = "Format file or range" },
+      { "<leader>uf", "<cmd>FormatToggle<cr>", desc = "Toggle formatting (global)" },
+      { "<leader>uF", "<cmd>FormatToggleBuf<cr>", desc = "Toggle formatting (buf)" },
     },
     cmd = "ConformInfo",
     event = { "BufWritePre" },
     opts = {
-      formatters_by_ft = {
-        -- zig = { "zigformat" },
-      },
+      formatters_by_ft = {},
       format_on_save = function(bufnr)
         if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
           return
@@ -35,21 +35,37 @@ return {
         require("conform").format({ async = true, lsp_fallback = true, range = range })
       end, { range = true, desc = "Format" })
 
-      vim.api.nvim_create_user_command("FormatDisable", function(args)
-        if args.bang then
-          vim.b.disable_autoformat = true
-        else
-          vim.g.disable_autoformat = true
-        end
-      end, { desc = "Disable autoformat", bang = true })
+      -- vim.api.nvim_create_user_command("FormatDisable", function(args)
+      --   if args.bang then
+      --     vim.b.disable_autoformat = true
+      --   else
+      --     vim.g.disable_autoformat = true
+      --   end
+      -- end, { desc = "Disable autoformat", bang = true })
+      --
+      -- vim.api.nvim_create_user_command("FormatEnable", function(args)
+      --   vim.b.disable_autoformat = false
+      --   vim.g.disable_autoformat = false
+      -- end, { desc = "Enable autoformat" })
 
-      vim.api.nvim_create_user_command("FormatEnable", function(args)
-        vim.b.disable_autoformat = false
-        vim.g.disable_autoformat = false
-      end, { desc = "Enable autoformat" })
+      vim.api.nvim_create_user_command("FormatToggle", function(args)
+        vim.g.disable_autoformat = not vim.g.disable_autoformat
+        vim.b.disable_autoformat = vim.g.disable_autoformat
+        if vim.g.disable_autoformat then
+          require("utils.log").warn("Global autoformat disabled", { title = "Formatting" })
+        else
+          require("utils.log").info("Global autoformat enabled", { title = "Formatting" })
+        end
+      end, { desc = "Toggle formatting (global)" })
+
+      vim.api.nvim_create_user_command("FormatToggleBuf", function(args)
+        vim.b.disable_autoformat = not vim.b.disable_autoformat
+        if vim.b.disable_autoformat then
+          require("utils.log").warn("Buffer autoformat disabled", { title = "Formatting" })
+        else
+          require("utils.log").info("Buffer autoformat enabled", { title = "Formatting" })
+        end
+      end, { desc = "Toggle formatting (global)" })
     end,
-    -- config = function(_, opts)
-    --   require("conform").setup(opts)
-    -- end,
   },
 }

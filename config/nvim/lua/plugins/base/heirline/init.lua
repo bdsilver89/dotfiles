@@ -2,6 +2,7 @@ return {
   {
     "rebelot/heirline.nvim",
     event = "BufEnter",
+    enabled = true,
     opts = function()
       return {
         statusline = require("plugins.base.heirline.statusline").setup(),

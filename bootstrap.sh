@@ -116,8 +116,11 @@ setup_symlinks() {
 
 	# link config files
 	for src in $(find "${DOTFILES_DIR}/config" -mindepth 1 -maxdepth 1); do
-		dst="$HOME/.config/$(basename ${src})"
-		link_file "$src" "$dst"
+		basename="$(basename ${src})"
+		if [ ${basename} != ".DS_Store" ]; then
+			dst="$HOME/.config/$(basename ${src})"
+			link_file "$src" "$dst"
+		fi
 	done
 
 	# link scripts

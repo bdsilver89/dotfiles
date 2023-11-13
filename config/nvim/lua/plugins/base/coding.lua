@@ -7,6 +7,20 @@ return {
     dependencies = {
       "rafamadriz/friendly-snippets",
     },
+    -- stylua: ignore
+    keys = {
+      {
+        "<tab>",
+        function()
+          return require("luasnip").jumpable(1) and "<Plug>luasnip-jump-next" or "<tab>"
+        end,
+        expr = true,
+        silent = true,
+        mode = "i"
+      },
+      { "<tab>", function() require("luasnip").jump(1) end, mode = "s" },
+      { "<s-tab>", function() require("luasnip").jump(-1) end, mode = { "i", "s" } },
+    },
     opts = {
       history = true,
       delete_check_events = "TextChanged",
@@ -30,6 +44,7 @@ return {
     },
     opts = function()
       local cmp = require("cmp")
+      local defaults = require("cmp.config.default")()
       local luasnip_avail, luasnip = pcall(require, "luasnip")
       -- local lspkind_avail, lspkind = pcall(require, "lspkind")
 
@@ -73,6 +88,7 @@ return {
           { name = "buffer" },
           { name = "path" },
         }),
+        sorting = defaults.sorting,
       }
     end,
   },
@@ -87,51 +103,46 @@ return {
       return commentstring_avail and commentstring and { pre_hook = commentstring.create_pre_hook() } or {}
     end,
   },
-  {
-    "ThePrimeagen/refactoring.nvim",
-    keys = {
-      {
-        "<leader>re",
-        function()
-          require("telescope").extensions.refactoring.refactors()
-        end,
-        desc = "Refactoring",
-        mode = { "x", "v", "n" },
-      },
-      {
-        "<leader>rd",
-        function()
-          require("refactoring").debug.printf({ below = false })
-        end,
-        desc = "Insert debug print statement",
-      },
-      {
-        "<leader>rv",
-        {
-          n = function()
-            require("refactoring").debug.print_var({ normal = true })
-          end,
-          x = function()
-            require("refactoring").debug.print_var({})
-          end,
-        },
-        desc = "Insert print var debug statement",
-        mode = { "n", "v" },
-      },
-      {
-        "<leader>rc",
-        function()
-          require("refactoring").debug.cleanup()
-        end,
-        desc = "Clean up debug statements",
-      },
-    },
-  },
-  {
-    "stevearc/overseer.nvim",
-    cmd = { "OverseerBuild", "OverseerToggle", "OverseerRun" },
-    opts = {},
-  },
+  -- {
+  --   "ThePrimeagen/refactoring.nvim",
+  --   keys = {
+  --     {
+  --       "<leader>re",
+  --       function()
+  --         require("telescope").extensions.refactoring.refactors()
+  --       end,
+  --       desc = "Refactoring",
+  --       mode = { "x", "v", "n" },
+  --     },
+  --     {
+  --       "<leader>rd",
+  --       function()
+  --         require("refactoring").debug.printf({ below = false })
+  --       end,
+  --       desc = "Insert debug print statement",
+  --     },
+  --     {
+  --       "<leader>rv",
+  --       {
+  --         n = function()
+  --           require("refactoring").debug.print_var({ normal = true })
+  --         end,
+  --         x = function()
+  --           require("refactoring").debug.print_var({})
+  --         end,
+  --       },
+  --       desc = "Insert print var debug statement",
+  --       mode = { "n", "v" },
+  --     },
+  --     {
+  --       "<leader>rc",
+  --       function()
+  --         require("refactoring").debug.cleanup()
+  --       end,
+  --       desc = "Clean up debug statements",
+  --     },
+  --   },
+  -- },
   {
     "danymat/neogen",
     opts = {

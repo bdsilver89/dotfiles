@@ -286,7 +286,9 @@ function M.search_results()
     {
       provider = function(self)
         local search = self.search
-        return string.format("%d/%d", search.current, math.min(search.total, search.maxcount))
+        if search then
+          return string.format("%d/%d", search.current, math.min(search.total, search.maxcount))
+        end
       end,
       -- hl = "Substitute",
     },

@@ -5,6 +5,9 @@ return {
       if type(opts.ensure_installed) == "table" then
         vim.list_extend(opts.ensure_installed, { "markdown", "markdown_inline" })
       end
+      if type(opts.highlight.additional_vim_regex_highlighting) == "table" then
+        vim.list_extend(opts.highlight.additional_vim_regex_highlighting, { "markdown" })
+      end
     end,
   },
   {
@@ -57,5 +60,21 @@ return {
       end
       return opts
     end,
+  },
+  {
+    "ellisonleao/glow.nvim",
+    cmd = "Glow",
+    config = true,
+  },
+  {
+    "epwalsh/obsidian.nvim",
+    enabled = false,
+    ft = "markdown",
+    opts = {
+      dir = vim.env.HOME .. "/obsidian",
+      completion = {
+        nvim_cmp = true,
+      },
+    },
   },
 }

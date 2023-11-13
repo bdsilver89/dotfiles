@@ -22,14 +22,23 @@ opt.formatoptions = {
   t = true, -- auto wrap text
   -- a = false, -- auto-gq paragraphs
 }
--- fillchars
+vim.opt.fillchars = {
+  foldopen = "",
+  foldclose = "",
+  -- fold = "⸱",
+  fold = " ",
+  foldsep = " ",
+  diff = "╱",
+  eob = " ",
+}
 opt.foldenable = true -- enable folds
 opt.foldlevel = 99 -- set high fold level
 -- foldlevelstart
 opt.foldcolumn = "1"
 if vim.fn.has("nvim-0.10") == 1 then
   opt.foldmethod = "expr"
-  opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+  -- opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+  opt.foldexpr = "v:lua.require('utils.ui.statuscolumn').foldexpr()"
 else
   opt.foldmethod = "indent"
 end
@@ -79,3 +88,8 @@ opt.virtualedit = "block" --allow going past the end of line in visual block mod
 opt.winminwidth = 5
 opt.wrap = false
 -- writebackup
+
+-- vim.opt.statuscolumn = "%!v:lua.require('utils.ui.statuscolumn').setup()"
+-- vim.opt.statusline = "%!v:lua.require('utils.ui.statusline').setup()"
+-- vim.opt.winbar = "%!v:lua.require('utils.ui.winbar').setup()"
+-- vim.opt.tabline = "%!v:lua.require('utils.ui.tabline').setup()"

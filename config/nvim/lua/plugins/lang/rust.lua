@@ -43,11 +43,13 @@ return {
   },
   {
     "simrat39/rust-tools.nvim",
+    lazy = true,
     opts = function()
-      local mr_avail, mr = pcall(require, "mason-registry")
-      local adapter
-      if mr_avail then
-        local codelldb = mr.get_package("codelldb")
+      local ok, mason_registry = pcall(require, "mason-registry")
+      local adapter ---@type any
+      if ok then
+        -- rust tools configuration for debugging support
+        local codelldb = mason_registry.get_package("codelldb")
         local extension_path = codelldb:get_install_path() .. "/extension/"
         local codelldb_path = extension_path .. "adapter/codelldb"
         local liblldb_path = ""
@@ -72,7 +74,7 @@ return {
                     autocmd CursorMoved,InsertEnter         *.rs silent! lua vim.lsp.buf.clear_references()
                     autocmd BufEnter,CursorHold,InsertLeave *.rs silent! lua vim.lsp.codelens.refresh()
                   augroup END
-            ]])
+                ]])
           end,
         },
       }
@@ -128,14 +130,13 @@ return {
           },
         },
       },
-      -- FIX:
-      -- setup = {
-      --   rust_analyzer = function(_, opts)
-      --     local rust_tools_opts = require("utils").opts("rust-tools.nvim")
-      --     require("rust-tools").setup(vim.tbl_deep_extend("force", rust_tools_opts or {}, { server = opts }))
-      --     return true
-      --   end,
-      -- },
+      setup = {
+        rust_analyzer = function(_, opts)
+          local rust_tools_opts = require("utils").opts("rust-tools.nvim")
+          require("rust-tools").setup(vim.tbl_deep_extend("force", rust_tools_opts or {}, { server = opts }))
+          return true
+        end,
+      },
     },
   },
   {

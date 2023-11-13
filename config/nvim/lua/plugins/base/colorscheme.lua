@@ -46,7 +46,7 @@ return {
   },
   {
     -- "olimorris/onedark.nvim",
-    "navarasu/onedark.nvim",
+    -- "navarasu/onedark.nvim",
     -- opts = {
     --   style = "darker",
     -- },

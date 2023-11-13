@@ -1,6 +1,7 @@
 return {
   {
     "nvim-neorg/neorg",
+    enabled = false,
     ft = { "norg" },
     cmd = "Neorg",
     build = ":Neorg sync-parsers",
@@ -15,18 +16,11 @@ return {
         ["core.defaults"] = {},
         ["core.concealer"] = {},
         ["core.summary"] = {},
-        -- ["core.dirman"] = {
-        --   config = {
-        --     workspaces = {
-        --       notes = "~/notes",
-        --     },
-        --   },
-        -- },
         ["core.integrations.nvim-cmp"] = {},
         ["core.completion"] = {
           config = {
             engine = "nvim-cmp",
-            name = "{Norg}",
+            name = "{Neorg}",
           },
         },
       },

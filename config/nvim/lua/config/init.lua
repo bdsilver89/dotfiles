@@ -20,4 +20,3 @@ vim.api.nvim_create_autocmd("User", {
 })
 
 vim.cmd.colorscheme("catppuccin")
--- vim.cmd.colorscheme("onedark")
