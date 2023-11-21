@@ -3,7 +3,11 @@
 if [[ $# -eq 1 ]]; then
 	selected=$1
 else
-	selected=$(find $HOME/Developer/projects $HOME -mindepth 1 -maxdepth 1 -type d | fzf)
+	if [[ $(uname) == "Darwin" ]]; then
+		selected=$(find $HOME $HOME/Developer/projects $HOME/Work/dev -mindepth 1 -maxdepth 1 -type d | fzf)
+	else
+		selected=$(find $HOME -mindepth 1 -maxdepth 1 -type d | fzf)
+	fi
 fi
 
 if [[ -z $selected ]]; then

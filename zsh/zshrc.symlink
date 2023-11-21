@@ -79,9 +79,9 @@ export TERM="xterm-256color"
 
 # Preferred editor for local and remote sessions
 if [[ -n $SSH_CONNECTION ]]; then
-  export EDITOR="vim"
+	export EDITOR="vim"
 else
-  export EDITOR="nvim"
+	export EDITOR="nvim"
 fi
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
@@ -94,87 +94,111 @@ export PATH="$HOME/.local/bin:$PATH"
 export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
 
+# autoload -U add-zsh-hook
+# load-nvmrc() {
+# 	local node_version="$(nvm version)"
+# 	local nvmrc_path="$(nvm_find_nvmrc)"
+# 	local node_version_path="$(pwd)/.node-version"
+#
+# 	if [ -n "$nvmrc_path" ]; then
+# 		local nvmrc_node_version=$(nvm version "$(cat "${nvmrc_path}")")
+#
+# 		if [ "$nvmrc_node_version" = "N/A" ]; then
+# 			nvm install
+# 		elif [ "$nvmrc_node_version" != "$node_version" ]; then
+# 			nvm use
+# 		fi
+# 	elif [ -f $node_version_path ]; then
+# 		version="$(cat "$node_version_path")"
+# 		nvm use $version
+# 	elif [ "$node_version" != "$(nvm version default)" ]; then
+# 		echo "Reverting to nvm default version"
+# 		nvm use default
+# 	fi
+# }
+# add-zsh-hook chpwd load-nvmrc
+# load-nvmrc
+
 # pyenv
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
 if command -v pyenv 1>/dev/null 2>&1; then
-  eval "$(pyenv init --path)"
-  eval "$(pyenv init -)"
+	eval "$(pyenv init --path)"
+	eval "$(pyenv init -)"
 fi
 
 # vcpkg
 export VCPKG_ROOT="$HOME/vcpkg"
 export PATH="$VCPKG_ROOT:$PATH"
 if [ -f $VCPKG_ROOT ]; then
-  source $VCPKG_ROOT/scripts/vcpkg_completion.zsh
+	source $VCPKG_ROOT/scripts/vcpkg_completion.zsh
 fi
 
 # CMake
 export CMAKE_GENERATOR="Ninja"
 export CONAN_CMAKE_GENERATOR="Ninja"
 
-if [[ `uname` == "Darwin" ]]; then
-  # use llvm and gcc from homebrew on mac
-  export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
-  export PATH="/opt/homebrew/opt/gcc/bin:$PATH"
+if [[ $(uname) == "Darwin" ]]; then
+	# use llvm and gcc from homebrew on mac
+	export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
+	export PATH="/opt/homebrew/opt/gcc/bin:$PATH"
 
-  # local flutter repo
-  export PATH="$HOME/Developer/tools/flutter/bin/:$PATH"
+	# local flutter repo
+	export PATH="$HOME/Developer/tools/flutter/bin/:$PATH"
 
-  alias apple-clang="/usr/bin/clang"
-  alias apple-clang++="/usr/bin/clang++"
+	alias apple-clang="/usr/bin/clang"
+	alias apple-clang++="/usr/bin/clang++"
 fi
-
 
 alias cl="clear"
 alias pg="ps -ef | grep"
 alias pkill!="pkill -9 -f"
 
 if [ -x "$(command -v exa)" ]; then
-  alias ls="exa --icons --git"
-  alias l="exa -l --icons --git -a"
-  alias lt="exa --tree --level=2 --long --icons --git"
+	alias ls="exa --icons --git"
+	alias l="exa -l --icons --git -a"
+	alias lt="exa --tree --level=2 --long --icons --git"
 
-  cx() { cd "$@" && exa -l --icons --git -a; }
+	cx() { cd "$@" && exa -l --icons --git -a; }
 
 else
-  cx() { cd "$@" && ll; }
+	cx() { cd "$@" && ll; }
 fi
 
 if [ -x "$(command -v bat)" ]; then
-  alias cat="bat"
+	alias cat="bat"
 fi
 
 if [ -x "$(command -v zoxide)" ]; then
-  eval "$(zoxide init zsh)"
+	eval "$(zoxide init zsh)"
 fi
 
 if [ -x "$(command -v ranger)" ]; then
 
-  function ranger() {
-    local IFS=$'\t\n'
-    local tempfile="$(mktemp -t tmp.XXXXXX)"
-    local ranger_cmd=(
-      command
-      ranger
-      --cmd="map Q chain shell echo %d > "$tempfile"; quitall"
-    )
+	function ranger() {
+		local IFS=$'\t\n'
+		local tempfile="$(mktemp -t tmp.XXXXXX)"
+		local ranger_cmd=(
+			command
+			ranger
+			--cmd="map Q chain shell echo %d > "$tempfile"; quitall"
+		)
 
-    ${ranger_cmd[@]} "$@"
-    if [[ -f "$tempfile" ]] && [[ "$(cat -- "$tempfile")" != "$(echo -n `pwd`)" ]]; then
-      cd -- "$(cat "$tempfile")" || return
-    fi
-    command rm -f -- "$tempfile" 2>/dev/null
-  }
-  alias rr='ranger'
+		${ranger_cmd[@]} "$@"
+		if [[ -f "$tempfile" ]] && [[ "$(cat -- "$tempfile")" != "$(echo -n $(pwd))" ]]; then
+			cd -- "$(cat "$tempfile")" || return
+		fi
+		command rm -f -- "$tempfile" 2>/dev/null
+	}
+	alias rr='ranger'
 fi
 
 if [ -d "$HOME/.cargo/env" ]; then
-  source  $HOME/.cargo/env
+	source $HOME/.cargo/env
 fi
 
 bindkey -v
 
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
 
 eval "$(starship init zsh)"

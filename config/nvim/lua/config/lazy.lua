@@ -1,88 +1,57 @@
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
-  vim.fn.system({
-    "git",
-    "clone",
-    "--filter=blob:none",
-    "https://github.com/folke/lazy.nvim.git",
-    "--branch=stable",
-    lazypath,
-  })
+  -- bootstrap lazy.nvim
+  -- stylua: ignore
+  vim.fn.system({ "git", "clone", "--filter=blob:none", "https://github.com/folke/lazy.nvim.git", "--branch=stable", lazypath })
 end
 vim.opt.rtp:prepend(vim.env.LAZY or lazypath)
 
--- add support for LazyFile event
-local Event = require("lazy.core.handler.event")
-Event.mappings.LazyFile = { id = "LazyFile", event = "User", pattern = "LazyFile" }
-Event.mappings["User LazyFile"] = Event.mappings.LazyFile
-
-local events = {}
-local done = false
-local function load()
-  if #events == 0 or done then
-    return
-  end
-  done = true
-  vim.api.nvim_del_augroup_by_name("lazy_file")
-
-  local skips = {} ---@type table<string,string[]>
-  for _, event in ipairs(events) do
-    skips[event.event] = skips[event.event] or Event.get_augroups(event.event)
-  end
-
-  vim.api.nvim_exec_autocmds("User", { pattern = "LazyFile", modeline = false })
-  for _, event in ipairs(events) do
-    if vim.api.nvim_buf_is_valid(event.buf) then
-      Event.trigger({
-        event = event.event,
-        exclude = skips[event.event],
-        data = event.data,
-        buf = event.buf,
-      })
-      if vim.bo[event.buf].filetype then
-        Event.trigger({
-          event = "FileType",
-          buf = event.buf,
-        })
-      end
-    end
-  end
-  vim.api.nvim_exec_autocmds("CursorMoved", { modeline = false })
-  events = {}
-end
-
-load = vim.schedule_wrap(load)
-
-vim.api.nvim_create_autocmd({ "BufReadPost", "BufNewFile", "BufWritePre" }, {
-  group = vim.api.nvim_create_augroup("lazy_file", { clear = true }),
-  callback = function(event)
-    table.insert(events, event)
-    load()
-  end,
-})
-
 require("lazy").setup({
   spec = {
-    { import = "plugins.base" },
-    { import = "plugins.lang" },
+    -- add LazyVim and import its plugins
+    { "LazyVim/LazyVim", import = "lazyvim.plugins" },
+    -- import any extras modules here
+    { import = "lazyvim.plugins.extras.ui.edgy" },
+    { import = "lazyvim.plugins.extras.dap.core" },
+    { import = "lazyvim.plugins.extras.editor.aerial" },
+    { import = "lazyvim.plugins.extras.formatting.black" },
+    { import = "lazyvim.plugins.extras.formatting.prettier" },
+    { import = "lazyvim.plugins.extras.lang.clangd" },
+    { import = "lazyvim.plugins.extras.lang.cmake" },
+    { import = "lazyvim.plugins.extras.lang.docker" },
+    { import = "lazyvim.plugins.extras.lang.go" },
+    { import = "lazyvim.plugins.extras.lang.json" },
+    { import = "lazyvim.plugins.extras.lang.markdown" },
+    { import = "lazyvim.plugins.extras.lang.python" },
+    { import = "lazyvim.plugins.extras.lang.rust" },
+    { import = "lazyvim.plugins.extras.lang.tailwind" },
+    { import = "lazyvim.plugins.extras.lang.terraform" },
+    { import = "lazyvim.plugins.extras.lang.typescript" },
+    { import = "lazyvim.plugins.extras.lang.yaml" },
+    { import = "lazyvim.plugins.extras.linting.eslint" },
+    { import = "lazyvim.plugins.extras.test" },
+    -- import/override with your plugins
+    { import = "plugins" },
   },
   defaults = {
+    -- By default, only LazyVim plugins will be lazy-loaded. Your custom plugins will load during startup.
+    -- If you know what you're doing, you can set this to `true` to have all your custom plugins lazy-loaded by default.
     lazy = true,
-    version = false,
+    -- It's recommended to leave version=false for now, since a lot the plugin that support versioning,
+    -- have outdated releases, which may break your Neovim install.
+    version = false, -- always use the latest git commit
+    -- version = "*", -- try installing the latest stable version for plugins that support semver
   },
-  checker = {
-    enabled = true,
-  },
-  install = {
-    colorschemes = {
-      "catppuccin",
-    },
-  },
+  install = { colorscheme = { "tokyonight", "habamax" } },
+  checker = { enabled = true }, -- automatically check for plugin updates
   performance = {
     rtp = {
+      -- disable some rtp plugins
       disabled_plugins = {
         "gzip",
-        "netrwPlugin",
+        -- "matchit",
+        -- "matchparen",
+        -- "netrwPlugin",
         "tarPlugin",
         "tohtml",
         "tutor",
