@@ -154,12 +154,12 @@ alias cl="clear"
 alias pg="ps -ef | grep"
 alias pkill!="pkill -9 -f"
 
-if [ -x "$(command -v exa)" ]; then
-	alias ls="exa --icons --git"
-	alias l="exa -l --icons --git -a"
-	alias lt="exa --tree --level=2 --long --icons --git"
+if [ -x "$(command -v eza)" ]; then
+	alias ls="eza --icons --git"
+	alias l="eza -l --icons --git -a"
+	alias lt="eza --tree --level=2 --long --icons --git"
 
-	cx() { cd "$@" && exa -l --icons --git -a; }
+	cx() { cd "$@" && eza -l --icons --git -a; }
 
 else
 	cx() { cd "$@" && ll; }
