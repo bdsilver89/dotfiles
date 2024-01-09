@@ -1,5 +1,11 @@
 return {
   {
+    "LazyVim/LazyVim",
+    opts = {
+      colorscheme = "catppuccin",
+    },
+  },
+  {
     "christoomey/vim-tmux-navigator",
     lazy = false,
     keys = {
@@ -26,8 +32,58 @@ return {
     cmd = "IncRename",
     config = true,
   },
+  -- {
+  --   "ThePrimeagen/harpoon",
+  --   branch = "master",
+  --   dependencies = {
+  --     "nvim-lua/plenary.nvim",
+  --     "nvim-telescope/telescope.nvim",
+  --     {
+  --       "folke/which-key.nvim",
+  --       opts = {
+  --         defaults = {
+  --           ["<leader>m"] = "mark",
+  --         },
+  --       },
+  --     },
+  --   },
+  --   -- stylua: ignore
+  --   keys = {
+  --     { "<leader>ma", function() require("harpoon.mark").add_file() end, desc = "Add file" },
+  --     { "<leader>sm", "<cmd>Telescope harpoon marks<cr>", desc = "Harpoon marks" },
+  --     { "<leader>mm", function() require("harpoon.ui").toggle_quick_menu() end, desc = "Menu" },
+  --     { "<leader>m1", function() require("harpoon"):list():select(1) end, desc = "Nav file 1" },
+  --     { "<leader>m2", function() require("harpoon"):list():select(2) end, desc = "Nav file 2" },
+  --     { "<leader>m3", function() require("harpoon"):list():select(3) end, desc = "Nav file 3" },
+  --     { "<leader>m4", function() require("harpoon"):list():select(4) end, desc = "Nav file 4" },
+  --     { "<leader>m5", function() require("harpoon"):list():select(5) end, desc = "Nav file 5" },
+  --     { "<leader>m6", function() require("harpoon"):list():select(6) end, desc = "Nav file 6" },
+  --     { "<leader>m7", function() require("harpoon"):list():select(7) end, desc = "Nav file 7" },
+  --     { "<leader>m8", function() require("harpoon"):list():select(8) end, desc = "Nav file 8" },
+  --     { "<leader>m9", function() require("harpoon"):list():select(9) end, desc = "Nav file 9" },
+  --     { "<leader>sm", function() require("harpoon.ui").toggle_quick_menu() end, desc = "Menu" },
+  --     { "<leader>mf", function()
+  --       require("harpoon.term").sendCommand(1, "tmux-sessionizer\n")
+  --       require("harpoon.term").gotoTerminal(1)
+  --     end, desc = "Tmux sessionizer"},
+  --   },
+  --   opts = {
+  --     global_settings = {
+  --       save_on_toggle = true,
+  --       enter_on_sendcmd = true,
+  --       mark_branch = true,
+  --     },
+  --   },
+  --   config = function(_, opts)
+  --     require("harpoon").setup(opts)
+  --     require("lazyvim.util").on_load("telescope.nvim", function()
+  --       require("telescope").load_extension("harpoon")
+  --     end)
+  --   end,
+  -- },
   {
     "ThePrimeagen/harpoon",
+    branch = "harpoon2",
     dependencies = {
       "nvim-lua/plenary.nvim",
       "nvim-telescope/telescope.nvim",
@@ -42,23 +98,22 @@ return {
     },
     -- stylua: ignore
     keys = {
-      { "<leader>ma", function() require("harpoon.mark").add_file() end, desc = "Add file" },
+      { "<leader>ma", function() require("harpoon"):list():append() end, desc = "Add file" },
       { "<leader>sm", "<cmd>Telescope harpoon marks<cr>", desc = "Harpoon marks" },
-      { "<leader>mm", function() require("harpoon.ui").toggle_quick_menu() end, desc = "Menu" },
-      { "<leader>m1", function() require("harpoon.ui").nav_file(1) end, desc = "Nav file 1" },
-      { "<leader>m2", function() require("harpoon.ui").nav_file(2) end, desc = "Nav file 2" },
-      { "<leader>m3", function() require("harpoon.ui").nav_file(3) end, desc = "Nav file 3" },
-      { "<leader>m4", function() require("harpoon.ui").nav_file(4) end, desc = "Nav file 4" },
-      { "<leader>m5", function() require("harpoon.ui").nav_file(5) end, desc = "Nav file 5" },
-      { "<leader>m6", function() require("harpoon.ui").nav_file(6) end, desc = "Nav file 6" },
-      { "<leader>m7", function() require("harpoon.ui").nav_file(7) end, desc = "Nav file 7" },
-      { "<leader>m8", function() require("harpoon.ui").nav_file(8) end, desc = "Nav file 8" },
-      { "<leader>m9", function() require("harpoon.ui").nav_file(9) end, desc = "Nav file 9" },
-      { "<leader>sm", function() require("harpoon.ui").toggle_quick_menu() end, desc = "Menu" },
-      { "<leader>mf", function()
-        require("harpoon.term").sendCommand(1, "tmux-sessionizer\n")
-        require("harpoon.term").gotoTerminal(1)
-      end, desc = "Tmux sessionizer"},
+      { "<leader>mm", function() require("harpoon").ui:toggle_quick_menu(require("harpoon"):list()) end, desc = "Menu" },
+      { "<leader>m1", function() require("harpoon"):list():select(1) end, desc = "Nav file 1" },
+      { "<leader>m2", function() require("harpoon"):list():select(2) end, desc = "Nav file 2" },
+      { "<leader>m3", function() require("harpoon"):list():select(3) end, desc = "Nav file 3" },
+      { "<leader>m4", function() require("harpoon"):list():select(4) end, desc = "Nav file 4" },
+      { "<leader>m5", function() require("harpoon"):list():select(5) end, desc = "Nav file 5" },
+      { "<leader>m6", function() require("harpoon"):list():select(6) end, desc = "Nav file 6" },
+      { "<leader>m7", function() require("harpoon"):list():select(7) end, desc = "Nav file 7" },
+      { "<leader>m8", function() require("harpoon"):list():select(8) end, desc = "Nav file 8" },
+      { "<leader>m9", function() require("harpoon"):list():select(9) end, desc = "Nav file 9" },
+      -- { "<leader>mf", function()
+      --   require("harpoon.term").sendCommand(1, "tmux-sessionizer\n")
+      --   require("harpoon.term").gotoTerminal(1)
+      -- end, desc = "Tmux sessionizer"},
     },
     opts = {
       global_settings = {
@@ -68,12 +123,15 @@ return {
       },
     },
     config = function(_, opts)
-      require("harpoon").setup(opts)
+      local harpoon = require("harpoon")
+      harpoon:setup(opts)
+
       require("lazyvim.util").on_load("telescope.nvim", function()
         require("telescope").load_extension("harpoon")
       end)
     end,
   },
+
   {
     "nvim-neorg/neorg",
     ft = { "norg" },
