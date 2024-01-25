@@ -5,12 +5,15 @@ tap "koekeishiya/formulae"
 
 cask "dbeaver-community"
 cask "docker"
-cask "iterm2"
+# cask "iterm2"
 cask "postman"
 cask "slack"
 cask "spotify"
 cask "visual-studio-code"
-cask "wezterm"
+# cask "wezterm"
+# cask "alacritty" --no-quarantine
+
+cask "font-jetbrains-mono-nerd-font"
 
 brew "bat"
 brew "cmake"
