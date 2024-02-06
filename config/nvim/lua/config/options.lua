@@ -3,10 +3,7 @@
 -- Add any additional options here
 
 vim.opt.title = true
-
--- undercurl
--- vim.cmd([[let &t_Cs = "\e[4:3m"]])
--- vim.cmd([[let &t_Ce = "\e[4:0m"]])
-
--- asterisks in block comments
--- vim.opt.formatoptions:append({ "r" })
+vim.opt.showcmd = false
+vim.opt.laststatus = 2
+vim.opt.scrolloff = 10
+vim.opt.breakindent = true

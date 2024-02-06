@@ -6,6 +6,14 @@ return {
     },
   },
   {
+    "nvim-neo-tree/neo-tree.nvim",
+    enabled = false,
+  },
+  {
+    "echasnovski/mini.comment",
+    enabled = false,
+  },
+  {
     "numToStr/Comment.nvim",
     keys = {
       { "gc", mode = { "n", "v" }, desc = "Comment toggle linewise" },
@@ -15,10 +23,6 @@ return {
       local commentstring_avail, commentstring = pcall(require, "ts_comment_commentstring.integrations.comment_nvim")
       return commentstring_avail and commentstring and { pre_hook = commentstring.create_pre_hook() } or {}
     end,
-  },
-  {
-    "echasnovski/mini.comment",
-    enabled = false,
   },
   {
     "christoomey/vim-tmux-navigator",
@@ -42,10 +46,6 @@ return {
     },
   },
   {
-    "tpope/vim-fugitive",
-    event = "LazyFile",
-  },
-  {
     "nvim-telescope/telescope.nvim",
     opts = {
       defaults = {
@@ -56,11 +56,6 @@ return {
       },
     },
   },
-  -- {
-  --   "sindrets/diffview.nvim",
-  --   enabled = false,
-  --   cmd = { "DiffviewOpen", "DiffviewFileHistory" },
-  -- },
   -- {
   --   "ThePrimeagen/harpoon",
   --   branch = "master",
@@ -140,6 +135,17 @@ return {
       { "<leader>ma", function() require("harpoon"):list():append() end, desc = "Harpoon add" },
       { "<leader>mm", function() require("harpoon").ui:toggle_quick_menu(require("harpoon"):list()) end, desc = "Harpoon menu" },
     },
+  },
+  {
+    "stevearc/oil.nvim",
+    dependencies = {
+      "nvim-tree/nvim-web-devicons",
+    },
+    -- stylua: ignore
+    keys = {
+      { "<leader>e", function() require("oil").open_float() end, desc = "Oil" },
+    },
+    config = true,
   },
   {
     "nvim-neorg/neorg",
