@@ -27,15 +27,15 @@ return {
   {
     "christoomey/vim-tmux-navigator",
     lazy = false,
-    keys = {
-      { "<c-h>", "<cmd>TmuxNavigateLeft<cr>" },
-      { "<c-j>", "<cmd>TmuxNavigateDown<cr>" },
-      { "<c-k>", "<cmd>TmuxNavigateUp<cr>" },
-      { "<c-l>", "<cmd>TmuxNavigateRight<cr>" },
-    },
-    init = function()
-      vim.g.tmux_navigator_no_mappings = 1
-    end,
+    -- keys = {
+    --   { "<c-h>", "<cmd>TmuxNavigateLeft<cr>" },
+    --   { "<c-j>", "<cmd>TmuxNavigateDown<cr>" },
+    --   { "<c-k>", "<cmd>TmuxNavigateUp<cr>" },
+    --   { "<c-l>", "<cmd>TmuxNavigateRight<cr>" },
+    -- },
+    -- init = function()
+    --   vim.g.tmux_navigator_no_mappings = 1
+    -- end,
   },
   {
     "nvim-neo-tree/neo-tree.nvim",
@@ -143,10 +143,42 @@ return {
     },
     -- stylua: ignore
     keys = {
-      { "<leader>e", function() require("oil").open_float() end, desc = "Oil" },
+      { "<leader>e", function() require("oil").toggle_float() end, desc = "Oil" },
     },
+    opts = {
+      win_opts = {
+        signcolumn = "number",
+      },
+    },
+    init = function()
+      if vim.fn.argc(-1) == 1 then
+        local stat = vim.loop.fs_stat(vim.fn.argv(0))
+        if stat and stat.type == "directory" then
+          require("oil").open(vim.fn.argv(0))
+        end
+      end
+    end,
     config = true,
   },
+  -- {
+  --   "SirZenith/oil-vcs-status",
+  --   dependencies = {
+  --     "stevearc/oil.nvim",
+  --   },
+  --   lazy = false,
+  --   -- stylua: ignore
+  --   -- keys = {
+  --   --   { "<leader>e" },
+  --   -- },
+  --   opts = {
+  --     -- win_opts = {
+  --     --   signcolumn = "number"
+  --     -- }
+  --   },
+  --   config = function(_, opts)
+  --     require("oil-vcs-status").setup(opts)
+  --   end,
+  -- },
   {
     "nvim-neorg/neorg",
     ft = { "norg" },
