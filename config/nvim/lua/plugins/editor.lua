@@ -46,6 +46,26 @@ return {
     },
   },
   {
+    "nvim-pack/nvim-spectre",
+    keys = {
+      {
+        "<leader>sr",
+        function()
+          require("spectre").toggle()
+        end,
+        desc = "Replace in files (Spectre)",
+      },
+      {
+        "<leader>sr",
+        function()
+          require("spectre").open_visual({ select_word = true })
+        end,
+        mode = "v",
+        desc = "Replace in files (Spectre)",
+      },
+    },
+  },
+  {
     "nvim-telescope/telescope.nvim",
     opts = {
       defaults = {
@@ -56,86 +76,6 @@ return {
       },
     },
   },
-  -- {
-  --   "ThePrimeagen/harpoon",
-  --   branch = "master",
-  --   dependencies = {
-  --     "nvim-lua/plenary.nvim",
-  --     "nvim-telescope/telescope.nvim",
-  --     {
-  --       "folke/which-key.nvim",
-  --       opts = {
-  --         defaults = {
-  --           ["<leader>m"] = "mark",
-  --         },
-  --       },
-  --     },
-  --   },
-  --   -- stylua: ignore
-  --   keys = {
-  --     { "<leader>ma", function() require("harpoon.mark").add_file() end, desc = "Add file" },
-  --     { "<leader>sm", "<cmd>Telescope harpoon marks<cr>", desc = "Harpoon marks" },
-  --     { "<leader>mm", function() require("harpoon.ui").toggle_quick_menu() end, desc = "Menu" },
-  --     { "<leader>m1", function() require("harpoon"):list():select(1) end, desc = "Nav file 1" },
-  --     { "<leader>m2", function() require("harpoon"):list():select(2) end, desc = "Nav file 2" },
-  --     { "<leader>m3", function() require("harpoon"):list():select(3) end, desc = "Nav file 3" },
-  --     { "<leader>m4", function() require("harpoon"):list():select(4) end, desc = "Nav file 4" },
-  --     { "<leader>m5", function() require("harpoon"):list():select(5) end, desc = "Nav file 5" },
-  --     { "<leader>m6", function() require("harpoon"):list():select(6) end, desc = "Nav file 6" },
-  --     { "<leader>m7", function() require("harpoon"):list():select(7) end, desc = "Nav file 7" },
-  --     { "<leader>m8", function() require("harpoon"):list():select(8) end, desc = "Nav file 8" },
-  --     { "<leader>m9", function() require("harpoon"):list():select(9) end, desc = "Nav file 9" },
-  --     { "<leader>sm", function() require("harpoon.ui").toggle_quick_menu() end, desc = "Menu" },
-  --     { "<leader>mf", function()
-  --       require("harpoon.term").sendCommand(1, "tmux-sessionizer\n")
-  --       require("harpoon.term").gotoTerminal(1)
-  --     end, desc = "Tmux sessionizer"},
-  --   },
-  --   opts = {
-  --     global_settings = {
-  --       save_on_toggle = true,
-  --       enter_on_sendcmd = true,
-  --       mark_branch = true,
-  --     },
-  --   },
-  --   config = function(_, opts)
-  --     require("harpoon").setup(opts)
-  --     require("lazyvim.util").on_load("telescope.nvim", function()
-  --       require("telescope").load_extension("harpoon")
-  --     end)
-  --   end,
-  -- },
-  {
-    "ThePrimeagen/harpoon",
-    branch = "harpoon2",
-    dependencies = {
-      --     "nvim-lua/plenary.nvim",
-      --     "nvim-telescope/telescope.nvim",
-      {
-        "folke/which-key.nvim",
-        opts = {
-          defaults = {
-            ["<leader>m"] = "mark",
-          },
-        },
-      },
-    },
-    -- stylua: ignore
-    keys = {
-      { "<leader>sm", "<cmd>Telescope harpoon marks<cr>", desc = "Harpoon marks" },
-      { "<leader>m1", function() require("harpoon"):list():select(1) end, desc = "Harpoon file #1" },
-      { "<leader>m2", function() require("harpoon"):list():select(2) end, desc = "Harpoon file #2" },
-      { "<leader>m3", function() require("harpoon"):list():select(3) end, desc = "Harpoon file #3" },
-      { "<leader>m4", function() require("harpoon"):list():select(4) end, desc = "Harpoon file #4" },
-      { "<leader>m5", function() require("harpoon"):list():select(5) end, desc = "Harpoon file #5" },
-      { "<leader>m6", function() require("harpoon"):list():select(6) end, desc = "Harpoon file #6" },
-      { "<leader>m7", function() require("harpoon"):list():select(7) end, desc = "Harpoon file #7" },
-      { "<leader>m8", function() require("harpoon"):list():select(8) end, desc = "Harpoon file #8" },
-      { "<leader>m9", function() require("harpoon"):list():select(9) end, desc = "Harpoon file #9" },
-      { "<leader>ma", function() require("harpoon"):list():append() end, desc = "Harpoon add" },
-      { "<leader>mm", function() require("harpoon").ui:toggle_quick_menu(require("harpoon"):list()) end, desc = "Harpoon menu" },
-    },
-  },
   {
     "stevearc/oil.nvim",
     dependencies = {
@@ -143,7 +83,8 @@ return {
     },
     -- stylua: ignore
     keys = {
-      { "<leader>e", function() require("oil").toggle_float() end, desc = "Oil" },
+      { "<leader>e", function() require("oil").toggle_float() end, desc = "Oil (float)" },
+      { "<leader>E", function() require("oil").open() end, desc = "Oil (buffer)" },
     },
     opts = {
       win_opts = {
