@@ -6,8 +6,8 @@ size = 16
 [font.normal]
 family = "JetbrainsMono Nerd Font"
 
-[window]
-decorations = "none"
+# [window]
+# decorations = "none"
 
 [window.padding]
 x = 0
