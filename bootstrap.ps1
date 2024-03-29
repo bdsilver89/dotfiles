@@ -82,10 +82,15 @@ if ($winget) {
 if ($symlinks) {
   Title "Setting up symlinks";
 
-  $AlacrittyDir = Join-Path -Path $HOME -ChildPath "AppData/Roaming/alacritty";
-
   SetupSymlink -source $DotfilesDir/WindowsPowerShell -target $ProfileDir;
-  SetupSymlink -source $DotfilesDir/config/alacritty -target $AlacrittyDir;
+
+  $AlacrittyDir = Join-Path -Path $HOME -ChildPath "AppData/Roaming/alacritty";
+  New-Item -Path $AlacrittyDir -ItemType Directory -Force;
+  SetupSymlink -source $DotfilesDir/config/alacritty/alacritty-win.toml -target $AlacrittyDir/alacritty.toml;
+  SetupSymlink -source $DotfilesDir/config/alacritty/catppuccin-frappe.toml -target $AlacrittyDir/catppucin-frappe.toml;
+  SetupSymlink -source $DotfilesDir/config/alacritty/catppuccin-latte.toml -target $AlacrittyDir/catppuccin-latte.toml;
+  SetupSymlink -source $DotfilesDir/config/alacritty/catppuccin-macchiato.toml -target $AlacrittyDir/catppucin-macchiato.toml;
+  SetupSymlink -source $DotfilesDir/config/alacritty/catppuccin-mocha.toml -target $AlacrittyDir/catppuccin-mocha.toml;
 }
 
 Success "Done";

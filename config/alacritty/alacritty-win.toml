@@ -1,0 +1,11 @@
+import = ["~/AppData/Roaming/alacritty/catppuccin-mocha.toml"]
+
+[font]
+size = 12
+
+[font.normal]
+family = "JetbrainsMono Nerd Font"
+
+[window.padding]
+x = 0
+y = 0
