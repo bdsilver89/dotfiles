@@ -1,6 +1,17 @@
 # basic commands
 function which($name) { Get-Command $name -ErrorAction SilentlyContinue | Select-Object Definition }
 
+function Start-VisualStudio([string]$solutionFile) {
+  if (($solutionFile -eq $null) -or ($solutionFile -eq "")) {
+    $solutionFile = (Get-ChildItem -Filter "*.sln" | Select-Object -First 1).Name
+  }
+  if (($solutionFile -ne $null) -and ($solutionFile -ne "") -and (Test-Path $solutionFile)) {
+    Start-Process devenv -ArgumentList $solutionFile
+  } else {
+    Start-Process devenv
+  }
+}
+
 function Get-EnvironmentVariable {
   [CmdletBinding()]
   [OutputType([string])]
