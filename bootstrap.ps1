@@ -62,12 +62,14 @@ if ($winget) {
 
   # terminal environment
   # winget install Cygwin.Cygwin;
-  winget install Alacritty.Alacritty
+  winget install Alacritty.Alacritty;
+  winget install starship;
 
   # terminal tools
   winget install ajeetsouza.zoxide;
   winget install eza-community.eza;
   winget install sharkdp.bat;
+  winget install BurntSushi.ripgrep.MSVC;
 
   # editors
   winget install Microsoft.VisualStudioCode;
@@ -84,6 +86,9 @@ if ($symlinks) {
 
   SetupSymlink -source $DotfilesDir/WindowsPowerShell -target $ProfileDir;
 
+  $NvimDir = Join-Path -Path $HOME -ChildPath "AppData/Local/nvim";
+  SetupSymlink -source $DotfilesDir/config/nvim -target $NvimDir;
+
   $AlacrittyDir = Join-Path -Path $HOME -ChildPath "AppData/Roaming/alacritty";
   New-Item -Path $AlacrittyDir -ItemType Directory -Force;
   SetupSymlink -source $DotfilesDir/config/alacritty/alacritty-win.toml -target $AlacrittyDir/alacritty.toml;
@@ -91,6 +96,8 @@ if ($symlinks) {
   SetupSymlink -source $DotfilesDir/config/alacritty/catppuccin-latte.toml -target $AlacrittyDir/catppuccin-latte.toml;
   SetupSymlink -source $DotfilesDir/config/alacritty/catppuccin-macchiato.toml -target $AlacrittyDir/catppucin-macchiato.toml;
   SetupSymlink -source $DotfilesDir/config/alacritty/catppuccin-mocha.toml -target $AlacrittyDir/catppuccin-mocha.toml;
+
+  SetupSymlink -source $Dotfiles/config/starship.toml -target $HOME/.config/starship.toml;
 }
 
 Success "Done";
