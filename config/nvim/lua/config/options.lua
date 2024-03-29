@@ -7,3 +7,7 @@ vim.opt.showcmd = false
 vim.opt.laststatus = 2
 vim.opt.scrolloff = 10
 vim.opt.breakindent = true
+
+if string.find(vim.loop.os_uname().sysname, "Windows") then
+  vim.opt.shell = "powershell"
+end
