@@ -139,7 +139,7 @@ setup_symlinks() {
 
 setup_homebrew() {
 	if [[ "$(uname)" == "Darwin" ]]; then
-		title "Setting up homebrew"
+		title "Setting up Darwin settings"
 		if test ! "$(command -v brew)"; then
 			info "Homebrew not installed. Installing now"
 			curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | bash --login
@@ -147,6 +147,12 @@ setup_homebrew() {
 
 		info "Installing brew dependencies"
 		brew bundle
+	fi
+}
+
+setup_linux() {
+	if [[ "$(uname)" == "Linux" ]]; then
+		title "Setting up Linux settings"
 	fi
 }
 
@@ -169,6 +175,9 @@ main() {
 	mac)
 		setup_homebrew
 		;;
+	linux)
+	 	setup_linux
+		;;
 	symlinks)
 		setup_symlinks
 		;;
@@ -180,10 +189,11 @@ main() {
 		update
 		setup_symlinks
 		setup_homebrew
+		setup_linux
 		setup_tmux
 		;;
 	*)
-		echo -e $"\nUsage: $(basename "$0") {all|git|mac|symlinks|tmux|update}\n"
+		echo -e $"\nUsage: $(basename "$0") {all|git|mac|linux|symlinks|tmux|update}\n"
 		exit 1
 		;;
 	esac
