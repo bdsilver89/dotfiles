@@ -20,4 +20,11 @@ return {
       { "<leader>cgt", function() require("neogen").generate({ type = "type" }) end,  desc = "Type" },
     },
   },
+  {
+    "mbbill/undotree",
+    keys = {
+      { "<leader>cu", "<cmd>UndotreeToggle<cr>", "Undotree Toggle" },
+    },
+    config = true,
+  },
 }
