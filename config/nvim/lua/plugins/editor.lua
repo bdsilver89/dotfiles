@@ -8,6 +8,11 @@ return {
   {
     "nvim-neo-tree/neo-tree.nvim",
     enabled = false,
+    opts = {
+      source_selector = {
+        winbar = true,
+      },
+    },
   },
   {
     "echasnovski/mini.comment",
@@ -36,14 +41,6 @@ return {
     -- init = function()
     --   vim.g.tmux_navigator_no_mappings = 1
     -- end,
-  },
-  {
-    "nvim-neo-tree/neo-tree.nvim",
-    opts = {
-      source_selector = {
-        winbar = true,
-      },
-    },
   },
   {
     "nvim-pack/nvim-spectre",
@@ -101,25 +98,6 @@ return {
     end,
     config = true,
   },
-  -- {
-  --   "SirZenith/oil-vcs-status",
-  --   dependencies = {
-  --     "stevearc/oil.nvim",
-  --   },
-  --   lazy = false,
-  --   -- stylua: ignore
-  --   -- keys = {
-  --   --   { "<leader>e" },
-  --   -- },
-  --   opts = {
-  --     -- win_opts = {
-  --     --   signcolumn = "number"
-  --     -- }
-  --   },
-  --   config = function(_, opts)
-  --     require("oil-vcs-status").setup(opts)
-  --   end,
-  -- },
   {
     "nvim-neorg/neorg",
     ft = { "norg" },
