@@ -1,4 +1,5 @@
 return {
+  -- treesitter changes
   {
     "nvim-treesitter/nvim-treesitter",
     opts = {
