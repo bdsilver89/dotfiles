@@ -21,10 +21,10 @@ return {
   {
     "akinsho/bufferline.nvim",
     enabled = false,
-    opts = {
-      options = {
-        mode = "tabs",
-      },
-    },
+    -- opts = {
+    --   options = {
+    --     mode = "tabs",
+    --   },
+    -- },
   },
 }

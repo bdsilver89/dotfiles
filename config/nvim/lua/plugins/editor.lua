@@ -21,18 +21,48 @@ return {
   },
 
   -- oil as primary file explorer
-  -- {
-  --   "stevearc/oil.nvim",
-  --   dependencies = {
-  --     "nvim-tree/nvim-web-devicons",
-  --   },
-  --   -- stylua: ignore
-  --   keys = {
-  --     { "<leader>o", function() require("oil").open() end, desc = "Oil (float)" },
-  --   },
-  --   opts = {},
-  --   config = true,
-  -- },
+  {
+    "stevearc/oil.nvim",
+    dependencies = {
+      "nvim-tree/nvim-web-devicons",
+    },
+    -- stylua: ignore
+    keys = {
+      { "<leader>e", function() require("oil").open_float(LazyVim.root()) end, desc = "Explorer Oil (root)" },
+      { "<leader>E", function() require("oil").open_float(vim.uv.cwd()) end, desc = "Explorer Oil (cwd)" },
+    },
+    opts = {
+      win_opts = {
+        signcolumn = "number",
+      },
+    },
+    init = function()
+      if vim.fn.argc(-1) == 1 then
+        local stat = vim.uv.fs_stat(vim.fn.argv(0))
+        if stat and stat.type == "directory" then
+          require("oil").open(vim.fn.argv(0))
+        end
+      end
+    end,
+    config = true,
+  },
+
+  -- remove neo-tree keymaps that conflict with oil
+  {
+    "nvim-neo-tree/neo-tree.nvim",
+    keys = function(_, mappings)
+      return vim.tbl_filter(
+        ---@param mapping LazyKeysSpec
+        function(mapping)
+          if mapping[1] == "<leader>e" or mapping[1] == "<leader>E" then
+            return false
+          end
+          return true
+        end,
+        mappings
+      )
+    end,
+  },
 
   -- tmux/vim compat
   {
