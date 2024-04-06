@@ -10,21 +10,9 @@ return {
     end,
   },
 
-  -- filename
-  {
-    "b0o/incline.nvim",
-    event = "LazyFile",
-    config = true,
-  },
-
-  -- bufferline, change to tab mode
+  -- bufferline
   {
     "akinsho/bufferline.nvim",
     enabled = false,
-    -- opts = {
-    --   options = {
-    --     mode = "tabs",
-    --   },
-    -- },
   },
 }
