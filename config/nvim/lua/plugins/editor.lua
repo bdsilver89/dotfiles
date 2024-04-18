@@ -29,8 +29,9 @@ return {
     -- stylua: ignore
     keys = {
       { "<leader>e", function() require("oil").open_float(LazyVim.root()) end, desc = "Explorer Oil (root)" },
-      { "<leader>E", function() require("oil").open_float(vim.uv.cwd()) end, desc = "Explorer Oil (cwd)" },
+      { "<leader>E", function() require("oil").open_float() end, desc = "Explorer Oil (cwd)" },
     },
+    cmd = "Oil",
     opts = {
       win_opts = {
         signcolumn = "number",

@@ -128,13 +128,6 @@ setup_symlinks() {
 		dst="$HOME/.local/bin/$(basename ${src})"
 		link_file "$src" "$dst"
 	done
-
-	# link ubersicht for macOs only
-	if [[ "$(uname)" == "Darwin" ]]; then
-		src="${DOTFILES_DIR}/ubersicht/widgets"
-		dst="${HOME}/Library/Application Support/Übersicht/widgets"
-		link_file "$src" "$dst"
-	fi
 }
 
 setup_homebrew() {
@@ -176,7 +169,7 @@ main() {
 		setup_homebrew
 		;;
 	linux)
-	 	setup_linux
+		setup_linux
 		;;
 	symlinks)
 		setup_symlinks

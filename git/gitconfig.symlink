@@ -6,7 +6,21 @@
 [core]
   editor = nvim
   ignorecase = false
+  eol = lf
+  autocrlf = input
+  pager = delta
 [color]
+  diff = auto
+  status = auto
+  branch = auto
   ui = auto
 [web]
   browser = google-chrome
+[interactive]
+  diffFilter = delta --color-only
+[delta]
+  navigate = true
+[merge]
+  conflictStyle = diff3
+[diff]
+  colorMoved = default
