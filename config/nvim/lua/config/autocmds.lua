@@ -14,6 +14,7 @@ vim.api.nvim_create_autocmd("FileType", {
   group = vim.api.nvim_create_augroup("expanded_close_with_q", { clear = true }),
   pattern = {
     "oil",
+    "undotree",
   },
   callback = function(event)
     vim.bo[event.buf].buflisted = false

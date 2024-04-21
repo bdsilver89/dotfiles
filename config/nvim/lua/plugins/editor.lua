@@ -65,6 +65,14 @@ return {
     end,
   },
 
+  -- undotree
+  {
+    "mbbill/undotree",
+    keys = {
+      { "<leader>u", "<cmd>UndotreeToggle<cr>", "Undotree" },
+    },
+  },
+
   -- tmux/vim compat
   {
     "christoomey/vim-tmux-navigator",
