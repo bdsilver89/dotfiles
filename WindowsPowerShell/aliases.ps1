@@ -2,7 +2,7 @@
 # mimic chocolatey's refresh env
 Set-Alias refreshenv Update-SessionEnvironment
 
-# Set-Alias cl clear;
+Set-Alias cl clear;
 
 # Set-Alias c bat;
 
