@@ -2,34 +2,30 @@
 
 DOTFILES_DIR=$(cd -- "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 
-COLOR_GRAY="\033[1;38;5;243m"
-COLOR_BLUE="\033[1;34m"
-COLOR_GREEN="\033[1;32m"
-COLOR_RED="\033[1;31m"
-COLOR_PURPLE="\033[1;35m"
-COLOR_YELLOW="\033[1;33m"
-COLOR_NONE="\033[0m"
+# use some of the submodules bundled with dotfiles
+source $DOTFILES_DIR/bash/utils.sh
+source $DOTFILES_DIR/bash/logging.sh
 
 title() {
-	echo -e "\n${COLOR_PURPLE}$1${COLOR_NONE}"
-	echo -e "${COLOR_GRAY}==============================${COLOR_NONE}\n"
+	log "\n${LOG_COLOR_PURPLE}$*${LOG_COLOR_DEFAULT}"
+	log "${LOG_COLOR_GRAY}==============================${LOG_COLOR_DEFAULT}\n"
 }
 
 error() {
-	echo -e "${COLOR_RED}$1${COLOR_NONE}"
+	log_err "$*"
 	exit 1
 }
 
 warning() {
-	echo -e "${COLOR_YELLOW}$1${COLOR_NONE}"
+	log_warn "$*"
 }
 
 info() {
-	echo -e "${COLOR_BLUE}$1${COLOR_NONE}"
+	log "$*"
 }
 
 success() {
-	echo -e "${COLOR_GREEN}$1${COLOR_NONE}"
+	log_info "$*"
 }
 
 link_file() {
@@ -130,8 +126,36 @@ setup_symlinks() {
 	done
 }
 
+setup_apt_packages() {
+	local packages=(
+		cmake
+		gcc
+		build-essential
+		clang
+		clang-format
+		ninja-build
+		ccache
+		automake
+		autoconf
+		libtool
+		pkg-config
+		rpm
+		zip
+		unzip
+		gdb
+		jq
+		tmux
+		zoxide
+		fzf
+		ripgrep
+	)
+
+	info "Installing apt packages"
+	sudo apt install -y ${packages[@]} || log_and_die "Failed to install packages"
+}
+
 setup_homebrew() {
-	if [[ "$(uname)" == "Darwin" ]]; then
+	if is_darwin; then
 		title "Setting up Darwin settings"
 		if test ! "$(command -v brew)"; then
 			info "Homebrew not installed. Installing now"
@@ -144,8 +168,11 @@ setup_homebrew() {
 }
 
 setup_linux() {
-	if [[ "$(uname)" == "Linux" ]]; then
+	if is_linux; then
 		title "Setting up Linux settings"
+		if is_debian; then
+			setup_apt_packages
+		fi
 	fi
 }
 

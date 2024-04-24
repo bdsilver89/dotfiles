@@ -71,7 +71,12 @@ source $ZSH/oh-my-zsh.sh
 
 export DOTFILES_ROOT="$HOME/dotfiles"
 
-# load zsh utils
+# load bash utils
+for file in $(find "${DOTFILES_ROOT}/bash" -name "*.sh" -o -name "*.sh"); do
+  source $file
+done
+
+# load zsh-only utils (no general order here)
 for file in $(find "${DOTFILES_ROOT}/zsh" -name "*.zsh" -o -name "*.sh"); do
   source $file
 done
