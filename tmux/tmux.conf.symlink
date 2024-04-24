@@ -16,6 +16,13 @@ bind z resize-pane -Z
 bind -n S-Left previous-window
 bind -n S-Right next-window
 
+# tmux navigator handles ctrl-hjkl for movement, but nice to have these as sane backups
+bind h select-pane -L
+bind j select-pane -D
+bind k select-pane -U
+bind l select-pane -R
+bind \\ select-pane -l
+
 # unbind-key -a
 #
 # unbind C-b
