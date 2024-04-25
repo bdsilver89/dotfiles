@@ -2,32 +2,62 @@
 
 These are my personal dotfiles.
 
-**Warning**: Use these files at your own risk
+**Warning**: Use these files at your own risk! I do not take much care into safely backing existing files up, and I frequently make breaking changes here.
 
 ## Install
 
-Installation is managed by an ansible playbook. Stow is used for configuration.
+### Unix-like Operating Systems
 
-1. `git clone http://github.com/bdsilver89/dotfiles.git && cd dotfiles`
-2. `./bootstrap.sh`
+Ensure you are using bash or zsh shell.
 
-## Shell
+1. `git clone http://github.com/bdsilver89/dotfiles.git $HOME/dotfiles`
+2. `cd $HOME/dotfiles && ./bootstrap.sh`
 
-Includes configuration for:
+### Windows
 
-- [WezTerm](https://wezfurlong.org/wezterm/index.html)
-- [Oh My Zsh](https://ohmyz.sh/)
-- [Starship](https://starship.rs/)
-- [tmux](https://github.com/tmux/tmux)
+Powershell is the only supported shell for Windows.
 
-## Neovim
+1. `git clone http://github.com/bdsilver89/dotfiles.git $HOME/dotfiles`
+2. `cd $HOME/dotfiles && ./bootstrap.ps1`
 
-Requires [Neovim](https://neovim.io/) (>=0.9 or nightly build when I'm feeling adventurous)
+## Personal Development Environment (PDE) Overview
 
-## MacOs
-
-Additional configuraiton for MacOs includes:
+### Package Manager
 
 - [Homebrew](https://brew.sh/)
-- [yabai](https://github.com/koekeishiya/yabai)
-- [shkd](https://github.com/koekeishiya/skhd)
+- [asdf](https://asdf-vm.com/)
+
+### Terminal
+
+- [Alacritty](https://alacritty.org/)
+- [WezTerm](https://wezfurlong.org/wezterm/index.html)
+- [tmux](https://github.com/tmux/tmux)
+
+### Shell
+
+- [Oh My Zsh](https://ohmyz.sh/)
+- [Starship](https://starship.rs/)
+
+### Editor
+
+- [Neovim](https://neovim.io/) and associated Lua configuration
+
+### Language Specific Support
+
+#### C/C++
+
+- [CMake](https://cmake.org)
+- [vcpkg](https://vcpkg.io/en/)
+- [conan](https://conan.io)
+
+#### Rust
+
+TBD
+
+#### Python
+
+- [pyenv](https://github.com/pyenv/pyenv)
+
+#### Node.JS
+
+- [nvm](https://github.com/nvm-sh/nvm)
