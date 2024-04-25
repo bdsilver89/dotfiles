@@ -72,7 +72,7 @@ source $ZSH/oh-my-zsh.sh
 export DOTFILES_ROOT="$HOME/dotfiles"
 
 # load bash utils
-for file in $(find "${DOTFILES_ROOT}/bash" -name "*.sh" -o -name "*.sh"); do
+for file in $(find "${DOTFILES_ROOT}/bash" -name "*.sh"); do
   source $file
 done
 
@@ -81,41 +81,9 @@ for file in $(find "${DOTFILES_ROOT}/zsh" -name "*.zsh" -o -name "*.sh"); do
   source $file
 done
 
-# nvm
-export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
-
-# pyenv
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
-if command -v pyenv 1>/dev/null 2>&1; then
-	eval "$(pyenv init --path)"
-	eval "$(pyenv init -)"
-fi
-
-# vcpkg
-export VCPKG_ROOT="$HOME/vcpkg"
-export PATH="$VCPKG_ROOT:$PATH"
-if [ -f $VCPKG_ROOT ]; then
-	source $VCPKG_ROOT/scripts/vcpkg_completion.zsh
-fi
-
-# CMake
-export CMAKE_GENERATOR="Ninja"
-export CMAKE_COLOR_DIAGNOSTICS="ON"
-export CONAN_CMAKE_GENERATOR="Ninja"
-
-if [[ $(uname) == "Darwin" ]]; then
-	# use llvm and gcc from homebrew on mac
-	export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
-	export PATH="/opt/homebrew/opt/gcc/bin:$PATH"
-
-	# local flutter repo
-	export PATH="$HOME/Developer/tools/flutter/bin/:$PATH"
-
-	alias llvm-clang="/opt/homebrew/opt/llvm/bin/clang"
-	alias llvm-clang++="/opt/homebrew/opt/llvm/bin/clang++"
-fi
+# invoke setup functions
+setup_python
+setup_node
+setup_cpp
 
 

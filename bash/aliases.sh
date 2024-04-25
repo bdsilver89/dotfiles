@@ -10,7 +10,7 @@ alias pkill!="pkill -9 -f"
 # -----------------------------------------------------------------------------
 # Directory Navigation
 # -----------------------------------------------------------------------------
-if [ -x $(command -v eza) ]; then
+if [ -x "$(command -v eza)" ]; then
 	# use eza
 	alias ls="eza --color=always --icons=always --git"
 	alias lt="eza --color=always --tree --level=2 --icons=always --long --git"
@@ -20,7 +20,7 @@ else
 fi
 
 # change to directory and list files in it, use zoxide if available
-if [ -x $(command -v zoxide) ]; then
+if [ -x "$(command -v zoxide)" ]; then
 	cx() {
 		z "$@" && ll
 	}

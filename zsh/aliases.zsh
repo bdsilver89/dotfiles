@@ -1,23 +1,3 @@
-alias cl="clear"
-alias pg="ps -ef | grep"
-alias pkill!="pkill -9 -f"
-
-# if [ -x "$(command -v eza)" ]; then
-# 	alias ls="eza --color=always --icons=always --git"
-#   # alias ls="eza --color=always --long --git --no-filesize --icons=always --no-time --no-user --no-permissions"
-# 	# alias l="eza -l --icons --git -a"
-# 	alias lt="eza --color=always --tree --level=2 --icons=always --long --git"
-#
-# 	cx() { cd "$@" && eza -l --icons --git -a; }
-# else
-#   cx() { cd "$@" && ll; }
-# fi
-
-# if [ -x "$(command -v bat)" ]; then
-# 	# alias cat="bat"
-#   # export BAT_THEME="CatppuccinMocha"
-# fi
-
 if [ -x "$(command -v fzf)" ]; then
   # eval "$(fzf --zsh)"
 

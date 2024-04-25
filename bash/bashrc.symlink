@@ -1,0 +1,9 @@
+
+export DOTFILES_ROOT="$HOME/dotfiles"
+
+# load bash utils
+for file in $(find in "${DOTFILES_ROOT}/bash" -name "*.sh"); do
+  source $file
+done
+
+
