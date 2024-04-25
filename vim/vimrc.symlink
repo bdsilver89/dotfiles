@@ -1,0 +1,62 @@
+let mapleader = " "
+
+set hidden
+set ttimeout
+set ttimeoutlen=100
+set number
+set relativenumber
+set wildmenu
+set smarttab
+set incsearch
+set hlsearch
+set laststatus=2
+
+nmap <leader>e :Ex<cr>
+
+" better indenting
+vmap < <gv
+vmap > >gv
+
+" quit
+nmap <leader>qq :qa<cr>
+
+" move between windows
+nmap <c-h> <c-w>h
+nmap <c-j> <c-w>j
+nmap <c-k> <c-w>k
+nmap <c-l> <c-w>l
+
+" resize windows
+nmap <c-up> :resize +2<cr>
+nmap <c-down> :resize -2<cr>
+nmap <c-left> :vertical resize +2<cr>
+nmap <c-right> :vertical resize -2<cr>
+
+" windows and splits
+nmap <leader>ww <c-w>p
+nmap <leader>wd <c-w>c
+nmap <leader>w- <c-w>s
+nmap <leader>w\| <c-w>v
+nmap <leader>- <c-w>s
+nmap <leader>\| <c-w>v
+
+" buffers
+nmap <s-h> :bprevious<cr>
+nmap <s-l> :bnext<cr>
+nmap [b :bprevious<cr>
+nmap ]b  :bnext<cr>
+nmap <leader>bb :e #<cr>
+nmap <leader>` :e #<cr>
+
+" terminals
+" tmap <esc> <c-\\><c-n>
+" tmap <c-h> :wincmd h<cr>
+" tmap <c-j> :wincmd j<cr>
+" tmap <c-k> :wincmd k<cr>
+" tmap <c-l> :wincmd l<cr>
+" tmap <c-/> :close<cr>
+
+" quickfix nav
+nmap [q :cprev<cr>
+nmap ]q :cnext<cr>
+
