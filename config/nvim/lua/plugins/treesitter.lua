@@ -4,7 +4,7 @@ return {
     enabled = false,
     version = false,
     build = ":TSUpdate",
-    event = { "BufWritePost", "BufNewFile", "BufWritePre", "VeryLazy" },
+    event = { "BufReadPost", "BufNewFile", "BufWritePre", "VeryLazy" },
     dependencies = {},
     cmd = { "TSUpdateSync", "TSUpdate", "TSInstall" },
     keys = { },

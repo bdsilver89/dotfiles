@@ -35,6 +35,30 @@ autocmd("VimResized", {
   end,
 })
 
+autocmd("FileType", {
+  group = augroup("close_with_q"),
+  pattern = {
+    "checkhealth",
+    "help",
+    "lspinfo",
+    "neotest-summary",
+    "neotest-output-panel",
+    "notify",
+    "oil",
+    "PlenaryTestPopup",
+    "qf",
+    "query",
+    "spectre_panel",
+    "startuptime",
+    "tsplayground",
+    "undotree",
+  },
+  callback = function(event)
+    vim.bo[event.buf].buflisted = false
+    vim.keymap.set("n", "q", "<cmd>close<cr>", { buffer = event.buf, silent = true })
+  end,
+})
+
 -- auto-create dirs when saving a buffer
 autocmd("BufWritePre", {
   desc = "Auto create dirs when saving a buffer",

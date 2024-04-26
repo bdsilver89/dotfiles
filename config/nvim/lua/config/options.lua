@@ -23,6 +23,10 @@ else
   opt.foldmethod = "indent"
 end
 
+if vim.fn.executable("rg") == 1 then
+  opt.grepprg = "rg --vimgrep"  -- use rg, if available
+end
+
 opt.hlsearch = true  -- highlight search
 opt.ignorecase = true  -- ignore case in searches
 opt.inccommand = "split"  -- preview incremental substitutions
@@ -66,4 +70,3 @@ end
 if vim.fn.has("nvim-0.10") == 1 then
   opt.smoothscroll = true
 end
-
