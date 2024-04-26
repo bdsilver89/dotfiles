@@ -9,10 +9,11 @@ local opt = vim.opt
 
 opt.breakindent = true  -- break indent
 opt.clipboard = "unnamedplus"  -- sync OS and Neovim clipboard
+opt.cmdheight = 0  -- hide command-line
 opt.conceallevel = 2  -- conceal some characters
 opt.confirm = true  -- confirm to save on buffer modification
-opt.cursorline = true  -- show line that cursor is on
 opt.completeopt = "menu,menuone,noselect"  -- completion menu options
+opt.cursorline = true  -- show line that cursor is on
 opt.expandtab = true  -- use spaces instead of tabs
 
 opt.foldlevel = 99

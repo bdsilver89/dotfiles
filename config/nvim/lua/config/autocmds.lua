@@ -59,6 +59,25 @@ autocmd("FileType", {
   end,
 })
 
+-- wrap and check for spell in text filetypes
+autocmd("FileType", {
+  group = augroup("wrap_spell"),
+  pattern = { "gitcommit", "markdown" },
+  callback = function()
+    vim.opt_local.wrap = true
+    vim.opt_local.spell = true
+  end,
+})
+
+-- fix conceallevel for json files
+autocmd({ "FileType" }, {
+  group = augroup("json_conceal"),
+  pattern = { "json", "jsonc", "json5" },
+  callback = function()
+    vim.opt_local.conceallevel = 0
+  end,
+})
+
 -- auto-create dirs when saving a buffer
 autocmd("BufWritePre", {
   desc = "Auto create dirs when saving a buffer",
