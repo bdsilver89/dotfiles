@@ -39,7 +39,7 @@ autocmd("VimResized", {
 autocmd("BufWritePre", {
   desc = "Auto create dirs when saving a buffer",
   group = augroup("auto_create_dir"),
-  callback = function()
+  callback = function(event)
     if event.match:match("^%w%w+:[\\/][\\/]") then
       return
     end

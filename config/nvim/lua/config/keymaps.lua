@@ -18,8 +18,10 @@ map({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true
 map({ "n", "x" }, "<Up>", "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
 
 -- better indenting
-map("v", "<", "<gv", { noremap = true })
-map("v", ">", ">gv", { noremap = true })
+map("v", "<", "<gv")
+map("v", ">", ">gv")
 
 -- clear hlsearch
 map({ "i", "n" }, "<esc>", "<cmd>nohlsearch<cr><esc>", { desc = "Escape and clear hlsearch", noremap = true })
+
+map("n", "<leader>l", "<cmd>Lazy<cr>", { desc = "Lazy" })
