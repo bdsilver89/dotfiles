@@ -30,15 +30,6 @@ map("n", "<c-down>", "<cmd>resize -2<cr>", { desc = "Decrease window height" })
 map("n", "<c-left>", "<cmd>vertical resize +2<cr>", { desc = "Increase window width" })
 map("n", "<c-right>", "<cmd>vertical resize -2<cr>", { desc = "Decrease window width" })
 
--- move windows
-if vim.g.config_has_vim_tmux_navigator then
-else
-  map("n", "<c-h>", "<c-w>h", { desc = "Go to left window" })
-  map("n", "<c-j>", "<c-w>j", { desc = "Go to lower window" })
-  map("n", "<c-k>", "<c-w>k", { desc = "Go to upper window" })
-  map("n", "<c-l>", "<c-w>l", { desc = "Go to right window" })
-end
-
 -- move lines
 map("n", "<a-j>", "<cmd>m .+1<cr>==", { desc = "Move line down" })
 map("n", "<a-k>", "<cmd>m .-2<cr>==", { desc = "Move line up" })
@@ -52,6 +43,7 @@ map("n", "<s-h>", "<cmd>bprevious<cr>", { desc = "Prev buffer" })
 map("n", "<s-l>", "<cmd>bnext<cr>", { desc = "Next buffer" })
 map("n", "[b", "<cmd>bprevious<cr>", { desc = "Prev buffer" })
 map("n", "]b", "<cmd>bnext<cr>", { desc = "Next buffer" })
+map("n", "<leader>bd", "<cmd>bdelete<cr>", { desc = "Close buffer" })
 map("n", "<leader>bb", "<cmd>e #<cr>", { desc = "Alternate buffer" })
 map("n", "<leader>`", "<cmd>e #<cr>", { desc = "Alternate buffer" })
 
@@ -60,8 +52,8 @@ map("n", "<leader>ww", "<c-w>p", { desc = "Other window", remap = true })
 map("n", "<leader>wd", "<c-w>c", { desc = "Close window", remap = true })
 map("n", "<leader>w-", "<c-w>s", { desc = "Split window below", remap = true })
 map("n", "<leader>-", "<c-w>s", { desc = "Split window below", remap = true })
-map("n", "<leader>w|", "<c-w>s", { desc = "Split window right", remap = true })
-map("n", "<leader>|", "<c-w>s", { desc = "Split window right", remap = true })
+map("n", "<leader>w|", "<c-w>v", { desc = "Split window right", remap = true })
+map("n", "<leader>|", "<c-w>v", { desc = "Split window right", remap = true })
 
 -- tabs
 map("n", "<leader><tab>l", "<cmd>tablast<cr>", { desc = "Last tab" })

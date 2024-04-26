@@ -1,6 +1,7 @@
 return {
   {
     "nvim-treesitter/nvim-treesitter",
+    enabled = false,
     version = false,
     build = ":TSUpdate",
     event = { "BufWritePost", "BufNewFile", "BufWritePre", "VeryLazy" },
