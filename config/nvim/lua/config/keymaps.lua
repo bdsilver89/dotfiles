@@ -1,45 +1,25 @@
--- Keymaps are automatically loaded on the VeryLazy event
--- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
--- Add any additional keymaps here
+local function map(mode, lhs, rhs, opts)
+  local modes = type(mode) == "string" and { mode } or mode
 
--- Move selected lines with shift+j or shift+k
-vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
-vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
+  if #modes > 0 then
+    opts = opts or {}
+    opts.silent = opts.silent ~= false
+    if opts.remap and not vim.g.vscode then
+      opts.remap = nil
+    end
+    vim.keymap.set(modes, lhs, rhs, opts)
+  end
+end
 
--- Join line while keeping the cursor in the same position
-vim.keymap.set("n", "J", "mzJ`z")
+-- better up/down
+map({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
+map({ "n", "x" }, "<Down>", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
+map({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
+map({ "n", "x" }, "<Up>", "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
 
--- Keep cursor centred while scrolling up and down
-vim.keymap.set("n", "<C-d>", "<C-d>zz")
-vim.keymap.set("n", "<C-u>", "<C-u>zz")
+-- better indenting
+map("v", "<", "<gv", { noremap = true })
+map("v", ">", ">gv", { noremap = true })
 
--- Next and previous instance of the highlighted letter
-vim.keymap.set("n", "n", "nzzzv")
-vim.keymap.set("n", "N", "Nzzzv")
-
--- Better paste (prevents new paste buffer)
-vim.keymap.set("x", "<leader>p", [["_dP]])
-
--- Copy to system clipboard
-vim.keymap.set({ "n", "v" }, "<leader>y", [["+y]])
-vim.keymap.set("n", "<leader>Y", [["+Y]])
-
--- Delete to void register
-vim.keymap.set({ "n", "v" }, "<leader>d", [["_d]])
-
--- Fixed ctrl+c weirdness to exit from vertical select mode
-vim.keymap.set("i", "<C-c>", "<Esc>")
-
--- Delete shift+q keymap
-vim.keymap.set("n", "Q", "<nop>")
-
--- Quickfix navigation
-vim.keymap.set("n", "<C-k>", "<cmd>cnext<CR>zz")
-vim.keymap.set("n", "<C-j>", "<cmd>cprev<CR>zz")
-vim.keymap.set("n", "<leader>k", "<cmd>lnext<CR>zz")
-vim.keymap.set("n", "<leader>j", "<cmd>lprev<CR>zz")
-
-vim.keymap.set("n", "<c-h>", "<cmd>TmuxNavigateLeft<cr>")
-vim.keymap.set("n", "<c-j>", "<cmd>TmuxNavigateDown<cr>")
-vim.keymap.set("n", "<c-k>", "<cmd>TmuxNavigateUp<cr>")
-vim.keymap.set("n", "<c-l>", "<cmd>TmuxNavigateRight<cr>")
+-- clear hlsearch
+map({ "i", "n" }, "<esc>", "<cmd>nohlsearch<cr><esc>", { desc = "Escape and clear hlsearch", noremap = true })
