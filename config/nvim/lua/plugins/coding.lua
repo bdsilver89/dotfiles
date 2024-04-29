@@ -89,22 +89,7 @@ return {
       history = true,
       delete_check_events = "TextChanged",
     },
-  },
-
-  -- autopairs
-  {
-    "windwp/nvim-autopairs",
-    event = "InsertEnter",
-    config = function(_, opts)
-      require("nvim-autopairs").setup(opts)
-      local cmp_autopairs = require('nvim-autopairs.completion.cmp')
-      local cmp = require('cmp')
-      cmp.event:on(
-        'confirm_done',
-        cmp_autopairs.on_confirm_done()
-      )
-    end,
-  },
+  }, 
 
   -- code comments
   {
@@ -134,6 +119,31 @@ return {
     config = function(_, opts)
       require("Comment").setup(opts)
     end,
+  },
+
+  -- auto pairs
+  {
+    "echasnovski/mini.pairs",
+    event = "VeryLazy",
+    opts = {
+      mappings = {
+        ["`"] = { action = "closeopen", pair = "``", neigh_pattern = "[^\\`].", register = { cr = false } },
+      },
+    },
+    keys = {
+      {
+        "<leader>up",
+        function()
+          vim.g.minipairs_disable = not vim.g.minipairs_disable
+          -- if vim.g.minipairs_disable then
+          --   LazyVim.warn("Disabled auto pairs", { title = "Option" })
+          -- else
+          --   LazyVim.info("Enabled auto pairs", { title = "Option" })
+          -- end
+        end,
+        desc = "Toggle autopairs",
+      },
+    },
   },
 
   -- better text objects

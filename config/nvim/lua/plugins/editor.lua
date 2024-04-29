@@ -101,6 +101,11 @@ return {
       { "<leader>/", "<cmd>Telescope live_grep<cr>", desc = "Grep" },
       { "<leader>:", "<cmd>Telescope command_history<cr>", desc = "Command history" },
       { "<leader><space>", "<cmd>Telescope find_files<cr>", desc = "Find files" },
+      -- find
+      -- git
+      { "<leader>gc", "<cmd>Telescope git_commits<cr>", desc = "Commits" },
+      { "<leader>gs", "<cmd>Telescope git_status<cr>", desc = "Status" },
+      -- search
     },
     opts = function()
       return {
@@ -136,5 +141,31 @@ return {
     keys = {
       { "<leader>sr", function() require("spectre").open() end, desc = "Replace in files" },
     },
+  },
+
+  -- which-key
+  {
+    "folke/which-key.nvim",
+    event = "VeryLazy",
+    opts = {
+      plugins = { spelling = true },
+    },
+    config = function(_, opts)
+      local wk = require("which-key")
+      wk.setup(opts)
+
+      wk.register({
+        mode = { "n", "v" },
+        ["<leader><tab>"] = { name = "+tab" },
+        ["<leader>b"] = { name = "+buffer" },
+        ["<leader>c"] = { name = "+code" },
+        ["<leader>f"] = { name = "+file/find" },
+        ["<leader>g"] = { name = "+git" },
+        ["<leader>q"] = { name = "+quit/session" },
+        ["<leader>s"] = { name = "+search" },
+        ["<leader>w"] = { name = "+windows" },
+        ["<leader>x"] = { name = "+diagnostics/quickfix" },
+      })
+    end,
   },
 }
