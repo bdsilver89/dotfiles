@@ -34,10 +34,12 @@ vim.api.nvim_create_autocmd("FileType", {
     "help",
     "lspinfo",
     "man",
+    "oil",
     "qf",
     "query",
     "spectre_panel",
     "startuptime",
+    "undotree",
   },
   callback = function(event)
     vim.bo[event.buf].buflisted = false
