@@ -2,4 +2,4 @@ if vim.loader then
   vim.loader.enable()
 end
 
-require("bdsilver89")
+require("config")
