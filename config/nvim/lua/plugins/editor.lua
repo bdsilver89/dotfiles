@@ -14,12 +14,9 @@ return {
   -- oil as primary file explorer
   {
     "stevearc/oil.nvim",
-    dependencies = {
-      { "nvim-tree/nvim-web-devicons", enabled = vim.g.have_nerd_font },
-    },
     -- stylua: ignore
     keys = {
-      { "<leader>e", function() require("oil").open_float() end, desc = "Explorer (oil)" },
+      { "<leader>e", function() require("oil").open_float() end, desc = "File explorer (oil)" },
     },
     cmd = "Oil",
     opts = {
@@ -36,6 +33,50 @@ return {
       end
     end,
     config = true,
+  },
+
+  -- neo-tree as secondary file explorer
+  {
+    "nvim-neo-tree/neo-tree.nvim",
+    branch = "v3.x",
+    cmd = "Neotree",
+    keys = {
+      {
+        "<leader>fe",
+        function()
+          require("neo-tree.command").execute({ toggle = true })
+        end,
+        desc = "File explorer (neo-tree)"
+      },
+      {
+        "<leader>ge",
+        function()
+          require("neo-tree.command").execute({ source = "git_status", toggle = true })
+        end,
+        desc = "Git explorer (neo-tree)"
+      },
+      {
+        "<leader>be",
+        function()
+          require("neo-tree.command").execute({ source = "buffers", toggle = true })
+        end,
+        desc = "Buffer explorer (neo-tree)"
+      },
+    },
+    opts = {
+      sources = { "filesystem", "buffers", "git_status", "document_symbols" },
+      open_files_do_no_replace_types = { "terminal", "Trouble", "trouble", "qf", "Outline" },
+      filesystem = {
+        bind_to_cwd = false,
+        follow_current_file = { enabled = true },
+        use_libuv_file_watcher = true,
+      },
+      window = {
+      },
+    },
+    config = function(_, opts)
+      require("neo-tree").setup(opts)
+    end,
   },
 
   -- harpoon for file switching
@@ -161,8 +202,10 @@ return {
         ["<leader>c"] = { name = "+code" },
         ["<leader>f"] = { name = "+file/find" },
         ["<leader>g"] = { name = "+git" },
+        ["<leader>gh"] = { name = "+hunk" },
         ["<leader>q"] = { name = "+quit/session" },
         ["<leader>s"] = { name = "+search" },
+        ["<leader>u"] = { name = "+ui/setting" },
         ["<leader>w"] = { name = "+windows" },
         ["<leader>x"] = { name = "+diagnostics/quickfix" },
       })

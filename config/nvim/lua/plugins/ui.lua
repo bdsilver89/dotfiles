@@ -1,4 +1,15 @@
 return {
+  -- nerd icons
+  {
+    "nvim-tree/nvim-web-devicons",
+    enabled = vim.g.have_nerd_font
+  },
+
+  -- ui tools
+  {
+    "MunifTanjim/nui.nvim",
+  },
+
   -- catppuccin colorscheme
   {
     "catppuccin/nvim",
