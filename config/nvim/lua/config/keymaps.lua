@@ -55,12 +55,12 @@ map("t", "<c-_>", "<cmd>close<cr>", { desc = "which_key_ignore" })
 -- window moving
 local function move_window(basic, tmux)
   local cmd = require("utils").plugin.has("vim-tmux-navigator") and tmux or basic
-  return function() vim.cmd(cmd) end
+  return cmd
 end
-map("n", "<C-h>", move_window("<C-w>h", "TmuxNavigateLeft"), { desc = "Go to left window", remap = true })
-map("n", "<C-j>", move_window("<C-w>j", "TmuxNavigateDown"), { desc = "Go to lower window", remap = true })
-map("n", "<C-k>", move_window("<C-w>k", "TmuxNavigateUp"), { desc = "Go to upper window", remap = true })
-map("n", "<C-l>", move_window("<C-w>l", "TmuxNavigateRight"), { desc = "Go to right window", remap = true })
+map("n", "<C-h>", move_window("<C-w>h", "<cmd>TmuxNavigateLeft<cr>"), { desc = "Go to left window", remap = true })
+map("n", "<C-j>", move_window("<C-w>j", "<cmd>TmuxNavigateDown<cr>"), { desc = "Go to lower window", remap = true })
+map("n", "<C-k>", move_window("<C-w>k", "<cmd>TmuxNavigateUp<cr>"), { desc = "Go to upper window", remap = true })
+map("n", "<C-l>", move_window("<C-w>l", "<cmd>TmuxNavigateRight<cr>"), { desc = "Go to right window", remap = true })
 
 -- windows
 map("n", "<leader>ww", "<C-W>p", { desc = "Other window", remap = true })
