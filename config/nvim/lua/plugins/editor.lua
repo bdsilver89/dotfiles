@@ -11,6 +11,21 @@ return {
     lazy = false,
   },
 
+  -- session management
+  {
+    "folke/persistence.nvim",
+    event = "BufReadPre",
+    -- stylua: ignore
+    keys = {
+      { "<leader>qs", function() require("persistence").load() end, desc = "Restore session" },
+      { "<leader>ql", function() require("persistence").load({ last = true }) end, desc = "Restore last session" },
+      { "<leader>qd", function() require("persistence").stop() end, desc = "Don't save current session" },
+    },
+    opts = {
+      options = vim.opt.sessionoptions:get(),
+    },
+  },
+
   -- oil as primary file explorer
   {
     "stevearc/oil.nvim",
@@ -123,6 +138,21 @@ return {
     end,
   },
 
+  -- flash text navigation
+  {
+    "folke/flash.nvim",
+    event = "VeryLazy",
+    -- stylua: ignore
+    keys = {
+      { "s", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash" },
+      { "S", mode = { "n", "o", "x" }, function() require("flash").treesitter() end, desc = "Flash treesitter" },
+      { "r", mode = "o", function() require("flash").remote() end, desc = "Remote Flash" },
+      { "R", mode = { "o", "x" }, function() require("flash").treesitter_search() end, desc = "Treesitter search" },
+      { "<c-s>", mode = { "c" }, function() require("flash").toggle() end, desc = "Toggle flash search" },
+    },
+    opts = {},
+  },
+
   -- telescope
   {
     "nvim-telescope/telescope.nvim",
@@ -184,6 +214,70 @@ return {
     },
   },
 
+  -- diagnostics
+  {
+    "folke/trouble.nvim",
+    branch = "dev",
+    cmd = { "TroubleToggle", "Trouble" },
+    opts = {
+      use_diagnostics_signs = true,
+    },
+    -- stylua: ignore
+    keys = {
+      { "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>", desc = "Diagnostics" },
+      { "<leader>xX", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", desc = "Buffer diagnostics" },
+      { "<leader>cs", "<cmd>Trouble symbols toggle focus=false<cr>", desc = "Symbols" },
+      { "<leader>cS", "<cmd>Trouble lsp toggle focus=false win.position=right<cr>", desc = "LSP references/definitions/..." },
+      { "<leader>xL", "<cmd>Trouble loclist toggle<cr>", desc = "Location list" },
+      { "<leader>xQ", "<cmd>Trouble quickfix toggle<cr>", desc = "Quickfix list" },
+      {
+        "[q",
+        function()
+          if require("trouble").is_open() then
+            require("trouble").prev({ skip_groups = true, jump = true })
+          else
+            local ok, err = pcall(vim.cmd.cprev)
+            if not ok then
+              vim.notify(err, vim.log.levels.ERROR)
+            end
+          end
+        end,
+        desc = "Prev trouble/quickfix item"
+      },
+      {
+        "]q",
+        function()
+          if require("trouble").is_open() then
+            require("trouble").next({ skip_groups = true, jump = true })
+          else
+            local ok, err = pcall(vim.cmd.cnext)
+            if not ok then
+              vim.notify(err, vim.log.levels.ERROR)
+            end
+          end
+        end,
+        desc = "Next trouble/quickfix item"
+      }
+    }
+  },
+
+  -- todo comments
+  {
+    "folke/todo-comments.nvim",
+    cmd = { "TodoTrouble", "TodoTelescope" },
+    event = { "BufReadPost", "BufNewFile" },
+    config = true,
+    -- stylua: ignore
+    keys = {
+      { "]t", function() require("todo-comments").jump_next() end, desc = "Next Todo Comment" },
+      { "[t", function() require("todo-comments").jump_prev() end, desc = "Previous Todo Comment" },
+      { "<leader>xt", "<cmd>TodoTrouble<cr>", desc = "Todo (Trouble)" },
+      { "<leader>xT", "<cmd>TodoTrouble keywords=TODO,FIX,FIXME<cr>", desc = "Todo/Fix/Fixme (Trouble)" },
+      { "<leader>st", "<cmd>TodoTelescope<cr>", desc = "Todo" },
+      { "<leader>sT", "<cmd>TodoTelescope keywords=TODO,FIX,FIXME<cr>", desc = "Todo/Fix/Fixme" },
+    },
+  },
+
   -- which-key
   {
     "folke/which-key.nvim",
@@ -200,11 +294,13 @@ return {
         ["<leader><tab>"] = { name = "+tab" },
         ["<leader>b"] = { name = "+buffer" },
         ["<leader>c"] = { name = "+code" },
+        ["<leader>d"] = { name = "+debug" },
         ["<leader>f"] = { name = "+file/find" },
         ["<leader>g"] = { name = "+git" },
         ["<leader>gh"] = { name = "+hunk" },
         ["<leader>q"] = { name = "+quit/session" },
         ["<leader>s"] = { name = "+search" },
+        ["<leader>t"] = { name = "+test" },
         ["<leader>u"] = { name = "+ui/setting" },
         ["<leader>w"] = { name = "+windows" },
         ["<leader>x"] = { name = "+diagnostics/quickfix" },

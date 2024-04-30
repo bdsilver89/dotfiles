@@ -4,6 +4,15 @@ vim.g.maplocalleader = " "
 -- PDE options
 vim.g.have_nerd_font = true
 
+vim.g.enable_dev_c_cpp = true
+vim.g.enable_dev_go = true
+vim.g.enable_dev_java = true
+vim.g.enable_dev_python = true
+vim.g.enable_dev_rust = true
+vim.g.enable_dev_js_ts = true
+vim.g.enable_dev_js_ts = true
+
+
 -- Neovim options
 vim.opt.clipboard = "unnamedplus"
 vim.opt.cmdheight = 0

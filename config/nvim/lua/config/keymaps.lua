@@ -41,6 +41,7 @@ map("n", "[b", "<cmd>bprevious<cr>", { desc = "Prev buffer" })
 map("n", "]b", "<cmd>bnext<cr>", { desc = "Next buffer" })
 map("n", "<leader>bb", "<cmd>e #<cr>", { desc = "Switch to other buffer" })
 map("n", "<leader>`", "<cmd>e #<cr>", { desc = "Switch to other buffer" })
+map("n", "<leader>bd", "<cmd>bdelete<cr>", { desc = "Close buffer" })
 
 -- terminal Mappings
 map("t", "<esc><esc>", "<c-\\><c-n>", { desc = "Enter normal mode" })
@@ -91,3 +92,13 @@ map("n", "]e", diagnostic_goto(true, "ERROR"), { desc = "Next Error" })
 map("n", "[e", diagnostic_goto(false, "ERROR"), { desc = "Prev Error" })
 map("n", "]w", diagnostic_goto(true, "WARN"), { desc = "Next Warning" })
 map("n", "[w", diagnostic_goto(false, "WARN"), { desc = "Prev Warning" })
+
+-- terminal
+local term = function() require("utils").terminal(nil, { cwd = vim.uv.cwd() }) end
+map("n", "<leader>ft", term, { desc = "Terminal" })
+map("n", "<c-/>", term, { desc = "Terminal" })
+map("n", "<c-_>", term, { desc = "which_key_ignore" })
+
+-- lazygit terminal
+map("n", "<leader>gg", function() require("utils").lazygit( { cwd = vim.uv.cwd() }) end, { desc = "Lazygit" })
+
