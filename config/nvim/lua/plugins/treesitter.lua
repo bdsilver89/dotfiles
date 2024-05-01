@@ -1,85 +1,102 @@
 return {
   {
     "nvim-treesitter/nvim-treesitter",
-    build = ":TSUpdate",
-    version = false,
     event = { "BufReadPost", "BufNewFile" },
-    cmd = { "TSUpdateSync", "TSUpdate", "TSInstall" },
-    keys = {
-      { "<c-space>", desc = "Increment Selection" },
-      { "<bs>", desc = "Decrement Selection", mode = "x" },
+    build = ":TSUpdate",
+    cmd = {
+      "TSBufDisable",
+      "TSBufEnable",
+      "TSBufToggle",
+      "TSDisable",
+      "TSEnable",
+      "TSToggle",
+      "TSInstall",
+      "TSInstallInfo",
+      "TSInstallSync",
+      "TSModuleInfo",
+      "TSUninstall",
+      "TSUpdate",
+      "TSUpdateSync",
     },
     dependencies = {
       {
         "nvim-treesitter/nvim-treesitter-textobjects",
-        config = function()
-          -- When in diff mode, we want to use the default
-          -- vim text objects c & C instead of the treesitter ones.
-          local move = require("nvim-treesitter.textobjects.move") ---@type table<string,fun(...)>
-          local configs = require("nvim-treesitter.configs")
-          for name, fn in pairs(move) do
-            if name:find("goto") == 1 then
-              move[name] = function(q, ...)
-                if vim.wo.diff then
-                  local config = configs.get_module("textobjects.move")[name] ---@type table<string,string>
-                  for key, query in pairs(config or {}) do
-                    if q == query and key:find("[%]%[][cC]") then
-                      vim.cmd("normal! " .. key)
-                      return
-                    end
-                  end
-                end
-                return fn(q, ...)
-              end
-            end
-          end
-        end,
+        lazy = true,
       },
     },
+    init = function(plugin)
+      require("lazy.core.loader").add_to_rtp(plugin)
+      require("nvim-treesitter.query_predicates")
+    end,
     opts = {
-      highlight = { enable = true },
-      indent = { enable = true },
       ensure_installed = {
-        "bash",
         "c",
-        "diff",
-        "html",
-        "javascript",
-        "jsdoc",
-        "json",
-        -- "jsonc",
         "lua",
-        "luadoc",
-        "luap",
-        "markdown",
-        "markdown_inline",
-        "python",
-        "query",
-        "regex",
-        "toml",
-        "tsx",
-        "typescript",
-        "vim",
-        "vimdoc",
-        "xml",
-        "yaml",
+      },
+      highlight = {
+        enable = true,
       },
       incremental_selection = {
         enable = true,
-        keymaps = {
-          init_selection = "<C-space>",
-          node_incremental = "<C-space>",
-          scope_incremental = false,
-          node_decremental = "<bs>",
-        },
+      },
+      indent = {
+        enable = true,
       },
       textobjects = {
+        select = {
+          enable = true,
+          lookahead = true,
+          keymaps = {
+            ["ak"] = { query = "@block.outer", desc = "around block" },
+            ["ik"] = { query = "@block.innter", desc = "inside block" },
+            ["ac"] = { query = "@class.outer", desc = "around class" },
+            ["ic"] = { query = "@class.innter", desc = "inside class" },
+            ["a?"] = { query = "@conditional.outer", desc = "around conditional" },
+            ["i?"] = { query = "@conditional.innter", desc = "inside conditional" },
+            ["af"] = { query = "@function.outer", desc = "around function" },
+            ["if"] = { query = "@function.innter", desc = "inside function" },
+            ["ao"] = { query = "@loop.outer", desc = "around loop" },
+            ["io"] = { query = "@loop.innter", desc = "inside loop" },
+            ["aa"] = { query = "@parameter.outer", desc = "around parameter" },
+            ["ia"] = { query = "@parameter.innter", desc = "inside parameter" },
+          },
+        },
         move = {
           enable = true,
-          goto_next_start = { ["]f"] = "@function.outer", ["]c"] = "@class.outer" },
-          goto_next_end = { ["]F"] = "@function.outer", ["]C"] = "@class.outer" },
-          goto_previous_start = { ["[f"] = "@function.outer", ["[c"] = "@class.outer" },
-          goto_previous_end = { ["[F"] = "@function.outer", ["[C"] = "@class.outer" },
+          set_jumps = true,
+          goto_next_start = {
+            ["]k"] = { query = "@block.outer", desc = "Next block start" },
+            ["]f"] = { query = "@function.outer", desc = "Next function start" },
+            ["]a"] = { query = "@parameter.outer", desc = "Next argument start" },
+          },
+          goto_next_end = {
+            ["]K"] = { query = "@block.outer", desc = "Next block end" },
+            ["]F"] = { query = "@function.outer", desc = "Next function end" },
+            ["]A"] = { query = "@parameter.outer", desc = "Next argument end" },
+          },
+          goto_prev_start = {
+            ["[k"] = { query = "@block.outer", desc = "Prev block start" },
+            ["[f"] = { query = "@function.outer", desc = "Prev function start" },
+            ["[a"] = { query = "@parameter.outer", desc = "Prev argument start" },
+          },
+          goto_prev_end = {
+            ["[K"] = { query = "@block.outer", desc = "Prev block end" },
+            ["[F"] = { query = "@function.outer", desc = "Prev function end" },
+            ["[A"] = { query = "@parameter.outer", desc = "Prev argument end" },
+          },
+        },
+        swap = {
+          enable = true,
+          swap_next = {
+            [">K"] = { query = "@block.outer", desc = "Swap next block" },
+            [">F"] = { query = "@function.outer", desc = "Swap next function" },
+            [">A"] = { query = "@parameter.outer", desc = "Swap next argument" },
+          },
+          swap_prev = {
+            ["<K"] = { query = "@block.outer", desc = "Swap prev block" },
+            ["<F"] = { query = "@function.outer", desc = "Swap prev function" },
+            ["<A"] = { query = "@parameter.outer", desc = "Swap prev argument" },
+          },
         },
       },
     },
@@ -95,39 +112,18 @@ return {
           return true
         end, opts.ensure_installed)
       end
+
       require("nvim-treesitter.install").prefer_git = true
       require("nvim-treesitter.configs").setup(opts)
     end,
   },
 
-  -- add context for current block
   {
     "nvim-treesitter/nvim-treesitter-context",
     event = { "BufReadPost", "BufNewFile" },
-    enabled = true,
-    opts = { mode = "cursor", max_lines = 3 },
     keys = {
-      {
-        "<leader>ut",
-        function()
-          local Utils = require("utils")
-          local tsc = require("treesitter-context")
-          tsc.toggle()
-          if Utils.inject.get_upvalue(tsc.toggle, "enabled") then
-            Utils.info("Enabled Treesitter Context", { title = "Option" })
-          else
-            Utils.warn("Disabled Treesitter Context", { title = "Option" })
-          end
-        end,
-        desc = "Toggle Treesitter Context",
-      },
+      { "<leader>ut", "<cmd>TSContextToggle<cr>", desc = "Toggle treesitter context" },
     },
-  },
-
-  -- automatically add closing tags
-  {
-    "windwp/nvim-ts-autotag",
-    event = { "BufReadPost", "BufNewFile" },
-    opts = {},
+    opts = { mode = "cursor", max_lines = 3 },
   },
 }

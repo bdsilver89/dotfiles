@@ -54,7 +54,7 @@ map("t", "<c-_>", "<cmd>close<cr>", { desc = "which_key_ignore" })
 
 -- window moving
 local function move_window(basic, tmux)
-  local cmd = require("utils").plugin.has("vim-tmux-navigator") and tmux or basic
+  local cmd = require("lazy.core.config").spec.plugins["vim-tmux-navigator"] ~= nil and tmux or basic
   return cmd
 end
 map("n", "<C-h>", move_window("<C-w>h", "<cmd>TmuxNavigateLeft<cr>"), { desc = "Go to left window", remap = true })
