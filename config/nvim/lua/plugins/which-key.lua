@@ -20,6 +20,9 @@ return {
       wk.register({
         mode = { "n", "v" },
         ["<leader>b"] = { name = "buffer" },
+        ["<leader>c"] = { name = "code" },
+        ["<leader>u"] = { name = "ui" },
+        ["<leader>w"] = { name = "window" },
       })
 
     end,

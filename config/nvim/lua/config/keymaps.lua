@@ -103,12 +103,11 @@ map("n", "[e", diagnostic_goto(false, "ERROR"), { desc = "Prev Error" })
 map("n", "]w", diagnostic_goto(true, "WARN"), { desc = "Next Warning" })
 map("n", "[w", diagnostic_goto(false, "WARN"), { desc = "Prev Warning" })
 
--- terminal
-local term = function() require("utils").terminal(nil, { cwd = vim.uv.cwd() }) end
-map("n", "<leader>ft", term, { desc = "Terminal" })
-map("n", "<c-/>", term, { desc = "Terminal" })
-map("n", "<c-_>", term, { desc = "which_key_ignore" })
-
--- lazygit terminal
-map("n", "<leader>gg", function() require("utils").lazygit( { cwd = vim.uv.cwd() }) end, { desc = "Lazygit" })
-
+-- -- terminal
+-- local term = function() require("utils").terminal(nil, { cwd = vim.uv.cwd() }) end
+-- map("n", "<leader>ft", term, { desc = "Terminal" })
+-- map("n", "<c-/>", term, { desc = "Terminal" })
+-- map("n", "<c-_>", term, { desc = "which_key_ignore" })
+--
+-- -- lazygit terminal
+-- map("n", "<leader>gg", function() require("utils").lazygit( { cwd = vim.uv.cwd() }) end, { desc = "Lazygit" })
