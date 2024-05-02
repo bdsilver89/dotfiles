@@ -79,11 +79,17 @@ return {
     lazy = false,
   },
 
+  -- automatic editor spacing detection and editorconfig
+  {
+    "tpope/vim-sleuth",
+    lazy = false,
+  },
+
   -- expand git functionality
   -- NOTE: should consider dinhhuy258/git.nvim as lua rewrite of this?
   {
     "tpope/vim-fugitive",
-    event = "LazyFile",
+    lazy = false,
   },
 
   -- TODO: change todo-comment signs if nerd font is disabled?
