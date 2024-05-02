@@ -8,12 +8,15 @@ return {
 
       vim.list_extend(opts.ensure_installed, {
         "doxygen",
+        "ini",
         "make",
         "meson",
         "starlark",
         "sql",
         "xml",
       })
+
+      return opts
     end,
   },
 }
