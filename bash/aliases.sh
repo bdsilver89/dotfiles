@@ -14,7 +14,7 @@ if [ -x "$(command -v eza)" ]; then
 	# use eza
 	alias ls="eza --color=always --icons=always --git"
 	alias lt="eza --color=always --tree --level=2 --icons=always --long --git"
-else if [ -x "$(command -v exa)" ]; then
+elif [ -x "$(command -v exa)" ]; then
 	# use exa (deprecated, mostly for ubuntu)
 	alias ls="exa --color=always"
 	alias lt="exa --color=always --tree --level=2 --long"
