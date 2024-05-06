@@ -1,5 +1,15 @@
 #!/usr/bin/env bash
 
+# Inspired by ThePrimagen's tmux-sessionizer with a few edits
+# 
+# Mainly the change that running tmux-windowizer <NAME>
+# is targetted for opening a new tmux window with the name <NAME>
+# AND ALSO cd-ing into the folder with that name (if applicable)
+# 
+# This is mostly useful for things like git-worktrees:
+#   1. Use tmux-sessionizer to open the repo root folder
+#   2. Use tmux-windowizer to open a branch in a new window
+
 branch_name=$(basename $1)
 session_name=$(tmux display-message -p "#S")
 clean_name=$(echo $branch_name | tr "./" "__")
@@ -10,5 +20,7 @@ if ! tmux has-session -t $target 2> /dev/null; then
 fi
 
 shift
-tmux send-keys -t $target "cd $branch_name" Enter
-tmux send-keys -t $target "$*" Enter
+if [ -d $branch_name ]; then
+    tmux send-keys -t $target "cd $branch_name" Enter
+fi
+tmux send-keys -t $target "$*"
