@@ -19,6 +19,9 @@ function M.lsp_dependencies()
 end
 
 function M.lsp_config()
+  if not vim.g.enable_c_cpp_support then
+    return {}
+  end
   return {
     clangd = {
       root_dir = function(fname)
