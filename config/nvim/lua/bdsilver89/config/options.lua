@@ -8,7 +8,7 @@ vim.g.icons_enabled = true
 -- otherwise system-wide installations are expected
 vim.g.use_mason_lsp = true
 vim.g.use_mason_dap = false
-vim.g.use_mason_linter_formatter = false
+vim.g.use_mason_linter_formatter = true
 
 -- set to 'true' to enable support for a given language (LSPs/Linters/Formatters/Etc)
 vim.g.enable_c_cpp_support = true

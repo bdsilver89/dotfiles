@@ -7,13 +7,22 @@ return {
         "folke/neoconf.nvim",
         cmd = "Neoconf",
         config = false,
+        dependencies = { "nvim-lspconfig" },
       },
       {
         "folke/neodev.nvim",
-        opts = {}
+        opts = {},
+        enabled = vim.g.enable_lua_support,
       },
-      "mason.nvim",
-      "williamboman/mason-lspconfig.nvim",
+      "williamboman/mason.nvim",
+      {
+        "williamboman/mason-lspconfig.nvim",
+        enabled = vim.g.use_mason_lsp
+      },
+      {
+        "smjonas/inc-rename.nvim",
+        opts = {},
+      },
     },
     opts = function()
       local Utils = require("bdsilver89.utils")
@@ -36,7 +45,19 @@ return {
               [vim.diagnostic.severity.INFO] = Utils.ui.get_icon("diagnostics", "Info"),
             },
           },
-        }
+        },
+        inlay_hints = {
+          enabled = true,
+        },
+        codelens = {
+          enabled = true,
+        },
+        servers = vim.tbl_deep_extend("force",
+          {},
+          require("bdsilver89.plugins.lang.lua").lsp_config(),
+          require("bdsilver89.plugins.lang.cpp").lsp_config()
+        ),
+        setup = {},
       }
     end,
     config = function(_, opts)
@@ -50,9 +71,87 @@ return {
       vim.api.nvim_create_autocmd("LspAttach", {
         group = vim.api.nvim_create_augroup("config_lsp_attach", { clear = true }),
         callback = function(event)
-          -- TODO: keymaps
+          local buffer = event.buf
+          local client = vim.lsp.get_client_by_id(event.data.client_id)
+
+          -- keymaps
+          local function map(mode, lhs, rhs, kopts, has)
+            local modes = type(mode) == "string" and { mode } or mode
+            if has ~= nil then
+              has = has:find("/") and has or "textDocument/" .. has
+              if not client.supports_method(has) then
+                return
+              end
+            end
+            kopts.desc = kopts.desc and "LSP " .. kopts.desc or kopts.desc
+            vim.keymap.set(modes, lhs, rhs, vim.tbl_deep_extend("force", { buffer = buffer }, kopts or {}))
+          end
+
+          -- stylua: ignore start
+          map("n", "<leader>cl", "<cmd>LspInfo<cr>", { desc = "info" })
+          map("n", "gd", function() require("telescope.builtin").lsp_definitions({ reuse_win = true }) end, { desc = "goto definition" }, "definition")
+          map("n", "gr", "<cmd>Telescope lsp_references<cr>", { desc = "references" })
+          map("n", "gD", vim.lsp.buf.declaration, { desc = "goto declaration" })
+          map("n", "gI", function() require("telescope.builtin").lsp_implementations({ reuse_win = true }) end, { desc = "goto implementation" })
+          map("n", "gy", function() require("telescope.builtin").lsp_type_definitions({ reuse_win = true }) end, { desc = "goto type definition" })
+          map("n", "K", vim.lsp.buf.hover, { desc = "hover" })
+          map("n", "gK", vim.lsp.buf.signature_help, { desc = "signature help" }, "signatureHelp")
+          map("i", "<c-k>", vim.lsp.buf.signature_help, { desc = "signature help" }, "signatureHelp")
+          map({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, { desc = "code action" }, "codeAction")
+          map({ "n", "v" }, "<leader>cc", vim.lsp.codelens.run, { desc = "run codelens" }, "codeLens")
+          map("n", "<leader>cC", vim.lsp.codelens.refresh, { desc = "refresh and display codelens" }, "codeLens")
+          map(
+            "n",
+            "<leader>cA",
+            function()
+              vim.lsp.buf.code_action({
+                context = {
+                  only = {
+                    "source",
+                  },
+                  diagnostics = {},
+                }
+              })
+            end,
+            { desc = "source action" },
+            "codeAction")
+          map(
+            "n",
+            "<leader>cr",
+            function()
+              local inc_rename = require("inc_rename")
+              return ":" .. inc_rename.config.cmd_name .. " " .. vim.fn.expand("<cword>")
+            end,
+            { desc = "rename", expr = true })
+          -- stylua: ignore end
+
           -- TODO: inlay hints
-          -- TODO: code lens
+          -- if opts.inlay_hints.enabled then
+          --   if client.supports_method("textDocument/inlayHint") then
+          --     local function toggle_inlay_hint(buf, value)
+          --       local ih = vim.lsp.buf.inlay_hint or vim.lsp.inlay_hint
+          --       if type(ih) == "function" then
+          --         ih(buf, value)
+          --       elseif type(ih) == "table" and ih.enable then
+          --         if value == nil then
+          --           value = not ih.is_enabled(buf)
+          --         end
+          --         ih.enable(value { bufnr = buf })
+          --       end
+          --     end
+          --
+          --     toggle_inlay_hint(buffer, true)
+          --     map("n", "<leader>ch", function()
+          --       toggle_inlay_hint(vim.api.nvim_get_current_buf())
+          --     end, "toggle inlay hints")
+          --   end
+          -- end
+
+
+          -- code lens
+          -- if opts.codelens.enabled and client.supports_method("textDocument/codeLens") then
+          --   vim.lsp.codelens.refresh()
+          -- end
         end,
       })
 
@@ -70,7 +169,7 @@ return {
       -- diagnostics
       vim.diagnostic.config(vim.deepcopy(opts.diagnostics))
 
-      local servers = {}
+      local servers = opts.servers
       local has_cmp, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
       local capabilities = vim.tbl_deep_extend(
         "force",

@@ -7,13 +7,19 @@ return {
       { "<leader>cm", "<cmd>Mason<cr>", desc = "Mason" }
     },
     build = ":MasonUpdate",
-    opts = {
-      ensure_installed = {
-        "stylua",
-        "shfmt",
-        -- "flake8",
-      },
-    },
+    opts = function()
+      if vim.g.use_mason_linter_formatter then
+        local ensure_installed = {
+          "stylua",
+          "shfmt",
+          -- "flake8",
+        }
+      end
+
+      return {
+        ensure_installed = ensure_installed or {},
+      }
+    end,
     ---@param opts MasonSettings | {ensure_installed: string[]}
     config = function(_, opts)
       require("mason").setup(opts)
