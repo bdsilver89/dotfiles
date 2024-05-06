@@ -20,6 +20,10 @@ return {
         enabled = vim.g.use_mason_lsp
       },
       {
+        "j-hui/fidget.nvim",
+        opts = {},
+      },
+      {
         "smjonas/inc-rename.nvim",
         opts = {},
       },
