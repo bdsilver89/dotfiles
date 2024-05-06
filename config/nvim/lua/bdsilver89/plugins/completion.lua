@@ -9,9 +9,10 @@ return {
       "hrsh7th/cmp-path",
       {
         "L3MON4D3/LuaSnip",
-        enabled = function()
-          return not vim.snippet
-        end,
+        -- TODO: disable luasnip for vim.snippets
+        -- enabled = function()
+        --   return not vim.snippet
+        -- end,
         build = vim.fn.has("win32") == 0
           and "echo 'NOTE: jsregexp is optional, so not a big deal if it fails to build\n'; make install_jsregexp"
           or nil,
@@ -54,55 +55,56 @@ return {
         end,
       },
     },
-    keys = function()
-      -- vim native snippet support
-      if vim.snippet then
-        return {
-          {
-            "<Tab>",
-            function()
-              if vim.snippet.jumpable(1) then
-                vim.schedule(function()
-                  vim.snippet.jump(1)
-                end)
-                return
-              end
-              return "<Tab>"
-            end,
-            expr = true,
-            silent = true,
-            mode = "i",
-          },
-          {
-            "<Tab>",
-            function()
-              vim.schedule(function()
-                vim.snippet.jump(1)
-              end)
-            end,
-            silent = true,
-            mode = "s",
-          },
-          {
-            "<S-Tab>",
-            function()
-              if vim.snippet.jumpable(-1) then
-                vim.schedule(function()
-                  vim.snippet.jump(-1)
-                end)
-                return
-              end
-              return "<S-Tab>"
-            end,
-            expr = true,
-            silent = true,
-            mode = { "i", "s" },
-          },
-        }
-      else
-        return {}
-      end
-    end,
+        -- TODO: enable vim.snippets
+    -- keys = function()
+    --   -- vim native snippet support
+    --   if vim.snippet then
+    --     return {
+    --       {
+    --         "<Tab>",
+    --         function()
+    --           if vim.snippet.jumpable(1) then
+    --             vim.schedule(function()
+    --               vim.snippet.jump(1)
+    --             end)
+    --             return
+    --           end
+    --           return "<Tab>"
+    --         end,
+    --         expr = true,
+    --         silent = true,
+    --         mode = "i",
+    --       },
+    --       {
+    --         "<Tab>",
+    --         function()
+    --           vim.schedule(function()
+    --             vim.snippet.jump(1)
+    --           end)
+    --         end,
+    --         silent = true,
+    --         mode = "s",
+    --       },
+    --       {
+    --         "<S-Tab>",
+    --         function()
+    --           if vim.snippet.jumpable(-1) then
+    --             vim.schedule(function()
+    --               vim.snippet.jump(-1)
+    --             end)
+    --             return
+    --           end
+    --           return "<S-Tab>"
+    --         end,
+    --         expr = true,
+    --         silent = true,
+    --         mode = { "i", "s" },
+    --       }
+    --     }
+    --   else
+    --     return {}
+    --   end
+    -- end,
     opts = function()
       local cmp = require("cmp")
       local defaults = require("cmp.config.default")()
@@ -124,50 +126,21 @@ return {
           end,
         },
         mapping = cmp.mapping.preset.insert({
-          ["<C-k>"] = cmp.mapping(cmp.mapping.select_prev_item(), { "i", "c" }),
-          ["<C-j>"] = cmp.mapping(cmp.mapping.select_next_item(), { "i", "c" }),
-          ["<Down>"] = cmp.mapping(cmp.mapping.select_next_item(), { "i", "c" }),
-          ["<Up>"] = cmp.mapping(cmp.mapping.select_prev_item(), { "i", "c" }),
-          ["<C-b>"] = cmp.mapping(cmp.mapping.scroll_docs(-1), { "i", "c" }),
-          ["<C-f>"] = cmp.mapping(cmp.mapping.scroll_docs(1), { "i", "c" }),
-          ["<C-Space>"] = cmp.mapping(cmp.mapping.complete(), { "i", "c" }),
-          ["<C-e>"] = cmp.mapping {
-            i = cmp.mapping.abort(),
-            c = cmp.mapping.close(),
-          },
-          -- Accept currently selected item. If none selected, `select` first item.
-          -- Set `select` to `false` to only confirm explicitly selected items.
-          ["<CR>"] = cmp.mapping.confirm { select = true },
-          ["<Tab>"] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-              cmp.select_next_item()
-            elseif luasnip.expandable() then
-              luasnip.expand()
-            elseif luasnip.expand_or_jumpable() then
-              luasnip.expand_or_jump()
-            elseif check_backspace() then
-              fallback()
-              -- require("neotab").tabout()
-            else
-              fallback()
-              -- require("neotab").tabout()
-            end
-          end, {
-            "i",
-            "s",
-          }),
-          ["<S-Tab>"] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-              cmp.select_prev_item()
-            elseif luasnip.jumpable(-1) then
-              luasnip.jump(-1)
-            else
-              fallback()
-            end
-          end, {
-            "i",
-            "s",
-          }),
+          ["<C-n>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
+          ["<C-p>"] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
+          ["<C-b>"] = cmp.mapping.scroll_docs(-4),
+          ["<C-f>"] = cmp.mapping.scroll_docs(4),
+          ["<C-Space>"] = cmp.mapping.complete(),
+          ["<C-e>"] = cmp.mapping.abort(),
+          ["<CR>"] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+          ["<S-CR>"] = cmp.mapping.confirm({
+            behavior = cmp.ConfirmBehavior.Replace,
+            select = true,
+          }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+          ["<C-CR>"] = function(fallback)
+            cmp.abort()
+            fallback()
+          end,
         }),
         sources = cmp.config.sources({
           { name = "cmp_lsp" },
