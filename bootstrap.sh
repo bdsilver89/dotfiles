@@ -24,6 +24,10 @@ info() {
 	log "$*"
 }
 
+status() {
+	log_status "$*"
+}
+
 success() {
 	log_info "$*"
 }
@@ -69,21 +73,21 @@ link_file() {
 
 	if [ "$overwrite" == "true" ]; then
 		rm -rf "$dst"
-		info "Overwriting $dst"
+		status "Overwriting $dst"
 	fi
 
 	if [ "$backup" == "true" ]; then
 		mv "$dst" "${dst}.backup"
-		info "Backing up $dst"
+		status "Backing up $dst"
 	fi
 
 	if [ "$skip" == "true" ]; then
-		success "Skipping $dst"
+		log "Skipping $dst"
 	fi
 
 	if [ "$skip" != "true" ]; then
 		ln -s "$src" "$dst"
-		success "Linked $src to $dst"
+		status "Linked $src to $dst"
 	fi
 }
 

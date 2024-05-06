@@ -37,6 +37,10 @@ log_info() {
 	log "${LOG_COLOR_GREEN}$*${LOG_COLOR_DEFAULT}"
 }
 
+log_status() {
+	log "${LOG_COLOR_BLUE}$*${LOG_COLOR_DEFAULT}"
+}
+
 log_success() {
 	log "${LOG_COLOR_GREEN}\nSuccess${LOG_COLOR_DEFAULT}!"
 }

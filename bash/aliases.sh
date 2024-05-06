@@ -35,6 +35,46 @@ else
 fi
 alias zx cx
 
+# sometimes bat is installed as batcat
+if [ -x "$(command -v batcat)" ]; then
+	alias bat="batcat"
+fi
+
+# -----------------------------------------------------------------------------
+# FZF setup
+# -----------------------------------------------------------------------------
+if [ -x "$(command -v fzf)" ]; then
+	eval $(fzf "--$(basename $SHELL)")
+	
+	# export FZF_DEFAULT_OPTS=""
+	
+	# if [ -x "$(command -v fd)" ]; then
+	# fi
+	
+	# if [ -x "$(command -v bat)" ]; then
+	# fi
+
+	# if [ -x "$(command -v eza)" ]; then
+	# elif [ -x "$(command -v exa)" ]; then
+	# fi
+	
+	# fzf completion
+	export FZF_COMPLETION_TRIGGER='~~'
+	export FZF_COMPLETION_OPTS="--border --info=inline"
+
+	_fzf_comprun() {
+		local command=$1
+		shift
+		
+		case "$command" in
+			cd)           fzf --preview 'tree -C {} | head -200'   "$@" ;;
+			export|unset) fzf --preview "eval 'echo \$'{}"         "$@" ;;
+			ssh)          fzf --preview 'dig {}'                   "$@" ;;
+			*)            fzf --preview 'bat -n --color=always {}' "$@" ;;
+		esac
+	}
+fi
+
 # -----------------------------------------------------------------------------
 # Git aliases (inspired by oh-my-zsh git plugin)
 # -----------------------------------------------------------------------------
