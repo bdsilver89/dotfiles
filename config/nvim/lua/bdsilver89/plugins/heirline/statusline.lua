@@ -240,7 +240,7 @@ function M.codeium()
     end,
     provider = function()
       local icon = Utils.ui.get_icon("kinds", "Codeium")
-      return icon .. "[Codeium]"
+      return icon .. "[Codeium] "
     end,
     hl = { fg = "gray", bold = true },
   }
