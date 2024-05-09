@@ -152,8 +152,15 @@ return {
         --     border = "rounded",
         --   }),
         -- },
-        -- TODO: custom icons
-        -- formatting = {}
+        formatting = {
+          format = function(_, item)
+            local icons = require("bdsilver89.utils").ui.get_icon_group("kinds")
+            if icons[item.kind] then
+              item.kind = icons[item.kind] .. item.kind
+            end
+            return item
+          end,
+        },
         experimental = {
           ghost_text = {
             hl_group = "CmpGhostText",
@@ -177,6 +184,15 @@ return {
       local Kind = cmp.lsp.CompletionItemKind
       cmp.setup(opts)
       cmp.event:on("confirm_done", function(event)
+        if not vim.tbl_contains(opts.auto_brackets or {}, vim.bo.filetype) then
+          return
+        end
+        local entry = event.entry
+        local item = entry:get_completion_item()
+        if vim.tbl_contains({ Kind.Function, Kind.Method }, item.kind) then
+          local keys = vim.api.nvim_replace_termcodes("()<left>", false, false, true)
+          vim.api.nvim_feedkeys(keys, "i", true)
+        end
       end)
     end,
   }
