@@ -1,4 +1,5 @@
 local Conditions = require("heirline.conditions")
+local Common = require("bdsilver89.plugins.heirline.common")
 
 local M = {}
 
@@ -83,6 +84,31 @@ local function get_gitsigns(bufnr, lnum)
   return signs
 end
 
+function M.signs()
+  return {
+    init = function(self)
+      self.sign = get_signs(self.bufnr, vim.v.lnum)[1]
+    end,
+    provider = function(self)
+      return self.sign and self.sign.text or ""
+    end,
+    hl = function(self)
+      return self.sign and self.sign.texthl
+    end,
+    on_click = {
+      name = "sc_sign_click",
+      update = true,
+      callback = function(self, ...)
+        local line = self.click_args(self, ...).mousepos.line
+        local sign = get_signs(self.bufnr, line)[1]
+        if sign then
+          self:resolve(sign.name)
+        end
+      end,
+    },
+  }
+end
+
 function M.numbercolumn()
   return {
     provider = "%=%4{v:virtnum ? '' : &nu ? (&rnu && v:relnum ? v:relnum : v:lnum) . ' ' : ''}",
@@ -118,7 +144,7 @@ function M.gitsign()
       condition = function()
         return not Conditions.is_git_repo()
       end,
-      provider = " "
+      Common.space(),
     },
   }
 end
@@ -145,10 +171,8 @@ function M.setup()
         },
       })
     end,
-    -- M.sign(),
-    {
-      provider = "%=",
-    },
+    M.signs(),
+    Common.align(),
     M.numbercolumn(),
     -- M.fold(),
     M.gitsign(),

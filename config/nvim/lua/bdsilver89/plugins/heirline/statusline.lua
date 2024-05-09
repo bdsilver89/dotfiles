@@ -1,20 +1,9 @@
 local Conditions = require("heirline.conditions")
 local HUtils = require("heirline.utils")
 local Utils = require("bdsilver89.utils")
+local Common = require("bdsilver89.plugins.heirline.common")
 
 local M = {}
-
-function M.align()
-  return {
-    provider = "%="
-  }
-end
-
-function M.space()
-  return {
-    provider = " "
-  }
-end
 
 function M.vi_mode()
   return {
@@ -88,87 +77,6 @@ function M.vi_mode()
         vim.cmd.redrawstatus()
       end),
     },
-  }
-end
-
-function M.fileicon()
-  return {
-    init = function(self)
-      local has_devicons, devicons = pcall(require, "nvim-web-devicons")
-      self.has_devicons = has_devicons
-      local filename = self.filename
-      local extension = vim.fn.fnamemodify(filename, ":e")
-      if has_devicons then
-        self.icon, self.icon_color = devicons.get_icon_color(filename, extension, { default = true })
-      end
-    end,
-    condition = function()
-      local has_devicons, devicons = pcall(require, "nvim-web-devicons")
-      return has_devicons
-    end,
-    provider = function(self)
-      return self.icon and (self.icon .. " ")
-    end,
-    hl = function(self)
-      if self.icon_color then
-        return { fg = self.icon_color }
-      end
-      return ""
-    end,
-  }
-end
-
-function M.filename()
-  return {
-    provider = function(self)
-      local filename = vim.fn.fnamemodify(self.filename, ":.")
-      if filename == "" then
-        return "[No Name]"
-      end
-      if not Conditions.width_percent_below(#filename, 0.25) then
-        filename = vim.fn.pathshorten(filename)
-      end
-      return filename
-    end,
-    hl = function()
-      if vim.bo.modified then
-        return { fg = HUtils.get_highlight("Directory").fg }
-      else
-        return { fg = HUtils.get_highlight("Directory").fg }
-      end
-    end,
-  }
-end
-
-function M.fileflags()
-  return {
-    {
-      condition = function()
-        return vim.bo.modified
-      end,
-      provider = Utils.ui.get_icon("misc", "Modified"),
-      hl = { fg = "green" }
-    },
-    {
-      condition = function()
-        return not vim.bo.modifiable or vim.bo.readonly
-      end,
-      provider = Utils.ui.get_icon("misc", "Readonly"),
-      hl = { fg = "orange" },
-    },
-  }
-end
-
-function M.filenameblock()
-  return {
-    init = function(self)
-      self.filename = vim.api.nvim_buf_get_name(0)
-    end,
-    M.fileicon(),
-    M.filename(),
-    M.space(),
-    M.fileflags(),
-    { provider = "%<" },
   }
 end
 
@@ -362,7 +270,6 @@ end
 function M.ruler()
   return {
     {
-      -- provider = "%7(%3l/%3L%):%2c %P",
       provider = function()
         local padding_str = ("%%%dd:%%-%dd"):format(3, 2)
         local line = vim.fn.line "."
@@ -370,7 +277,6 @@ function M.ruler()
         return padding_str:format(line, char)
       end,
     },
-    M.space(),
     {
       provider = function()
         local text = "%2p%%"
@@ -397,14 +303,14 @@ function M.scrollbar()
       local i = math.floor((curr_line - 1) / lines * #self.sbar) + 1
       return string.rep(self.sbar[i], 2)
     end,
-    hl = { fg = "blue", bg = "bright_bg" },
+    hl = { fg = "orange", bg = "bright_bg" },
   }
 end
 
 function M.nav()
   return {
     M.ruler(),
-    M.space(),
+    Common.space(),
     M.scrollbar(),
   }
 end
@@ -418,7 +324,7 @@ function M.special_statusline()
       })
     end,
     M.filetype(),
-    M.space(),
+    Common.space(),
     {
       condition = function()
         return vim.bo.filetype == "help"
@@ -429,7 +335,7 @@ function M.special_statusline()
       end,
       hl = { fg = "blue" },
     },
-    M.align(),
+    Common.align(),
   }
 end
 
@@ -443,18 +349,12 @@ function M.terminal_statusline()
     {
       condition = Conditions.is_active,
       M.vi_mode(),
-      M.space(),
+      Common.space(),
     },
     -- TODO: Filetype
     -- TODO: space
-    {
-      provider = function()
-        local tname, _ = vim.api.nvim_buf_get_name(0):gsub(".*:", "")
-        return Utils.ui.get_icon("misc", "Terminal") .. tname
-      end,
-      hl = { fg = "blue", bold = true },
-    },
-    M.align(),
+    Common.terminal_name(),
+    Common.align(),
   }
 
 end
@@ -462,43 +362,43 @@ function M.inactive_statusline()
   return {
     condition = Conditions.is_not_active,
     M.filetype(),
-    M.space(),
-    M.filename(),
-    M.align(),
+    Common.space(),
+    Common.filename(),
+    Common.align(),
   }
 end
 
 function M.default_statusline()
   return {
     M.vi_mode(),
-    M.space(),
+    Common.space(),
     M.git_branch(),
-    M.space(),
-    M.filenameblock(),
-    M.space(),
+    Common.space(),
+    Common.filenameblock(),
+    -- Common.space(),
     M.git_diff(),
-    M.align(),
+    Common.align(),
     -- navic,
     -- dap
-    M.align(),
+    Common.align(),
     -- lsp active
-    -- M.space(),
+    -- Common.space(),
     -- lsp messages
-    -- M.space(),
+    -- Common.space(),
     -- ulttest
-    -- M.space(),
+    -- Common.space(),
     M.diagnostics(),
     M.cmd_info(),
     M.treesitter(),
     -- M.spell(),
-    M.space(),
+    Common.space(),
     {
       -- M.filetype(),
-      -- M.space(),
+      -- Common.space(),
       M.fileencoding(),
       M.fileformat(),
     },
-    M.space(),
+    Common.space(),
     M.nav(),
   }
 end

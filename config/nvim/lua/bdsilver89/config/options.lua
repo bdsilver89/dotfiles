@@ -41,7 +41,7 @@ vim.opt.scrolloff = 10
 vim.opt.shortmess:append("sI")
 vim.opt.showcmdloc = "statusline"
 vim.opt.showmode = false
-vim.opt.showtabline = 2
+-- vim.opt.showtabline = 2
 vim.opt.signcolumn = "yes"
 vim.opt.smartcase = true
 vim.opt.smartindent = true
