@@ -153,6 +153,48 @@ function M.setup()
   return {
     static = {
       bufnr = vim.api.nvim_win_get_buf(0),
+      click_args = function(self, minwid, clicks, button, mods)
+        local args = {
+          minwid = minwid,
+          clicks = clicks,
+          button = button,
+          mods = mods,
+          mousepos = vim.fn.getmousepos(),
+        }
+        local sign = vim.fn.screenstring(args.mousepos.screenrow, args.mousepos.screencol)
+        if sign == " " then
+          sign = vim.fn.screenstring(args.mousepos.screenrow, args.mousepos.screencol - 1)
+        end
+        -- args.sign = self.signs[sign]
+        vim.api.nvim_set_current_win(args.mousepos.winid)
+        vim.api.nvim_win_set_cursor(0, { args.mousepos.line, 0 })
+
+        return args
+      end,
+      resolve = function(self, name)
+        for pattern, callback in pairs(self.handlers.Signs) do
+          if name:match(pattern) then
+            return vim.defer_fn(callback, 100)
+          end
+        end
+      end,
+      handlers = {
+        GitSigns = function(self, args)
+          vim.defer_fn(function()
+            -- require("gitsigns").blame_line({ full = true })
+            require("gitsigns").preview_hunk_inline()
+          end, 100)
+        end,
+        -- ["GitSigns.*"] = function(args)
+        --   require("gitsigns").preview_hunk_inline()
+        -- end,
+        -- ["Dap.*"] = function(args)
+        --   require("dap").toggle_breakpoint()
+        -- end,
+        -- ["Diagnostic.*"] = function(args)
+        --   vim.diagnostic.open_float() -- { pos = args.mousepos.line - 1, relative = "mouse" })
+        -- end,
+      },
     },
     condition = function()
       return not Conditions.buffer_matches({
