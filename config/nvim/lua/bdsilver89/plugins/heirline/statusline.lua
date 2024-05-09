@@ -289,7 +289,7 @@ function M.ruler()
         local padding_str = ("%%%dd:%%-%dd"):format(3, 2)
         local line = vim.fn.line "."
         local char = vim.fn.virtcol "."
-        return padding_str:format(line, char)
+        return padding_str:format(line, char) .. " "
       end,
     },
     {
