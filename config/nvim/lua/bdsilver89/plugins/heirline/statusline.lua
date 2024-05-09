@@ -457,7 +457,7 @@ function M.default_statusline()
     -- M.space(),
     M.diagnostics(),
     M.treesitter(),
-    M.spell(),
+    -- M.spell(),
     M.space(),
     {
       -- M.filetype(),
