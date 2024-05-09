@@ -6,6 +6,7 @@ M.icons = {
     Settings = " ",
     Modified = "●",
     Readonly = "",
+    Terminal = " ",
   },
   separators = {
     LeftSlant = "",

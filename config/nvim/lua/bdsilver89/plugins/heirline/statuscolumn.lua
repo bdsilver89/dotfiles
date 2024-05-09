@@ -128,6 +128,23 @@ function M.setup()
     static = {
       bufnr = vim.api.nvim_win_get_buf(0),
     },
+    condition = function()
+      return not Conditions.buffer_matches({
+        buftype = {
+          "nofile",
+          "prompt",
+          "help",
+          "quickfix",
+          "terminal",
+        },
+        filetype = {
+          "harpoon",
+          "oil",
+          "lspinfo",
+          "toggleterm"
+        },
+      })
+    end,
     -- M.sign(),
     {
       provider = "%=",

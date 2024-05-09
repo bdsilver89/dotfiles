@@ -278,6 +278,38 @@ function M.diagnostics()
   }
 end
 
+function M.cmd_info()
+  return {
+    {
+      -- macro
+      condition = function()
+        return vim.fn.reg_recording() ~= ""
+      end,
+      provider = function()
+        return vim.fn.reg_recording() .. " "
+      end,
+      hl = { fg = "green", bold = true },
+      update = { "RecordingEnter", "RecordingLeave" },
+    },
+    {
+      -- search count
+      condition = function()
+        return vim.v.hlsearch ~= 0
+      end,
+      init = function(self)
+        local ok, search = pcall(vim.fn.searchcount)
+        if ok and search.total then
+          self.search = search
+        end
+      end,
+      provider = function(self)
+        local search = self.search
+        return string.format("[%d/%d]", search.current, math.min(search.total, search.maxcount)) .. " "
+      end,
+    },
+  }
+end
+
 function M.treesitter()
   return {
     condition = function(self)
@@ -418,7 +450,7 @@ function M.terminal_statusline()
     {
       provider = function()
         local tname, _ = vim.api.nvim_buf_get_name(0):gsub(".*:", "")
-        return tname
+        return Utils.ui.get_icon("misc", "Terminal") .. tname
       end,
       hl = { fg = "blue", bold = true },
     },
@@ -456,6 +488,7 @@ function M.default_statusline()
     -- ulttest
     -- M.space(),
     M.diagnostics(),
+    M.cmd_info(),
     M.treesitter(),
     -- M.spell(),
     M.space(),
