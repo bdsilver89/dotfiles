@@ -16,6 +16,8 @@ vim.g.use_mason_linter_formatter = true
 vim.g.enable_c_cpp_support = true
 vim.g.enable_lua_support = true
 
+vim.g.enable_codeium_support = false
+
 vim.opt.clipboard = "unnamedplus"
 vim.opt.cmdheight = 0
 vim.opt.completeopt = "menu,menuone,noselect"

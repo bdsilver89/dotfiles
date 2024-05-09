@@ -233,6 +233,19 @@ function M.lsp_active()
   }
 end
 
+function M.codeium()
+  return {
+    condition = function()
+      return vim.g.enable_codeium_support
+    end,
+    provider = function()
+      local icon = Utils.ui.get_icon("kinds", "Codeium")
+      return icon .. "[Codeium]"
+    end,
+    hl = { fg = "gray", bold = true },
+  }
+end
+
 function M.treesitter()
   return {
     condition = function(self)
@@ -405,6 +418,7 @@ function M.default_statusline()
     M.diagnostics(),
     M.cmd_info(),
     M.lsp_active(),
+    M.codeium(),
     M.treesitter(),
     -- M.spell(),
     Common.space(),

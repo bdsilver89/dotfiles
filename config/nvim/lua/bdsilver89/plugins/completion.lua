@@ -54,6 +54,13 @@ return {
           require("luasnip.loaders.from_vscode").lazy_load()
         end,
       },
+      {
+        "Exafunction/codeium.nvim",
+        enabled = vim.g.enable_codeium_support,
+        cmd = "Codeium",
+        build = ":Codeium Auth",
+        opts = {}
+      },
     },
         -- TODO: enable vim.snippets
     -- keys = function()
@@ -171,6 +178,14 @@ return {
 
       if not vim.snippet then
         table.insert(opts.sources, { name = "luasnip" })
+      end
+
+      if vim.g.enable_codeium_support then
+        table.insert(opts.sources, 1, {
+          name = "codeium",
+          group_index = 1,
+          priority = 100,
+        })
       end
 
       return opts
