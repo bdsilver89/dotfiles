@@ -72,15 +72,15 @@ end
 -- folding
 vim.opt.foldlevel = 99
 
-if vim.fn.has("nvim-0.9") == 1 then
-  vim.opt.foldtext = "v:lua.require'bdsilver89.utils'.folds.foldtext()"
-end
+-- if vim.fn.has("nvim-0.9") == 1 then
+--   vim.opt.foldtext = "v:lua.require'bdsilver89.utils'.folds.foldtext()"
+-- end
 
 if vim.fn.has("nvim-0.10") == 1 then
-  vim.opt.foldmethod = "expr"
-  vim.opt.foldexpr = "v:lua.require'bdsilver89.utils'.folds.foldexpr()"
-  vim.opt.foldtext = ""
-  vim.opt.fillchars = "fold: "
-else
+--   vim.opt.foldmethod = "expr"
+--   -- vim.opt.foldexpr = "v:lua.require'bdsilver89.utils'.folds.foldexpr()"
+--   vim.opt.foldtext = ""
+--   vim.opt.fillchars = "fold: "
+-- else
   vim.opt.foldmethod = "indent"
 end
