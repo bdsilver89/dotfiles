@@ -147,6 +147,11 @@ return {
           { name = "path" },
           { name = "buffer" },
         }),
+        -- window = {
+        --   completion = cmp.config.window.bordered({
+        --     border = "rounded",
+        --   }),
+        -- },
         -- TODO: custom icons
         -- formatting = {}
         experimental = {

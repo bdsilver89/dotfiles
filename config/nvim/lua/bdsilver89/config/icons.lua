@@ -4,8 +4,8 @@ M.icons = {
   misc = {
     Dots = "󰇘",
     Settings = " ",
-    Modified = "●",
-    Readonly = "",
+    Modified = "● ",
+    Readonly = " ",
     Terminal = " ",
   },
   separators = {

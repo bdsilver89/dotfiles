@@ -218,6 +218,21 @@ function M.cmd_info()
   }
 end
 
+function M.lsp_active()
+  return {
+    condition = Conditions.lsp_attached,
+    provider = function()
+      local names = {}
+      for _, server in pairs(vim.lsp.get_active_clients({ bufnr = 0 })) do
+        table.insert(names, server.name)
+      end
+      local icon = Utils.ui.get_icon("misc", "Settings")
+      return  icon .. "[" .. table.concat(names, " ") .. "] "
+    end,
+    hl = { fg = "gray", bold = true },
+  }
+end
+
 function M.treesitter()
   return {
     condition = function(self)
@@ -389,6 +404,7 @@ function M.default_statusline()
     -- Common.space(),
     M.diagnostics(),
     M.cmd_info(),
+    M.lsp_active(),
     M.treesitter(),
     -- M.spell(),
     Common.space(),
