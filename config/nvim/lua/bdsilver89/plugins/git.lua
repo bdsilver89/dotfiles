@@ -4,6 +4,11 @@ return {
     "tpope/vim-fugitive",
     lazy = false,
     enabled = vim.fn.executable("git") == 1,
+    keys = {
+      { "<leader>gm", "<cmd>Git<cr>", desc = "Status" },
+      { "<leader>gb", "<cmd>Git blame<cr>", desc = "Blame" },
+      { "<leader>gc", "<cmd>Git commit<cr>", desc = "Commit" },
+    }
   },
 
   {
