@@ -1,6 +1,16 @@
 local M = {}
 
 M.icons = {
+  misc = {
+    Dots = "󰇘",
+    Settings = " ",
+    Modified = "●",
+    Readonly = "",
+  },
+  separators = {
+    LeftSlant = "",
+    RightSlant = "",
+  },
   dap = {
     Stopped = { "󰁕 ", "DiagnosticWarn", "DapStoppedLine" },
     Breakpoint = " ",
@@ -18,6 +28,7 @@ M.icons = {
     Added = " ",
     Changed = " ",
     Removed = " ",
+    Branch = " ",
   },
   gitsigns = {
     Add = "▎",
@@ -34,6 +45,9 @@ M.icons = {
 }
 
 M.text_icons = {
+  misc = {
+    Modified = "[+]",
+  },
   dap = {
     Stopped = { ">", "DiagnosticWarn", "DapStoppedLine" },
     Breakpoint = "B",

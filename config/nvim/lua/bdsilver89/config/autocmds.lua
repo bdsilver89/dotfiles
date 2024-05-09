@@ -31,6 +31,8 @@ vim.api.nvim_create_autocmd("FileType", {
   group = vim.api.nvim_create_augroup("config_close_with_q", { clear = true }),
   pattern = {
     "checkhealth",
+    "fugitive",
+    "fugitiveblame",
     "help",
     "lspinfo",
     "man",

@@ -14,6 +14,16 @@ return {
     },
     opts = {
       sources = { "filesystem", "buffers", "git_status", "document_symbols" },
+      source_selector = {
+        winbar = true,
+        content_layout = "center",
+        sources = {
+          { source = "filesystem" },
+          { source = "buffers" },
+          { source = "git_status" },
+          { source = "diagnostics" },
+        },
+      },
       open_files_do_not_replace_types = { "terminal", "Trouble", "trouble", "qf", "Outline" },
       filesystem = {
         bind_to_cwd = false,

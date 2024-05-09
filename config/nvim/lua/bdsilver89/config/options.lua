@@ -1,6 +1,8 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
+vim.g.markdown_recommended_style = 0
+
 -- set to 'true' when nerd font icons should be used, otherwise uses text icons
 vim.g.icons_enabled = true
 
@@ -37,7 +39,9 @@ vim.opt.pumheight = 10
 vim.opt.relativenumber = true
 vim.opt.scrolloff = 10
 vim.opt.shortmess:append("sI")
+vim.opt.showcmdloc = "statusline"
 vim.opt.showmode = false
+vim.opt.showtabline = 2
 vim.opt.signcolumn = "yes"
 vim.opt.smartcase = true
 vim.opt.smartindent = true
@@ -52,6 +56,31 @@ vim.opt.undofile = true
 vim.opt.updatetime = 200
 vim.opt.virtualedit = "block"
 
+vim.opt.fillchars = {
+  foldopen = "",
+  foldclose = "",
+  fold = " ",
+  foldsep = " ",
+  diff = "╱",
+  eob = " ",
+}
+
 if vim.fn.has("nvim-0.10") == 1 then
   vim.opt.smoothscroll = true
+end
+
+-- folding
+vim.opt.foldlevel = 99
+
+if vim.fn.has("nvim-0.9") == 1 then
+  vim.opt.foldtext = "v:lua.require'bdsilver89.utils'.folds.foldtext()"
+end
+
+if vim.fn.has("nvim-0.10") == 1 then
+  vim.opt.foldmethod = "expr"
+  vim.opt.foldexpr = "v:lua.require'bdsilver89.utils'.folds.foldexpr()"
+  vim.opt.foldtext = ""
+  vim.opt.fillchars = "fold: "
+else
+  vim.opt.foldmethod = "indent"
 end
