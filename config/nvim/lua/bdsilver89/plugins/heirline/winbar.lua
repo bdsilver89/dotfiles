@@ -12,11 +12,7 @@ function M.terminal_winbar()
       })
     end,
     -- HUtils.surround({ "", "" }, HUtils.get_highlight("Tabline").fg, {
-    {
-      Common.filetype(),
-      Common.space(),
-      Common.terminal_name(),
-    }
+    Common.terminal_name(),
     -- }),
   }
 end
@@ -27,11 +23,9 @@ function M.inactive_winbar()
       return not Conditions.is_active()
     end,
     -- HUtils.surround({ "", "" }, HUtils.get_highlight("Tabline").fg, {
-    {
-      Common.filenameblock(),
-      hl = { fg = "gray", force = true },
-    }
+    Common.filenameblock(),
     -- }),
+    hl = { fg = "gray", force = true },
   }
 end
 

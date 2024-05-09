@@ -5,12 +5,12 @@ return {
     opts = function()
       return {
         opts = {
-          -- disable_winbar_cb = function(args)
-          --   return require("heirline.conditions").buffer_matches({
-          --     buftype = { "nofile", "prompt", "help", "quickfix", "terminal" },
-          --     filetype = { "alpha", "codecompanion", "oil", "lspinfo", "toggleterm" },
-          --   }, args.buf)
-          -- end,
+          disable_winbar_cb = function(args)
+            return require("heirline.conditions").buffer_matches({
+              buftype = { "nofile", "prompt", "help", "quickfix" },
+              filetype = { "alpha", "oil", "lspinfo"},
+            }, args.buf)
+          end,
         },
         statuscolumn = require("bdsilver89.plugins.heirline.statuscolumn").setup(),
         statusline = require("bdsilver89.plugins.heirline.statusline").setup(),
