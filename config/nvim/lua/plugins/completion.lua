@@ -44,15 +44,6 @@ return {
         }, {
           { name = "buffer" },
         }),
-        -- formatting = {
-        --   format = function(_, item)
-        --     local icons = require("lazyvim.config").icons.kinds
-        --     if icons[item.kind] then
-        --       item.kind = icons[item.kind] .. item.kind
-        --     end
-        --     return item
-        --   end,
-        -- },
         experimental = {
           ghost_text = {
             hl_group = "CmpGhostText",
@@ -103,7 +94,7 @@ return {
     "L3MON4D3/LuaSnip",
     build = (not vim.g.is_win)
         and "echo 'NOTE: jsregexp is optional, so not a big deal if it fails to build'; make install_jsregexp"
-      or nil,
+        or nil,
     dependencies = {
       {
         "rafamadriz/friendly-snippets",
@@ -137,9 +128,11 @@ return {
         function()
           return require("luasnip").jumpable(1) and "<Plug>luasnip-jump-next" or "<tab>"
         end,
-        expr = true, silent = true, mode = "i",
+        expr = true,
+        silent = true,
+        mode = "i",
       },
-      { "<tab>", function() require("luasnip").jump(1) end, mode = "s" },
+      { "<tab>",   function() require("luasnip").jump(1) end,  mode = "s" },
       { "<s-tab>", function() require("luasnip").jump(-1) end, mode = { "i", "s" } },
     },
   },

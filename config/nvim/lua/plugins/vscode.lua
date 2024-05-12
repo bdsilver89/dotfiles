@@ -6,8 +6,8 @@ local enabled = {
   "lazy.nvim",
   -- "mini.ai",
   "mini.comment",
-  -- "mini.pairs",
-  -- "mini.surround",
+  "mini.pairs",
+  "mini.surround",
   "nvim-treesitter",
   "nvim-treesitter-textobjects",
   "nvim-treesitter-commentstring",
@@ -15,9 +15,9 @@ local enabled = {
 
 local Config = require("lazy.core.config")
 Config.options.checker.enabled = false
-Config.options.change_detection = false
+Config.options.change_detection.enabled = false
 Config.options.defaults.cond = function(plugin)
-  return vim.tbl_conaints(enabled, plugin.name) or plugin.vscode
+  return vim.tbl_contains(enabled, plugin.name) or plugin.vscode
 end
 
 -- change vim.notify to vscode notifications

@@ -72,16 +72,16 @@ return {
     end,
     opts = function()
       local actions = require("telescope.actions")
-      -- local Utils = require(".utils")
+      -- local Utils = require("utils")
 
-      -- local function open_with_trouble(...)
-      --   -- return require("trouble.providers.telescope").open_with_trouble(...)
-      --   return require("trouble.sources.telescope").open(...)
-      -- end
-      -- local function open_selected_with_trouble(...)
-      --   return require("trouble.sources.telescope").open_selected(...)
-      --   -- return require("trouble.providers.telescope").open_selected_with_trouble(...)
-      -- end
+      local function open_with_trouble(...)
+        -- return require("trouble.providers.telescope").open_with_trouble(...)
+        return require("trouble.sources.telescope").open(...)
+      end
+      local function open_selected_with_trouble(...)
+        return require("trouble.sources.telescope").open_selected(...)
+        -- return require("trouble.providers.telescope").open_selected_with_trouble(...)
+      end
 
       return {
         defaults = {
@@ -92,9 +92,9 @@ return {
           layout_config = {
             horizontal = {
               prompt_position = "top",
-              vertical = {
-                mirror = false,
-              },
+            },
+            vertical = {
+              mirror = false,
             },
           },
           get_selection_window = function()
@@ -110,8 +110,8 @@ return {
           end,
           mappings = {
             i = {
-              -- ["<c-t>"] = open_with_trouble,
-              -- ["<a-t>"] = open_selected_with_trouble,
+              ["<c-t>"] = open_with_trouble,
+              ["<a-t>"] = open_selected_with_trouble,
               -- ["<a-i>"] = find_files_no_ignore,
               -- ["<a-h>"] = find_files_with_hidden,
               ["<C-Down>"] = actions.cycle_history_next,

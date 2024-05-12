@@ -13,9 +13,9 @@ return {
         function()
           vim.g.minipairs_disable = not vim.g.minipairs_disable
           if vim.g.minipairs_disable then
-            LazyVim.warn("Disabled auto pairs", { title = "Option" })
+            vim.notify("Disabled auto pairs", vim.log.levels.WARN, { title = "Option" })
           else
-            LazyVim.info("Enabled auto pairs", { title = "Option" })
+            vim.notify("Enabled auto pairs", vim.log.levels.INFO, { title = "Option" })
           end
         end,
         desc = "Toggle Auto Pairs",

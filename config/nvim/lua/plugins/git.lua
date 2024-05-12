@@ -9,10 +9,10 @@ return {
     },
     cmd = "Neogit",
     keys = {
-      { "<leader>gs", "<cmd>Neogit<cr>", desc = "Status" },
+      { "<leader>gs", "<cmd>Neogit<cr>",        desc = "Status" },
       { "<leader>gc", "<cmd>Neogit commit<cr>", desc = "Commit" },
-      { "<leader>gl", "<cmd>Neogit pull<cr>", desc = "Pull" },
-      { "<leader>gp", "<cmd>Neogit push<cr>", desc = "Push" },
+      { "<leader>gl", "<cmd>Neogit pull<cr>",   desc = "Pull" },
+      { "<leader>gp", "<cmd>Neogit push<cr>",   desc = "Push" },
     },
     opts = {},
   },
@@ -31,13 +31,13 @@ return {
     "lewis6991/gitsigns.nvim",
     event = { "BufReadPost", "BufNewFile" },
     opts = {
-      signs = {
-        add = { text = '+' },
-        change = { text = '~' },
-        delete = { text = '_' },
-        topdelete = { text = '‾' },
-        changedelete = { text = '~' },
-      },
+      -- signs = {
+      --   add = { text = '+' },
+      --   change = { text = '~' },
+      --   delete = { text = '_' },
+      --   topdelete = { text = '‾' },
+      --   changedelete = { text = '~' },
+      -- },
       current_line_blame = true,
       on_attach = function(buffer)
         local gs = package.loaded.gitsigns
@@ -48,7 +48,7 @@ return {
 
         map("n", "]c", function()
           if vim.wo.diff then
-            vim.cmd.normal({"]c", bang = true})
+            vim.cmd.normal({ "]c", bang = true })
           else
             gitsigns.next_hunk()
           end
@@ -56,7 +56,7 @@ return {
 
         map("n", "[c", function()
           if vim.wo.diff then
-            vim.cmd.normal({"[c", bang = true})
+            vim.cmd.normal({ "[c", bang = true })
           else
             gitsigns.prev_hunk()
           end

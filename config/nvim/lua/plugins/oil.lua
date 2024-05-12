@@ -6,7 +6,7 @@ return {
     },
     -- stylua: ignore
     keys = {
-      { "<leader>o", function() require("oil").open_float() end, desc = "File explorer (oil)" },
+      { "<leader>e", function() require("oil").open_float() end, desc = "File explorer (oil)" },
     },
     cmd = "Oil",
     opts = {
