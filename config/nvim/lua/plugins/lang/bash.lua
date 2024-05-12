@@ -15,4 +15,12 @@ return {
       end
     end,
   },
+  {
+    "stevearc/conform.nvim",
+    opts = {
+      formatters_by_fg = {
+        sh = { "shfmt" },
+      },
+    },
+  },
 }

@@ -16,6 +16,14 @@ return {
     end,
   },
   {
+    "stevearc/conform.nvim",
+    opts = {
+      formatters_by_fg = {
+        lua = { "stylua" },
+      },
+    },
+  },
+  {
     "neovim/nvim-lspconfig",
     opts = {
       servers = {
