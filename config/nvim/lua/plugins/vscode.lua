@@ -10,7 +10,7 @@ local enabled = {
   "mini.surround",
   "nvim-treesitter",
   "nvim-treesitter-textobjects",
-  "nvim-treesitter-commentstring",
+  "nvim-ts-context-commentstring",
 }
 
 local Config = require("lazy.core.config")
