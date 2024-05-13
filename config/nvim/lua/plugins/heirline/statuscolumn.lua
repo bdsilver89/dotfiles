@@ -1,3 +1,5 @@
+local Conditions = require("heirline.conditions")
+
 local M = {}
 
 -- local function get_signs(buf, lnum)
@@ -44,6 +46,12 @@ local M = {}
 
 function M.setup()
   return {
+    condition = function()
+      return not Conditions.buffer_matches({
+        buftype = { "nofile", "prompt", "help", "quickfix", "terminal" },
+        filetype = { "alpha", "harpoon", "oil", "lspinfo", "toggleterm" },
+      })
+    end,
     -- {
     --   init = function(self)
     --     self.signs = get_signs()
