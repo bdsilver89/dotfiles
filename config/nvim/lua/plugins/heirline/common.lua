@@ -106,7 +106,7 @@ function M.filename()
     flexible = 2,
     {
       provider = function(self)
-        return self.lfilename
+        return self.lfilename .. " "
       end,
     },
     {
@@ -126,6 +126,7 @@ function M.filenameblock()
     M.filename(),
     M.space(),
     M.fileflags(),
+    hl = { bg = "bg" },
   }
 end
 

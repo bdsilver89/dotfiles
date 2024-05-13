@@ -93,7 +93,7 @@ function M.git_branch()
       local icon = require("config.icons").get_icon("git", "Branch")
       return " " .. icon .. self.status_dict.head .. " "
     end,
-    hl = { bg = "bright_bg" }
+    hl = { fg = "gray", bg = "bright_bg" }
   }
 end
 
@@ -260,7 +260,7 @@ function M.treesitter()
     provider = function()
       return "TS "
     end,
-    hl = { fg = "green" },
+    hl = { fg = "green", bg = "bright_bg" },
   }
 end
 
@@ -341,7 +341,10 @@ function M.setup()
     {
       M.mode(true),
       M.git_branch(),
-      Common.space(),
+      {
+        Common.space(),
+        hl = { bg = "bg" },
+      },
       Common.filenameblock(),
       -- file info
       M.git_diff(),
@@ -352,12 +355,16 @@ function M.setup()
       M.diagnostics(),
       M.lsp_active(),
       M.treesitter(),
-      Common.fileencoding(),
-      Common.fileformat(),
+      {
+        Common.fileencoding(),
+        Common.fileformat(),
+        hl = { fg = "gray" },
+      },
       M.nav(),
       Common.space(),
       M.mode(false),
     },
+    hl = { bg = "bg" },
   }
 end
 
