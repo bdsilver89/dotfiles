@@ -35,7 +35,7 @@ function M.fileencoding()
   return {
     provider = function()
       local enc = (vim.bo.fenc ~= "" and vim.bo.fenc) or vim.o.enc
-      return enc:upper()
+      return enc:upper() .. " "
     end,
   }
 end
@@ -63,7 +63,7 @@ function M.fileformat()
   return {
     provider = function()
       local fmt = vim.bo.fileformat
-      return fmt:upper()
+      return fmt:upper() .. " "
     end,
   }
 end

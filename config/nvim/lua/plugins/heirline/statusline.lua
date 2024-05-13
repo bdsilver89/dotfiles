@@ -352,6 +352,8 @@ function M.setup()
       M.diagnostics(),
       M.lsp_active(),
       M.treesitter(),
+      Common.fileencoding(),
+      Common.fileformat(),
       M.nav(),
       Common.space(),
       M.mode(false),
