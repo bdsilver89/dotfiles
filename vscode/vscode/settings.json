@@ -1,0 +1,7 @@
+{
+	"editor.fontLigatures": true,
+	"editor.lineNumbers": "relative",
+	"editor.minimap.enabled": false,
+	"window.zoomLevel": 1,
+	"workbench.settings.editor": "json"
+}
