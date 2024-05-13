@@ -40,6 +40,11 @@ if [ -x "$(command -v batcat)" ]; then
 	alias bat="batcat"
 fi
 
+# sometimes fd is installed as fdfind
+if [ -x "$(command -v fdfind)" ]; then
+	alias fd="fdfind"
+fi
+
 # -----------------------------------------------------------------------------
 # FZF setup
 # -----------------------------------------------------------------------------
