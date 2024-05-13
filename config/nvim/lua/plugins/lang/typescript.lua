@@ -57,45 +57,45 @@ return {
       },
     },
   },
-  {
-    "mfussenegger/nvim-dap",
-    opts = function()
-      local dap = require("dap")
-      if not dap.adapters["pwa-node"] then
-        require("dap").adapters["pwa-node"] = {
-          type = "server",
-          host = "localhost",
-          port = "${port}",
-          executable = {
-            command = "node",
-            args = {
-              require("mason-registry").get_package("js-debug-adapter"):get_install_path()
-              .. "/js-debug/src/dapDebugServer.js",
-              "${port}",
-            },
-          },
-        }
-      end
-      for _, lang in ipairs({ "typescript", "javascript", "typescriptreact", "javascriptreact" }) do
-        if not dap.configurations[lang] then
-          dap.configurations[lang] = {
-            {
-              type = "pwa-node",
-              request = "launch",
-              name = "Launch file",
-              program = "${file}",
-              cwd = "${workspaceFolder}",
-            },
-            {
-              type = "pwa-node",
-              request = "attach",
-              name = "Attach",
-              processId = require("dap.utils").pick_process,
-              cwd = "${workspaceFolder}",
-            },
-          }
-        end
-      end
-    end,
-  },
+  -- {
+  --   "mfussenegger/nvim-dap",
+  --   opts = function()
+  --     local dap = require("dap")
+  --     if not dap.adapters["pwa-node"] then
+  --       require("dap").adapters["pwa-node"] = {
+  --         type = "server",
+  --         host = "localhost",
+  --         port = "${port}",
+  --         executable = {
+  --           command = "node",
+  --           args = {
+  --             require("mason-registry").get_package("js-debug-adapter"):get_install_path()
+  --             .. "/js-debug/src/dapDebugServer.js",
+  --             "${port}",
+  --           },
+  --         },
+  --       }
+  --     end
+  --     for _, lang in ipairs({ "typescript", "javascript", "typescriptreact", "javascriptreact" }) do
+  --       if not dap.configurations[lang] then
+  --         dap.configurations[lang] = {
+  --           {
+  --             type = "pwa-node",
+  --             request = "launch",
+  --             name = "Launch file",
+  --             program = "${file}",
+  --             cwd = "${workspaceFolder}",
+  --           },
+  --           {
+  --             type = "pwa-node",
+  --             request = "attach",
+  --             name = "Attach",
+  --             processId = require("dap.utils").pick_process,
+  --             cwd = "${workspaceFolder}",
+  --           },
+  --         }
+  --       end
+  --     end
+  --   end,
+  -- },
 }
