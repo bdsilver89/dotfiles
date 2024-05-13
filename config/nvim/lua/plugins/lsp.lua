@@ -18,7 +18,7 @@ return {
       "williamboman/mason.nvim",
       {
         "williamboman/mason-lspconfig.nvim",
-        enabled = vim.g.use_mason_lsp,
+        enabled = vim.g.enable_mason_packages,
       },
       {
         "j-hui/fidget.nvim",
