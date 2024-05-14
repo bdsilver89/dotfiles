@@ -1,6 +1,3 @@
--------------------------------------------------------------------------------
--- user customizable flags
--------------------------------------------------------------------------------
 -- enable/disable use of nerdfont icons (will fall back on text icons)
 vim.g.enable_icons = true
 
@@ -34,11 +31,5 @@ vim.g.enable_mason_packages = true
 -- enable/disable codeium as an auto-completion option
 -- vim.g.enable_completion_codeium = false
 
--- map leader keys
-vim.g.mapleader = " "
-vim.g.maplocalleader = " "
-
--------------------------------------------------------------------------------
--- config load
--------------------------------------------------------------------------------
-require("config")
+-- bootstrap lazy.nvim, LazyVim and your plugins
+require("config.lazy")

@@ -1,83 +1,64 @@
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not vim.uv.fs_stat(lazypath) then
-  vim.fn.system({
-    "git",
-    "clone",
-    "--filter=blob:none",
-    "--branch=stable",
-    "https://github.com/folke/lazy.nvim.git",
-    lazypath,
-  })
+
+if not (vim.uv or vim.loop).fs_stat(lazypath) then
+  -- bootstrap lazy.nvim
+  -- stylua: ignore
+  vim.fn.system({ "git", "clone", "--filter=blob:none", "https://github.com/folke/lazy.nvim.git", "--branch=stable", lazypath })
 end
-vim.opt.rtp:prepend(lazypath)
+vim.opt.rtp:prepend(vim.env.LAZY or lazypath)
 
 require("lazy").setup({
   spec = {
-    -- base configuration
+    -- add LazyVim and import its plugins
+    { "LazyVim/LazyVim", import = "lazyvim.plugins" },
+    -- import any extras modules here
+    { import = "lazyvim.plugins.extras.dap.core" },
+    { import = "lazyvim.plugins.extras.editor.dial" },
+    { import = "lazyvim.plugins.extras.editor.harpoon2" },
+    { import = "lazyvim.plugins.extras.lang.ansible" },
+    { import = "lazyvim.plugins.extras.lang.clangd" },
+    { import = "lazyvim.plugins.extras.lang.cmake" },
+    { import = "lazyvim.plugins.extras.lang.docker" },
+    { import = "lazyvim.plugins.extras.lang.go" },
+    { import = "lazyvim.plugins.extras.lang.java" },
+    { import = "lazyvim.plugins.extras.lang.json" },
+    { import = "lazyvim.plugins.extras.lang.markdown" },
+    { import = "lazyvim.plugins.extras.lang.python" },
+    { import = "lazyvim.plugins.extras.lang.rust" },
+    { import = "lazyvim.plugins.extras.lang.tailwind" },
+    { import = "lazyvim.plugins.extras.lang.terraform" },
+    { import = "lazyvim.plugins.extras.lang.typescript" },
+    { import = "lazyvim.plugins.extras.lang.yaml" },
+    { import = "lazyvim.plugins.extras.linting.eslint" },
+    { import = "lazyvim.plugins.extras.test" },
+    { import = "lazyvim.plugins.extras.vscode" },
+    -- import/override with your plugins
     { import = "plugins" },
-
-    -- language modules
-    vim.g.enable_lang_ansible and { import = "plugins.lang.ansible" } or {},
-    vim.g.enable_lang_bash and { import = "plugins.lang.bash" } or {},
-    vim.g.enable_lang_c_cpp and { import = "plugins.lang.c_cpp" } or {},
-    vim.g.enable_lang_cmake and { import = "plugins.lang.cmake" } or {},
-    vim.g.enable_lang_docker and { import = "plugins.lang.docker" } or {},
-    vim.g.enable_lang_go and { import = "plugins.lang.go" } or {},
-    vim.g.enable_lang_java and { import = "plugins.lang.java" } or {},
-    vim.g.enable_lang_json and { import = "plugins.lang.json" } or {},
-    vim.g.enable_lang_lua and { import = "plugins.lang.lua" } or {},
-    vim.g.enable_lang_markdown and { import = "plugins.lang.markdown" } or {},
-    vim.g.enable_lang_python and { import = "plugins.lang.python" } or {},
-    vim.g.enable_lang_rust and { import = "plugins.lang.rust" } or {},
-    vim.g.enable_lang_tailwind and { import = "plugins.lang.tailwind" } or {},
-    vim.g.enable_lang_terraform and { import = "plugins.lang.terraform" } or {},
-    vim.g.enable_lang_typescript and { import = "plugins.lang.typescript" } or {},
-    vim.g.enable_lang_yaml and { import = "plugins.lang.yaml" } or {},
-    vim.g.enable_lang_zig and { import = "plugins.lang.zig" } or {},
-  },
-  checker = {
-    enabled = true,
   },
   defaults = {
+    -- By default, only LazyVim plugins will be lazy-loaded. Your custom plugins will load during startup.
+    -- If you know what you're doing, you can set this to `true` to have all your custom plugins lazy-loaded by default.
     lazy = false,
-    version = false,
+    -- It's recommended to leave version=false for now, since a lot the plugin that support versioning,
+    -- have outdated releases, which may break your Neovim install.
+    version = false, -- always use the latest git commit
+    -- version = "*", -- try installing the latest stable version for plugins that support semver
   },
-  change_detection = {
-    enabled = true,
-  },
+  install = { colorscheme = { "tokyonight", "habamax" } },
+  checker = { enabled = true }, -- automatically check for plugin updates
   performance = {
-    cache = {
-      enabled = true,
-    },
     rtp = {
+      -- disable some rtp plugins
       disabled_plugins = {
         "gzip",
-        "matchit",
-        "matchparen",
-        "netrwPlugin",
+        -- "matchit",
+        -- "matchparen",
+        -- "netrwPlugin",
         "tarPlugin",
         "tohtml",
         "tutor",
         "zipPlugin",
       },
-    },
-  },
-  ui = {
-    -- use unicode icons if no nerd icons are enabled
-    icons = vim.g.enable_icons and {} or {
-      cmd = "⌘",
-      config = "🛠",
-      event = "📅",
-      ft = "📂",
-      init = "⚙",
-      keys = "🗝",
-      plugin = "🔌",
-      runtime = "💻",
-      require = "🌙",
-      source = "📄",
-      start = "🚀",
-      task = "📌",
-      lazy = "💤 ",
     },
   },
 })
