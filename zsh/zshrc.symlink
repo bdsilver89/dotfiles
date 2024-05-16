@@ -143,6 +143,7 @@ zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 zstyle ':completion:*' list-colors '"${(s.:.)LS_COLORS}'
 zstyle ':completion:*' menu no
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
+zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 
 # aliases
 alias cl="clear"
@@ -164,13 +165,13 @@ else
 fi
 alias l="ls -lah"
 
-if [ -x "$(command -v zoxide)" ]; then
-  eval "$(zoxide init zsh)"
-fi
-
 if [ -x "$(command -v fzf)" ]; then
   # ubuntu runs an older version of fzf
   eval "$(fzf --zsh &>/dev/null)"
+fi
+
+if [ -x "$(command -v zoxide)" ]; then
+  eval "$(zoxide init zsh --cmd cd zsh)"
 fi
 
 # sometimes bat is installed as batcat
