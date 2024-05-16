@@ -20,9 +20,4 @@ setup_cmake() {
 setup_cpp() {
 	setup_vcpkg
 	setup_cmake
-
-	# default to llvm from homebrew over xcode
-	if [[ $(uname) = "Darwin" ]]; then
-		export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
-	fi
 }
