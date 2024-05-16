@@ -31,5 +31,8 @@ vim.g.enable_mason_packages = true
 -- enable/disable codeium as an auto-completion option
 -- vim.g.enable_completion_codeium = false
 
--- bootstrap lazy.nvim, LazyVim and your plugins
-require("config.lazy")
+vim.g.mapleader = " "
+vim.g.maplocalleader = " "
+
+-- bootstrap config
+require("config")

@@ -1,86 +1,42 @@
 return {
-  {
-    "LazyVim/LazyVim",
-    opts = {
-      colorscheme = "rose-pine",
-    },
-  },
-
-  -- navigate between nvim/vim and tmux panes easily
-  {
-    "christoomey/vim-tmux-navigator",
-    lazy = false,
-  },
-
-  -- editorconfig + shiftwidth/tabstop automatic setting
+  -- automatic shiftwidth/tabstop detection
   {
     "tpope/vim-sleuth",
     lazy = false,
   },
 
-  -- telescope
+  -- (neo)vim/tmux window/pane navigation
   {
-    "nvim-telescope/telescope.nvim",
+    "christoomey/vim-tmux-navigator",
+    lazy = false,
+  },
+
+  {
+    "folke/todo-comments.nvim",
+    event = "VeryLazy",
     opts = {
-      defaults = {
-        sorting_strategy = "ascending",
-        layout_config = {
-          prompt_position = "top",
-        },
-      },
+      signs = vim.g.enable_icons,
     },
   },
 
-  -- oil as primary file explorer
   {
-    "stevearc/oil.nvim",
-    dependencies = {
-      "nvim-tree/nvim-web-devicons",
-    },
-    -- stylua: ignore
-    keys = {
-      { "<leader>e", function() require("oil").open_float(LazyVim.root()) end, desc = "Explorer Oil (root)" },
-      { "<leader>E", function() require("oil").open_float() end, desc = "Explorer Oil (cwd)" },
-    },
-    cmd = "Oil",
-    opts = {
-      win_opts = {
-        signcolumn = "number",
-      },
-    },
-    init = function()
-      if vim.fn.argc(-1) == 1 then
-        local stat = vim.uv.fs_stat(vim.fn.argv(0))
-        if stat and stat.type == "directory" then
-          require("oil").open(vim.fn.argv(0))
-        end
-      end
+    "folke/which-key.nvim",
+    event = "VeryLazy",
+    config = function()
+      local wk = require("which-key")
+      wk.setup()
+
+      wk.register({
+        ["<leader><tab>"] = { name = "+tab" },
+        ["<leader>b"] = { name = "+buffer" },
+        ["<leader>c"] = { name = "+code" },
+        ["<leader>g"] = { name = "+git" },
+        ["<leader>m"] = { name = "+harpoon" },
+        ["<leader>q"] = { name = "+session" },
+        ["<leader>s"] = { name = "+search" },
+        ["<leader>t"] = { name = "+term" },
+        ["<leader>w"] = { name = "+window" },
+      })
     end,
-    config = true,
-  },
-
-  -- remove neo-tree keymaps that conflict with oil
-  {
-    "nvim-neo-tree/neo-tree.nvim",
-    keys = function(_, mappings)
-      return vim.tbl_filter(
-        ---@param mapping LazyKeysSpec
-        function(mapping)
-          if mapping[1] == "<leader>e" or mapping[1] == "<leader>E" then
-            return false
-          end
-          return true
-        end,
-        mappings
-      )
-    end,
-  },
-
-  -- undotree
-  {
-    "mbbill/undotree",
-    keys = {
-      { "<leader>u", "<cmd>UndotreeToggle<cr>", "Undotree" },
-    },
   },
 }
