@@ -180,6 +180,34 @@ setup_linux() {
 	fi
 }
 
+setup_zsh() {
+	title "Setting up zsh"
+
+	if [ ! -d "${HOME}/.oh-my-zsh" ]; then
+		git clone "https://github.com/ohmyzsh/ohmyzsh" "${HOME}/.oh-my-zsh"
+
+		if [ ! -d "${HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestions" ]; then
+			git clone "https://github.com/zsh-users/zsh-autosuggestions" "$HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions"
+		fi
+
+		if [ ! -d "${HOME}/.oh-my-zsh/custom/plugins/zsh-completions" ]; then
+			git clone "https://github.com/zsh-users/zsh-completions" "$HOME/.oh-my-zsh/custom/plugins/zsh-completions"
+		fi
+
+		if [ ! -d "${HOME}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting" ]; then
+			git clone "https://github.com/zsh-users/zsh-syntax-highlighting" "$HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting"
+		fi
+
+		if [ ! -d "${HOME}/.oh-my-zsh/custom/plugins/fzf-tab" ]; then
+			git clone "https://github.com/Aloxaf/fzf-tab" "$HOME/.oh-my-zsh/custom/plugins/fzf-tab"
+		fi
+
+		if [ ! -d "${HOME}/.oh-my-zsh/custom/thems/powerlevel10k" ]; then
+			git clone --depth 1 "https://github.com/romkatv/powerlevel10k" "$HOME/.oh-my-zsh/custom/themes/powerlevel10k"
+		fi
+	fi
+}
+
 setup_tmux() {
 	title "Setting up tmux"
 
@@ -205,6 +233,9 @@ main() {
 	symlinks)
 		setup_symlinks
 		;;
+	zsh)
+		setup_zsh
+		;;
 	tmux)
 		setup_tmux
 		;;
@@ -215,9 +246,10 @@ main() {
 		setup_homebrew
 		setup_linux
 		setup_tmux
+		setup_zsh
 		;;
 	*)
-		echo -e $"\nUsage: $(basename "$0") {all|git|mac|linux|symlinks|tmux|update}\n"
+		echo -e $"\nUsage: $(basename "$0") {all|git|mac|linux|symlinks|tmux|zsh|update}\n"
 		exit 1
 		;;
 	esac
