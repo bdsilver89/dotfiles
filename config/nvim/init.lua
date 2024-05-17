@@ -2,7 +2,7 @@
 vim.g.enable_icons = true
 
 -- enable/disable material icon pack (must also enable nerdfont icons to work)
-vim.g.enable_material_icons = true
+-- vim.g.enable_material_icons = true
 
 -- enable/disable specific language support
 vim.g.enable_lang_ansible = true

@@ -58,7 +58,7 @@ map("t", "<esc><esc>", "<c-\\><c-n>", { desc = "Enter normal mode" })
 --map("t", "<C-l>", "<cmd>wincmd l<cr>", { desc = "Go to right window" })
 
 -- Clear search with <esc>
-map({ "i", "n" }, "<esc>", "<cmd>noh<cr><esc>", { desc = "Escape and clear hlsearch" })
+map("n", "<esc>", "<cmd>nohlsearch<cr><esc>", { desc = "Clear hlsearch" })
 
 -- quit
 map("n", "<leader>qq", "<cmd>qa<cr>", { desc = "Quit all" })
