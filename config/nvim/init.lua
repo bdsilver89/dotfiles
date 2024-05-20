@@ -1,38 +1,19 @@
--- enable/disable use of nerdfont icons (will fall back on text icons)
-vim.g.enable_icons = true
+-- This file simply bootstraps the installation of Lazy.nvim and then calls other files for execution
+-- This file doesn't necessarily need to be touched, BE CAUTIOUS editing this file and proceed at your own risk.
+local lazypath = vim.env.LAZY or vim.fn.stdpath "data" .. "/lazy/lazy.nvim"
+if not (vim.env.LAZY or (vim.uv or vim.loop).fs_stat(lazypath)) then
+  -- stylua: ignore
+  vim.fn.system({ "git", "clone", "--filter=blob:none", "https://github.com/folke/lazy.nvim.git", "--branch=stable", lazypath })
+end
+vim.opt.rtp:prepend(lazypath)
 
--- enable/disable material icon pack (must also enable nerdfont icons to work)
--- vim.g.enable_material_icons = true
+-- validate that lazy is available
+if not pcall(require, "lazy") then
+  -- stylua: ignore
+  vim.api.nvim_echo({ { ("Unable to load lazy from: %s\n"):format(lazypath), "ErrorMsg" }, { "Press any key to exit...", "MoreMsg" } }, true, {})
+  vim.fn.getchar()
+  vim.cmd.quit()
+end
 
--- enable/disable specific language support
-vim.g.enable_lang_ansible = true
-vim.g.enable_lang_bash = true
-vim.g.enable_lang_c_cpp = true
-vim.g.enable_lang_cmake = true
-vim.g.enable_lang_docker = true
-vim.g.enable_lang_go = true
-vim.g.enable_lang_java = true
-vim.g.enable_lang_json = true
-vim.g.enable_lang_lua = true
-vim.g.enable_lang_markdown = true
-vim.g.enable_lang_python = true
-vim.g.enable_lang_rust = true
-vim.g.enable_lang_tailwind = true
-vim.g.enable_lang_terraform = true
-vim.g.enable_lang_typescript = true
-vim.g.enable_lang_yaml = true
-vim.g.enable_lang_zig = true
-
--- enable/disable mason as a package manager
--- disabling requires that tools (LSPs, debug adapters, formatters, linters)
--- are available in the system PATH
-vim.g.enable_mason_packages = true
-
--- enable/disable codeium as an auto-completion option
--- vim.g.enable_completion_codeium = false
-
-vim.g.mapleader = " "
-vim.g.maplocalleader = " "
-
--- bootstrap config
-require("config")
+require "lazy_setup"
+require "polish"

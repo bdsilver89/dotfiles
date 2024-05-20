@@ -7,13 +7,67 @@ return {
       "WhoIsSethDaniel/mason-tool-installer.nvim",
       { "j-hui/fidget.nvim",       opts = {} },
       { "folke/neodev.nvim",       opts = {} },
+
+      -- {
+      --   "p00f/clangd_extensions.nvim",
+      --   ft = { "c", "cpp", },
+      --   config = function()
+      --     require("clangd_extensions").setup(options)
+      --   end,
+      -- },
+      -- rust
+      {
+        "mrcjkb/rustaceanvim",
+        enabled = vim.g.enable_lang_rust,
+        version = "^4",
+        ft = { "rust" },
+        config = function()
+          local opts = {
+            server = {
+              on_attach = function(_, bufnr)
+                vim.keymap.set("n", "<leader>cR", function()
+                  vim.cmd.RustLsp("codeAction")
+                end, { desc = "LSP: Code action", buffer = bufnr })
+                vim.keymap.set("n", "<leader>dr", function()
+                  vim.cmd.RustLsp("codeAction")
+                end, { desc = "Rust debuggables", buffer = bufnr })
+              end,
+              default_settings = {
+                ["rust_analyzer"] = {
+                  cargo = {
+                    allFeatures = true,
+                    loadOutDirsFromCheck = true,
+                    buildScripts = {
+                      enable = true,
+                    },
+                  },
+                  checkOnSave = {
+                    allFeatures = true,
+                    command = "clippy",
+                    extraArgs = { "--no-deps" },
+                  },
+                  procMacro = {
+                    enable = true,
+                    ignored = {
+                      ["async-trait"] = { "async_trait" },
+                      ["napi-derive"] = { "napi" },
+                      ["async-recursion"] = { "async_recusrion" },
+                    },
+                  },
+                }
+              },
+            },
+          }
+          vim.g.rustaceanvim = vim.tbl_deep_extend("force", vim.g.rustaceanvim or {}, opts or {})
+        end,
+      },
     },
     config = function()
       vim.api.nvim_create_autocmd("LspAttach", {
         group = vim.api.nvim_create_augroup("config_lsp_attach", { clear = true }),
         callback = function(event)
           local function map(keys, func, desc)
-            vim.keymap.set("n", keys, func, { buffer = event.buf, desc = "LSP: " .. desc })
+            vim.keymap.set("n", keys, func, { buffer = event.buf, desc = desc })
           end
 
           map("gd", require("telescope.builtin").lsp_definitions, "Goto definition")
@@ -80,7 +134,41 @@ return {
       local servers = {
         bashls = {},
 
-        clangd = {},
+        clangd = {
+          keys = {
+            { "<leader>cR", "<cmd>ClangdSwitchSourceHeader<cr>", desc = "Switch Source/Header (C/C++)" },
+          },
+          root_dir = function(fname)
+            return require("lspconfig.util").root_pattern(
+              "Makefile",
+              "configure.ac",
+              "configure.in",
+              "config.h.in",
+              "meson.build",
+              "meson_options.txt",
+              "build.ninja"
+            )(fname) or require("lspconfig.util").root_pattern("compile_commands.json", "compile_flags.txt")(
+              fname
+            ) or require("lspconfig.util").find_git_ancestor(fname)
+          end,
+          capabilities = {
+            offsetEncoding = { "utf-16" },
+          },
+          cmd = {
+            "clangd",
+            "--background-index",
+            "--clang-tidy",
+            "--header-insertion=iwyu",
+            "--completion-style=detailed",
+            "--function-arg-placeholders",
+            "--fallback-style=llvm",
+          },
+          init_options = {
+            usePlaceholders = true,
+            completeUnimported = true,
+            clangdFileStatus = true,
+          },
+        },
 
         -- neocmakelsp = {},
 
@@ -95,6 +183,7 @@ return {
         -- But for many setups, the LSP (`tsserver`) will work just fine
         -- tsserver = {},
         --
+        -- taplo = {},
 
         lua_ls = {
           -- cmd = {...},
@@ -125,7 +214,8 @@ return {
         -- for you, so that they are available from within Neovim.
         local ensure_installed = vim.tbl_keys(servers or {})
         vim.list_extend(ensure_installed, {
-          'stylua', -- Used to format Lua code
+          "codelldb",
+          "stylua", -- Used to format Lua code
         })
         require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
