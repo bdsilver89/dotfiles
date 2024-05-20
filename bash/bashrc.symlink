@@ -1,10 +1,65 @@
-export DOTFILES_ROOT="$HOME/dotfiles"
+export EDITOR='nvim'
+export PATH="$HOME/.local/bin:$PATH"
+export DOTFILES_DIR=$HOME/dotfiles
 
-# load bash utils
-for file in $(find in "${DOTFILES_ROOT}/bash" -name "*.sh"); do
-  source $file
-done
+# eza/exa/ls
+if [ -x "$(command -v eza)" ]; then
+  # use eza
+  alias ls="eza --color=always --icons=always --git"
+  alias lt="eza --color=always --tree --level=2 --icons=always --long --git"
+elif [ -x "$(command -v exa)" ]; then
+  # use exa (deprecated, mostly for ubuntu)
+  alias ls="exa --color=always"
+  alias lt="exa --color=always --tree --level=2 --long"
+else
+  # fallback on ls
+  alias ls="ls --color=auto"
+fi
+alias l="ls -lah"
 
-setup_python
-setup_node
-setup_cpp
+if [ -x "$(command -v fzf)" ]; then
+  # ubuntu runs an older version of fzf
+  eval "$(fzf --zsh &>/dev/null)"
+fi
+
+if [ -x "$(command -v zoxide)" ]; then
+  eval "$(zoxide init zsh)"
+fi
+
+# sometimes bat is installed as batcat
+if [ -x "$(command -v batcat)" ]; then
+  alias bat="batcat"
+fi
+
+# sometimes fd is installed as fdfind
+if [ -x "$(command -v fdfind)" ]; then
+  alias fd="fdfind"
+fi
+
+# nvm
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
+
+# pyenv
+export PYENV_ROOT="$HOME/.pyenv"
+if [ -d $PYENV_ROOT ]; then
+  export PATH="$PYENV_ROOT/bin:$PATH"
+  if command -v pyenv 1>/dev/null 2>&1; then
+    eval "$(pyenv init --path)"
+    eval "$(pyenv init -)"
+  fi
+fi
+
+# cmake
+export CMAKE_COLOR_DIAGNOSTICS="ON"
+if [ -x "$(command -v ninja)" ]; then
+  export CMAKE_GENERATOR="Ninja"
+  export CONAN_CMAKE_GENERATOR="Ninja"
+fi
+
+# vcpkg
+export VCPKG_ROOT="$HOME/vcpkg"
+if [ -d $VCPKG_ROOT ]; then
+  export PATH="$VCPKG_ROOT:$PATH"
+fi
