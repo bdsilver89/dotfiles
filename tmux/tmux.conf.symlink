@@ -1,5 +1,5 @@
 set-option -g default-terminal 'screen-256color'
-set-option -g terminal-overrides ',xterm-256color:RGB'
+set-option -a terminal-overrides ',alacritty:RGB'
 
 # key bindings
 unbind C-b
