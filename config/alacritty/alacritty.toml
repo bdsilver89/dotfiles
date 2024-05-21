@@ -1,4 +1,4 @@
-import = ["~/.config/alacritty/rose-pine.toml"]
+import = ["~/.config/alacritty/catppuccin-mocha.toml"]
 
 [font]
 size = 16

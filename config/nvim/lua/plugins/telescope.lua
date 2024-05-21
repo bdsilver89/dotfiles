@@ -48,6 +48,15 @@ return {
           vertical = { mirror = false },
         },
       },
+      extensions = {
+        fzf = {},
+      },
     },
+    config = function(_, opts)
+      require("telescope").setup(opts)
+
+      pcall(require("telescope").load_extension, "notify")
+      pcall(require("telescope").load_extension, "fzf")
+    end,
   },
 }

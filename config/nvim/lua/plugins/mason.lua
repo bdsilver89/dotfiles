@@ -25,6 +25,9 @@ return {
         },
         opts = {
           ensure_installed = {},
+          ui = {
+            border = "rounded",
+          },
         },
       },
       {

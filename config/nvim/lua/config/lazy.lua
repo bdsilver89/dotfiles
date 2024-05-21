@@ -51,4 +51,23 @@ require("lazy").setup({
       },
     },
   },
+  ui = {
+    border = "rounded",
+    -- use unicode icons if no nerd icons are enabled
+    icons = vim.g.enable_icons and {} or {
+      cmd = "⌘",
+      config = "🛠",
+      event = "📅",
+      ft = "📂",
+      init = "⚙",
+      keys = "🗝",
+      plugin = "🔌",
+      runtime = "💻",
+      require = "🌙",
+      source = "📄",
+      start = "🚀",
+      task = "📌",
+      lazy = "💤 ",
+    },
+  },
 })

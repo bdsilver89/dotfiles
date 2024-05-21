@@ -16,6 +16,14 @@ opt.completeopt = "menu,menuone,noselect"
 opt.conceallevel = 2
 opt.confirm = true
 opt.cursorline = true
+opt.fillchars = {
+  fold = " ",
+  foldopen = vim.g.enable_icons and "" or "-",
+  foldclose = vim.g.enable_icons and "" or "+",
+  foldsep = " ",
+  diff = "╱",
+  eob = " ",
+}
 opt.foldcolumn = "1"
 opt.foldenable = true
 opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
@@ -32,9 +40,10 @@ opt.ignorecase = true
 opt.inccommand = "nosplit"
 opt.laststatus = 3
 opt.list = true
+opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
 opt.mouse = "a"
 opt.number = true
--- opt.pumblend = 10
+opt.pumblend = 10
 opt.pumheight = 10
 opt.relativenumber = true
 opt.shortmess:append({ s = true, I = true })
