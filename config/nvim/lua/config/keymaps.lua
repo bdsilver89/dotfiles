@@ -34,7 +34,7 @@ map("n", "<S-l>", "<cmd>bnext<cr>", { desc = "Next buffer" })
 map("n", "[b", "<cmd>bprevious<cr>", { desc = "Prev buffer" })
 map("n", "]b", "<cmd>bnext<cr>", { desc = "Next buffer" })
 map("n", "<leader>bb", "<cmd>e #<cr>", { desc = "Switch to other buffer" })
--- map("n", "<leader>bd", "<cmd>bdelete<cr>", { desc = "Close buffer" })
+map("n", "<leader>bd", "<cmd>bdelete<cr>", { desc = "Close buffer" })
 
 -- windows
 map("n", "<leader>ww", "<c-w>p", { desc = "Other window", remap = true })
@@ -65,4 +65,5 @@ map("n", "<leader>qq", "<cmd>qa<cr>", { desc = "Quit all" })
 
 -- lazy
 map("n", "<leader>l", "<cmd>Lazy<cr>", { desc = "Lazy" })
-map("n", "<leader>cm", "<cmd>Mason<cr>", { desc = "Mason" })
+
+map("n", "<leader>cd", vim.diagnostic.open_float, { desc = "Show diagnostic" })
