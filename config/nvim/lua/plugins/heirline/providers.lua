@@ -53,6 +53,19 @@ end
 
 ---@param opts? table
 ---@return function
+function M.gitsigncolumn(opts)
+  opts = vim.tbl_deep_extend("force", {
+    escape = false,
+  }, opts or {})
+  return function(self)
+    local text = vim.fn.strcharpart(self.text or "", 0, 1)
+    text = text .. string.rep(" ", 1 - vim.fn.strchars(text))
+    return text .. "%*"
+  end
+end
+
+---@param opts? table
+---@return function
 function M.numbercolumn(opts)
   opts = vim.tbl_deep_extend("force", {
     thousands = false,
@@ -83,6 +96,17 @@ function M.numbercolumn(opts)
       str = (rnum == 0 and not opts.culright and relnum) and cur .. "%=" or "%=" .. cur
     end
     return Utils.stylize(str, opts)
+  end
+end
+
+---@param opts? table
+---@return function
+function M.signcolumn(opts)
+  opts = vim.tbl_deep_extend("force", { escape = false }, opts or {})
+  return function(self)
+    local text = vim.fn.strcharpart(self.text or "", 0, 2)
+    text = text .. string.rep(" ", 2 - vim.fn.strchars(text))
+    return text .. "%*"
   end
 end
 
