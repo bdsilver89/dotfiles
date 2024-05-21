@@ -18,9 +18,18 @@ opt.confirm = true
 opt.cursorline = true
 opt.foldcolumn = "1"
 opt.foldenable = true
+opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+opt.foldmethod = "expr"
 opt.foldlevel = 99
 opt.foldlevelstart = 99
+opt.formatoptions = "jrcoqlnt"
+if vim.fn.executable("rg") == 1 then
+  opt.grepprg = "rg --vimgrep -uu"
+  opt.grepformat = "%f:%l:%c:%m"
+end
+opt.hlsearch = true
 opt.ignorecase = true
+opt.inccommand = "nosplit"
 opt.laststatus = 3
 opt.list = true
 opt.mouse = "a"

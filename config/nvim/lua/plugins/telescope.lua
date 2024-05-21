@@ -33,7 +33,7 @@ return {
       { "<leader>sD", "<cmd>Telescope diagnostics<cr>", desc = "Workspace diagnostics" },
       { "<leader>sg", "<cmd>Telescope live_grep<cr>", desc = "Grep" },
       { "<leader>sh", "<cmd>Telescope help_tags<cr>", desc = "Help pages" },
-      { "<leader>sH", "<cmd>Telescope Highlights<cr>", desc = "Highlights" },
+      { "<leader>sH", "<cmd>Telescope highlights<cr>", desc = "Highlights" },
       { "<leader>sk", "<cmd>Telescope keymaps<cr>", desc = "Keymaps" },
       { "<leader>sm", "<cmd>Telescope man_pages<cr>", desc = "Man pages" },
       { "<leader>so", "<cmd>Telescope vim_options<cr>", desc = "Options" },
@@ -44,7 +44,7 @@ return {
       defaults = {
         sorting_strategy = "ascending",
         layout_config = {
-          horizontal = { prompt_position = "top", },
+          horizontal = { prompt_position = "top" },
           vertical = { mirror = false },
         },
       },
