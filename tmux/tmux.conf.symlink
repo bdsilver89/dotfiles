@@ -41,24 +41,24 @@ set -g default-terminal "${TERM}"
 setw -g mode-keys vi
 
 # UI settings
-# set -g status-interval 3
-# set -g status-left "#[fg=blue,bold,bg=#1e1e2e]  #S   "
-# set -g status-right "#[fg=#b4befe,bold,bg=#1e1e2e]%a %Y-%m-%d 󱑒 %l:%M %p"
-# # set -ga status-right "#($HOME/.config/tmux/scripts/cal.sh)"
-# set -g status-justify left
-# set -g status-left-length 200
-# set -g status-right-length 200
-# set -g status-position top
-# set -g status-style 'bg=#1e1e2e' # transparent
-# set -g window-status-current-format '#[fg=magenta,bg=#1e1e2e] *#I #W'
-# set -g window-status-format '#[fg=gray,bg=#1e1e2e] #I #W'
-# set -g window-status-last-style 'fg=white,bg=black'
-# set -g default-terminal "${TERM}"
-# set -g message-command-style bg=default,fg=yellow
-# set -g message-style bg=default,fg=yellow
-# set -g mode-style bg=default,fg=yellow
-# set -g pane-active-border-style 'fg=magenta,bg=default'
-# set -g pane-border-style 'fg=brightblack,bg=default'
+set -g status-interval 3
+set -g status-left "#[fg=blue,bold,bg=#1e1e2e]  #S   "
+set -g status-right "#[fg=#b4befe,bold,bg=#1e1e2e]%a %Y-%m-%d 󱑒 %l:%M %p"
+# set -ga status-right "#($HOME/.config/tmux/scripts/cal.sh)"
+set -g status-justify left
+set -g status-left-length 200
+set -g status-right-length 200
+set -g status-position top
+set -g status-style 'bg=#1e1e2e' # transparent
+set -g window-status-current-format '#[fg=magenta,bg=#1e1e2e] *#I #W'
+set -g window-status-format '#[fg=gray,bg=#1e1e2e] #I #W'
+set -g window-status-last-style 'fg=white,bg=black'
+set -g default-terminal "${TERM}"
+set -g message-command-style bg=default,fg=yellow
+set -g message-style bg=default,fg=yellow
+set -g mode-style bg=default,fg=yellow
+set -g pane-active-border-style 'fg=magenta,bg=default'
+set -g pane-border-style 'fg=brightblack,bg=default'
 
 # plugins
 set -g @plugin 'tmux-plugins/tpm'
@@ -71,7 +71,7 @@ set -g @plugin 'christoomey/vim-tmux-navigator'
 # set -g @plugin 'sainnhe/tmux-fzf'
 # set -g @plugin 'wfxr/tmux-fzf/url'
 # set -g @plugin 'rose-pine/tmux'
-set -g @plugin 'catppuccin/tmux'
+# set -g @plugin 'catppuccin/tmux'
 # set -g @plugin 'omerxx/catppuccin-tmux'
 set -g @plugin 'omerxx/tmux-sessionx'
 
@@ -84,23 +84,23 @@ set -g @resurrect-strategy-nvim 'session'
 
 set -g @continuum-restore 'on'
 set -g @resurrect-strategy-nvim 'session'
-set -g @catppuccin_window_left_separator ""
-set -g @catppuccin_window_right_separator " "
-set -g @catppuccin_window_middle_separator " █"
-set -g @catppuccin_window_number_position "right"
-set -g @catppuccin_window_default_fill "number"
-set -g @catppuccin_window_default_text "#W"
-set -g @catppuccin_window_current_fill "number"
-set -g @catppuccin_window_current_text "#W#{?window_zoomed_flag,(),}"
-set -g @catppuccin_status_modules_right "directory date_time"
-set -g @catppuccin_status_modules_left "session"
-set -g @catppuccin_status_left_separator  " "
-set -g @catppuccin_status_right_separator " "
-set -g @catppuccin_status_right_separator_inverse "no"
-set -g @catppuccin_status_fill "icon"
-set -g @catppuccin_status_connect_separator "no"
-set -g @catppuccin_directory_text "#{b:pane_current_path}"
-# set -g @catppuccin_meetings_text "#($HOME/.config/tmux/scripts/cal.sh)"
-set -g @catppuccin_date_time_text "%H:%M"
+# set -g @catppuccin_window_left_separator ""
+# set -g @catppuccin_window_right_separator " "
+# set -g @catppuccin_window_middle_separator " █"
+# set -g @catppuccin_window_number_position "right"
+# set -g @catppuccin_window_default_fill "number"
+# set -g @catppuccin_window_default_text "#W"
+# set -g @catppuccin_window_current_fill "number"
+# set -g @catppuccin_window_current_text "#W#{?window_zoomed_flag,(),}"
+# set -g @catppuccin_status_modules_right "directory date_time"
+# set -g @catppuccin_status_modules_left "session"
+# set -g @catppuccin_status_left_separator  " "
+# set -g @catppuccin_status_right_separator " "
+# set -g @catppuccin_status_right_separator_inverse "no"
+# set -g @catppuccin_status_fill "icon"
+# set -g @catppuccin_status_connect_separator "no"
+# set -g @catppuccin_directory_text "#{b:pane_current_path}"
+# # set -g @catppuccin_meetings_text "#($HOME/.config/tmux/scripts/cal.sh)"
+# set -g @catppuccin_date_time_text "%H:%M"
 
 run '~/.tmux/plugins/tpm/tpm'

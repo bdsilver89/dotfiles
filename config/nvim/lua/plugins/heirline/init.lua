@@ -1,4 +1,17 @@
 return {
+  -- NOTE: temporary until heirline is sorted out...
+  {
+    "nvim-lualine/lualine.nvim",
+    event = "VeryLazy",
+    opts = {
+      options = {
+        icons_enabled = vim.g.enable_icons,
+        component_separators = "|",
+        section_separators = "",
+      },
+    },
+  },
+
   {
     "rebelot/heirline.nvim",
     event = "LazyFile",
@@ -28,9 +41,29 @@ return {
           Components.foldcolumn(),
           Components.gitsigncolumn(),
         },
-        -- statusline = {},
+        -- statusline = {
+        --   hl = { fg = "fg", bg = "bg" },
+        --   -- Components.mode(),
+        --   -- Components.git_branch(),
+        --   -- Components.file_info(),
+        --   -- Components.git_diff(),
+        --   -- Components.diagnostics(),
+        --   Components.fill(),
+        --   Components.cmd_info(),
+        --   Components.fill(),
+        --   -- Components.lsp(),
+        --   -- Components.virtual_env(),
+        --   -- Components.treesitter(),
+        --   Components.nav(),
+        --   -- Components.mode({}),
+        -- },
         -- tabline = {},
-        -- winbar = {},
+        -- winbar = {
+        --   init = function(self)
+        --     self.bufnr = vim.api.nvim_get_current_buf()
+        --   end,
+        --   fallthrough = false,
+        -- },
       }
     end,
     config = function(_, opts)

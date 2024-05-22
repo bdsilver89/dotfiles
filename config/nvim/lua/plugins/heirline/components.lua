@@ -40,6 +40,37 @@ end
 
 ---@param opts? table
 ---@return table
+function M.cmd_info(opts)
+  opts = vim.tbl_deep_extend("force", {
+    macro_recording = {
+      padding = { right = 1 },
+      condition = function()
+        return vim.fn.reg_recorded() ~= ""
+      end,
+    },
+    search_count = {
+      padding = { left = 1 },
+      condition = function()
+        return vim.v.hlsearch ~= 0
+      end,
+    },
+    showcmd = {
+      padding = { left = 1 },
+      condition = function()
+        return vim.opt.showcmdloc:get() == "statusline"
+      end,
+    },
+    -- surround = {},
+    condition = function()
+      return vim.opt.cmdheight:get() == 0
+    end,
+    -- hl =
+  }, opts or {})
+  return builder(Utils.setup_providers(opts, { "macro_recording", "search_count", "showcmd" }))
+end
+
+---@param opts? table
+---@return table
 function M.fill(opts)
   return vim.tbl_deep_extend("force", {
     provider = Providers.fill(),
@@ -71,6 +102,25 @@ function M.foldcolumn(opts)
     },
   }, opts or {})
   return builder(Utils.setup_providers(opts, { "foldcolumn" }))
+end
+
+---@param opts? table
+---@return table
+function M.git_branch(opts)
+  opts = vim.tbl_deep_extend({
+    git_branch = {},
+    surround = {},
+    -- on_click = {},
+    update = {
+      "User",
+      pattern = { "GitSignsUpdate", "GitSignsChanged" },
+      callback = function()
+        vim.schedule(vim.cmd.redrawstatus)
+      end,
+    },
+    -- init =
+  }, opts or {})
+  return {}
 end
 
 ---@param opts? table
@@ -117,6 +167,39 @@ function M.gitsigncolumn(opts)
     },
   }, opts or {})
   return builder(Utils.setup_providers(opts, { "gitsigncolumn" }))
+end
+
+---@param opts? table
+---@return table
+function M.mode(opts)
+  opts = vim.tbl_deep_extend("force", {
+    mode_text = false,
+    paste = false,
+    spell = false,
+    -- surround = { separator = "left", color =
+    update = {
+      "ModeChanged",
+      pattern = "*:*",
+    },
+  }, opts or {})
+  if not opts["mode_text"] then
+    opts.str = { str = " " }
+  end
+  return builder(Utils.setup_providers(opts, {}))
+end
+
+---@param opts? table
+---@return table
+function M.nav(opts)
+  opts = vim.tbl_deep_extend("force", {
+    ruler = {},
+    percentage = { padding = { left = 1 } },
+    scrollbar = { padding = { left = 1 }, hl = { fg = "scrollbar" } },
+    surround = { separator = "right", color = "nav_bg" },
+    -- hl
+    update = { "CursorMoved", "CursorMovedI", "BufEnter" },
+  }, opts or {})
+  return builder(Utils.setup_providers(opts, { "ruler", "percentage", "scrollbar" }))
 end
 
 ---@param opts? table

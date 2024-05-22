@@ -66,6 +66,21 @@ end
 
 ---@param opts? table
 ---@return function
+function M.macro_recording(opts)
+  opts = vim.tbl_deep_extend("force", {
+    prefix = "@",
+  }, opts or {})
+  return function()
+    local register = vim.fn.reg_recording()
+    if register ~= "" then
+      register = opts.prefix .. register
+    end
+    return Utils.setup_providers(register, opts)
+  end
+end
+
+---@param opts? table
+---@return function
 function M.numbercolumn(opts)
   opts = vim.tbl_deep_extend("force", {
     thousands = false,
@@ -96,6 +111,85 @@ function M.numbercolumn(opts)
       str = (rnum == 0 and not opts.culright and relnum) and cur .. "%=" or "%=" .. cur
     end
     return Utils.stylize(str, opts)
+  end
+end
+
+---@param opts? table
+---@return function
+function M.percentage(opts)
+  opts = vim.tbl_deep_extend("force", { escape = false, fixed_width = true, edge_text = true }, opts or {})
+  return function()
+    local text = "%" .. (opts.fixed_width and (opts.edge_text and "2" or "3") or "") .. "p%%"
+    if opts.edge_text then
+      local current_line = vim.fn.line(".")
+      if current_line == 1 then
+        text = "Top"
+      elseif current_line == vim.fn.line("$") then
+        text = "Bot"
+      end
+    end
+    return Utils.stylize(text, opts)
+  end
+end
+
+---@param opts? table
+---@return function
+function M.ruler(opts)
+  opts = vim.tbl_deep_extend("force", { pad_ruler = { line = 3, char = 2 } }, opts or {})
+  local padding_str = ("%%%dd:%%-%dd"):format(opts.pad_ruler.line, opts.pad_ruler.char)
+  return function()
+    local line = vim.fn.line(".")
+    local char = vim.fn.virtcol(".")
+    return Utils.stylize(padding_str:format(line, char), opts)
+  end
+end
+
+---@param opts? table
+---@return function
+function M.scrollbar(opts)
+  local sbar = { "▁", "▂", "▃", "▄", "▅", "▆", "▇", "█" }
+  return function()
+    local curr_line = vim.api.nvim_win_get_cursor(0)[1]
+    local lines = vim.api.nvim_buf_line_count(0)
+    local i = math.floor((curr_line - 1) / lines * #sbar) + 1
+    if sbar[i] then
+      return Utils.stylize(sbar[i]:rep(2), opts)
+    end
+  end
+end
+
+---@param opts? table
+---@return string
+function M.showcmd(opts)
+  opts = vim.tbl_deep_extend("force", {
+    minwid = 0,
+    maxwid = 0,
+    escape = false,
+  }, opts or {})
+  return Utils.stylize(("%%%d.%d(%%S%%)"):format(opts.minwid, opts.maxwid), opts)
+end
+
+---@param opts? table
+---@return function
+function M.search_count(opts)
+  local search_func = vim.tbl_isempty(opts or {}) and function()
+    return vim.fn.searchcount()
+  end or function()
+    return vim.fn.searchcount(opts)
+  end
+  return function()
+    local search_ok, search = pcall(search_func)
+    if search_ok and type(search) == "table" and search.total then
+      return Utils.stylize(
+        ("%s%d/%s%d"):format(
+          search.current > search.maxcount and ">" or "",
+          math.min(search.current, search.maxcount),
+          search.incomplete == 2 and ">" or "",
+          math.min(search.total, search.maxcount)
+        ),
+        opts
+      )
+    end
   end
 end
 
