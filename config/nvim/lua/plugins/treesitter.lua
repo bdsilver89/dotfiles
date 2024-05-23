@@ -29,7 +29,7 @@ return {
       -- during startup.
       -- CODE FROM LazyVim (thanks folke!) https://github.com/LazyVim/LazyVim/commit/1e1b68d633d4bd4faa912ba5f49ab6b8601dc0c9
       require("lazy.core.loader").add_to_rtp(plugin)
-      require "nvim-treesitter.query_predicates"
+      require("nvim-treesitter.query_predicates")
     end,
     opts = {
       auto_install = vim.fn.executable("git") == 1 and vim.fn.executable("tree-sitter") == 1, -- only enable auto install if `tree-sitter` cli is installed
@@ -99,5 +99,26 @@ return {
       require("nvim-treesitter.install").prefer_git = true
       require("nvim-treesitter.configs").setup(opts)
     end,
-  }
+  },
+
+  {
+    "nvim-treesitter/nvim-treesitter-context",
+    event = "LazyFile",
+    keys = {
+      {
+        "<leader>ut",
+        function()
+          local tsc = require("treesitter-context")
+          tsc.toggle()
+          if tsc.enabled() then
+            vim.notify("Enabled treesitter context", vim.log.levels.INFO, { title = "Option" })
+          else
+            vim.notify("Disabled treesitter context", vim.log.levels.WARN, { title = "Option" })
+          end
+        end,
+        desc = "Toggle treesitter context",
+      },
+    },
+    opts = { mode = "cursor", max_lines = 3 },
+  },
 }

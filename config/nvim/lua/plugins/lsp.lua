@@ -52,7 +52,7 @@ return {
               callback = function(event2)
                 vim.lsp.buf.clear_references()
                 vim.api.nvim_clear_autocmds({ group = "config_lsp_highlight", buffer = event2.buf })
-              end
+              end,
             })
           end
 
@@ -70,24 +70,24 @@ return {
           end
 
           -- codelens
-          if client and client.supports_method("textDocument/codeLens", { bufnr = buf }) then
-            vim.lsp.codelens.refresh()
-            vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
-              buffer = buf,
-              callback = vim.lsp.codelens.refresh,
-            })
-          end
-        end
+          -- if client and client.supports_method("textDocument/codeLens", { bufnr = buf }) then
+          --   vim.lsp.codelens.refresh()
+          --   vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
+          --     buffer = buf,
+          --     callback = vim.lsp.codelens.refresh,
+          --   })
+          -- end
+        end,
       })
 
-      vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
-        vim.lsp.handlers.hover, { border = "rounded", silent = true })
+      vim.lsp.handlers["textDocument/hover"] =
+        vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded", silent = true })
 
-      vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(
-        vim.lsp.handlers.signature_help, { border = "rounded", silent = true })
+      vim.lsp.handlers["textDocument/signatureHelp"] =
+        vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded", silent = true })
 
-      vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
-        vim.lsp.diagnostic.on_publish_diagnostics, { float = { border = "rounded" } })
+      vim.lsp.handlers["textDocument/publishDiagnostics"] =
+        vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, { float = { border = "rounded" } })
 
       -- diagnostic setup
       vim.diagnostic.config({
@@ -97,6 +97,7 @@ return {
           spacing = 4,
           source = "if_many",
         },
+        float = { border = "rounded" },
         severity_sort = true,
         signs = {
           text = {
@@ -123,12 +124,13 @@ return {
       -- when mason is disabled, lspconfig setup is easier to deal with
       for server, server_opts in pairs(servers) do
         server_opts = server_opts and (server_opts == true and {} or server_opts) or {}
-        if server_opts.enabled ~= false
+        if
+          server_opts.enabled ~= false
           -- and (vim.g.enable_mason_packages or
-         -- and (vim.fn.executable(require("lspconfig")[server].cmd) == 1)
+          -- and (vim.fn.executable(require("lspconfig")[server].cmd) == 1)
         then
           server_opts = vim.tbl_deep_extend("force", {
-            capabilities = vim.deepcopy(capabilities)
+            capabilities = vim.deepcopy(capabilities),
           }, servers[server] or {})
 
           if opts.setup[server] then
