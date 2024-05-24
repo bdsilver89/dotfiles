@@ -50,9 +50,9 @@ return {
           diag_error = Utils.get_highlight("DiagnosticError").fg,
           diag_hint = Utils.get_highlight("DiagnosticHint").fg,
           diag_info = Utils.get_highlight("DiagnosticInfo").fg,
-          git_del = Utils.get_highlight("diffDeleted").fg,
-          git_add = Utils.get_highlight("diffAdded").fg,
-          git_change = Utils.get_highlight("diffChanged").fg,
+          git_del = Utils.get_highlight("GitSignsDelete").fg,
+          git_add = Utils.get_highlight("GitSignsAdd").fg,
+          git_change = Utils.get_highlight("GitSignsChange").fg,
         }
       end
 
