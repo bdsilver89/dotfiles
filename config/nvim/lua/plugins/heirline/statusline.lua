@@ -1,5 +1,58 @@
 local M = {}
 
+local mode_names = {
+  n = "NORMAL",
+  no = "NORMAL",
+  nov = "NORMAL",
+  noV = "NORMAL",
+  ["no\22"] = "NORMAL",
+  niI = "NORMAL",
+  niR = "NORMAL",
+  niV = "NORMAL",
+  nt = "NORMAL",
+  v = "VISUAL",
+  vs = "VISUAL",
+  V = "VISUAL",
+  Vs = "VISUAL",
+  ["\22"] = "VISUAL",
+  ["\22s"] = "VISUAL",
+  s = "SELECT",
+  S = "SELECT",
+  ["\19"] = "SELECT",
+  i = "INSERT",
+  ic = "INSERT",
+  ix = "INSERT",
+  R = "REPLACE",
+  Rc = "REPLACE",
+  Rx = "REPLACE",
+  Rv = "REPLACE",
+  Rvc = "REPLACE",
+  Rvx = "REPLACE",
+  c = "CCOMMAND",
+  cv = "Ex",
+  r = "...",
+  rm = "M",
+  ["r?"] = "?",
+  ["!"] = "!",
+  t = "TERM",
+}
+
+local mode_colors = {
+  n = "blue",
+  i = "green",
+  v = "cyan",
+  V = "cyan",
+  ["\22"] = "cyan",
+  c = "orange",
+  s = "purple",
+  S = "purple",
+  ["\19"] = "purple",
+  R = "orange",
+  r = "orange",
+  ["!"] = "red",
+  t = "red",
+}
+
 local function align()
   return {
     provider = "%=",
@@ -17,65 +70,16 @@ local function mode(with_text)
     init = function(self)
       self.mode = vim.fn.mode(1)
     end,
-    static = {
-      mode_names = {
-        n = "NORMAL",
-        no = "NORMAL",
-        nov = "NORMAL",
-        noV = "NORMAL",
-        ["no\22"] = "NORMAL",
-        niI = "NORMAL",
-        niR = "NORMAL",
-        niV = "NORMAL",
-        nt = "NORMAL",
-        v = "VISUAL",
-        vs = "VISUAL",
-        V = "VISUAL",
-        Vs = "VISUAL",
-        ["\22"] = "VISUAL",
-        ["\22s"] = "VISUAL",
-        s = "SELECT",
-        S = "SELECT",
-        ["\19"] = "SELECT",
-        i = "INSERT",
-        ic = "INSERT",
-        ix = "INSERT",
-        R = "REPLACE",
-        Rc = "REPLACE",
-        Rx = "REPLACE",
-        Rv = "REPLACE",
-        Rvc = "REPLACE",
-        Rvx = "REPLACE",
-        c = "CCOMMAND",
-        cv = "Ex",
-        r = "...",
-        rm = "M",
-        ["r?"] = "?",
-        ["!"] = "!",
-        t = "TERM",
-      },
-      mode_colors = {
-        n = "blue",
-        i = "green",
-        v = "cyan",
-        V = "cyan",
-        ["\22"] = "cyan",
-        c = "orange",
-        s = "purple",
-        S = "purple",
-        ["\19"] = "purple",
-        R = "orange",
-        r = "orange",
-        ["!"] = "red",
-        t = "red",
-      },
-    },
+    static = {},
     provider = function(self)
-      return with_text and " %2(" .. self.mode_names[self.mode] .. "%) " or " "
+      return with_text and " %2(" .. mode_names[self.mode] .. "%) " or " "
     end,
     hl = function(self)
-      local mode = self.mode:sub(1, 1)
-      return { fg = "bg", bg = self.mode_colors[mode], bold = true }
+      return {
+        fg = "bg",
+        bg = mode_colors[self.mode:sub(1, 1)],
+        bold = true,
+      }
     end,
     update = {
       "ModeChanged",
@@ -94,6 +98,7 @@ local function git_branch()
     end,
     init = function(self)
       self.status_dict = vim.b.gitsigns_status_dict
+      self.mode = vim.fn.mode(1)
     end,
     provider = function(self)
       local branch = self.status_dict.head
@@ -103,82 +108,139 @@ local function git_branch()
       local icon = require("config.icons").get_icon("git", "Branch")
       return " " .. icon .. self.status_dict.head .. " "
     end,
-    hl = { fg = "gray", bg = "bright_bg" },
-  }
-end
-
-local function fileflags()
-  return {
-    {
-      condition = function()
-        return vim.bo.modified
-      end,
-      provider = require("config.icons").get_icon("misc", "Modified"),
-      hl = { fg = "green" },
-    },
-    {
-      condition = function()
-        return not vim.bo.modifiable or vim.bo.readonly
-      end,
-      provider = require("config.icons").get_icon("misc", "Readonly"),
-      hl = { fg = "orange" },
-    },
-  }
-end
-
-local function fileicon()
-  return {
-    init = function(self)
-      local has_devicons, devicons = pcall(require, "nvim-web-devicons")
-      if has_devicons then
-        self.icon, self.icon_color =
-          devicons.get_icon_color(self.filename, vim.fn.fnamemodify(self.filename, ":e"), { default = true })
-      end
-    end,
-    provider = function(self)
-      return self.icon and (self.icon .. " ")
-    end,
+    -- hl = { fg = "gray", bg = "bright_bg" },
     hl = function(self)
-      return self.icon_color and { fg = self.icon_color }
+      return {
+        bg = "bright_bg",
+        fg = mode_colors[self.mode:sub(1, 1)],
+        bold = true,
+      }
     end,
   }
 end
 
-local function filename()
-  return {
-    init = function(self)
-      self.lfilename = vim.fn.fnamemodify(self.filename, ":.")
-      if self.lfilename == "" then
-        self.lfilename = "[No Name]"
-      end
-      if not require("heirline.conditions").width_percent_below(#self.lfilename, 0.27) then
-        self.lfilename = vim.fn.pathshorten(self.lfilename)
-      end
-    end,
-    flexible = 2,
-    {
-      provider = function(self)
-        return self.lfilename .. " "
-      end,
-    },
-    {
-      provider = function(self)
-        return vim.fn.pathshorten(self.lfilename)
-      end,
-    },
-  }
-end
+-- local function fileflags()
+--   return {
+--     {
+--       condition = function()
+--         return vim.bo.modified
+--       end,
+--       provider = require("config.icons").get_icon("misc", "Modified"),
+--       hl = { fg = "green" },
+--     },
+--     {
+--       condition = function()
+--         return not vim.bo.modifiable or vim.bo.readonly
+--       end,
+--       provider = require("config.icons").get_icon("misc", "Readonly"),
+--       hl = { fg = "orange" },
+--     },
+--   }
+-- end
+--
+-- local function fileicon()
+--   return {
+--     init = function(self)
+--       local has_devicons, devicons = pcall(require, "nvim-web-devicons")
+--       if has_devicons then
+--         self.icon, self.icon_color =
+--           devicons.get_icon_color(self.filename, vim.fn.fnamemodify(self.filename, ":e"), { default = true })
+--       end
+--     end,
+--     provider = function(self)
+--       return self.icon and (self.icon .. " ")
+--     end,
+--     hl = function(self)
+--       return self.icon_color and { fg = self.icon_color }
+--     end,
+--   }
+-- end
+--
+-- local function filename()
+--   return {
+--     init = function(self)
+--       self.lfilename = vim.fn.fnamemodify(self.filename, ":.")
+--       if self.lfilename == "" then
+--         self.lfilename = "[No Name]"
+--       end
+--       if not require("heirline.conditions").width_percent_below(#self.lfilename, 0.27) then
+--         self.lfilename = vim.fn.pathshorten(self.lfilename)
+--       end
+--     end,
+--     flexible = 2,
+--     {
+--       provider = function(self)
+--         return self.lfilename .. " "
+--       end,
+--     },
+--     {
+--       provider = function(self)
+--         return vim.fn.pathshorten(self.lfilename)
+--       end,
+--     },
+--   }
+-- end
+--
+-- local functi"on filenameblock()
+--   return {
+--     init = function(self)
+--       self.filename = vim.api.nvim_buf_get_name(0)
+--     end,
+--     fileicon(),
+--     filename(),
+--     space(),
+--     fileflags(),
+--     hl = { bg = "bright_bg" },
+--   }
+-- end
 
-local function filenameblock()
+local function cmd_info()
   return {
-    init = function(self)
-      self.filename = vim.api.nvim_buf_get_name(0)
-    end,
-    fileicon(),
-    filename(),
-    space(),
-    fileflags(),
-    hl = { bg = "bright_bg" },
+    -- macro recording
+    {
+      condition = function()
+        return vim.fn.reg_recording ~= ""
+      end,
+      provider = function()
+        local register = vim.fn.reg_recording()
+        if register ~= "" then
+          register = "@" .. register
+        end
+        return register
+      end,
+      hl = { fg = "orange" },
+      update = { "RecordingEnter", "RecordingLeave" },
+    },
+
+    -- search_count
+    {
+      condition = function()
+        return vim.v.hlsearch ~= 0
+      end,
+      provider = function()
+        local search_ok, search = pcall(vim.fn.searchcount)
+        if search_ok and type(search) == "table" and search.total then
+          return ("%s%d/%s%d"):format(
+            search.current > search.maxcount and ">" or "",
+            math.min(search.current, search.maxcount),
+            search.incomplete == 2 and ">" or "",
+            math.min(search.total, search.maxcount)
+          )
+        end
+      end,
+    },
+
+    -- show cmd
+    {
+      condition = function()
+        return vim.opt.showcmdloc:get() == "statusline"
+      end,
+      provider = function()
+        local minwid = 0
+        local maxwid = 5
+        return ("%%%d.%d(%%S%%)"):format(minwid, maxwid)
+      end,
+    },
   }
 end
 
@@ -229,7 +291,7 @@ local function lsp_active()
       local icon = require("config.icons").get_icon("misc", "Settings")
       return icon .. "[" .. table.concat(names, " ") .. "] "
     end,
-    hl = { fg = "gray", bold = true, bg = "bright_bg" },
+    hl = { fg = "gray", bold = true }, -- , bg = "bright_bg" },
   }
 end
 
@@ -251,7 +313,7 @@ local function treesitter()
     provider = function()
       return "TS "
     end,
-    hl = { fg = "green", bg = "bright_bg" },
+    hl = { fg = "green" }, -- bg = "bright_bg" },
   }
 end
 
@@ -303,44 +365,84 @@ local function nav()
     },
   }
 end
+--
+-- function M.setup()
+--   return {
+--     fallthrough = false,
+--     {
+--       condition = function()
+--         return require("heirline.conditions").buffer_matches({
+--           buftype = { "nofile", "prompt", "help", "quickfix" },
+--           filetype = { "^git.*", "fugitive" },
+--         })
+--       end,
+--       filetype(),
+--       align(),
+--     },
+--     {
+--       condition = function()
+--         return require("heirline.conditions").is_not_active()
+--       end,
+--       filenameblock(),
+--       { provider = "%<" },
+--       align(),
+--     },
+--     {
+--       mode(true),
+--       space(),
+--       git_branch(),
+--       filenameblock(),
+--       -- diff
+--       align(),
+--       -- cmd
+--       align(),
+--       -- diagnostics
+--       lsp_active(),
+--       treesitter(),
+--       filemetadata(),
+--       space(),
+--       nav(),
+--       space(),
+--     },
+--   }
+-- end
 
 function M.setup()
   return {
     fallthrough = false,
+
+    -- special statusline
     {
       condition = function()
-        return require("heirline.conditions").buffer_matches({
+        require("heirline.conditions").buffer_matches({
           buftype = { "nofile", "prompt", "help", "quickfix" },
           filetype = { "^git.*", "fugitive" },
         })
       end,
-      filetype(),
       align(),
     },
+
+    -- inactive statusline
     {
       condition = function()
         return require("heirline.conditions").is_not_active()
       end,
-      filenameblock(),
-      { provider = "%<" },
       align(),
     },
+
+    -- normal statusline
     {
       mode(true),
-      space(),
       git_branch(),
-      filenameblock(),
-      -- diff
       align(),
-      -- cmd
+      cmd_info(),
       align(),
-      -- diagnostics
       lsp_active(),
       treesitter(),
-      filemetadata(),
-      space(),
+      -- filemetadata
       nav(),
       space(),
+      mode(),
     },
   }
 end

@@ -3,7 +3,7 @@ return {
   {
     "nvim-lualine/lualine.nvim",
     event = "VeryLazy",
-    enabled = true,
+    enabled = false,
     opts = {
       options = {
         icons_enabled = vim.g.enable_icons,
@@ -27,8 +27,8 @@ return {
           end,
         },
         statuscolumn = require("plugins.heirline.statuscolumn").setup(),
-        -- statusline = require("plugins.heirline.statusline").setup(),
-        -- tabline = require("plugins.heirline.tabline").setup(),
+        statusline = require("plugins.heirline.statusline").setup(),
+        tabline = require("plugins.heirline.tabline").setup(),
         winbar = require("plugins.heirline.winbar").setup(),
       }
     end,

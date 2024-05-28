@@ -3,7 +3,7 @@ local M = {}
 -- local sep = "  "
 local sep = " / "
 
-function M.filepath()
+local function filepath()
   return {
     init = function(self)
       self.filepath = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":h")
@@ -172,6 +172,7 @@ function M.setup()
   return {
     -- { provider = " " },
     -- M.filepath(),
+    { provider = "%<" },
     { provider = "%=" },
     filenameblock(),
     -- M.filename(),
