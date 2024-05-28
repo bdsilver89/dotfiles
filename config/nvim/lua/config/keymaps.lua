@@ -34,7 +34,46 @@ map("n", "<S-l>", "<cmd>bnext<cr>", { desc = "Next buffer" })
 map("n", "[b", "<cmd>bprevious<cr>", { desc = "Prev buffer" })
 map("n", "]b", "<cmd>bnext<cr>", { desc = "Next buffer" })
 map("n", "<leader>bb", "<cmd>e #<cr>", { desc = "Switch to other buffer" })
-map("n", "<leader>bd", "<cmd>bdelete<cr>", { desc = "Close buffer" })
+map("n", "<leader>bD", "<cmd>:bd<cr>", { desc = "Close buffer and window" })
+map("n", "<leader>bd", function()
+  local buf = vim.api.nvim_get_current_buf()
+  if vim.bo.modified then
+    local choice = vim.fn.confirm(("Save changes to %q?"):format(vim.fn.bufname()), "&Yes\n&No\n&Cancel")
+    if choice == 0 then
+      return
+    end
+    if choice == 1 then
+      vim.cmd.write()
+    end
+  end
+  for _, win in ipairs(vim.fn.win_findbuf(buf)) do
+    vim.api.nvim_win_call(win, function()
+      if not vim.api.nvim_win_is_valid(win) or vim.api.nvim_win_get_buf(win) ~= buf then
+        return
+      end
+
+      -- trye alternate buffer
+      local alt = vim.fn.bufnr("#")
+      if alt ~= buf and vim.fn.buflisted(alt) == 1 then
+        vim.api.nvim_win_set_buf(win, alt)
+        return
+      end
+
+      -- try previous buffer
+      local has_prev = pcall(vim.cmd, "bprevious")
+      if has_prev and buf ~= vim.api.nvim_win_get_buf(win) then
+        return
+      end
+
+      -- create new listed buf
+      local new_buf = vim.api.nvim_create_buf(true, false)
+      vim.api.nvim_win_set_buf(win, new_buf)
+    end)
+  end
+  if vim.api.nvim_buf_is_valid(buf) then
+    pcall(vim.cmd, "bdelete! " .. buf)
+  end
+end, { desc = "Close buffer" })
 
 -- windows
 map("n", "<leader>ww", "<c-w>p", { desc = "Other window", remap = true })
