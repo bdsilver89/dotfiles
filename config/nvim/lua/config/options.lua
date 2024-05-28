@@ -48,6 +48,7 @@ opt.pumheight = 10
 opt.relativenumber = true
 opt.shortmess:append({ s = true, I = true })
 opt.showmode = false
+opt.showtabline = 2
 opt.signcolumn = "yes"
 opt.smartcase = true
 opt.smoothscroll = true

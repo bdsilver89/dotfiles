@@ -25,9 +25,14 @@ require("lazy").setup({
     { import = "plugins" },
 
     -- language packs
+    { import = "plugins.extras.lang.ansible" },
     { import = "plugins.extras.lang.cmake" },
     { import = "plugins.extras.lang.cpp" },
+    { import = "plugins.extras.lang.json" },
     { import = "plugins.extras.lang.lua" },
+    { import = "plugins.extras.lang.markdown" },
+    { import = "plugins.extras.lang.rust" },
+    { import = "plugins.extras.lang.yaml" },
 
     { import = "plugins.extras.vscode" },
   },

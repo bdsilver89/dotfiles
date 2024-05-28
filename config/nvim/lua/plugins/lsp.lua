@@ -26,10 +26,12 @@ return {
           local function map(l, r, desc)
             vim.keymap.set("n", l, r, { buffer = buf, desc = desc })
           end
+          map("<leader>cl", "<cmd>LspInfo<cr>", "LSP info")
           map("gd", require("telescope.builtin").lsp_definitions, "Goto definition")
           map("gr", require("telescope.builtin").lsp_references, "Goto references")
-          map("gI", require("telescope.builtin").lsp_implementations, "Goto implementation")
           map("gD", vim.lsp.buf.declaration, "Goto definition")
+          map("gI", require("telescope.builtin").lsp_implementations, "Goto implementation")
+          map("gy", require("telescope.builtin").lsp_type_definitions, "Goto type defintion")
           map("<leader>cr", vim.lsp.buf.rename, "Rename")
           map("<leader>ca", vim.lsp.buf.code_action, "Code action")
 
@@ -141,6 +143,41 @@ return {
           require("lspconfig")[server].setup(server_opts)
         end
       end
+    end,
+  },
+
+  {
+    "RRethy/vim-illuminate",
+    event = "LazyFile",
+    keys = {
+      { "]]", desc = "Next reference" },
+      { "[[", desc = "Prev reference" },
+    },
+    config = function()
+      require("illuminate").configure({
+        delay = 200,
+        large_file_cutoff = 2000,
+        large_file_overrides = {
+          providers = { "lsp" },
+        },
+      })
+
+      local function map(key, dir, buffer)
+        vim.keymap.set("n", key, function()
+          require("illuminate")["goto_" .. dir .. "_reference"](false)
+        end, { desc = dir:sub(1, 1):upper() .. dir:sub(2) .. " reference", buffer = buffer })
+      end
+
+      map("]]", "next")
+      map("]]", "prev")
+
+      vim.api.nvim_create_autocmd("FileType", {
+        callback = function()
+          local buffer = vim.api.nvim_get_current_buf()
+          map("]]", "next", buffer)
+          map("[[", "prev", buffer)
+        end,
+      })
     end,
   },
 }
