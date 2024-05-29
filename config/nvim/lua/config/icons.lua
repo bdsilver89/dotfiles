@@ -130,7 +130,7 @@ M.icons = (vim.g.enable_icons ~= false) and nerd_icons or text_icons
 ---@param no_fallback? boolean
 ---@return string
 function M.get_icon(group, name, no_fallback)
-  local icons_enabled = vim.g.icons_enabled ~= false
+  local icons_enabled = vim.g.enable_icons ~= false
   if not icons_enabled and no_fallback then
     return ""
   end
@@ -144,7 +144,7 @@ end
 ---@oaram no_fallback? boolean
 ---@return table|nil
 function M.get_icon_group(group, no_fallback)
-  local icons_enabled = vim.g.icons_enabled ~= false
+  local icons_enabled = vim.g.enable_icons ~= false
   if not icons_enabled and no_fallback then
     return {}
   end

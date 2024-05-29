@@ -91,108 +91,188 @@ local function mode(with_text)
   }
 end
 
-local function git_branch()
+local function git()
   return {
     condition = function()
       return require("heirline.conditions").is_git_repo()
     end,
     init = function(self)
-      self.status_dict = vim.b.gitsigns_status_dict
       self.mode = vim.fn.mode(1)
+      self.status_dict = vim.b.gitsigns_status_dict
+      self.added = self.status_dict.added or 0
+      self.removed = self.status_dict.removed or 0
+      self.changed = self.status_dict.changed or 0
+
+      self.has_changes = self.added ~= 0 or self.removed ~= 0 or self.changed ~= 0
+    end,
+
+    -- branch
+    {
+      provider = function(self)
+        local branch = self.status_dict.head
+        if not branch or branch == "" then
+          return
+        end
+        local icon = require("config.icons").get_icon("git", "Branch")
+        return " " .. icon .. self.status_dict.head
+      end,
+      hl = function(self)
+        return {
+          -- bg = "bright_bg",
+          fg = mode_colors[self.mode:sub(1, 1)],
+          bold = true,
+        }
+      end,
+    },
+    space(),
+
+    -- diff
+    {
+      conditon = function(self)
+        return self.added ~= 0
+      end,
+      provider = function(self)
+        return " " .. require("config.icons").get_icon("git", "Added") .. self.added
+      end,
+      hl = { fg = "git_add" },
+    },
+    {
+      conditon = function(self)
+        return self.removed ~= 0
+      end,
+      provider = function(self)
+        return " " .. require("config.icons").get_icon("git", "Removed") .. self.removed
+      end,
+      hl = { fg = "git_del" },
+    },
+    {
+      conditon = function(self)
+        return self.changed ~= 0
+      end,
+      provider = function(self)
+        return " " .. require("config.icons").get_icon("git", "Changed") .. self.changed
+      end,
+      hl = { fg = "git_change" },
+    },
+    space(),
+    hl = { bg = "bright_bg" },
+  }
+end
+
+local function diagnostics()
+  return {
+    condition = function()
+      return require("heirline.conditions").has_diagnostics()
+    end,
+    update = { "DiagnosticChanged", "BufEnter" },
+    init = function(self)
+      self.diagnostics = vim.diagnostic.count()
+    end,
+    {
+      provider = function(self)
+        return self.diagnostics[1]
+          and (require("config.icons").get_icon("diagnostics", "Error") .. self.diagnostics[1] .. " ")
+      end,
+      hl = "DiagnosticError",
+    },
+    {
+      provider = function(self)
+        return self.diagnostics[2]
+          and (require("config.icons").get_icon("diagnostics", "Warn") .. self.diagnostics[2] .. " ")
+      end,
+      hl = "DiagnosticWarn",
+    },
+    {
+      provider = function(self)
+        return self.diagnostics[3]
+          and (require("config.icons").get_icon("diagnostics", "Info") .. self.diagnostics[3] .. " ")
+      end,
+      hl = "DiagnosticInfo",
+    },
+    {
+      provider = function(self)
+        return self.diagnostics[4]
+          and (require("config.icons").get_icon("diagnostics", "Hint") .. self.diagnostics[4] .. " ")
+      end,
+      hl = "DiagnosticHint",
+    },
+  }
+end
+
+local function fileflags()
+  return {
+    {
+      condition = function()
+        return vim.bo.modified
+      end,
+      provider = require("config.icons").get_icon("misc", "Modified"),
+      hl = { fg = "green" },
+    },
+    {
+      condition = function()
+        return not vim.bo.modifiable or vim.bo.readonly
+      end,
+      provider = require("config.icons").get_icon("misc", "Readonly"),
+      hl = { fg = "orange" },
+    },
+  }
+end
+
+local function fileicon()
+  return {
+    init = function(self)
+      local has_devicons, devicons = pcall(require, "nvim-web-devicons")
+      if has_devicons then
+        self.icon, self.icon_color =
+          devicons.get_icon_color(self.filename, vim.fn.fnamemodify(self.filename, ":e"), { default = true })
+      end
     end,
     provider = function(self)
-      local branch = self.status_dict.head
-      if not branch or branch == "" then
-        return
-      end
-      local icon = require("config.icons").get_icon("git", "Branch")
-      return " " .. icon .. self.status_dict.head .. " "
+      return self.icon and (self.icon .. " ")
     end,
-    -- hl = { fg = "gray", bg = "bright_bg" },
     hl = function(self)
-      return {
-        bg = "bright_bg",
-        fg = mode_colors[self.mode:sub(1, 1)],
-        bold = true,
-      }
+      return self.icon_color and { fg = self.icon_color }
     end,
   }
 end
 
--- local function fileflags()
---   return {
---     {
---       condition = function()
---         return vim.bo.modified
---       end,
---       provider = require("config.icons").get_icon("misc", "Modified"),
---       hl = { fg = "green" },
---     },
---     {
---       condition = function()
---         return not vim.bo.modifiable or vim.bo.readonly
---       end,
---       provider = require("config.icons").get_icon("misc", "Readonly"),
---       hl = { fg = "orange" },
---     },
---   }
--- end
---
--- local function fileicon()
---   return {
---     init = function(self)
---       local has_devicons, devicons = pcall(require, "nvim-web-devicons")
---       if has_devicons then
---         self.icon, self.icon_color =
---           devicons.get_icon_color(self.filename, vim.fn.fnamemodify(self.filename, ":e"), { default = true })
---       end
---     end,
---     provider = function(self)
---       return self.icon and (self.icon .. " ")
---     end,
---     hl = function(self)
---       return self.icon_color and { fg = self.icon_color }
---     end,
---   }
--- end
---
--- local function filename()
---   return {
---     init = function(self)
---       self.lfilename = vim.fn.fnamemodify(self.filename, ":.")
---       if self.lfilename == "" then
---         self.lfilename = "[No Name]"
---       end
---       if not require("heirline.conditions").width_percent_below(#self.lfilename, 0.27) then
---         self.lfilename = vim.fn.pathshorten(self.lfilename)
---       end
---     end,
---     flexible = 2,
---     {
---       provider = function(self)
---         return self.lfilename .. " "
---       end,
---     },
---     {
---       provider = function(self)
---         return vim.fn.pathshorten(self.lfilename)
---       end,
---     },
---   }
--- end
---
--- local functi"on filenameblock()
---   return {
---     init = function(self)
---       self.filename = vim.api.nvim_buf_get_name(0)
---     end,
---     fileicon(),
---     filename(),
---     space(),
---     fileflags(),
---     hl = { bg = "bright_bg" },
---   }
--- end
+local function filename()
+  return {
+    init = function(self)
+      self.lfilename = vim.fn.fnamemodify(self.filename, ":.")
+      if self.lfilename == "" then
+        self.lfilename = "[No Name]"
+      end
+      if not require("heirline.conditions").width_percent_below(#self.lfilename, 0.27) then
+        self.lfilename = vim.fn.pathshorten(self.lfilename)
+      end
+    end,
+    flexible = 2,
+    {
+      provider = function(self)
+        return self.lfilename .. " "
+      end,
+    },
+    {
+      provider = function(self)
+        return vim.fn.pathshorten(self.lfilename)
+      end,
+    },
+  }
+end
+
+local function filenameblock()
+  return {
+    init = function(self)
+      self.filename = vim.api.nvim_buf_get_name(0)
+    end,
+    fileicon(),
+    filename(),
+    space(),
+    fileflags(),
+    hl = { bg = "bright_bg" },
+  }
+end
 
 local function cmd_info()
   return {
@@ -433,10 +513,12 @@ function M.setup()
     -- normal statusline
     {
       mode(true),
-      git_branch(),
+      git(),
+      -- filenameblock(),
       align(),
       cmd_info(),
       align(),
+      diagnostics(),
       lsp_active(),
       treesitter(),
       -- filemetadata

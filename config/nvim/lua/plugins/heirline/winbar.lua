@@ -168,6 +168,15 @@ local function filenameblock()
   }
 end
 
+local function oil_path()
+  return {
+    condition = function()
+      return vim.bo.filetype == "oil"
+    end,
+    provider = "TEST",
+  }
+end
+
 function M.setup()
   return {
     -- { provider = " " },
@@ -175,6 +184,7 @@ function M.setup()
     { provider = "%<" },
     { provider = "%=" },
     filenameblock(),
+    oil_path(),
     -- M.filename(),
     -- symbols
     -- { provider = "%=" },
