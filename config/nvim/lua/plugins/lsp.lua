@@ -26,7 +26,7 @@ return {
           local function map(l, r, desc)
             vim.keymap.set("n", l, r, { buffer = buf, desc = desc })
           end
-          map("<leader>cl", "<cmd>LspInfo<cr>", "LSP info")
+          -- map("<leader>cl", "<cmd>LspInfo<cr>", "LSP info")
           map("gd", require("telescope.builtin").lsp_definitions, "Goto definition")
           map("gr", require("telescope.builtin").lsp_references, "Goto references")
           map("gD", vim.lsp.buf.declaration, "Goto definition")
