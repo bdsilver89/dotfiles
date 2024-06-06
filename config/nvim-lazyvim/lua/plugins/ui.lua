@@ -1,5 +1,10 @@
 return {
   {
+    "nvim-tree/nvim-web-devicons",
+    enabled = vim.g.enable_icons,
+  },
+
+  {
     "nvim-lualine/lualine.nvim",
     opts = function(_, opts)
       -- disable icons in lualine if needed

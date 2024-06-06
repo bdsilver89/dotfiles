@@ -71,9 +71,9 @@ set -g @plugin 'christoomey/vim-tmux-navigator'
 # set -g @plugin 'sainnhe/tmux-fzf'
 # set -g @plugin 'wfxr/tmux-fzf/url'
 # set -g @plugin 'rose-pine/tmux'
-# set -g @plugin 'catppuccin/tmux'
+set -g @plugin 'catppuccin/tmux'
 # set -g @plugin 'omerxx/catppuccin-tmux'
-set -g @plugin 'omerxx/tmux-sessionx'
+# set -g @plugin 'omerxx/tmux-sessionx'
 
 # plugin settings
 set -g @sessionx-bind 'o'
