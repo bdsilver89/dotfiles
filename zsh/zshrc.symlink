@@ -91,7 +91,7 @@ export PATH="$HOME/.local/bin:$PATH"
 export DOTFILES_DIR=$HOME/dotfiles
 
 if [ $(uname) = "Darwin" ]; then
-  eval "$(/opt/homebrew/bin/brew shellenv)"
+  export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
 fi
 
 # # zinit setup
@@ -214,6 +214,10 @@ if [ -x "$(command -v ninja)" ]; then
   export CMAKE_GENERATOR="Ninja"
   export CONAN_CMAKE_GENERATOR="Ninja"
 fi
+
+# ninja
+# export NINJA_STATUS=$(echo -e "\e[1;30m[\e[1;32m%s/%t \e[1;34m%p \e[1;36m%e\e[1;30m] \e[;0m")
+export NINJA_STATUS=$(echo -e "[%s/%s %p %e]")
 
 # vcpkg
 export VCPKG_ROOT="$HOME/vcpkg"
