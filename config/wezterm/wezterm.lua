@@ -1,4 +1,6 @@
 local wezterm = require("wezterm")
+local act = wezterm.action
+
 return {
 	color_scheme = "Catppuccin Mocha",
 	-- color_scheme = "Tokyo Night Moon",
@@ -11,7 +13,12 @@ return {
 		{
 			key = "f",
 			mods = "CTRL",
-			action = wezterm.action.ToggleFullScreen,
+			action = act.ToggleFullScreen,
+		},
+		{
+			key = "v",
+			mods = "CTRL",
+			action = act.PasteFrom("Clipboard"),
 		},
 	},
 }
