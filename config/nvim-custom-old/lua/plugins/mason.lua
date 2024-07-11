@@ -25,9 +25,9 @@ return {
         },
         opts = {
           ensure_installed = {},
-          -- ui = {
-          --   border = "rounded",
-          -- },
+          ui = {
+            border = "rounded",
+          },
         },
       },
       {
@@ -35,21 +35,14 @@ return {
         enabled = vim.g.enable_mason_packages,
         opts = {},
       },
-      -- {
-      --   "jay-babu/mason-nvim-dap.nvim",
-      --   enabled = vim.g.enable_mason_packages,
-      --   opts = {},
-      -- },
+      {
+        "jay-babu/mason-nvim-dap.nvim",
+        enabled = vim.g.enable_mason_packages,
+        opts = {},
+      },
     },
     opts = {
-      -- HACK: temporary until nvim-dap is configured
-      integrations = {
-        ['mason-nvim-dap'] = false,
-      },
-      ensure_installed = {
-        -- lua
-        "lua-language-server", "stylua", "selene",
-      },
+      ensure_installed = {},
     },
-  }
+  },
 }

@@ -1,26 +1,32 @@
 return {
   {
     "neovim/nvim-lspconfig",
-    event = { "BufReadPost", "BufNewFile" },
+    event = "LazyFile",
     dependencies = {
+      { "folke/neoconf.nvim", cmd = "Neoconf", opts = {} },
+      { "folke/neodev.nvim", opts = {} },
+      { "mason-tool-installer.nvim", optional = true },
       { "j-hui/fidget.nvim", opts = {} },
-      "b0o/SchemaStore.nvim",
     },
-    -- opts = {
-    --   servers = {},
-    --   setup = {},
-    -- },
-    config = function()
+    opts = {
+      diagnostics = {},
+      servers = {},
+      setup = {},
+    },
+    config = function(_, opts)
+      local Icons = require("config.icons")
+
       vim.api.nvim_create_autocmd("LspAttach", {
-        group = vim.api.nvim_create_augroup("config_lsp_attach", { clear = true }),
+        group = vim.api.nvim_create_augroup("config_lspconfig_attach", { clear = true }),
         callback = function(event)
           local buf = event.buf
           local client = vim.lsp.get_client_by_id(event.data.client_id)
 
-          local function map(lhs, rhs, desc)
-            vim.keymap.set("n", lhs, rhs, { buffer = event.buf, desc = "LSP: " .. desc })
+          -- keymaps
+          local function map(l, r, desc)
+            vim.keymap.set("n", l, r, { buffer = buf, desc = desc })
           end
-
+          -- map("<leader>cl", "<cmd>LspInfo<cr>", "LSP info")
           map("gd", require("telescope.builtin").lsp_definitions, "Goto definition")
           map("gr", require("telescope.builtin").lsp_references, "Goto references")
           map("gD", vim.lsp.buf.declaration, "Goto definition")
@@ -76,6 +82,15 @@ return {
         end,
       })
 
+      vim.lsp.handlers["textDocument/hover"] =
+        vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded", silent = true })
+
+      vim.lsp.handlers["textDocument/signatureHelp"] =
+        vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded", silent = true })
+
+      vim.lsp.handlers["textDocument/publishDiagnostics"] =
+        vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, { float = { border = "rounded" } })
+
       -- diagnostic setup
       vim.diagnostic.config({
         underline = true,
@@ -84,79 +99,20 @@ return {
           spacing = 4,
           source = "if_many",
         },
+        float = { border = "rounded" },
         severity_sort = true,
         signs = {
           text = {
-            [vim.diagnostic.severity.ERROR] = vim.g.enable_icons and " " or "E",
-            [vim.diagnostic.severity.WARN] = vim.g.enable_icons and " " or "W",
-            [vim.diagnostic.severity.HINT] = vim.g.enable_icons and " " or "H",
-            [vim.diagnostic.severity.INFO] = vim.g.enable_icons and " " or "I"
+            [vim.diagnostic.severity.ERROR] = Icons.get_icon("diagnostics", "Error"),
+            [vim.diagnostic.severity.WARN] = Icons.get_icon("diagnostics", "Warn"),
+            [vim.diagnostic.severity.HINT] = Icons.get_icon("diagnostics", "Hint"),
+            [vim.diagnostic.severity.INFO] = Icons.get_icon("diagnostics", "Info"),
           },
         },
       })
 
-      -- local servers = opts.servers
-      local servers = {
-        bashls = {},
-
-        lua_ls = {
-          settings = {
-            Lua = {
-              workspace = {
-                checkThirdParty = false,
-              },
-              codeLens = {
-                enable = true,
-              },
-              completion = {
-                callSnippet = "Replace",
-              },
-              doc = {
-                privateName = { "^_" },
-              },
-              hint = {
-                enable = true,
-                setType = false,
-                paramType = true,
-                paramName = "Disable",
-                semicolon = "Disable",
-                arrayIndex = "Disable",
-              },
-            },
-          },
-        },
-
-        clangd = {
-          mason = false,
-        },
-
-        pyright = {},
-        tsserver = {},
-
-        jsonls = {
-          settings = {
-            json = {
-              schemas = require("schemastore").json.schemas(),
-              validate = { enable = true },
-            },
-          },
-        },
-
-        yamlls = {
-          settings = {
-            yaml = {
-              schemaStore = {
-                enable = false,
-                url = "",
-              },
-              schemas = require("schemastore").yaml.schemas(),
-            },
-          },
-        },
-
-      }
-
-
+      -- servers
+      local servers = opts.servers
       local cmp_avail, cmp = pcall(require, "cmp_nvim_lsp")
       local capabilities = vim.tbl_deep_extend(
         "force",
@@ -165,49 +121,63 @@ return {
         cmp_avail and cmp.default_capabilities() or {}
       )
 
-      local have_mason, mlsp = pcall(require, "mason-lspconfig")
-      local all_mlsp_servers = {}
-      if have_mason then
-        all_mlsp_servers = vim.tbl_keys(require("mason-lspconfig.mappings.server").lspconfig_to_package)
-      end
-
-      local function setup(server)
-        local server_opts = vim.tbl_deep_extend("force", {
-          capabilities = vim.deepcopy(capabilities),
-        }, servers[server] or {})
-
-        -- if opts.setup[server] then
-        --   if opts.setup[server](server, server_opts) then
-        --     return
-        --   end
-        -- end
-        require("lspconfig")[server].setup(server_opts)
-      end
-
       -- using mason-tool-installer offloads mason-lspconfig setup here
       -- language pack files now set that up separately from lspconfig
       -- when mason is disabled, lspconfig setup is easier to deal with
-      local ensure_installed = {}
       for server, server_opts in pairs(servers) do
         server_opts = server_opts and (server_opts == true and {} or server_opts) or {}
-        if server_opts.enabled ~= false
-        -- and (vim.g.enable_mason_packages or
-        -- and (vim.fn.executable(require("lspconfig")[server].cmd) == 1)
+        if
+          server_opts.enabled ~= false
+          -- and (vim.g.enable_mason_packages or
+          -- and (vim.fn.executable(require("lspconfig")[server].cmd) == 1)
         then
-          if server_opts.mason == false or not vim.tbl_contains(all_mlsp_servers, server) then
-            setup(server)
-          else
-            ensure_installed[#ensure_installed + 1] = server
+          server_opts = vim.tbl_deep_extend("force", {
+            capabilities = vim.deepcopy(capabilities),
+          }, servers[server] or {})
+
+          if opts.setup[server] then
+            if opts.setup[server](server, server_opts) then
+              return
+            end
           end
+          require("lspconfig")[server].setup(server_opts)
         end
       end
+    end,
+  },
 
-      if have_mason then
-        mlsp.setup({
-          ensure_installed = vim.tbl_deep_extend("force", ensure_installed, {}),
-          handlers = { setup },
-        })
+  {
+    "RRethy/vim-illuminate",
+    event = "LazyFile",
+    keys = {
+      { "]]", desc = "Next reference" },
+      { "[[", desc = "Prev reference" },
+    },
+    config = function()
+      require("illuminate").configure({
+        delay = 200,
+        large_file_cutoff = 2000,
+        large_file_overrides = {
+          providers = { "lsp" },
+        },
+      })
+
+      local function map(key, dir, buffer)
+        vim.keymap.set("n", key, function()
+          require("illuminate")["goto_" .. dir .. "_reference"](false)
+        end, { desc = dir:sub(1, 1):upper() .. dir:sub(2) .. " reference", buffer = buffer })
       end
+
+      map("]]", "next")
+      map("]]", "prev")
+
+      vim.api.nvim_create_autocmd("FileType", {
+        callback = function()
+          local buffer = vim.api.nvim_get_current_buf()
+          map("]]", "next", buffer)
+          map("[[", "prev", buffer)
+        end,
+      })
     end,
   },
 }

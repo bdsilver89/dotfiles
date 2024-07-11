@@ -35,9 +35,9 @@ return {
     cmd = { "ToggleTerm", "TermExec" },
     keys = function()
       local keys = {
-        { "<leader>tf", "<cmd>ToggleTerm direction=float<cr>",              desc = "Toggleterm float" },
+        { "<leader>tf", "<cmd>ToggleTerm direction=float<cr>", desc = "Toggleterm float" },
         { "<leader>th", "<cmd>ToggleTerm size=10 direction=horizontal<cr>", desc = "Toggleterm horizontal" },
-        { "<leader>tv", "<cmd>ToggleTerm size=80 direction=vertical<cr>",   desc = "Toggleterm vertical" },
+        { "<leader>tv", "<cmd>ToggleTerm size=80 direction=vertical<cr>", desc = "Toggleterm vertical" },
       }
 
       if vim.fn.executable("lazygit") == 1 then
@@ -96,8 +96,8 @@ return {
       end,
       shading_factor = 2,
       direction = "float",
-      float_opts = { border = "none" },
-      -- float_opts = { border = "rounded" },
+      -- float_opts = { border = "none" },
+      float_opts = { border = "rounded" },
     },
   },
 }

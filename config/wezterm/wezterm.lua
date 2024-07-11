@@ -15,10 +15,10 @@ return {
 			mods = "CTRL",
 			action = act.ToggleFullScreen,
 		},
-		{
-			key = "v",
-			mods = "CTRL",
-			action = act.PasteFrom("Clipboard"),
-		},
+		-- {
+		-- 	key = "v",
+		-- 	mods = "CTRL",
+		-- 	action = act.PasteFrom("Clipboard"),
+		-- },
 	},
 }

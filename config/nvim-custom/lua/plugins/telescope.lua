@@ -1,44 +1,27 @@
+local have_make = vim.fn.executable("make") == 1
+local have_cmake = vim.fn.executable("cmake") == 1
+
 return {
   {
     "nvim-telescope/telescope.nvim",
+    version = false,
     cmd = "Telescope",
     dependencies = {
-      { "nvim-lua/plenary.nvim", lazy = true },
       {
         "nvim-telescope/telescope-fzf-native.nvim",
-        enabled = vim.fn.executable("make") == 1,
-        build = "make",
-        lazy = true,
+        build = have_make and "make"
+            or
+            "cmake -S . -B build -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
+        enabled = have_make or have_cmake,
+        config = function()
+        end,
       },
     },
     keys = {
-      { "<leader>,", "<leader>fb", desc = "Switch buffer", remap = true },
-      { "<leader>/", "<leader>sg", desc = "Grep", remap = true },
-      { "<leader>:", "<leader>sc", desc = "Command history", remap = true },
-      { "<leader><space>", "<leader>ff", desc = "Find files", remap = true },
-      -- find
-      { "<leader>fb", "<cmd>Telescope buffers sort_mru=true sort_lastused=true<cr>", desc = "Buffers" },
-      { "<leader>ff", "<cmd>Telescope find_files<cr>", desc = "Find files" },
-      { "<leader>fg", "<cmd>Telescope git_files<cr>", desc = "Find files (git)" },
-      { "<leader>fr", "<cmd>Telescope oldfiles<cr>", desc = "Recent" },
-      -- git
-      { "<leader>gc", "<cmd>Telescope git_commits<cr>", desc = "Commits" },
-      { "<leader>gs", "<cmd>Telescope git_status<cr>", desc = "Status" },
-      -- search
-      { '<leader>s"', "<cmd>Telescope registers<cr>", desc = "Registers" },
-      { "<leader>sa", "<cmd>Telescope autocommands<cr>", desc = "Autocommands" },
-      { "<leader>sb", "<cmd>Telescope current_buffer_fuzzy_find<cr>", desc = "Buffer" },
-      { "<leader>sc", "<cmd>Telescope command_history<cr>", desc = "Command history" },
-      { "<leader>sd", "<cmd>Telescope diagnostics bufnr=0<cr>", desc = "Document diagnostics" },
-      { "<leader>sD", "<cmd>Telescope diagnostics<cr>", desc = "Workspace diagnostics" },
-      { "<leader>sg", "<cmd>Telescope live_grep<cr>", desc = "Grep" },
-      { "<leader>sh", "<cmd>Telescope help_tags<cr>", desc = "Help pages" },
-      { "<leader>sH", "<cmd>Telescope highlights<cr>", desc = "Highlights" },
-      { "<leader>sk", "<cmd>Telescope keymaps<cr>", desc = "Keymaps" },
-      { "<leader>sm", "<cmd>Telescope man_pages<cr>", desc = "Man pages" },
-      { "<leader>so", "<cmd>Telescope vim_options<cr>", desc = "Options" },
-      { "<leader>sR", "<cmd>Telescope resume<cr>", desc = "Resum" },
-      { "<leader>sw", "<cmd>Telescope grep_string<cr>", desc = "Word" },
+      { "<leader>,",       "<cmd>Telescope buffers sort_mru=true sort_lastused=true<cr>", desc = "Switch buffer" },
+      { "<leader>/",       "<cmd>Telescope live_grep<cr>",                                desc = "Grep" },
+      { "<leader>:",       "<cmd>Telescope command_history<cr>",                          desc = "Command history" },
+      { "<leader><space>", "<cmd>Telescope find_files<cr>",                               desc = "Find files" },
     },
     opts = {
       defaults = {
@@ -53,10 +36,14 @@ return {
       },
     },
     config = function(_, opts)
-      require("telescope").setup(opts)
+      local telescope = require("telescope")
+      telescope.setup(opts)
 
-      pcall(require("telescope").load_extension, "notify")
-      pcall(require("telescope").load_extension, "fzf")
+      -- load extensions
+      local ok, err = pcall(telescope.load_extension, "fzf")
+      if not ok then
+        vim.notify("Failed to load `telescope-fzf-native.nvim`", vim.log.levels.ERROR, { title = "Config" })
+      end
     end,
-  },
+  }
 }

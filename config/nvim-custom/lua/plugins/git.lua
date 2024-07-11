@@ -1,41 +1,74 @@
 return {
+  -- git editor
+  -- {
+  --   "tpope/vim-fugitive",
+  --   lazy = false,
+  --   keys = {
+  --     { "<leader>gs", "<cmd>Git<cr>",       desc = "Git status" },
+  --     { "<leader>gl", "<cmd>Git pull<cr>",  desc = "Git pull" },
+  --     { "<leader>gb", "<cmd>Git blame<cr>", desc = "Git blame" },
+  --   }
+  -- },
+
+  -- advanced git editor
   {
     "NeogitOrg/neogit",
     cmd = "Neogit",
     opts = {},
+    keys = {
+      { "<leader>gs", "<cmd>Neogit<cr>",      desc = "Git status (Neogit)" },
+      { "<leader>gl", "<cmd>Neogit pull<cr>", desc = "Git pull (Neogit)" },
+    },
   },
 
+  -- git signs integration
   {
     "lewis6991/gitsigns.nvim",
-    event = "LazyFile",
-    config = function()
-      local Icons = require("config.icons")
-      require("gitsigns").setup({
-        signs = {
-          add = { text = Icons.get_icon("gitsigns", "Add") },
-          change = { text = Icons.get_icon("gitsigns", "Change") },
-          delete = { text = Icons.get_icon("gitsigns", "Delete") },
-          topdelete = { text = Icons.get_icon("gitsigns", "TopDelete") },
-          changedelete = { text = Icons.get_icon("gitsigns", "ChangeDelete") },
-          untracked = { text = Icons.get_icon("gitsigns", "Untracked") },
-        },
-        current_line_blame = true,
-        on_attach = function(buffer)
-          local gs = package.loaded.gitsigns
+    event = { "BufReadPost", "BufNewFile" },
+    opts = {
+      signs = {
+        add = { text = "▎" },
+        change = { text = "▎" },
+        delete = { text = "" },
+        topdelete = { text = "" },
+        changedelete = { text = "▎" },
+        untracked = { text = "▎" },
+      },
+      signs_staged = {
+        add = { text = "▎" },
+        change = { text = "▎" },
+        delete = { text = "" },
+        topdelete = { text = "" },
+        changedelete = { text = "▎" },
+      },
+      current_line_blame = true,
+      on_attach = function(buffer)
+        local gs = package.loaded.gitsigns
 
-          local function map(mode, l, r, desc)
-            vim.keymap.set(mode, l, r, { buffer = buffer, desc = desc })
+        local function map(mode, lhs, rhs, desc)
+          vim.keymap.set(mode, lhs, rhs, { desc = desc, buffer = buffer })
+        end
+
+        -- stylua: ignore start
+        map("n", "]h", function()
+          if vim.wo.diff then
+            vim.cmd.normal({ "]c", bang = true })
+          else
+            gs.nav_hunk("next")
           end
-
-          -- stylua: ignore start
-          map("n", "]h", function() gs.nav_hunk("next") end, "Next hunk")
-          map("n", "[h", function() gs.nav_hunk("prev") end, "Prev hunk")
-          map("n", "]H", function() gs.nav_hunk("last") end, "Last hunk")
-          map("n", "[H", function() gs.nav_hunk("first") end, "First hunk")
-          map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", "GitSigns select hunk")
-          map("n", "<leader>ugb", function() gs.toggle_current_line_blame() end, "Toggle git line blame")
-        end,
-      })
-    end,
+        end, "Next hunk")
+        map("n", "[h", function()
+          if vim.wo.diff then
+            vim.cmd.normal({ "[c", bang = true })
+          else
+            gs.nav_hunk("prev")
+          end
+        end, "Prev hunk")
+        map("n", "]H", function() gs.nav_hunk("last") end, "Last hunk")
+        map("n", "[H", function() gs.nav_hunk("first") end, "First hunk")
+        map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", "GitSigns select hunk")
+        map("n", "<leader>ugb", function() gs.toggle_current_line_blame() end, "Toggle git line blame")
+      end,
+    },
   },
 }
