@@ -130,11 +130,15 @@ is_wsl() {
 }
 
 is_linux() {
-  [ $(os) = linux ]
+  [ $(os) = Linux ]
 }
 
 is_debian() {
   [ $(platform) = debian ]
+}
+
+is_ubuntu() {
+  [ -f /etc/lsb-release -o -d /etc/lsb-release.d ]
 }
 
 is_darwin() {
@@ -299,7 +303,7 @@ setup_homebrew() {
 setup_linux() {
 	if is_linux; then
 		title "Setting up Linux settings"
-		if is_debian; then
+		if is_debian || is_ubuntu; then
 			setup_apt_packages
 		fi
 	fi
@@ -310,26 +314,26 @@ setup_zsh() {
 
 	if [ ! -d "${HOME}/.oh-my-zsh" ]; then
 		git clone "https://github.com/ohmyzsh/ohmyzsh" "${HOME}/.oh-my-zsh"
+	fi
 
-		if [ ! -d "${HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestions" ]; then
-			git clone "https://github.com/zsh-users/zsh-autosuggestions" "$HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions"
-		fi
+	if [ ! -d "${HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestions" ]; then
+		git clone "https://github.com/zsh-users/zsh-autosuggestions" "$HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions"
+	fi
 
-		if [ ! -d "${HOME}/.oh-my-zsh/custom/plugins/zsh-completions" ]; then
-			git clone "https://github.com/zsh-users/zsh-completions" "$HOME/.oh-my-zsh/custom/plugins/zsh-completions"
-		fi
+	if [ ! -d "${HOME}/.oh-my-zsh/custom/plugins/zsh-completions" ]; then
+		git clone "https://github.com/zsh-users/zsh-completions" "$HOME/.oh-my-zsh/custom/plugins/zsh-completions"
+	fi
 
-		if [ ! -d "${HOME}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting" ]; then
-			git clone "https://github.com/zsh-users/zsh-syntax-highlighting" "$HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting"
-		fi
+	if [ ! -d "${HOME}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting" ]; then
+		git clone "https://github.com/zsh-users/zsh-syntax-highlighting" "$HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting"
+	fi
 
-		if [ ! -d "${HOME}/.oh-my-zsh/custom/plugins/fzf-tab" ]; then
-			git clone "https://github.com/Aloxaf/fzf-tab" "$HOME/.oh-my-zsh/custom/plugins/fzf-tab"
-		fi
+	if [ ! -d "${HOME}/.oh-my-zsh/custom/plugins/fzf-tab" ]; then
+		git clone "https://github.com/Aloxaf/fzf-tab" "$HOME/.oh-my-zsh/custom/plugins/fzf-tab"
+	fi
 
-		if [ ! -d "${HOME}/.oh-my-zsh/custom/thems/powerlevel10k" ]; then
-			git clone --depth 1 "https://github.com/romkatv/powerlevel10k" "$HOME/.oh-my-zsh/custom/themes/powerlevel10k"
-		fi
+	if [ ! -d "${HOME}/.oh-my-zsh/custom/thems/powerlevel10k" ]; then
+		git clone --depth 1 "https://github.com/romkatv/powerlevel10k" "$HOME/.oh-my-zsh/custom/themes/powerlevel10k"
 	fi
 }
 
