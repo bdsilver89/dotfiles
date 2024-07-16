@@ -2,9 +2,16 @@ return {
   { "folke/lazy.nvim", version = "*" },
 
   -- detect tabstop and shiftwidth, also check for editorconfig file
+  -- {
+  --   "tpope/vim-sleuth",
+  --   lazy = false,
+  -- },
   {
-    "tpope/vim-sleuth",
-    lazy = false,
+    "NMAC427/guess-indent.nvim",
+    events = { "BufReadPost", "BufNewFile" },
+    opts = {
+      auto_cmd = true,
+    },
   },
 
   -- integration with tmux for navigating tmux panes between vim windows seamlessly
@@ -123,5 +130,13 @@ return {
       { "<leader>st", "<cmd>TodoTelescope<cr>",                                         desc = "Todo" },
       { "<leader>sT", "<cmd>TodoTelescope keywords=TODO,FIX,FIXME<cr>",                 desc = "Todo/Fix/Fixme" },
     },
+  },
+
+  {
+    "mbbill/undotree",
+    keys = {
+      { "<leader>u", "<cmd>UndotreeToggle<cr>", "Undotree" },
+    },
+    opts = {},
   },
 }
