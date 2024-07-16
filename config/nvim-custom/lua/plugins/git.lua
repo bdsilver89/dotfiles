@@ -20,8 +20,6 @@ return {
   --   lazy = false,
   --   keys = {
   --     { "<leader>gs", "<cmd>Git<cr>",       desc = "Git status" },
-  --     { "<leader>gl", "<cmd>Git pull<cr>",  desc = "Git pull" },
-  --     { "<leader>gb", "<cmd>Git blame<cr>", desc = "Git blame" },
   --   }
   -- },
 
@@ -32,7 +30,6 @@ return {
     opts = {},
     keys = {
       { "<leader>gs", "<cmd>Neogit<cr>", desc = "Git status (Neogit)" },
-      { "<leader>gl", "<cmd>Neogit pull<cr>", desc = "Git pull (Neogit)" },
     },
   },
 

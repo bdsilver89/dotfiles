@@ -22,8 +22,6 @@ if not pcall(require, "lazy") then
 end
 
 require("config.options")
-require("config.keymaps")
-require("config.autocmds")
 
 require("lazy").setup({
   -- base plugin configuration
@@ -61,3 +59,6 @@ require("lazy").setup({
     },
   },
 })
+
+require("config.keymaps")
+require("config.autocmds")

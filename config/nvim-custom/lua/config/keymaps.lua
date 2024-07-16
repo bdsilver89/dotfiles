@@ -49,5 +49,20 @@ vim.keymap.set("t", "<esc><esc>", "<c-\\><c-n>", { desc = "Exit terminal mode" }
 -- session
 vim.keymap.set("n", "<leader>qq", "<cmd>qa<cr>", { desc = "Quit all" })
 
+-- diagnostics
+-- stylua: ignore start
+vim.keymap.set("n", "]e", function() vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR }) end, { desc = "Next error" })
+vim.keymap.set("n", "[e", function() vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR }) end, { desc = "Prev error" })
+vim.keymap.set("n", "]w", function() vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.WARN }) end, { desc = "Next warn" })
+vim.keymap.set("n", "[w", function() vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.WARN }) end, { desc = "Prev warn" })
+-- stylua: ignore end
+
+-- toggle
+require("config.utils").toggle("<leader>ud", {
+  name = "Diagnostics",
+  get = vim.diagnostic.is_enabled,
+  set = vim.diagnostic.enable,
+})
+
 -- misc
-vim.keymap.set("n", "<leader>l", "<cmd>Lazy<cr>", { desc = "Lazy package manager"} )
+vim.keymap.set("n", "<leader>l", "<cmd>Lazy<cr>", { desc = "Lazy package manager" })

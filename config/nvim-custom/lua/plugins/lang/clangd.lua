@@ -85,8 +85,7 @@ return {
       },
       setup = {
         clangd = function(_, opts)
-          local clang_ext_plugin = require("lazy.core.config").spec.plugins["clangd_extensions.nvim"]
-          local clangd_ext_opts = require("lazy.core.plugin").values(clang_ext_plugin, "opts", false)
+          local clangd_ext_opts = require("config.utils").opts("clangd_extensions.nvim")
           require("clangd_extensions").setup(vim.tbl_deep_extend("force", clangd_ext_opts or {}, { server = opts }))
           return false
         end,

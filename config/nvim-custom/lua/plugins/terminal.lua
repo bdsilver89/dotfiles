@@ -35,9 +35,9 @@ return {
     cmd = { "ToggleTerm", "TermExec" },
     keys = function()
       local keys = {
-        { "<leader>tf", "<cmd>ToggleTerm direction=float<cr>",              desc = "Toggleterm float" },
+        { "<leader>tf", "<cmd>ToggleTerm direction=float<cr>", desc = "Toggleterm float" },
         { "<leader>th", "<cmd>ToggleTerm size=10 direction=horizontal<cr>", desc = "Toggleterm horizontal" },
-        { "<leader>tv", "<cmd>ToggleTerm size=80 direction=vertical<cr>",   desc = "Toggleterm vertical" },
+        { "<leader>tv", "<cmd>ToggleTerm size=80 direction=vertical<cr>", desc = "Toggleterm vertical" },
       }
 
       if vim.fn.executable("lazygit") == 1 then
@@ -63,6 +63,24 @@ return {
           desc = "Toggleterm lazygit blame",
         }
 
+        -- lazygit file
+        keys[#keys + 1] = {
+          "<leader>gf",
+          function()
+            local path = vim.api.nvim_buf_get_name(0)
+            term("lazygit -f " .. vim.trim(path))
+          end,
+          desc = "Toggleterm lazygit current file history",
+        }
+
+        -- lazygit log
+        keys[#keys + 1] = {
+          "<leader>gl",
+          function()
+            term("lazygit log")
+          end,
+          desc = "Toggleterm lazygit log",
+        }
       end
       if vim.fn.executable("node") == 1 then
         keys[#keys + 1] = {
