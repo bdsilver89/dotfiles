@@ -129,10 +129,12 @@ local function git()
       end,
     },
 
+    space(),
+
     -- diff
     {
       condition = function(self)
-        return self.has_changes
+        return self.has_changes and not vim.g.enable_icons
       end,
       provider = " ("
     },
@@ -159,13 +161,13 @@ local function git()
         return self.changed ~= 0
       end,
       provider = function(self)
-        return (vim.g.enable_icons and " " or "~") .. self.changed .. (vim.g.enable_icons and " " or "")
+        return (vim.g.enable_icons and " " or "~") .. self.changed
       end,
       hl = { fg = "git_change" },
     },
     {
       condition = function(self)
-        return self.has_changes
+        return self.has_changes and not vim.g.enable_icons
       end,
       provider = ")"
     },

@@ -1,4 +1,19 @@
 return {
+  {
+    "nvim-treesitter/nvim-treesitter",
+    opts = { ensure_installed = { "git_config", "gitcommit", "git_rebase", "gitignore", "gitattributes" } },
+  },
+
+  {
+    "hrsh7th/nvim-cmp",
+    dependencies = {
+      { "petertriho/cmp-git", opts = {} },
+    },
+    opts = function(_, opts)
+      table.insert(opts.sources, { name = "git" })
+    end,
+  },
+
   -- git editor
   -- {
   --   "tpope/vim-fugitive",
@@ -16,7 +31,7 @@ return {
     cmd = "Neogit",
     opts = {},
     keys = {
-      { "<leader>gs", "<cmd>Neogit<cr>",      desc = "Git status (Neogit)" },
+      { "<leader>gs", "<cmd>Neogit<cr>", desc = "Git status (Neogit)" },
       { "<leader>gl", "<cmd>Neogit pull<cr>", desc = "Git pull (Neogit)" },
     },
   },
@@ -67,7 +82,7 @@ return {
         map("n", "]H", function() gs.nav_hunk("last") end, "Last hunk")
         map("n", "[H", function() gs.nav_hunk("first") end, "First hunk")
         map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", "GitSigns select hunk")
-        map("n", "<leader>ugb", function() gs.toggle_current_line_blame() end, "Toggle git line blame")
+        -- map("n", "<leader>ugb", function() gs.toggle_current_line_blame() end, "Toggle git line blame")
       end,
     },
   },

@@ -3,15 +3,14 @@ return {
     "neovim/nvim-lspconfig",
     event = { "BufReadPost", "BufNewFile" },
     dependencies = {
-      { "j-hui/fidget.nvim",   opts = {} },
-      { "b0o/SchemaStore.nvim" },
-      {
-        "mrcjkb/rustaceanvim",
-        version = "^4",
-        lazy = false,
-      },
+      { "j-hui/fidget.nvim", opts = {} },
+      { "williamboman/mason-lspconfig.nvim", enabled = not vim.g.prefer_git, config = function() end },
     },
-    config = function()
+    opts = {
+      servers = {},
+      setup = {},
+    },
+    config = function(_, opts)
       vim.api.nvim_create_autocmd("LspAttach", {
         group = vim.api.nvim_create_augroup("config_lsp_attach", { clear = true }),
         callback = function(event)
@@ -92,72 +91,12 @@ return {
             [vim.diagnostic.severity.ERROR] = vim.g.enable_icons and " " or "E",
             [vim.diagnostic.severity.WARN] = vim.g.enable_icons and " " or "W",
             [vim.diagnostic.severity.HINT] = vim.g.enable_icons and " " or "H",
-            [vim.diagnostic.severity.INFO] = vim.g.enable_icons and " " or "I"
+            [vim.diagnostic.severity.INFO] = vim.g.enable_icons and " " or "I",
           },
         },
       })
 
-      -- local servers = opts.servers
-      local servers = {
-        bashls = {},
-
-        lua_ls = {
-          settings = {
-            Lua = {
-              workspace = {
-                checkThirdParty = false,
-              },
-              codeLens = {
-                enable = true,
-              },
-              completion = {
-                callSnippet = "Replace",
-              },
-              doc = {
-                privateName = { "^_" },
-              },
-              hint = {
-                enable = true,
-                setType = false,
-                paramType = true,
-                paramName = "Disable",
-                semicolon = "Disable",
-                arrayIndex = "Disable",
-              },
-            },
-          },
-        },
-
-        clangd = {
-          mason = false, -- do not use mason clangd, use system version to match the compiler
-        },
-
-        pyright = {},
-        tsserver = {},
-
-        jsonls = {
-          settings = {
-            json = {
-              schemas = require("schemastore").json.schemas(),
-              validate = { enable = true },
-            },
-          },
-        },
-
-        yamlls = {
-          settings = {
-            yaml = {
-              schemaStore = {
-                enable = false,
-                url = "",
-              },
-              schemas = require("schemastore").yaml.schemas(),
-            },
-          },
-        },
-
-      }
-
+      local servers = opts.servers
 
       local cmp_avail, cmp = pcall(require, "cmp_nvim_lsp")
       local capabilities = vim.tbl_deep_extend(
@@ -178,11 +117,11 @@ return {
           capabilities = vim.deepcopy(capabilities),
         }, servers[server] or {})
 
-        -- if opts.setup[server] then
-        --   if opts.setup[server](server, server_opts) then
-        --     return
-        --   end
-        -- end
+        if opts.setup[server] then
+          if opts.setup[server](server, server_opts) then
+            return
+          end
+        end
         require("lspconfig")[server].setup(server_opts)
       end
 
@@ -192,9 +131,10 @@ return {
       local ensure_installed = {}
       for server, server_opts in pairs(servers) do
         server_opts = server_opts and (server_opts == true and {} or server_opts) or {}
-        if server_opts.enabled ~= false
-        -- and (vim.g.enable_mason_packages or
-        -- and (vim.fn.executable(require("lspconfig")[server].cmd) == 1)
+        if
+          server_opts.enabled ~= false
+          -- and (vim.g.enable_mason_packages or
+          -- and (vim.fn.executable(require("lspconfig")[server].cmd) == 1)
         then
           if server_opts.mason == false or not vim.tbl_contains(all_mlsp_servers, server) then
             setup(server)

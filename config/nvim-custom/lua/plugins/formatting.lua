@@ -21,7 +21,7 @@ return {
             vim.notify("Buffer autoformatting disabled", vim.log.levels.WARN, { title = "Format" })
           end
         end,
-        desc = "Toggle autoformat (buffer)"
+        desc = "Toggle autoformat (buffer)",
       },
       {
         "<leader>uF",
@@ -37,7 +37,7 @@ return {
             vim.notify("Global autoformatting disabled", vim.log.levels.WARN, { title = "Format" })
           end
         end,
-        desc = "Toggle autoformat (global)"
+        desc = "Toggle autoformat (global)",
       },
     },
     opts = {
@@ -53,9 +53,7 @@ return {
           return { timout_ms = 500, lsp_fallback = true }
         end
       end,
-      formatters_by_ft = {
-        lua = { "stylua" },
-      },
+      formatters_by_ft = {},
     },
     config = function(_, opts)
       require("conform").setup(opts)

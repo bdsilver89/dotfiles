@@ -36,35 +36,16 @@ return {
           "rafamadriz/friendly-snippets",
         },
       },
-      {
-        "folke/lazydev.nvim",
-        ft = "lua",
-        cmd = "LazyDev",
-        opts = {
-          library = {
-            { path = "lazy.nvim", words = { "lazy.nvim" } },
-          },
-        },
-      },
-      {
-        "Saecki/crates.nvim",
-        ft = "toml",
-        opts = {
-          completion = {
-            cmp = { enabled = true },
-          },
-        },
-      },
     },
-    config = function()
+    opts = function()
       local cmp = require("cmp")
       local defaults = require("cmp.config.default")()
 
       vim.api.nvim_set_hl(0, "CmpGhostText", { link = "Comment", default = true })
-      cmp.setup({
+      local opts = {
         auto_brackets = {},
         completion = {
-          completeopt = "menu,menuone,noinsert"
+          completeopt = "menu,menuone,noinsert",
         },
         snippet = {
           expand = function(args)
@@ -93,7 +74,6 @@ return {
           { name = "buffer" },
           { name = "snippets" },
           { name = "lazydev" },
-          { name = "crates" },
         }),
         -- TODO: formatting?
         experimental = {
@@ -102,7 +82,16 @@ return {
           },
         },
         sorting = defaults.sorting,
-      })
+      }
+
+      return opts
+    end,
+    config = function(_, opts)
+      for _, source in ipairs(opts.sources) do
+        source.group_index = source.group_index or 1
+      end
+      local cmp = require("cmp")
+      cmp.setup(opts)
     end,
   },
 
