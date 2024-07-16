@@ -46,6 +46,15 @@ return {
           },
         },
       },
+      {
+        "Saecki/crates.nvim",
+        ft = "toml",
+        opts = {
+          completion = {
+            cmp = { enabled = true },
+          },
+        },
+      },
     },
     config = function()
       local cmp = require("cmp")
@@ -82,8 +91,9 @@ return {
           { name = "path" },
         }, {
           { name = "buffer" },
-          { name = "lazydev" },
           { name = "snippets" },
+          { name = "lazydev" },
+          { name = "crates" },
         }),
         -- TODO: formatting?
         experimental = {

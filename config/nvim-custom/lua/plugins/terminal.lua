@@ -41,6 +41,7 @@ return {
       }
 
       if vim.fn.executable("lazygit") == 1 then
+        -- lazygit viewer
         keys[#keys + 1] = {
           "<leader>gg",
           function()
@@ -48,6 +49,20 @@ return {
           end,
           desc = "Toggleterm lazygit",
         }
+
+        -- lazygit line blame
+        keys[#keys + 1] = {
+          "<leader>gb",
+          function()
+            local cursor = vim.api.nvim_win_get_cursor(0)
+            local line = cursor[1]
+            local file = vim.api.nvim_buf_get_name(0)
+            local cmd = { "git", "log", "-n", "3", "-u", "-L", line .. ",+1:" .. file }
+            term(table.concat(cmd, " "))
+          end,
+          desc = "Toggleterm lazygit blame",
+        }
+
       end
       if vim.fn.executable("node") == 1 then
         keys[#keys + 1] = {

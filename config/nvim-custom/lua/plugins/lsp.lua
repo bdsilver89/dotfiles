@@ -3,13 +3,14 @@ return {
     "neovim/nvim-lspconfig",
     event = { "BufReadPost", "BufNewFile" },
     dependencies = {
-      { "j-hui/fidget.nvim", opts = {} },
-      "b0o/SchemaStore.nvim",
+      { "j-hui/fidget.nvim",   opts = {} },
+      { "b0o/SchemaStore.nvim" },
+      {
+        "mrcjkb/rustaceanvim",
+        version = "^4",
+        lazy = false,
+      },
     },
-    -- opts = {
-    --   servers = {},
-    --   setup = {},
-    -- },
     config = function()
       vim.api.nvim_create_autocmd("LspAttach", {
         group = vim.api.nvim_create_augroup("config_lsp_attach", { clear = true }),
@@ -28,6 +29,7 @@ return {
           map("gy", require("telescope.builtin").lsp_type_definitions, "Goto type defintion")
           map("<leader>cr", vim.lsp.buf.rename, "Rename")
           map("<leader>ca", vim.lsp.buf.code_action, "Code action")
+          map("<leader>cd", vim.diagnostic.open_float, "Line diagnostics")
 
           -- word highlight
           if client and client.server_capabilities.documentHighlightProvider then
@@ -127,7 +129,7 @@ return {
         },
 
         clangd = {
-          mason = false,
+          mason = false, -- do not use mason clangd, use system version to match the compiler
         },
 
         pyright = {},

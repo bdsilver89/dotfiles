@@ -1,7 +1,6 @@
 return {
   -- icons
   -- { "nvim-tree/nvim-web-devicons", enabled = vim.g.enable_icons, lazy = true },
-
   {
     "echasnovski/mini.icons",
     lazy = true,
@@ -10,9 +9,24 @@ return {
       file = {
         [".keep"] = { glyph = "󰊢", hl = "MiniIconsGrey" },
         ["devcontainer.json"] = { glyph = "", hl = "MiniIconsAzure" },
+
+        -- go
+        [".go-version"] = { glyph = "", hl = "MiniIconsBlue" },
+
+        -- typescript
+        [".eslintrc.js"] = { glyph = "󰱺", hl = "MiniIconsYellow" },
+        [".node-version"] = { glyph = "", hl = "MiniIconsGreen" },
+        [".prettierrc"] = { glyph = "", hl = "MiniIconsPurple" },
+        [".yarnrc.yml"] = { glyph = "", hl = "MiniIconsBlue" },
+        ["eslint.config.js"] = { glyph = "󰱺", hl = "MiniIconsYellow" },
+        ["package.json"] = { glyph = "", hl = "MiniIconsGreen" },
+        ["tsconfig.json"] = { glyph = "", hl = "MiniIconsAzure" },
+        ["tsconfig.build.json"] = { glyph = "", hl = "MiniIconsAzure" },
+        ["yarn.lock"] = { glyph = "", hl = "MiniIconsBlue" },
       },
       filetype = {
         dotenv = { glyph = "", hl = "MiniIconsYellow" },
+        gotmpl = { glyph = "󰟓", hl = "MiniIconsGrey" },
       },
     },
     init = function()
@@ -25,6 +39,20 @@ return {
 
   -- ui components
   { "MunifTanjim/nui.nvim", lazy = true },
+
+  -- {
+  --   "nvim-lualine/lualine.nvim",
+  --   event = { "BufReadPost", "BufNewFile" },
+  --   init = function()
+  --     vim.g.lualine_laststatus = vim.o.laststatus
+  --     if vim.fn.argc(-1) > 0 then
+  --       vim.o.statusline = " "
+  --     else
+  --       vim.o.laststatus = 0
+  --     end
+  --   end,
+  --   opts = {},
+  -- },
 
   -- indent guides
   {
@@ -53,6 +81,34 @@ return {
       },
     },
     main = "ibl",
+  },
+
+  {
+    "nvimdev/dashboard-nvim",
+    event = "VimEnter",
+    opts = function()
+      local logo = {
+        '',
+        '███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗',
+        '████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║',
+        '██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║',
+        '██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║',
+        '██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║',
+        '╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝',
+        '',
+      }
+      local opts = {
+        theme = "hyper",
+        hide = {
+          statusline = false,
+        },
+        config = {
+          header = logo,
+          shortcut = {},
+        },
+      }
+      return opts
+    end,
   },
 
   -- catppuccin colorscheme

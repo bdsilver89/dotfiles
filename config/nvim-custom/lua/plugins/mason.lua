@@ -1,7 +1,7 @@
 return {
   {
     "WhoIsSethDaniel/mason-tool-installer.nvim",
-    enabled = vim.g.enable_mason_packages,
+    enabled = not vim.g.prefer_git,
     cmd = {
       "MasonToolsInstall",
       "MasonToolsInstallSync",
@@ -12,7 +12,7 @@ return {
     dependencies = {
       {
         "williamboman/mason.nvim",
-        enabled = vim.g.enable_mason_packages,
+        enabled = not vim.g.prefer_git,
         cmd = {
           "Mason",
           "MasonInstall",
@@ -32,12 +32,12 @@ return {
       },
       {
         "williamboman/mason-lspconfig.nvim",
-        enabled = vim.g.enable_mason_packages,
+        enabled = not vim.g.prefer_git,
         opts = {},
       },
       -- {
       --   "jay-babu/mason-nvim-dap.nvim",
-      --   enabled = vim.g.enable_mason_packages,
+      --   enabled = not vim.g.prefer_git,
       --   opts = {},
       -- },
     },
