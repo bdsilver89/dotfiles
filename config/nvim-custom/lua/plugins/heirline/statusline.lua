@@ -113,9 +113,12 @@ local function git()
         if not branch or branch == "" then
           return
         end
-        -- local icon = require("config.icons").get_icon("git", "Branch")
-        local icon = require("mini.icons").get("filetype", "git")
-        return " " .. icon .. " " .. self.status_dict.head
+        if vim.g.enable_icons then
+          local icon = require("mini.icons").get("filetype", "git")
+          return " " .. icon .. " " .. self.status_dict.head
+        else
+          return " " .. self.status_dict.head
+        end
       end,
       hl = function(self)
         return {
@@ -138,7 +141,7 @@ local function git()
         return self.added ~= 0
       end,
       provider = function(self)
-        return "+" .. self.added
+        return (vim.g.enable_icons and " " or "+") .. self.added .. (vim.g.enable_icons and " " or "")
       end,
       hl = { fg = "git_add" },
     },
@@ -147,7 +150,7 @@ local function git()
         return self.removed ~= 0
       end,
       provider = function(self)
-        return "-" .. self.removed
+        return (vim.g.enable_icons and " " or "-") .. self.removed .. (vim.g.enable_icons and " " or "")
       end,
       hl = { fg = "git_del" },
     },
@@ -156,7 +159,7 @@ local function git()
         return self.changed ~= 0
       end,
       provider = function(self)
-        return "~" .. self.changed
+        return (vim.g.enable_icons and " " or "~") .. self.changed .. (vim.g.enable_icons and " " or "")
       end,
       hl = { fg = "git_change" },
     },
@@ -182,29 +185,25 @@ local function diagnostics()
     end,
     {
       provider = function(self)
-        return self.diagnostics[1]
-            and (require("config.icons").get_icon("diagnostics", "Error") .. self.diagnostics[1] .. " ")
+        return self.diagnostics[1] and ((vim.g.enable_icons and " " or "E") .. self.diagnostics[1] .. " ")
       end,
       hl = "DiagnosticError",
     },
     {
       provider = function(self)
-        return self.diagnostics[2]
-            and (require("config.icons").get_icon("diagnostics", "Warn") .. self.diagnostics[2] .. " ")
+        return self.diagnostics[2] and ((vim.g.enable_icons and " " or "W") .. self.diagnostics[2] .. " ")
       end,
       hl = "DiagnosticWarn",
     },
     {
       provider = function(self)
-        return self.diagnostics[3]
-            and (require("config.icons").get_icon("diagnostics", "Info") .. self.diagnostics[3] .. " ")
+        return self.diagnostics[3] and ((vim.g.enable_icons and " " or "I") .. self.diagnostics[3] .. " ")
       end,
       hl = "DiagnosticInfo",
     },
     {
       provider = function(self)
-        return self.diagnostics[4]
-            and (require("config.icons").get_icon("diagnostics", "Hint") .. self.diagnostics[4] .. " ")
+        return self.diagnostics[4] and ((vim.g.enable_icons and " " or "H") .. self.diagnostics[4] .. " ")
       end,
       hl = "DiagnosticHint",
     },
@@ -362,7 +361,7 @@ local function filetype()
       self.hl = hl
     end,
     provider = function(self)
-      return self.icon .. " " .. vim.bo.filetype
+      return (vim.g.enable_icons and (self.icon .. " ") or "") .. vim.bo.filetype
     end,
     hl = function(self)
       return { fg = self.hl }
@@ -420,7 +419,7 @@ local function treesitter()
       return has_parser
     end,
     provider = function()
-      return "TS "
+      return "TS"
     end,
     hl = { fg = "green" }, -- bg = "bright_bg" },
   }
@@ -434,6 +433,8 @@ local function filemetadata()
     fileformat(),
     space(),
     filetype(),
+    space(),
+    treesitter(),
     -- filesize(),
     {
       provider = "]"
@@ -489,7 +490,7 @@ function M.setup()
       condition = function()
         require("heirline.conditions").buffer_matches({
           buftype = { "nofile", "prompt", "help", "quickfix" },
-          filetype = { "^git.*", "fugitive" },
+          filetype = { "^git.*", "fugitive", "^Neogit.*" },
         })
       end,
       align(),
@@ -512,9 +513,8 @@ function M.setup()
       align(),
       cmd_info(),
       align(),
-      -- diagnostics(),
+      diagnostics(),
       lsp_active(),
-      -- treesitter(),
       filemetadata(),
       space(),
       nav(),
