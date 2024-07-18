@@ -71,10 +71,13 @@ return {
     cmd = "LazyDev",
     opts = {
       library = {
+        { path = "luvit-meta/library", words = { "vim%.uv" } },
         { path = "lazy.nvim", words = { "lazy.nvim" } },
       },
     },
   },
+
+  { "Bilal2453/luvit-meta", lazy = true },
 
   {
     "hrsh7th/nvim-cmp",

@@ -29,6 +29,7 @@ return {
           map("<leader>cr", vim.lsp.buf.rename, "Rename")
           map("<leader>ca", vim.lsp.buf.code_action, "Code action")
           map("<leader>cd", vim.diagnostic.open_float, "Line diagnostics")
+          map("<leader>cl", "<cmd>LspInfo<cr>", "Info")
 
           -- word highlight
           if client and client.server_capabilities.documentHighlightProvider then
@@ -112,6 +113,7 @@ return {
         all_mlsp_servers = vim.tbl_keys(require("mason-lspconfig.mappings.server").lspconfig_to_package)
       end
 
+      local use_mason = false
       local function setup(server)
         local server_opts = vim.tbl_deep_extend("force", {
           capabilities = vim.deepcopy(capabilities),
@@ -122,7 +124,19 @@ return {
             return
           end
         end
-        require("lspconfig")[server].setup(server_opts)
+
+        -- prevent mason-disabled lspconfig from trying to setup a lsp that is not in the PATH
+        local should_setup = true
+          if
+            not use_mason
+            and vim.fn.executable( require("lspconfig.server_configurations." .. server).default_config.cmd[1]) == 0
+          then
+          should_setup = false
+        end
+
+        if should_setup then
+          require("lspconfig")[server].setup(server_opts)
+        end
       end
 
       -- using mason-tool-installer offloads mason-lspconfig setup here
@@ -145,6 +159,7 @@ return {
       end
 
       if have_mason then
+        use_mason = true
         mlsp.setup({
           ensure_installed = vim.tbl_deep_extend("force", ensure_installed, {}),
           handlers = { setup },
