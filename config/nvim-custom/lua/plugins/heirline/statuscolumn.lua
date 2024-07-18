@@ -1,8 +1,6 @@
-local M = {}
+local Common = require("plugins.heirline.common")
 
-local function align()
-  return { provider = "%=" }
-end
+local M = {}
 
 local function spacer()
   return { provider = " ", hl = "HeirlineStatusColumn" }
@@ -162,7 +160,7 @@ function M.setup()
       })
     end,
     signcolumn(),
-    align(),
+    Common.align(),
     numbercolumn(),
     foldcolumn(),
     gitsigncolumn(),

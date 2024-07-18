@@ -1,3 +1,5 @@
+local Common = require("plugins.heirline.common")
+
 local M = {}
 
 local mode_names = {
@@ -52,18 +54,6 @@ local mode_colors = {
   ["!"] = "red",
   t = "red",
 }
-
-local function align()
-  return {
-    provider = "%=",
-  }
-end
-
-local function space()
-  return {
-    provider = " ",
-  }
-end
 
 local function mode(with_text)
   return {
@@ -129,14 +119,14 @@ local function git()
       end,
     },
 
-    space(),
+    Common.space(),
 
     -- diff
     {
       condition = function(self)
         return self.has_changes and not vim.g.enable_icons
       end,
-      provider = " ("
+      provider = " (",
     },
     {
       condition = function(self)
@@ -169,9 +159,9 @@ local function git()
       condition = function(self)
         return self.has_changes and not vim.g.enable_icons
       end,
-      provider = ")"
+      provider = ")",
     },
-    space(),
+    Common.space(),
     hl = { bg = "bright_bg" },
   }
 end
@@ -237,7 +227,7 @@ local function fileicon()
       local has_devicons, devicons = pcall(require, "nvim-web-devicons")
       if has_devicons then
         self.icon, self.icon_color =
-            devicons.get_icon_color(self.filename, vim.fn.fnamemodify(self.filename, ":e"), { default = true })
+          devicons.get_icon_color(self.filename, vim.fn.fnamemodify(self.filename, ":e"), { default = true })
       end
     end,
     provider = function(self)
@@ -281,7 +271,7 @@ local function filenameblock()
     end,
     -- fileicon(),
     filename(),
-    space(),
+    Common.space(),
     -- fileflags(),
     -- hl = { bg = "bright_bg" },
   }
@@ -345,7 +335,7 @@ local function fileformat()
         return vim.bo.fileencoding
       end,
     },
-    space(),
+    Common.space(),
     {
       provider = function()
         -- return string.upper(vim.bo.fileformat)
@@ -430,16 +420,16 @@ end
 local function filemetadata()
   return {
     {
-      provider = "["
+      provider = "[",
     },
     fileformat(),
-    space(),
+    Common.space(),
     filetype(),
-    space(),
+    Common.space(),
     treesitter(),
     -- filesize(),
     {
-      provider = "]"
+      provider = "]",
     },
     -- hl = { bg = "bright_bg" },
   }
@@ -467,7 +457,7 @@ local function nav()
         return text
       end,
     },
-    space(),
+    Common.space(),
     {
       static = {
         sbar = { "▁", "▂", "▃", "▄", "▅", "▆", "▇", "█" },
@@ -495,7 +485,7 @@ function M.setup()
           filetype = { "^git.*", "fugitive", "^Neogit.*" },
         })
       end,
-      align(),
+      Common.align(),
     },
 
     -- inactive statusline
@@ -503,24 +493,24 @@ function M.setup()
       condition = function()
         return require("heirline.conditions").is_not_active()
       end,
-      align(),
+      Common.align(),
     },
 
     -- normal statusline
     {
       mode(true),
       git(),
-      space(),
+      Common.space(),
       filenameblock(),
-      align(),
+      Common.align(),
       cmd_info(),
-      align(),
+      Common.align(),
       diagnostics(),
       lsp_active(),
       filemetadata(),
-      space(),
+      Common.space(),
       nav(),
-      space(),
+      Common.space(),
       mode(),
     },
   }

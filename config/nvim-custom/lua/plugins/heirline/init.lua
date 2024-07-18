@@ -21,7 +21,6 @@ local function setup_colors()
   }
 end
 
-
 return {
   {
     "rebelot/heirline.nvim",

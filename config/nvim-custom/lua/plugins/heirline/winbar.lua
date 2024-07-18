@@ -1,10 +1,6 @@
-local M = {}
+local Common = require("plugins.heirline.common")
 
-local function space()
-  return {
-    provider = " "
-  }
-end
+local M = {}
 
 -- local sep = "  "
 local sep = " / "
@@ -199,7 +195,7 @@ local function filenameblock()
       })
     end,
     fileicon(),
-    space(),
+    Common.space(),
     filename(),
     fileflags(),
   }
