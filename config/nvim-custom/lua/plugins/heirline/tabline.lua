@@ -251,7 +251,7 @@ function M.setup()
 
   return {
     -- tabline_offset(),
-    bufferline(),
+    -- bufferline(),
     tabpages(),
   }
 end

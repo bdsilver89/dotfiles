@@ -31,28 +31,28 @@ return {
           map("<leader>cd", vim.diagnostic.open_float, "Line diagnostics")
           map("<leader>cl", "<cmd>LspInfo<cr>", "Info")
 
-          -- word highlight
-          if client and client.server_capabilities.documentHighlightProvider then
-            local group = vim.api.nvim_create_augroup("config_lsp_highlight", { clear = false })
-            vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
-              buffer = buf,
-              group = group,
-              callback = vim.lsp.buf.document_highlight,
-            })
-            vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
-              buffer = buf,
-              group = group,
-              callback = vim.lsp.buf.clear_references,
-            })
-            vim.api.nvim_create_autocmd("LspDetach", {
-              buffer = buf,
-              group = group,
-              callback = function(event2)
-                vim.lsp.buf.clear_references()
-                vim.api.nvim_clear_autocmds({ group = "config_lsp_highlight", buffer = event2.buf })
-              end,
-            })
-          end
+          -- NOTE: word highlight, but using vim-illuminate instead...
+          -- if client and client.server_capabilities.documentHighlightProvider then
+          --   local group = vim.api.nvim_create_augroup("config_lsp_highlight", { clear = false })
+          --   vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
+          --     buffer = buf,
+          --     group = group,
+          --     callback = vim.lsp.buf.document_highlight,
+          --   })
+          --   vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
+          --     buffer = buf,
+          --     group = group,
+          --     callback = vim.lsp.buf.clear_references,
+          --   })
+          --   vim.api.nvim_create_autocmd("LspDetach", {
+          --     buffer = buf,
+          --     group = group,
+          --     callback = function(event2)
+          --       vim.lsp.buf.clear_references()
+          --       vim.api.nvim_clear_autocmds({ group = "config_lsp_highlight", buffer = event2.buf })
+          --     end,
+          --   })
+          -- end
 
           -- inlay hints
           if client and client.supports_method("textDocument/inlayHint", { bufnr = buf }) then
@@ -127,10 +127,10 @@ return {
 
         -- prevent mason-disabled lspconfig from trying to setup a lsp that is not in the PATH
         local should_setup = true
-          if
-            not use_mason
-            and vim.fn.executable( require("lspconfig.server_configurations." .. server).default_config.cmd[1]) == 0
-          then
+        if
+          not use_mason
+          and vim.fn.executable(require("lspconfig.server_configurations." .. server).default_config.cmd[1]) == 0
+        then
           should_setup = false
         end
 
@@ -166,5 +166,42 @@ return {
         })
       end
     end,
+  },
+
+  {
+    "RRethy/vim-illuminate",
+    event = { "BufReadPost", "BufNewFile" },
+    opts = {
+      delay = 200,
+      large_file_cutoff = 2000,
+      large_file_overrides = {
+        providers = { "lsp" },
+      },
+    },
+    config = function(_, opts)
+      require("illuminate").configure(opts)
+
+      local function map(key, dir, buffer)
+        vim.keymap.set("n", key, function()
+          require("illuminate")["goto_" .. dir .. "_reference"](false)
+        end, { desc = dir:sub(1, 1):upper() .. dir:sub(2) .. " Reference", buffer = buffer })
+      end
+
+      map("]]", "next")
+      map("[[", "prev")
+
+      -- also set it after loading ftplugins, since a lot overwrite [[ and ]]
+      vim.api.nvim_create_autocmd("FileType", {
+        callback = function()
+          local buffer = vim.api.nvim_get_current_buf()
+          map("]]", "next", buffer)
+          map("[[", "prev", buffer)
+        end,
+      })
+    end,
+    keys = {
+      { "]]", desc = "Next Reference" },
+      { "[[", desc = "Prev Reference" },
+    },
   },
 }

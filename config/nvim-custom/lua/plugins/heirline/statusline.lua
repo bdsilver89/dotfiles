@@ -119,7 +119,12 @@ local function git()
       end,
     },
 
-    Common.space(),
+    {
+      condition = function(self)
+        return self.has_changes
+      end,
+      Common.space(),
+    },
 
     -- diff
     {
