@@ -1,5 +1,5 @@
 local lsp = vim.g.python_lsp or "pyright"
-local ruff = vim.g.python_ruff or "ruff_lsp"
+local ruff = vim.g.python_ruff or "ruff"
 
 return {
   {
