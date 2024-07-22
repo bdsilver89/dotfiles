@@ -33,6 +33,7 @@ vim.api.nvim_create_autocmd("Filetype", {
     "checkhealth",
     "fugitive",
     "fugitiveblame",
+    "grug-far",
     "help",
     "lspinfo",
     "notify",
@@ -69,7 +70,7 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
   callback = function()
     vim.opt_local.conceallevel = 0
   end,
-  desc = "conceallevel for json"
+  desc = "conceallevel for json",
 })
 
 vim.api.nvim_create_autocmd("BufWritePre", {

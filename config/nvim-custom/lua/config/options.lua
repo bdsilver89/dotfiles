@@ -34,6 +34,10 @@ opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 opt.foldlevelstart = 99
 opt.formatoptions = "jcroqlnt"
 opt.grepformat = "%f:%l:%c:%m"
+if vim.fn.executable("rg") == 1 then
+  opt.grepprg = "rg --vimgrep"
+end
+opt.jumpoptions = "view"
 opt.hlsearch = true
 opt.ignorecase = true
 opt.infercase = true
