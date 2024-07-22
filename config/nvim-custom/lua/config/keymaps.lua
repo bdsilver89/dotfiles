@@ -64,5 +64,33 @@ require("config.utils").toggle("<leader>ud", {
   set = vim.diagnostic.enable,
 })
 
+require("config.utils").toggle("<leader>uf", {
+  name = "Autoformat (Global)",
+  get = function()
+    return vim.g.autoformat == nil or vim.g.autoformat
+  end,
+  set = function(state)
+    vim.g.autoformat = state
+    vim.b.autoformat = nil
+  end,
+})
+
+require("config.utils").toggle("<leader>uF", {
+  name = "Autoformat (Buffer)",
+  get = function()
+    local buf = vim.api.nvim_get_current_buf()
+    local gaf = vim.g.autoformat
+    local baf = vim.b[buf].autoformat
+
+    if baf ~= nil then
+      return baf
+    end
+    return gaf == nil or gaf
+  end,
+  set = function(state)
+    vim.b.autoformat = state
+  end,
+})
+
 -- misc
 vim.keymap.set("n", "<leader>l", "<cmd>Lazy<cr>", { desc = "Lazy package manager" })
