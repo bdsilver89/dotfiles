@@ -229,6 +229,7 @@ return {
         neotree = true,
         noice = true,
         notify = true,
+        overseer = true,
         semantic_tokens = true,
         telescope = true,
         treesitter = true,

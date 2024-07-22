@@ -35,9 +35,9 @@ return {
     cmd = { "ToggleTerm", "TermExec" },
     keys = function()
       local keys = {
-        { "<leader>tf", "<cmd>ToggleTerm direction=float<cr>", desc = "Toggleterm float" },
-        { "<leader>th", "<cmd>ToggleTerm size=10 direction=horizontal<cr>", desc = "Toggleterm horizontal" },
-        { "<leader>tv", "<cmd>ToggleTerm size=80 direction=vertical<cr>", desc = "Toggleterm vertical" },
+        { "<leader>nf", "<cmd>ToggleTerm direction=float<cr>", desc = "Toggleterm float" },
+        { "<leader>nh", "<cmd>ToggleTerm size=10 direction=horizontal<cr>", desc = "Toggleterm horizontal" },
+        { "<leader>nv", "<cmd>ToggleTerm size=80 direction=vertical<cr>", desc = "Toggleterm vertical" },
       }
 
       if vim.fn.executable("lazygit") == 1 then
@@ -84,7 +84,7 @@ return {
       end
       if vim.fn.executable("node") == 1 then
         keys[#keys + 1] = {
-          "<leader>tn",
+          "<leader>nn",
           function()
             term("node")
           end,
@@ -94,7 +94,7 @@ return {
       local python = vim.fn.executable("python") == 1 and "python" or vim.fn.executable("python3") == 1 and "python3"
       if python then
         keys[#keys + 1] = {
-          "<leader>tp",
+          "<leader>np",
           function()
             term(python)
           end,

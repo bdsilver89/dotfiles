@@ -17,9 +17,21 @@ return {
       { "<leader>tw", function() require("neotest").watch.toggle(vim.fn.expand("%")) end,                 desc = "Toggle watch" },
       { "<leader>td", function() require("neotest").run.run({ strategy = "dap" }) end,                    desc = "Debug nearest" },
     },
-    opts = {
-      adapters = {},
-    },
+    opts = function()
+      return {
+        adapters = {},
+        consumers = {
+          overseer = require("neotest.consumers.overseer"),
+        },
+        status = { virtual_text = true },
+        output = { open_on_run = true },
+        quickfix = {
+          open = function()
+            require("trouble").open({ mode = "quickfix", focus = false })
+          end,
+        },
+      }
+    end,
     config = function(_, opts)
       local neotest_ns = vim.api.nvim_create_namespace("neotest")
       vim.diagnostic.config({
@@ -57,16 +69,7 @@ return {
         end
       end
 
-      require("neotest").setup({
-        adapters = adapters,
-        status = { virtual_text = true },
-        output = { open_on_run = true },
-        quickfix = {
-          open = function()
-            require("trouble").open({ mode = "quickfix", focus = false })
-          end,
-        },
-      })
+      require("neotest").setup(opts)
     end,
   },
 }
