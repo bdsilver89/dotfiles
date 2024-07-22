@@ -64,6 +64,26 @@ return {
           { source = "diagnostics" },
           { source = "git_status" },
         },
+        filesystem = {
+          bind_to_cwd = false,
+          follow_current_file = {
+            enabled = true,
+          },
+          use_libuv_file_watcher = true,
+        },
+        window = {
+          mappings = {
+            ["l"] = "open",
+            ["h"] = "close_node",
+            ["<space>"] = "none",
+            ["P"] = { "toggle_preview", config = { use_float = false } },
+          },
+        },
+        default_component_configs = {
+          indent = {
+            with_expanders = true,
+          },
+        },
       },
     },
   },

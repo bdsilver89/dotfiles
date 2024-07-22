@@ -35,7 +35,6 @@ return {
         -- "rst",
         -- "sql",
         -- "terraform",
-        "toml",
         "vim",
         "vimdoc",
         "xml",

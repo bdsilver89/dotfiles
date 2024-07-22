@@ -3,7 +3,9 @@ if not vim.g.vscode then
 end
 
 local enabled = {
+  "flash.nvim",
   "lazy.nvim",
+  "nvim-autopairs",
   "nvim-treesitter",
   "nvim-treesitter-textobjects",
 }
