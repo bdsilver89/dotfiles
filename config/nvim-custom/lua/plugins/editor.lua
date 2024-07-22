@@ -135,4 +135,18 @@ return {
     },
     opts = {},
   },
+
+  {
+    "folke/flash.nvim",
+    event = "VeryLazy",
+    -- stylua: ignore
+    keys = {
+      { "s", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash" },
+      { "S", mode = { "n", "x", "o" }, function() require("flash").treesitter() end, desc = "Flash treesitter" },
+      { "r", mode = "o", function() require("flash").remote() end, desc = "Flash remote" },
+      { "R", mode = { "o", "x" }, function() require("flash").treesitter_search() end, desc = "Treesitter search" },
+      { "<c-s>", mode = { "o", "x" }, function() require("flash").toggle() end, desc = "Flash toggle search" },
+    },
+    opts = {},
+  },
 }
