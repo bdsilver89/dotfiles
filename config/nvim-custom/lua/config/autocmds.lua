@@ -35,7 +35,6 @@ vim.api.nvim_create_autocmd("Filetype", {
     "fugitive",
     "fugitiveblame",
     "gitsigns.blame",
-    "grug-far",
     "help",
     "lspinfo",
     "neotest-summary",
