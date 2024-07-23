@@ -4,6 +4,7 @@ end
 
 local enabled = {
   "flash.nvim",
+  "vim-illuminate",
   "lazy.nvim",
   "nvim-autopairs",
   "nvim-treesitter",
