@@ -21,15 +21,17 @@ return {
             vim.keymap.set("n", lhs, rhs, { buffer = event.buf, desc = "LSP: " .. desc })
           end
 
-          map("gd", require("telescope.builtin").lsp_definitions, "Goto definition")
-          map("gr", require("telescope.builtin").lsp_references, "Goto references")
+          -- stylua: ignore start
+          map("gd", function() require("telescope.builtin").lsp_definitions() end, "Goto definition")
+          map("gr", function() require("telescope.builtin").lsp_references() end, "Goto references")
           map("gD", vim.lsp.buf.declaration, "Goto definition")
-          map("gI", require("telescope.builtin").lsp_implementations, "Goto implementation")
-          map("gy", require("telescope.builtin").lsp_type_definitions, "Goto type defintion")
+          map("gI", function() require("telescope.builtin").lsp_implementations() end, "Goto implementation")
+          map("gy", function() require("telescope.builtin").lsp_type_definitions() end, "Goto type defintion")
           map("<leader>cr", vim.lsp.buf.rename, "Rename")
           map("<leader>ca", vim.lsp.buf.code_action, "Code action")
           map("<leader>cd", vim.diagnostic.open_float, "Line diagnostics")
           map("<leader>cl", "<cmd>LspInfo<cr>", "Info")
+          -- stylua: ignore end
 
           -- NOTE: word highlight, but using vim-illuminate instead...
           -- if client and client.server_capabilities.documentHighlightProvider then

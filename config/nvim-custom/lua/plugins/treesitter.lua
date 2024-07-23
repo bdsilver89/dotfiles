@@ -83,21 +83,22 @@ return {
   {
     "nvim-treesitter/nvim-treesitter-context",
     event = { "BufReadPost", "BufNewFile" },
-    keys = {
-      {
-        "<leader>ut",
-        function()
-          local tsc = require("treesitter-context")
-          tsc.toggle()
-          if tsc.enabled() then
-            vim.notify("Enabled treesitter context", vim.log.levels.INFO, { title = "Option" })
+    opts = function()
+      local tsc = require("treesitter-context")
+
+      require("config.utils").toggle("<leader>ut", {
+        name = "Treesitter Context",
+        get = tsc.enabled,
+        set = function(state)
+          if state then
+            tsc.enable()
           else
-            vim.notify("Disabled treesitter context", vim.log.levels.WARN, { title = "Option" })
+            tsc.disable()
           end
         end,
-        desc = "Toggle treesitter context",
-      },
-    },
-    opts = { mode = "cursor", max_lines = 3 },
+      })
+
+      return { mode = "cursor", max_lines = 3 }
+    end,
   },
 }

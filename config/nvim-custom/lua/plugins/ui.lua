@@ -26,20 +26,6 @@ return {
   -- ui components
   { "MunifTanjim/nui.nvim", lazy = true },
 
-  -- {
-  --   "nvim-lualine/lualine.nvim",
-  --   event = { "BufReadPost", "BufNewFile" },
-  --   init = function()
-  --     vim.g.lualine_laststatus = vim.o.laststatus
-  --     if vim.fn.argc(-1) > 0 then
-  --       vim.o.statusline = " "
-  --     else
-  --       vim.o.laststatus = 0
-  --     end
-  --   end,
-  --   opts = {},
-  -- },
-
   -- indent guides
   {
     "lukas-reineke/indent-blankline.nvim",
@@ -71,7 +57,7 @@ return {
 
   {
     "nvimdev/dashboard-nvim",
-    event = "VimEnter",
+    lazy = false,
     opts = function()
       local logo = {
         "",
@@ -93,6 +79,20 @@ return {
           shortcut = {},
         },
       }
+
+      -- open dashboard after closing lazy
+      if vim.o.filetype == "lazy" then
+        vim.api.nvim_create_autocmd("WinClosed", {
+          pattern = tostring(vim.api.nvim_get_current_win()),
+          once = true,
+          callback = function()
+            vim.schedule(function()
+              vim.api.nvim_exec_autocmds("UIEnter", { group = "dashboard" })
+            end)
+          end,
+        })
+      end
+
       return opts
     end,
   },
