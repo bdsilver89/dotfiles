@@ -2,7 +2,7 @@ return {
   {
     "hrsh7th/nvim-cmp",
     version = false,
-    event = "InsertEnter",
+    event = { "InsertEnter", "CmdlineEnter" },
     keys = {
       {
         "<tab>",
@@ -24,9 +24,11 @@ return {
       },
     },
     dependencies = {
+      "onsails/lspkind.nvim",
       "hrsh7th/cmp-nvim-lsp",
       "hrsh7th/cmp-buffer",
       "hrsh7th/cmp-path",
+      "hrsh7th/cmp-cmdline",
       {
         "garymjr/nvim-snippets",
         opts = {
@@ -67,6 +69,14 @@ return {
             fallback()
           end,
         }),
+        formatting = {
+          format = require("lspkind").cmp_format({
+            mode = vim.g.enable_icons and "symbol_text" or "text",
+            maxwidth = 50,
+            ellipsis_char = "...",
+            show_labelDetails = true,
+          }),
+        },
         sources = cmp.config.sources({
           { name = "nvim_lsp" },
           { name = "path" },
@@ -75,7 +85,6 @@ return {
           { name = "snippets" },
           { name = "lazydev" },
         }),
-        -- TODO: formatting?
         experimental = {
           ghost_text = {
             hl_group = "CmpGhostText",
@@ -92,6 +101,13 @@ return {
       end
       local cmp = require("cmp")
       cmp.setup(opts)
+
+      cmp.setup.cmdline(":", {
+        mapping = require("cmp").mapping.preset.cmdline(),
+        sources = {
+          { name = "cmdline" },
+        },
+      })
     end,
   },
 
