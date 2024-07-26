@@ -4,7 +4,7 @@ return {
     event = { "BufReadPost", "BufNewFile" },
     dependencies = {
       { "j-hui/fidget.nvim", opts = {} },
-      { "williamboman/mason-lspconfig.nvim", enabled = not vim.g.prefer_git, config = function() end },
+      { "williamboman/mason-lspconfig.nvim", config = function() end },
     },
     opts = {
       servers = {},

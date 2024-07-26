@@ -84,7 +84,6 @@ return {
 
   {
     "jay-babu/mason-nvim-dap.nvim",
-    enabled = not vim.g.prefer_git,
     dependencies = "mason.nvim",
     cmd = { "DapInstall", "DapUninstall" },
     opts = {

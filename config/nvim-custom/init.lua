@@ -1,3 +1,4 @@
+-- source lazy.nvim
 local lazypath = vim.env.LAZY or vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.env.LAZY or vim.uv.fs_stat(lazypath)) then
   vim.fn.system({
@@ -21,8 +22,15 @@ if not pcall(require, "lazy") then
   vim.cmd.quit()
 end
 
-require("config.options")
+-- global vim options
+vim.g.mapleader = " "
+vim.g.maplocalleader = " "
 
+-- global PDE options
+-- enable glyph icons, if false fallsback to text icons
+vim.g.enable_icons = true
+
+-- lazy.nvim setup
 require("lazy").setup({
   -- base plugin configuration
   { import = "plugins" },
@@ -60,5 +68,4 @@ require("lazy").setup({
   },
 })
 
-require("config.keymaps")
-require("config.autocmds")
+require("config")

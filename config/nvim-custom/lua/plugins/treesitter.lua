@@ -73,9 +73,6 @@ return {
       },
     },
     config = function(_, opts)
-      if vim.g.prefer_git then
-        require("nvim-treesitter.install").prefer_git = true
-      end
       require("nvim-treesitter.configs").setup(opts)
     end,
   },

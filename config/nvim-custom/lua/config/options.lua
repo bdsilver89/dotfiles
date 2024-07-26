@@ -1,15 +1,3 @@
-vim.g.mapleader = " "
-vim.g.maplocalleader = " "
-
--- custom settings
-
--- set to true to use glyph icons, otherwise fallback to text icons
-vim.g.enable_icons = true
-
--- try to use git instead of curl where applicable
-vim.g.prefer_git = false
-
--- builtin settings
 local opt = vim.opt
 
 opt.clipboard = "unnamedplus"
