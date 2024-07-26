@@ -8,7 +8,8 @@ return {
   -- },
   {
     "NMAC427/guess-indent.nvim",
-    events = { "BufReadPost", "BufNewFile" },
+    event = { "BufReadPost", "BufNewFile" },
+    cmd = "GuessIndent",
     opts = {
       auto_cmd = true,
     },

@@ -37,6 +37,7 @@ require("lazy").setup({
   -- language-specific plugin configuration
   { import = "plugins.lang" },
 }, {
+  defaults = { lazy = true },
   ui = {
     backdrop = 100,
     icons = vim.g.enable_icons and {} or {
