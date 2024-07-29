@@ -1,4 +1,12 @@
--- source lazy.nvim
+-- global vim options
+vim.g.mapleader = " "
+vim.g.maplocalleader = " "
+
+-- global PDE options
+-- enable glyph icons, if false fallsback to text icons
+vim.g.enable_icons = true
+
+-- bootstrap lazy.nvim
 local lazypath = vim.env.LAZY or vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.env.LAZY or vim.uv.fs_stat(lazypath)) then
   local out = vim.fn.system({
@@ -15,6 +23,7 @@ if not (vim.env.LAZY or vim.uv.fs_stat(lazypath)) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+-- validate lazy.nvim
 if not pcall(require, "lazy") then
   vim.api.nvim_echo(
     { { ("Unable to load lazy from: %s\n"):format(lazypath), "ErrorMsg" }, { "Press any key to exit...", "MoreMsg" } },
@@ -24,14 +33,6 @@ if not pcall(require, "lazy") then
   vim.fn.getchar()
   vim.cmd.quit()
 end
-
--- global vim options
-vim.g.mapleader = " "
-vim.g.maplocalleader = " "
-
--- global PDE options
--- enable glyph icons, if false fallsback to text icons
-vim.g.enable_icons = true
 
 -- lazy.nvim setup
 require("lazy").setup({
@@ -67,6 +68,7 @@ require("lazy").setup({
   },
   ui = {
     backdrop = 100,
+    border = "rounded",
     icons = vim.g.enable_icons and {} or {
       cmd = "⌘",
       config = "🛠",
@@ -85,4 +87,6 @@ require("lazy").setup({
   },
 })
 
-require("config")
+require("config.options")
+require("config.autocmds")
+require("config.keymaps")

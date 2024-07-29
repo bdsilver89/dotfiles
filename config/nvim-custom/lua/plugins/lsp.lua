@@ -99,6 +99,8 @@ return {
         },
       })
 
+      require("lspconfig.ui.windows").default_options.border = "rounded"
+
       local servers = opts.servers
 
       local cmp_avail, cmp = pcall(require, "cmp_nvim_lsp")

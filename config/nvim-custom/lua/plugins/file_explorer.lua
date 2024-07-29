@@ -22,6 +22,9 @@ return {
           return name == ".." or name == ".git"
         end,
       },
+      float = {
+        border = "rounded",
+      },
     },
   },
 

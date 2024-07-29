@@ -90,6 +90,14 @@ return {
           },
         },
         sorting = defaults.sorting,
+        window = {
+          completion = {
+            border = "rounded",
+          },
+          documentation = {
+            border = "rounded",
+          },
+        },
       }
 
       return opts

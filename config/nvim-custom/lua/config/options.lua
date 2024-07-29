@@ -1,6 +1,7 @@
 local opt = vim.opt
 
-opt.clipboard = "unnamedplus"
+opt.breakindent = true
+opt.clipboard = "unnamed,unnamedplus"
 opt.cmdheight = 0
 opt.completeopt = { "menu", "menuone", "noselect" }
 opt.conceallevel = 2
@@ -25,10 +26,11 @@ opt.grepformat = "%f:%l:%c:%m"
 if vim.fn.executable("rg") == 1 then
   opt.grepprg = "rg --vimgrep"
 end
-opt.jumpoptions = "view"
 opt.hlsearch = true
 opt.ignorecase = true
+opt.inccommand = "split"
 opt.infercase = true
+opt.jumpoptions = "view"
 opt.laststatus = 3
 opt.linebreak = true
 opt.list = true
@@ -37,6 +39,7 @@ opt.number = true
 opt.pumheight = 10
 opt.relativenumber = true
 opt.scrolloff = 8
+opt.shiftround = true
 opt.shortmess:append({ W = true, I = true, c = true, C = true })
 opt.showmode = false
 opt.smoothscroll = true

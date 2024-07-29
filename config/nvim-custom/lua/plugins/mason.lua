@@ -8,6 +8,9 @@ return {
     opts_extend = { "ensure_installed" },
     opts = {
       ensure_installed = {},
+      ui = {
+        border = "rounded",
+      },
     },
     ---@param opts MasonSettings | {ensure_installed: string[]}
     config = function(_, opts)
