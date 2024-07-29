@@ -2,7 +2,7 @@ return {
   {
     "hrsh7th/nvim-cmp",
     version = false,
-    event = { "InsertEnter", "CmdlineEnter" },
+    event = { "InsertEnter" },
     keys = {
       {
         "<tab>",
@@ -28,7 +28,6 @@ return {
       "hrsh7th/cmp-nvim-lsp",
       "hrsh7th/cmp-buffer",
       "hrsh7th/cmp-path",
-      "hrsh7th/cmp-cmdline",
       {
         "garymjr/nvim-snippets",
         opts = {
@@ -101,13 +100,6 @@ return {
       end
       local cmp = require("cmp")
       cmp.setup(opts)
-
-      cmp.setup.cmdline(":", {
-        mapping = require("cmp").mapping.preset.cmdline(),
-        sources = {
-          { name = "cmdline" },
-        },
-      })
     end,
   },
 
@@ -129,6 +121,38 @@ return {
           end
         end,
         desc = "Toggle autopairs",
+      },
+    },
+  },
+
+  {
+    "echasnovski/mini.surround",
+    recommended = true,
+    keys = function(_, keys)
+      -- Populate the keys based on the user's options
+      local mappings = {
+        { "gsa", desc = "Add surrounding", mode = { "n", "v" } },
+        { "gsd", desc = "Delete surrounding" },
+        { "gsf", desc = "Find right surrounding" },
+        { "gsF", desc = "Find left surrounding" },
+        { "gsh", desc = "Highlight surrounding" },
+        { "gsr", desc = "Replace surrounding" },
+        { "gsn", desc = "Update `MiniSurround.config.n_lines`" },
+      }
+      mappings = vim.tbl_filter(function(m)
+        return m[1] and #m[1] > 0
+      end, mappings)
+      return vim.list_extend(mappings, keys)
+    end,
+    opts = {
+      mappings = {
+        add = "gsa", -- Add surrounding in Normal and Visual modes
+        delete = "gsd", -- Delete surrounding
+        find = "gsf", -- Find surrounding (to the right)
+        find_left = "gsF", -- Find surrounding (to the left)
+        highlight = "gsh", -- Highlight surrounding
+        replace = "gsr", -- Replace surrounding
+        update_n_lines = "gsn", -- Update `n_lines`
       },
     },
   },

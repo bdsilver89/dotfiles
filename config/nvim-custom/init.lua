@@ -35,12 +35,36 @@ vim.g.enable_icons = true
 
 -- lazy.nvim setup
 require("lazy").setup({
-  -- base plugin configuration
-  { import = "plugins" },
-  -- language-specific plugin configuration
-  { import = "plugins.lang" },
-}, {
-  defaults = { lazy = true },
+  spec = {
+    -- base plugin configuration
+    { import = "plugins" },
+    -- language-specific plugin configuration
+    { import = "plugins.lang" },
+  },
+  checker = {
+    enabled = true,
+  },
+  defaults = {
+    lazy = true,
+    version = false,
+  },
+  install = {
+    missing = true,
+    colorscheme = { "catppuccin" },
+  },
+  performance = {
+    rtp = {
+      disabled_plugins = {
+        "gzip",
+        "matchit",
+        "matchparen",
+        "netrwPlugin",
+        "tarPlugin",
+        "tohtml",
+        "zipPlugin",
+      },
+    },
+  },
   ui = {
     backdrop = 100,
     icons = vim.g.enable_icons and {} or {
@@ -57,17 +81,6 @@ require("lazy").setup({
       start = "🚀",
       task = "📌",
       lazy = "💤 ",
-    },
-  },
-  performance = {
-    rtp = {
-      disabled_plugins = {
-        "gzip",
-        "netrwPlugin",
-        "tarPlugin",
-        "tohtml",
-        "zipPlugin",
-      },
     },
   },
 })
