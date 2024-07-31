@@ -261,6 +261,7 @@ setup_symlinks() {
 
 setup_apt_packages() {
 	local packages=(
+		bat
 		cmake
 		gcc
 		build-essential
@@ -281,6 +282,7 @@ setup_apt_packages() {
 		zoxide
 		fzf
 		ripgrep
+		fd-find
 	)
 
 	info "Installing apt packages"
