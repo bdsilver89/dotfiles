@@ -289,6 +289,7 @@ setup_apt_packages() {
 		fzf
 		ripgrep
 		fd-find
+		exa # eza is not available on ubuntu
 	)
 
 	info "Installing apt packages"
