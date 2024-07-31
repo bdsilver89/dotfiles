@@ -244,6 +244,9 @@ setup_symlinks() {
 	done
 
 	# link config files
+	if [ ! -d "$HOME/.config" ]; then
+		mkdir -p "$HOME/.config"
+	fi
 	for src in $(find "${DOTFILES_DIR}/config" -mindepth 1 -maxdepth 1); do
 		basename="$(basename ${src})"
 		if [ ${basename} != ".DS_Store" ]; then
@@ -253,6 +256,9 @@ setup_symlinks() {
 	done
 
 	# link scripts
+	if [ ! -d "$HOME/.local/bin" ]; then
+		mkdir -p "$HOME/.local/bin"
+	fi
 	for src in $(find "${DOTFILES_DIR}/bin" -mindepth 1 -maxdepth 1); do
 		dst="$HOME/.local/bin/$(basename ${src})"
 		link_file "$src" "$dst"
