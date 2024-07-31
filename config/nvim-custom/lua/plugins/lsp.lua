@@ -22,11 +22,15 @@ return {
           end
 
           -- stylua: ignore start
-          map("gd", function() require("telescope.builtin").lsp_definitions() end, "Goto definition")
-          map("gr", function() require("telescope.builtin").lsp_references() end, "Goto references")
+          -- map("gd", function() require("telescope.builtin").lsp_definitions() end, "Goto definition")
+          -- map("gr", function() require("telescope.builtin").lsp_references() end, "Goto references")
+          map("gd", vim.lsp.buf.definition, "Goto definition")
+          map("gr", vim.lsp.buf.references, "List references")
           map("gD", vim.lsp.buf.declaration, "Goto definition")
-          map("gI", function() require("telescope.builtin").lsp_implementations() end, "Goto implementation")
-          map("gy", function() require("telescope.builtin").lsp_type_definitions() end, "Goto type defintion")
+          map("gi", vim.lsp.buf.implementation, "List implementations")
+          map("gi", vim.lsp.buf.implementation, "List implementations")
+          -- map("gI", function() require("telescope.builtin").lsp_implementations() end, "Goto implementation")
+          -- map("gy", function() require("telescope.builtin").lsp_type_definitions() end, "Goto type defintion")
           map("<leader>cr", vim.lsp.buf.rename, "Rename")
           map("<leader>ca", vim.lsp.buf.code_action, "Code action")
           map("<leader>cd", vim.diagnostic.open_float, "Line diagnostics")
@@ -34,27 +38,27 @@ return {
           -- stylua: ignore end
 
           -- NOTE: word highlight, but using vim-illuminate instead...
-          -- if client and client.server_capabilities.documentHighlightProvider then
-          --   local group = vim.api.nvim_create_augroup("config_lsp_highlight", { clear = false })
-          --   vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
-          --     buffer = buf,
-          --     group = group,
-          --     callback = vim.lsp.buf.document_highlight,
-          --   })
-          --   vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
-          --     buffer = buf,
-          --     group = group,
-          --     callback = vim.lsp.buf.clear_references,
-          --   })
-          --   vim.api.nvim_create_autocmd("LspDetach", {
-          --     buffer = buf,
-          --     group = group,
-          --     callback = function(event2)
-          --       vim.lsp.buf.clear_references()
-          --       vim.api.nvim_clear_autocmds({ group = "config_lsp_highlight", buffer = event2.buf })
-          --     end,
-          --   })
-          -- end
+          if client and client.server_capabilities.documentHighlightProvider then
+            local group = vim.api.nvim_create_augroup("config_lsp_highlight", { clear = false })
+            vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
+              buffer = buf,
+              group = group,
+              callback = vim.lsp.buf.document_highlight,
+            })
+            vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
+              buffer = buf,
+              group = group,
+              callback = vim.lsp.buf.clear_references,
+            })
+            vim.api.nvim_create_autocmd("LspDetach", {
+              buffer = buf,
+              group = group,
+              callback = function(event2)
+                vim.lsp.buf.clear_references()
+                vim.api.nvim_clear_autocmds({ group = "config_lsp_highlight", buffer = event2.buf })
+              end,
+            })
+          end
 
           -- inlay hints
           if client and client.supports_method("textDocument/inlayHint", { bufnr = buf }) then
@@ -65,20 +69,29 @@ return {
               vim.lsp.inlay_hint.enable(val, { bufnr = buf })
             end
 
-            toggle_inlay_hint(true)
-            map("<leader>uh", toggle_inlay_hint, "Toggle inlay hint")
+            if vim.api.nvim_buf_is_valid(buf) and vim.bo[buf].buftype == "" then
+              toggle_inlay_hint(true)
+              map("<leader>uh", toggle_inlay_hint, "Toggle inlay hint")
+            end
           end
 
           -- codelens
-          -- if client and client.supports_method("textDocument/codeLens", { bufnr = buf }) then
-          --   vim.lsp.codelens.refresh()
-          --   vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
-          --     buffer = buf,
-          --     callback = vim.lsp.codelens.refresh,
-          --   })
-          -- end
+          if client and client.supports_method("textDocument/codeLens", { bufnr = buf }) then
+            vim.lsp.codelens.refresh()
+            vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
+              buffer = buf,
+              callback = vim.lsp.codelens.refresh,
+            })
+          end
         end,
       })
+
+      local diagnostic_icons = {
+        ERROR = " ",
+        WARN = " ",
+        HINT = " ",
+        INFO = " ",
+      }
 
       -- diagnostic setup
       vim.diagnostic.config({
@@ -87,14 +100,22 @@ return {
         virtual_text = {
           spacing = 4,
           source = "if_many",
+          -- NOTE: uncomment for using diagnostic icons as the virtual text icon
+          -- prefix = function(diag)
+          --   for d, icon in pairs(diagnostic_icons) do
+          --     if diag.severity == vim.diagnostic.severity[d:upper()] then
+          --       return icon
+          --     end
+          --   end
+          -- end,
         },
         severity_sort = true,
         signs = {
           text = {
-            [vim.diagnostic.severity.ERROR] = vim.g.enable_icons and " " or "E",
-            [vim.diagnostic.severity.WARN] = vim.g.enable_icons and " " or "W",
-            [vim.diagnostic.severity.HINT] = vim.g.enable_icons and " " or "H",
-            [vim.diagnostic.severity.INFO] = vim.g.enable_icons and " " or "I",
+            [vim.diagnostic.severity.ERROR] = vim.g.enable_icons and diagnostic_icons.ERROR or "E",
+            [vim.diagnostic.severity.WARN] = vim.g.enable_icons and diagnostic_icons.WARN or "W",
+            [vim.diagnostic.severity.HINT] = vim.g.enable_icons and diagnostic_icons.HINT or "H",
+            [vim.diagnostic.severity.INFO] = vim.g.enable_icons and diagnostic_icons.INFO or "I",
           },
         },
       })
@@ -172,40 +193,40 @@ return {
     end,
   },
 
-  {
-    "RRethy/vim-illuminate",
-    event = { "BufReadPost", "BufNewFile" },
-    opts = {
-      delay = 200,
-      large_file_cutoff = 2000,
-      large_file_overrides = {
-        providers = { "lsp" },
-      },
-    },
-    config = function(_, opts)
-      require("illuminate").configure(opts)
-
-      local function map(key, dir, buffer)
-        vim.keymap.set("n", key, function()
-          require("illuminate")["goto_" .. dir .. "_reference"](false)
-        end, { desc = dir:sub(1, 1):upper() .. dir:sub(2) .. " Reference", buffer = buffer })
-      end
-
-      map("]]", "next")
-      map("[[", "prev")
-
-      -- also set it after loading ftplugins, since a lot overwrite [[ and ]]
-      vim.api.nvim_create_autocmd("FileType", {
-        callback = function()
-          local buffer = vim.api.nvim_get_current_buf()
-          map("]]", "next", buffer)
-          map("[[", "prev", buffer)
-        end,
-      })
-    end,
-    keys = {
-      { "]]", desc = "Next Reference" },
-      { "[[", desc = "Prev Reference" },
-    },
-  },
+  -- {
+  --   "RRethy/vim-illuminate",
+  --   event = { "BufReadPost", "BufNewFile" },
+  --   opts = {
+  --     delay = 200,
+  --     large_file_cutoff = 2000,
+  --     large_file_overrides = {
+  --       providers = { "lsp" },
+  --     },
+  --   },
+  --   config = function(_, opts)
+  --     require("illuminate").configure(opts)
+  --
+  --     local function map(key, dir, buffer)
+  --       vim.keymap.set("n", key, function()
+  --         require("illuminate")["goto_" .. dir .. "_reference"](false)
+  --       end, { desc = dir:sub(1, 1):upper() .. dir:sub(2) .. " Reference", buffer = buffer })
+  --     end
+  --
+  --     map("]]", "next")
+  --     map("[[", "prev")
+  --
+  --     -- also set it after loading ftplugins, since a lot overwrite [[ and ]]
+  --     vim.api.nvim_create_autocmd("FileType", {
+  --       callback = function()
+  --         local buffer = vim.api.nvim_get_current_buf()
+  --         map("]]", "next", buffer)
+  --         map("[[", "prev", buffer)
+  --       end,
+  --     })
+  --   end,
+  --   keys = {
+  --     { "]]", desc = "Next Reference" },
+  --     { "[[", desc = "Prev Reference" },
+  --   },
+  -- },
 }
