@@ -29,6 +29,8 @@ return {
           map("gD", vim.lsp.buf.declaration, "Goto definition")
           map("gi", vim.lsp.buf.implementation, "List implementations")
           map("gi", vim.lsp.buf.implementation, "List implementations")
+          map("gy", vim.lsp.buf.type_defintion, "Goto type defintion")
+          -- map("gG", vim.lsp.buf.workspace_symbol, "Search workspace symbols")
           -- map("gI", function() require("telescope.builtin").lsp_implementations() end, "Goto implementation")
           -- map("gy", function() require("telescope.builtin").lsp_type_definitions() end, "Goto type defintion")
           map("<leader>cr", vim.lsp.buf.rename, "Rename")
@@ -82,6 +84,9 @@ return {
               buffer = buf,
               callback = vim.lsp.codelens.refresh,
             })
+
+            -- TODO: codelens toggle
+            map("<leader>cL", vim.lsp.codelens.run, "Codelens run")
           end
         end,
       })
