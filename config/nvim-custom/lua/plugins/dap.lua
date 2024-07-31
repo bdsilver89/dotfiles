@@ -36,18 +36,42 @@ return {
       { "<leader>dw", function() require("dap.ui.widgets").hover() end, desc = "Widgets" },
     },
     config = function()
+      -- TODO: delay mason-nvim-dap until here
       -- if require("lazy.core.config").spec.plugins["mson-nvim-dap.nvim"] ~= nil then
       --   require("mason-nvim-dap").sete
       -- end
 
       vim.api.nvim_set_hl(0, "DapStoppedLine", { default = true, link = "Visual" })
 
-      -- TODO: icons
+      -- icons
+      if vim.g.enable_icons then
+        local icons = {
+          Stopped = { "󰁕 ", "DiagnosticWarn", "DapStoppedLine" },
+          Breakpoint = " ",
+          BreakpointCondition = " ",
+          BreakpointRejected = { " ", "DiagnosticError" },
+          LogPoint = ".>",
+        }
 
+        for name, sign in pairs(icons) do
+          sign = type(sign) == "table" and sign or { sign }
+          vim.fn.sign_define(
+            "Dap" .. name,
+            { text = sign[1], texthl = sign[2] or "DiagnosticInfo", linehl = sign[3], numhl = sign[3] }
+          )
+        end
+      end
+
+      -- setup dap config with vscode launch.json file
       local vscode = require("dap.ext.vscode")
       local json = require("plenary.json")
       vscode.json_decode = function(str)
         return vim.json.decode(json.json_strip_comments(str))
+      end
+
+      -- extend dap confgurations with entries from .vscode/launch.json
+      if vim.fn.filereadable(".vscode/launch.json") then
+        vscode.load_launchjs()
       end
 
       -- setup overseer
