@@ -4,6 +4,7 @@ return {
     event = { "BufReadPost", "BufNewFile" },
     dependencies = {
       { "j-hui/fidget.nvim", opts = {} },
+      "hrsh7th/cmp-nvim-lsp",
       { "williamboman/mason-lspconfig.nvim", config = function() end },
     },
     opts = {
@@ -29,7 +30,7 @@ return {
           map("gD", vim.lsp.buf.declaration, "Goto definition")
           map("gi", vim.lsp.buf.implementation, "List implementations")
           map("gi", vim.lsp.buf.implementation, "List implementations")
-          map("gy", vim.lsp.buf.type_defintion, "Goto type defintion")
+          map("gy", vim.lsp.buf.type_definition, "Goto type defintion")
           -- map("gG", vim.lsp.buf.workspace_symbol, "Search workspace symbols")
           -- map("gI", function() require("telescope.builtin").lsp_implementations() end, "Goto implementation")
           -- map("gy", function() require("telescope.builtin").lsp_type_definitions() end, "Goto type defintion")

@@ -40,7 +40,7 @@ opt.pumheight = 10
 opt.relativenumber = true
 opt.scrolloff = 8
 opt.shiftround = true
-opt.shortmess:append({ W = true, I = true, c = true, C = true })
+opt.shortmess:append({ s = true, W = true, I = true, c = true, C = true })
 opt.showmode = false
 opt.smoothscroll = true
 opt.signcolumn = "yes"
