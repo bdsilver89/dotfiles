@@ -25,8 +25,8 @@ return {
     "neovim/nvim-lspconfig",
     opts = {
       servers = {
-        -- neocmake = {},
-        cmake = {},
+        neocmake = {},
+        -- cmake = {},
       },
     },
   },
