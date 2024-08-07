@@ -87,6 +87,7 @@ return {
 
   {
     "lukas-reineke/headlines.nvim",
+    enabled = false,
     opts = function()
       local opts = {}
       for _, ft in ipairs({ "markdown", "norg", "rmd", "org" }) do
@@ -112,5 +113,12 @@ return {
         require("headlines").refresh()
       end)
     end,
+  },
+
+  {
+    "OXY2DEV/markview.nvim",
+    -- enabled = false,
+    ft = "markdown",
+    opts = {},
   },
 }

@@ -208,6 +208,8 @@ if [ -d $PYENV_ROOT ]; then
   fi
 fi
 
+[ -f "$HOME/.cargo/env" ] && source "$HOME/.cargo/env"
+
 # cmake
 export CMAKE_COLOR_DIAGNOSTICS="ON"
 if [ -x "$(command -v ninja)" ]; then
