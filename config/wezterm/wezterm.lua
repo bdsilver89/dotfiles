@@ -11,13 +11,13 @@ return {
 	keys = {
 		{
 			key = "f",
-			mods = "CTRL",
+			mods = "CTRL|SHIFT",
 			action = act.ToggleFullScreen,
 		},
-		-- {
-		-- 	key = "v",
-		-- 	mods = "CTRL",
-		-- 	action = act.PasteFrom("Clipboard"),
-		-- },
+		{
+			key = "v",
+			mods = "CTRL|SHIFT",
+			action = act.PasteFrom("Clipboard"),
+		},
 	},
 }
