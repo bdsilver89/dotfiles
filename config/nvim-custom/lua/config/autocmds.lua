@@ -46,7 +46,7 @@ vim.api.nvim_create_autocmd("Filetype", {
     "spectre_panel",
     "startuptime",
     "toggleterm",
-    "undotree",
+    "und,otree",
   },
   callback = function(event)
     vim.bo[event.buf].buflisted = false
@@ -87,4 +87,12 @@ vim.api.nvim_create_autocmd("BufWritePre", {
     vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
   end,
   desc = "Auto create dir before saving buffer",
+})
+
+vim.api.nvim_create_autocmd("QuickFixCmdPost", {
+  -- group = vim.api.nvim_create_augroup("config_auto_trouble_qflist", { clear = true }),
+  callback = function()
+    vim.cmd([[Trouble qflist open]])
+  end,
+  desc = "Auto open Trouble quickfix",
 })
