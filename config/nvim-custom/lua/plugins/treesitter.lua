@@ -10,10 +10,6 @@ return {
         "nvim-treesitter/nvim-treesitter-textobjects",
         lazy = true,
       },
-      {
-        "nvim-treesitter/playground",
-        lazy = true,
-      },
     },
     init = function(plugin)
       require("lazy.core.loader").add_to_rtp(plugin)
