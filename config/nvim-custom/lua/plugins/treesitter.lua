@@ -98,4 +98,10 @@ return {
       return { mode = "cursor", max_lines = 3 }
     end,
   },
+
+  {
+    "folke/ts-comments.nvim",
+    event = "VeryLazy",
+    opts = {},
+  },
 }

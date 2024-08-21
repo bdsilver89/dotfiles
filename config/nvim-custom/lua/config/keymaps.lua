@@ -73,14 +73,16 @@ map("n", "[w", function() vim.diagnostic.goto_prev({ severity = vim.diagnostic.s
 map("n", "<leader>xl", "<cmd>lopen<cr>", { desc = "Location list" })
 map("n", "<leader>xq", "<cmd>copen<cr>", { desc = "Quickfix list" })
 
--- toggle
-require("config.utils").toggle("<leader>ud", {
+-- toggles
+local Utils = require("config.utils")
+
+Utils.toggle("<leader>ud", {
   name = "Diagnostics",
   get = vim.diagnostic.is_enabled,
   set = vim.diagnostic.enable,
 })
 
-require("config.utils").toggle("<leader>uf", {
+Utils.toggle("<leader>uf", {
   name = "Autoformat (Global)",
   get = function()
     return vim.g.autoformat == nil or vim.g.autoformat
@@ -91,7 +93,7 @@ require("config.utils").toggle("<leader>uf", {
   end,
 })
 
-require("config.utils").toggle("<leader>uF", {
+Utils.toggle("<leader>uF", {
   name = "Autoformat (Buffer)",
   get = function()
     local buf = vim.api.nvim_get_current_buf()

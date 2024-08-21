@@ -12,6 +12,8 @@ return {
       setup = {},
     },
     config = function(_, opts)
+      local Utils = require("config.utils")
+
       vim.api.nvim_create_autocmd("LspAttach", {
         group = vim.api.nvim_create_augroup("config_lsp_attach", { clear = true }),
         callback = function(event)
@@ -65,16 +67,18 @@ return {
 
           -- inlay hints
           if client and client.supports_method("textDocument/inlayHint", { bufnr = buf }) then
-            local function toggle_inlay_hint(val)
-              if val == nil then
-                val = not vim.lsp.inlay_hint.is_enabled({ bufnr = buf })
-              end
-              vim.lsp.inlay_hint.enable(val, { bufnr = buf })
-            end
-
             if vim.api.nvim_buf_is_valid(buf) and vim.bo[buf].buftype == "" then
-              toggle_inlay_hint(true)
-              map("<leader>uh", toggle_inlay_hint, "Toggle inlay hint")
+              Utils.toggle("<leader>uh", {
+                name = "Inlay hint",
+                get = function()
+                  return vim.lsp.inlay_hint.is_enabled({ bufnr = buf })
+                end,
+                set = function(state)
+                  vim.lsp.inlay_hint.enable(state, { bufnr = buf })
+                end,
+              })
+
+              vim.lsp.inlay_hint.enable(true, { bufnr = buf })
             end
           end
 

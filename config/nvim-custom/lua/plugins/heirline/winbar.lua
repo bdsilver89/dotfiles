@@ -5,6 +5,29 @@ local M = {}
 -- local sep = "  "
 local sep = " / "
 
+local function breadcrumbs()
+  return {
+    init = function(self)
+      local has_trouble, trouble = pcall(require, "trouble")
+      self.has_trouble = has_trouble
+      if has_trouble then
+        self.symbols = trouble.statusline({
+          mode = "lsp_document_symbols",
+          groups = {},
+          title = false,
+          filter = { range = true },
+        })
+      end
+    end,
+    condition = function(self)
+      return self.has_trouble and self.symbols.has
+    end,
+    provider = function(self)
+      return self.symbols.get()
+    end,
+  }
+end
+
 local function filepath()
   return {
     init = function(self)
@@ -217,10 +240,11 @@ end
 
 function M.setup()
   return {
+    -- breadcrumbs(),
     { provider = "%<" },
     { provider = "%=" },
-    filenameblock(),
     -- oil_path(),
+    filenameblock(),
     hl = "HeirlineWinbar",
   }
 end
