@@ -1,6 +1,7 @@
 let mapleader = " "
 
 set hidden
+set cursorline
 set ttimeout
 set ttimeoutlen=100
 set number
@@ -45,11 +46,12 @@ nmap <s-h> :bprevious<cr>
 nmap <s-l> :bnext<cr>
 nmap [b :bprevious<cr>
 nmap ]b  :bnext<cr>
+nmap <leader>bd :bd<cr>
 nmap <leader>bb :e #<cr>
 nmap <leader>` :e #<cr>
 
 " terminals
-" tmap <esc> <c-\\><c-n>
+ tmap <esc><esc> <c-\\><c-n>
 " tmap <c-h> :wincmd h<cr>
 " tmap <c-j> :wincmd j<cr>
 " tmap <c-k> :wincmd k<cr>
