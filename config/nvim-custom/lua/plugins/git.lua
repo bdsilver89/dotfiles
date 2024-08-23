@@ -89,6 +89,7 @@ return {
         map("n", "<leader>ghd", gs.diffthis, "Diff this")
         map("n", "<leader>ghD", function() gs.diffthis("~") end, "Diff this ~")
         map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", "GitSigns select hunk")
+        map("n", "<leader>gb", "<cmd>Git blame<cr>", "Blame")
 
         require("config.utils").toggle("<leader>ugb", {
           name = "Git Line Blame",

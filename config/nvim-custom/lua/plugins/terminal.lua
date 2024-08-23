@@ -51,17 +51,17 @@ return {
         }
 
         -- lazygit line blame
-        keys[#keys + 1] = {
-          "<leader>gb",
-          function()
-            local cursor = vim.api.nvim_win_get_cursor(0)
-            local line = cursor[1]
-            local file = vim.api.nvim_buf_get_name(0)
-            local cmd = { "git", "log", "-n", "3", "-u", "-L", line .. ",+1:" .. file }
-            term(table.concat(cmd, " "))
-          end,
-          desc = "Toggleterm lazygit blame",
-        }
+        -- keys[#keys + 1] = {
+        --   "<leader>gb",
+        --   function()
+        --     local cursor = vim.api.nvim_win_get_cursor(0)
+        --     local line = cursor[1]
+        --     local file = vim.api.nvim_buf_get_name(0)
+        --     local cmd = { "git", "log", "-n", "3", "-u", "-L", line .. ",+1:" .. file }
+        --     term(table.concat(cmd, " "))
+        --   end,
+        --   desc = "Toggleterm lazygit blame",
+        -- }
 
         -- lazygit file
         keys[#keys + 1] = {
