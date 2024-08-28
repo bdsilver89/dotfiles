@@ -237,7 +237,7 @@ return {
           { "<leader>g", group = "git" },
           { "<leader>gh", group = "hunk" },
           { "<leader>m", group = "harpoon" },
-          { "<leader>n", group = "term" },
+          { "<leader>n", group = "terminal" },
           { "<leader>o", group = "overseer" },
           { "<leader>s", group = "search" },
           { "<leader>sn", group = "noice" },
