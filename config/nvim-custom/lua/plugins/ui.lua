@@ -55,47 +55,47 @@ return {
     main = "ibl",
   },
 
-  -- {
-  --   "nvimdev/dashboard-nvim",
-  --   lazy = false,
-  --   opts = function()
-  --     local logo = {
-  --       "",
-  --       "███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗",
-  --       "████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║",
-  --       "██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║",
-  --       "██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║",
-  --       "██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║",
-  --       "╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝",
-  --       "",
-  --     }
-  --     local opts = {
-  --       theme = "hyper",
-  --       hide = {
-  --         statusline = false,
-  --       },
-  --       config = {
-  --         header = logo,
-  --         shortcut = {},
-  --       },
-  --     }
-  --
-  --     -- open dashboard after closing lazy
-  --     if vim.o.filetype == "lazy" then
-  --       vim.api.nvim_create_autocmd("WinClosed", {
-  --         pattern = tostring(vim.api.nvim_get_current_win()),
-  --         once = true,
-  --         callback = function()
-  --           vim.schedule(function()
-  --             vim.api.nvim_exec_autocmds("UIEnter", { group = "dashboard" })
-  --           end)
-  --         end,
-  --       })
-  --     end
-  --
-  --     return opts
-  --   end,
-  -- },
+  {
+    "nvimdev/dashboard-nvim",
+    lazy = false,
+    opts = function()
+      local logo = {
+        "",
+        "███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗",
+        "████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║",
+        "██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║",
+        "██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║",
+        "██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║",
+        "╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝",
+        "",
+      }
+      local opts = {
+        theme = "hyper",
+        hide = {
+          statusline = false,
+        },
+        config = {
+          header = logo,
+          shortcut = {},
+        },
+      }
+
+      -- open dashboard after closing lazy
+      if vim.o.filetype == "lazy" then
+        vim.api.nvim_create_autocmd("WinClosed", {
+          pattern = tostring(vim.api.nvim_get_current_win()),
+          once = true,
+          callback = function()
+            vim.schedule(function()
+              vim.api.nvim_exec_autocmds("UIEnter", { group = "dashboard" })
+            end)
+          end,
+        })
+      end
+
+      return opts
+    end,
+  },
 
   {
     "rcarriga/nvim-notify",
