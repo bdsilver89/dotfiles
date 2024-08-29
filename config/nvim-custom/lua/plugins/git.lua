@@ -33,16 +33,6 @@ return {
     },
   },
 
-  {
-    -- dir = "~/dev/projects/git2.nvim",
-    "bdsilver89/git2.nvim",
-    name = "git2",
-    cmd = { "Git2" },
-    enabled = vim.fn.executable("cmake") == 1,
-    build = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
-    opts = {},
-  },
-
   -- git signs integration
   {
     "lewis6991/gitsigns.nvim",
