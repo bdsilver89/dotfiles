@@ -25,6 +25,19 @@ return {
       float = {
         border = "rounded",
       },
+      keymaps = {
+        ["<C-o>"] = {
+          desc = "Open in system file explorer",
+          callback = function()
+            local path = require("oil").get_current_dir()
+            if path then
+              require("config.utils").open(path, { system = true })
+            else
+              vim.notify("Cannot open path in system file explorer", vim.log.levels.ERROR)
+            end
+          end,
+        },
+      },
     },
   },
 
@@ -67,25 +80,31 @@ return {
           { source = "diagnostics" },
           { source = "git_status" },
         },
-        filesystem = {
-          bind_to_cwd = false,
-          follow_current_file = {
-            enabled = true,
-          },
-          use_libuv_file_watcher = true,
+      },
+      filesystem = {
+        bind_to_cwd = false,
+        follow_current_file = {
+          enabled = true,
         },
-        window = {
-          mappings = {
-            ["l"] = "open",
-            ["h"] = "close_node",
-            ["<space>"] = "none",
-            ["P"] = { "toggle_preview", config = { use_float = false } },
+        use_libuv_file_watcher = true,
+      },
+      window = {
+        mappings = {
+          ["l"] = "open",
+          ["h"] = "close_node",
+          ["<space>"] = "none",
+          ["O"] = {
+            function(state)
+              require("config.utils").open(state.tree:get_node().path, { system = true })
+            end,
+            desc = "Open with system application",
           },
+          ["P"] = { "toggle_preview", config = { use_float = false } },
         },
-        default_component_configs = {
-          indent = {
-            with_expanders = true,
-          },
+      },
+      default_component_configs = {
+        indent = {
+          with_expanders = true,
         },
       },
     },

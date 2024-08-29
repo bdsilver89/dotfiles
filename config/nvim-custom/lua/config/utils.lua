@@ -56,4 +56,41 @@ function M.opts(name)
   return require("lazy.core.plugin").values(plugin, "opts", false)
 end
 
+---@param uri string
+---@param opts { system?:boolean}
+function M.open(uri, opts)
+  opts = opts or {}
+  if not opts.system and vim.uv.fs_stat(uri) ~= nil then
+    -- TODO: display file in float toggleterm
+  end
+
+  local Config = require("lazy.core.config")
+  local cmd
+  if not opts.system and Config.options.ui.browser then
+    cmd = { Config.options.ui.browser, uri }
+  elseif vim.fn.has("win32") == 1 then
+    cmd = { "explorer", uri }
+  elseif vim.fn.has("macunix") == 1 then
+    cmd = { "open", uri }
+  else
+    if vim.fn.executable("explorer.exe") == 1 then
+      cmd = { "explorer.exe", uri }
+    elseif vim.fn.executable("xdg-open") == 1 then
+      cmd = { "xdg-open", uri }
+    else
+      cmd = { "open", uri }
+    end
+  end
+
+  local ret = vim.fn.jobstart(cmd, { detach = true })
+  if ret <= 0 then
+    local msg = {
+      "Failed to open uri",
+      ret,
+      vim.inspect(cmd),
+    }
+    vim.notify(table.concat(msg, "\n"), vim.log.levels.ERROR)
+  end
+end
+
 return M
