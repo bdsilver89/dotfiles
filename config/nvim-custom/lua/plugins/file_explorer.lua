@@ -42,69 +42,97 @@ return {
   },
 
   -- file tree
+  -- {
+  --   "nvim-neo-tree/neo-tree.nvim",
+  --   eanbled = false,
+  --   cmd = "Neotree",
+  --   keys = {
+  --     {
+  --       "<leader>fe",
+  --       function()
+  --         require("neo-tree.command").execute({ toggle = true })
+  --       end,
+  --       desc = "File explorer (Neotree)",
+  --     },
+  --     { "<leader>e", "<leader>fe", desc = "File explorer (Neotree)", remap = true },
+  --     {
+  --       "<leader>ge",
+  --       function()
+  --         require("neo-tree.command").execute({ toggle = true, source = "git_status" })
+  --       end,
+  --       desc = "Git explorer (Neotree)",
+  --     },
+  --     {
+  --       "<leader>be",
+  --       function()
+  --         require("neo-tree.command").execute({ toggle = true, source = "buffers" })
+  --       end,
+  --       desc = "Buffer explorer (Neotree)",
+  --     },
+  --   },
+  --   opts = {
+  --     sources = { "filesystem", "buffers", "git_status" },
+  --     source_selector = {
+  --       winbar = true,
+  --       content_layout = "center",
+  --       sources = {
+  --         { source = "filesystem" },
+  --         { source = "buffers" },
+  --         { source = "diagnostics" },
+  --         { source = "git_status" },
+  --       },
+  --     },
+  --     filesystem = {
+  --       bind_to_cwd = false,
+  --       follow_current_file = {
+  --         enabled = true,
+  --       },
+  --       use_libuv_file_watcher = true,
+  --     },
+  --     window = {
+  --       mappings = {
+  --         ["l"] = "open",
+  --         ["h"] = "close_node",
+  --         ["<space>"] = "none",
+  --         ["O"] = {
+  --           function(state)
+  --             require("config.utils").open(state.tree:get_node().path, { system = true })
+  --           end,
+  --           desc = "Open with system application",
+  --         },
+  --         ["P"] = { "toggle_preview", config = { use_float = false } },
+  --       },
+  --     },
+  --     default_component_configs = {
+  --       indent = {
+  --         with_expanders = true,
+  --       },
+  --     },
+  --   },
+  -- },
+
   {
-    "nvim-neo-tree/neo-tree.nvim",
-    cmd = "Neotree",
+    "nvim-tree/nvim-tree.lua",
+    cmd = { "NvimTreeToggle", "NvimTreeFocus" },
     keys = {
-      {
-        "<leader>fe",
-        function()
-          require("neo-tree.command").execute({ toggle = true })
-        end,
-        desc = "File explorer (Neotree)",
-      },
-      { "<leader>e", "<leader>fe", desc = "File explorer (Neotree)", remap = true },
-      {
-        "<leader>ge",
-        function()
-          require("neo-tree.command").execute({ toggle = true, source = "git_status" })
-        end,
-        desc = "Git explorer (Neotree)",
-      },
-      {
-        "<leader>be",
-        function()
-          require("neo-tree.command").execute({ toggle = true, source = "buffers" })
-        end,
-        desc = "Buffer explorer (Neotree)",
-      },
+      { "<leader>e", "<cmd>NvimTreeToggle<cr>", desc = "File explorer (tree)" },
     },
     opts = {
-      sources = { "filesystem", "buffers", "git_status" },
-      source_selector = {
-        winbar = true,
-        content_layout = "center",
-        sources = {
-          { source = "filesystem" },
-          { source = "buffers" },
-          { source = "diagnostics" },
-          { source = "git_status" },
-        },
+      disable_netrw = true,
+      hijack_cursor = true,
+      sync_root_with_cwd = true,
+      update_focused_file = {
+        enable = true,
+        update_root = false,
       },
-      filesystem = {
-        bind_to_cwd = false,
-        follow_current_file = {
-          enabled = true,
-        },
-        use_libuv_file_watcher = true,
+      view = {
+        width = 30,
+        preserve_window_proportions = true,
       },
-      window = {
-        mappings = {
-          ["l"] = "open",
-          ["h"] = "close_node",
-          ["<space>"] = "none",
-          ["O"] = {
-            function(state)
-              require("config.utils").open(state.tree:get_node().path, { system = true })
-            end,
-            desc = "Open with system application",
-          },
-          ["P"] = { "toggle_preview", config = { use_float = false } },
-        },
-      },
-      default_component_configs = {
-        indent = {
-          with_expanders = true,
+      renderer = {
+        highlight_git = true,
+        indent_markers = {
+          enable = true,
         },
       },
     },
