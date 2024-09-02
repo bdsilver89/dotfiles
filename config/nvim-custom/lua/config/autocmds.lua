@@ -1,14 +1,20 @@
-vim.api.nvim_create_autocmd("TextYankPost", {
+local autocmd = vim.api.nvim_create_autocmd
+
+local function augroup(name)
+  return vim.api.nvim_create_augroup("config_" .. name, { clear = true })
+end
+
+autocmd("TextYankPost", {
   desc = "Highlight yanked text",
-  group = vim.api.nvim_create_augroup("config_highlightyank", { clear = true }),
+  group = augroup("highlightyank"),
   callback = function()
     vim.highlight.on_yank()
   end,
 })
 
-vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
+autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
   desc = "Check for file reload",
-  group = vim.api.nvim_create_augroup("config_checktime", { clear = true }),
+  group = augroup("checktime"),
   callback = function()
     if vim.o.buftype ~= "nofile" then
       vim.cmd.checktime()
@@ -16,9 +22,9 @@ vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
   end,
 })
 
-vim.api.nvim_create_autocmd("VimResized", {
+autocmd("VimResized", {
   desc = "Resize splits when window resizes",
-  group = vim.api.nvim_create_augroup("config_resize_splits", { clear = true }),
+  group = augroup("resize_splits"),
   callback = function()
     local current_tab = vim.fn.tabpagenr()
     vim.cmd("tabdo wincmd =")
@@ -26,9 +32,9 @@ vim.api.nvim_create_autocmd("VimResized", {
   end,
 })
 
-vim.api.nvim_create_autocmd("Filetype", {
+autocmd("Filetype", {
   desc = "Close with <q>",
-  group = vim.api.nvim_create_augroup("config_quick_close", { clear = true }),
+  group = augroup("quick_close"),
   pattern = {
     "checkhealth",
     "dbout",
@@ -55,8 +61,9 @@ vim.api.nvim_create_autocmd("Filetype", {
   end,
 })
 
-vim.api.nvim_create_autocmd("FileType", {
-  group = vim.api.nvim_create_augroup("config_wrap_spell", { clear = true }),
+autocmd("FileType", {
+  desc = "wrap and check for spelling",
+  group = augroup("wrap_spell"),
   pattern = {
     "*.txt",
     "gitcommit",
@@ -66,20 +73,20 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.opt_local.wrap = true
     vim.opt_local.spell = true
   end,
-  desc = "wrap and check for spelling",
 })
 
-vim.api.nvim_create_autocmd({ "FileType" }, {
-  group = vim.api.nvim_create_augroup("config_json_conceal", { clear = true }),
+autocmd({ "FileType" }, {
+  desc = "conceallevel for json",
+  group = augroup("json_conceal"),
   pattern = { "json", "jsonc", "json5" },
   callback = function()
     vim.opt_local.conceallevel = 0
   end,
-  desc = "conceallevel for json",
 })
 
-vim.api.nvim_create_autocmd("BufWritePre", {
-  group = vim.api.nvim_create_augroup("config_auto_create_dir", { clear = true }),
+autocmd("BufWritePre", {
+  desc = "Auto create dir before saving buffer",
+  group = augroup("auto_create_dir"),
   callback = function(event)
     if event.match:match("^%w%w+:[\\/][\\/]") then
       return
@@ -87,13 +94,38 @@ vim.api.nvim_create_autocmd("BufWritePre", {
     local file = vim.uv.fs_realpath(event.match) or event.match
     vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
   end,
-  desc = "Auto create dir before saving buffer",
 })
 
-vim.api.nvim_create_autocmd("QuickFixCmdPost", {
-  -- group = vim.api.nvim_create_augroup("config_auto_trouble_qflist", { clear = true }),
+autocmd("QuickFixCmdPost", {
+  desc = "Auto open Trouble quickfix",
+  -- group = augroup("auto_trouble_qflist"),
   callback = function()
     vim.cmd([[Trouble qflist open]])
   end,
-  desc = "Auto open Trouble quickfix",
+})
+
+vim.filetype.add({
+  pattern = {
+    [".*"] = {
+      function(path, buf)
+        return vim.bo[buf]
+            and vim.bo[buf].filetype ~= "bigfile"
+            and path
+            and vim.fn.getfsize(path) > vim.g.bigfile_size
+            and "bigfile"
+          or nil
+      end,
+    },
+  },
+})
+
+autocmd("FileType", {
+  desc = "Big file",
+  pattern = "bigfile",
+  callback = function(ev)
+    vim.b.minianimate_disable = true
+    vim.schedule(function()
+      vim.bo[ev.buf].syntax = vim.filetype.match({ buf = ev.buf }) or ""
+    end)
+  end,
 })

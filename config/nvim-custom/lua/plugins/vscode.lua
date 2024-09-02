@@ -6,6 +6,7 @@ local enabled = {
   "flash.nvim",
   "vim-illuminate",
   "lazy.nvim",
+  "mini.surround",
   "nvim-autopairs",
   "nvim-treesitter",
   "nvim-treesitter-textobjects",

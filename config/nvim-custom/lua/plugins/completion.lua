@@ -114,23 +114,35 @@ return {
   {
     "windwp/nvim-autopairs",
     event = "InsertEnter",
+    dependencies = {
+      { "hrsh7th/nvim-cmp" },
+    },
     opts = {},
-    keys = {
-      {
-        "<leader>up",
-        function()
-          local autopairs = require("nvim-autopairs")
-          if autopairs.state.disabled then
-            autopairs.enable()
-            vim.notify("Enabled autopairs", vim.log.levels.INFO, { title = "Option" })
+    init = function()
+      vim.g.enable_autopairs = true
+      require("config.utils").toggle("<leader>up", {
+        name = "autopairs",
+        get = function()
+          return vim.g.enable_autopairs
+        end,
+        set = function(state)
+          if state then
+            require("nvim-autopairs").enable()
+            vim.g.enable_autopairs = true
           else
-            autopairs.disable()
-            vim.notify("Disabled autopairs", vim.log.levels.WARN, { title = "Option" })
+            require("nvim-autopairs").disable()
+            vim.g.enable_autopairs = false
           end
         end,
-        desc = "Toggle autopairs",
-      },
-    },
+      })
+    end,
+    config = function(_, opts)
+      require("nvim-autopairs").setup(opts)
+
+      local cmp_autopairs = require("nvim-autopairs.completion.cmp")
+      local cmp = require("cmp")
+      cmp.event:on("confirm_down", cmp_autopairs.on_confirm_done())
+    end,
   },
 
   {

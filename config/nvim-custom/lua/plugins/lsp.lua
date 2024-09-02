@@ -3,9 +3,21 @@ return {
     "neovim/nvim-lspconfig",
     event = "LazyFile",
     dependencies = {
-      { "j-hui/fidget.nvim", opts = {} },
+      {
+        "j-hui/fidget.nvim",
+        opts = {
+          integration = {
+            ["nvim-tree"] = {
+              enable = false,
+            },
+          },
+        },
+      },
       "hrsh7th/cmp-nvim-lsp",
-      { "williamboman/mason-lspconfig.nvim", config = function() end },
+      {
+        "williamboman/mason-lspconfig.nvim",
+        config = function() end,
+      },
     },
     opts = {
       servers = {},

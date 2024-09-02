@@ -8,7 +8,11 @@ return {
     dependencies = {
       {
         "nvim-treesitter/nvim-treesitter-textobjects",
-        lazy = true,
+        init = function(plugin)
+          require("lazy.core.loader").add_to_rtp(plugin)
+          require("nvim-treesitter.query_predicates")
+        end,
+        config = function() end,
       },
     },
     init = function(plugin)
@@ -79,7 +83,8 @@ return {
 
   {
     "nvim-treesitter/nvim-treesitter-context",
-    event = { "BufReadPost", "BufNewFile" },
+    event = "VeryLazy",
+    enabled = false,
     opts = function()
       local tsc = require("treesitter-context")
 
@@ -97,11 +102,5 @@ return {
 
       return { mode = "cursor", max_lines = 3 }
     end,
-  },
-
-  {
-    "folke/ts-comments.nvim",
-    event = "VeryLazy",
-    opts = {},
   },
 }

@@ -6,8 +6,8 @@ vim.g.maplocalleader = " "
 -- enable glyph icons, if false fallsback to text icons
 vim.g.enable_icons = true
 
---- load config
-require("config.lazy")
-require("config.options")
-require("config.autocmds")
-require("config.keymaps")
+-- disable settings for large files
+vim.g.bigfile_size = 1024 * 1024 * 1.5
+
+-- load config
+require("config")

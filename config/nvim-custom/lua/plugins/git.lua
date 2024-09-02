@@ -4,25 +4,6 @@ return {
     opts = { ensure_installed = { "git_config", "gitcommit", "git_rebase", "gitignore", "gitattributes" } },
   },
 
-  {
-    "hrsh7th/nvim-cmp",
-    dependencies = {
-      { "petertriho/cmp-git", opts = {} },
-    },
-    opts = function(_, opts)
-      table.insert(opts.sources, { name = "git" })
-    end,
-  },
-
-  -- git editor
-  -- {
-  --   "tpope/vim-fugitive",
-  --   lazy = false,
-  --   keys = {
-  --     { "<leader>gs", "<cmd>Git<cr>",       desc = "Git status" },
-  --   }
-  -- },
-
   -- advanced git editor
   {
     "NeogitOrg/neogit",
@@ -37,29 +18,34 @@ return {
   {
     "lewis6991/gitsigns.nvim",
     event = "LazyFile",
-    opts = {
-      signs = {
-        add = { text = "▎" },
-        change = { text = "▎" },
-        delete = { text = "" },
-        topdelete = { text = "" },
-        changedelete = { text = "▎" },
-        untracked = { text = "▎" },
-      },
-      signs_staged = {
-        add = { text = "▎" },
-        change = { text = "▎" },
-        delete = { text = "" },
-        topdelete = { text = "" },
-        changedelete = { text = "▎" },
-      },
-      current_line_blame = true,
-      on_attach = function(buffer)
-        local gs = package.loaded.gitsigns
+    opts = function()
+      local function sign(glyph, text)
+        return vim.g.enable_icons and glyph or text
+      end
 
-        local function map(mode, lhs, rhs, desc)
-          vim.keymap.set(mode, lhs, rhs, { desc = desc, buffer = buffer })
-        end
+      return {
+        signs = {
+          add = { text = sign("▎", "+") },
+          change = { text = sign("▎", "~") },
+          delete = { text = sign("", "_") },
+          topdelete = { text = sign("", "‾") },
+          changedelete = { text = sign("▎", "~") },
+          untracked = { text = sign("▎", "~") },
+        },
+        -- signs_staged = {
+        --   add = { text = "▎" },
+        --   change = { text = "▎" },
+        --   delete = { text = "" },
+        --   topdelete = { text = "" },
+        --   changedelete = { text = "▎" },
+        -- },
+        current_line_blame = true,
+        on_attach = function(buffer)
+          local gs = package.loaded.gitsigns
+
+          local function map(mode, lhs, rhs, desc)
+            vim.keymap.set(mode, lhs, rhs, { desc = desc, buffer = buffer })
+          end
 
         -- stylua: ignore start
         map("n", "]h", function()
@@ -100,7 +86,8 @@ return {
             require("gitsigns").toggle_current_line_blame(state)
           end
         })
-      end,
-    },
+        end,
+      }
+    end,
   },
 }

@@ -57,7 +57,7 @@ return {
 
   {
     "nvimdev/dashboard-nvim",
-    lazy = false,
+    event = "VimEnter",
     opts = function()
       local logo = {
         "",
@@ -77,6 +77,9 @@ return {
         config = {
           header = logo,
           shortcut = {},
+          footer = function()
+            return {}
+          end,
         },
       }
 
@@ -99,6 +102,7 @@ return {
 
   {
     "rcarriga/nvim-notify",
+    enabled = false,
     event = "VeryLazy",
     keys = {
       {
@@ -130,6 +134,7 @@ return {
 
   {
     "stevearc/dressing.nvim",
+    enabled = false,
     lazy = true,
     init = function()
       ---@diagnostic disable-next-line: duplicate-set-field
@@ -147,6 +152,7 @@ return {
 
   {
     "folke/noice.nvim",
+    enabled = false,
     event = "VeryLazy",
     opts = {
       lsp = {
@@ -196,47 +202,5 @@ return {
       end
       require("noice").setup(opts)
     end,
-  },
-
-  -- catppuccin colorscheme
-  {
-    "catppuccin/nvim",
-    lazy = true,
-    name = "catppuccin",
-    init = function()
-      vim.cmd.colorscheme("catppuccin")
-    end,
-    opts = {
-      integrations = {
-        cmp = true,
-        gitsigns = true,
-        headlines = true,
-        illuminate = true,
-        indent_blankline = { enabled = true },
-        lsp_trouble = true,
-        mason = true,
-        markdown = true,
-        mini = true,
-        native_lsp = {
-          enabled = true,
-          underlines = {
-            errors = { "undercurl" },
-            hints = { "undercurl" },
-            warnings = { "undercurl" },
-            information = { "undercurl" },
-          },
-        },
-        neotest = true,
-        neotree = true,
-        noice = true,
-        notify = true,
-        overseer = true,
-        semantic_tokens = true,
-        telescope = true,
-        treesitter = true,
-        treesitter_context = true,
-        which_key = true,
-      },
-    },
   },
 }

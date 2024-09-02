@@ -24,7 +24,8 @@ end
 return {
   {
     "rebelot/heirline.nvim",
-    event = { "BufReadPost", "BufNewFile" },
+    enabled = false,
+    event = "LazyFile",
     config = function()
       require("heirline").setup({
         opts = {
