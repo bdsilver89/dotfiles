@@ -31,6 +31,11 @@ if not pcall(require, "lazy") then
   vim.cmd.quit()
 end
 
+-- setup LazyFile event
+local Event = require("lazy.core.handler.event")
+Event.mappings.LazyFile = { id = "LazyFile", event = { "BufReadPost", "BufNewFile", "BufWritePre" } }
+Event.mappings["User LazyFile"] = Event.mappings.LazyFile
+
 -- lazy.nvim setup
 require("lazy").setup({
   spec = {

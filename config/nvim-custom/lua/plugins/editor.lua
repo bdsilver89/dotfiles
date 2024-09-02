@@ -121,7 +121,7 @@ return {
   {
     "folke/todo-comments.nvim",
     cmd = { "TodoTrouble", "TodoTelescope" },
-    event = { "BufReadPost", "BufNewFile" },
+    event = "LazyFile",
     opts = {
       signs = vim.g.enable_icons ~= false,
     },

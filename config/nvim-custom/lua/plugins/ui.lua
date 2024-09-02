@@ -29,7 +29,7 @@ return {
   -- indent guides
   {
     "lukas-reineke/indent-blankline.nvim",
-    event = { "BufReadPost", "BufNewFile" },
+    event = "LazyFile",
     opts = {
       indent = {
         char = "│",
