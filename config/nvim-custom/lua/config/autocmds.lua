@@ -32,6 +32,24 @@ autocmd("VimResized", {
   end,
 })
 
+autocmd("BufReadPost", {
+  desc = "Go to last loc when opening a buffer",
+  group = augroup("lastloc"),
+  callback = function(event)
+    local exclude = { "gitcommit" }
+    local buf = event.buf
+    if vim.tbl_contains(exclude, vim.bo[buf].filetype) or vim.b[buf].config_last_loc then
+      return
+    end
+    vim.b[buf].config_last_loc = true
+    local mark = vim.api.nvim_buf_get_mark(buf, '"')
+    local lcount = vim.api.nvim_buf_line_count(buf)
+    if mark[1] > 0 and mark[1] <= lcount then
+      pcall(vim.api.nvim_win_set_cursor, 0, mark)
+    end
+  end,
+})
+
 autocmd("Filetype", {
   desc = "Close with <q>",
   group = augroup("quick_close"),
@@ -53,7 +71,7 @@ autocmd("Filetype", {
     "spectre_panel",
     "startuptime",
     "toggleterm",
-    "und,otree",
+    "undotree",
   },
   callback = function(event)
     vim.bo[event.buf].buflisted = false
@@ -75,7 +93,7 @@ autocmd("FileType", {
   end,
 })
 
-autocmd({ "FileType" }, {
+autocmd("FileType", {
   desc = "conceallevel for json",
   group = augroup("json_conceal"),
   pattern = { "json", "jsonc", "json5" },
@@ -84,6 +102,17 @@ autocmd({ "FileType" }, {
   end,
 })
 
+-- autocmd("FileType", {
+--   desc = "foldcolumn",
+--   group = augroup("foldcolumn"),
+--   pattern = {
+--     "Neogit*",
+--   },
+--   callback = function()
+--     vim.opt_local.foldcolumn = "0"
+--   end,
+-- })
+--
 autocmd("BufWritePre", {
   desc = "Auto create dir before saving buffer",
   group = augroup("auto_create_dir"),

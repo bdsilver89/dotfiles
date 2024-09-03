@@ -1,8 +1,9 @@
 return {
-  -- catppuccin colorscheme
   {
     "catppuccin/nvim",
     lazy = true,
+    priority = 1000,
+    enabled = true,
     name = "catppuccin",
     init = function()
       vim.cmd.colorscheme("catppuccin")
@@ -39,5 +40,15 @@ return {
         which_key = true,
       },
     },
+  },
+
+  {
+    "folke/tokyonight.nvim",
+    priority = 1000,
+    lazy = true,
+    enabled = false,
+    init = function()
+      vim.cmd.colorscheme("tokyonight-night")
+    end,
   },
 }

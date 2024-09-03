@@ -7,10 +7,18 @@ return {
   -- advanced git editor
   {
     "NeogitOrg/neogit",
+    dependencies = {
+      { "sindrets/diffview.nvim" },
+    },
     cmd = "Neogit",
-    opts = {},
     keys = {
       { "<leader>gs", "<cmd>Neogit<cr>", desc = "Git status (Neogit)" },
+    },
+    opts = {
+      kind = "split",
+      integrations = {
+        diffview = true,
+      },
     },
   },
 

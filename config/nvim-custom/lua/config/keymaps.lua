@@ -110,5 +110,15 @@ Utils.toggle("<leader>uF", {
   end,
 })
 
+Utils.toggle("<leader>ub", {
+  name = "Dark mode",
+  get = function()
+    return vim.o.background == "dark"
+  end,
+  set = function(state)
+    vim.o.background = state and "dark" or "light"
+  end
+})
+
 -- misc
 map("n", "<leader>l", "<cmd>Lazy<cr>", { desc = "Lazy package manager" })

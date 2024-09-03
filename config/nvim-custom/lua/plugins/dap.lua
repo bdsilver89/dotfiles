@@ -76,7 +76,7 @@ return {
       end
 
       -- setup overseer
-      require("overseer").enable_dap()
+      -- require("overseer").enable_dap()
     end,
   },
 

@@ -109,10 +109,10 @@ return {
       })
 
       local diagnostic_icons = {
-        ERROR = " ",
-        WARN = " ",
-        HINT = " ",
-        INFO = " ",
+        ERROR = vim.g.enable_icons and " " or "E",
+        WARN = vim.g.enable_icons and " " or "W",
+        HINT =vim.g.enable_icons and " " or "H",
+        INFO =vim.g.enable_icons and " " or "I",
       }
 
       -- diagnostic setup
@@ -134,10 +134,10 @@ return {
         severity_sort = true,
         signs = {
           text = {
-            [vim.diagnostic.severity.ERROR] = vim.g.enable_icons and diagnostic_icons.ERROR or "E",
-            [vim.diagnostic.severity.WARN] = vim.g.enable_icons and diagnostic_icons.WARN or "W",
-            [vim.diagnostic.severity.HINT] = vim.g.enable_icons and diagnostic_icons.HINT or "H",
-            [vim.diagnostic.severity.INFO] = vim.g.enable_icons and diagnostic_icons.INFO or "I",
+            [vim.diagnostic.severity.ERROR] = diagnostic_icons.ERROR,
+            [vim.diagnostic.severity.WARN] = diagnostic_icons.WARN,
+            [vim.diagnostic.severity.HINT] = diagnostic_icons.HINT,
+            [vim.diagnostic.severity.INFO] = diagnostic_icons.INFO,
           },
         },
       })

@@ -53,7 +53,7 @@ require("lazy").setup({
   },
   install = {
     missing = true,
-    colorscheme = { "catppuccin" },
+    colorscheme = { "catppuccin", "tokyonight" },
   },
   performance = {
     rtp = {
@@ -70,7 +70,7 @@ require("lazy").setup({
   },
   ui = {
     backdrop = 100,
-    border = "rounded",
+    -- border = "rounded",
     icons = vim.g.enable_icons and {} or {
       cmd = "⌘",
       config = "🛠",
