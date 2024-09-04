@@ -70,6 +70,16 @@ local function winbar()
 
   value = value .. file_icon
   value = value .. "%#" .. hl_winbar_file .. "#" .. filename .. "%*"
+
+  -- local has_lspkind, lspkidn = pcall(require, "lspkind")
+  -- local has_trouble, trouble = pcall(require, "trouble")
+  -- if has_trouble then
+  --   value = value .. " trouble"
+  --   if has_lspkind then
+  --     value = value .. " lspkind"
+  --   end
+  -- end
+
   return value
 end
 

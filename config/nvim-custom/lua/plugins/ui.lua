@@ -205,6 +205,55 @@ return {
   },
 
   {
+    "akinsho/bufferline.nvim",
+    enabled = true,
+    event = "VeryLazy",
+    keys = {
+      { "<leader>bp", "<cmd>BufferLineTogglePin<cr>", desc = "Toggle pin" },
+      { "<leader>bP", "<cmd>BufferLineGroupCLsoe ungrouped<cr>", desc = "Delete non-pinned buffers" },
+      { "<leader>bo", "<cmd>BufferLineCloseOthers<cr>", desc = "Delete other buffers" },
+      { "<leader>br", "<cmd>BufferLineCloseRight<cr>", desc = "Delete buffers to right" },
+      { "<leader>bl", "<cmd>BufferLineCloseLeft<cr>", desc = "Delete buffers to left" },
+      { "<s-h>", "<cmd>BufferLineCyclePrev<cr>", desc = "Prev buffer" },
+      { "<s-l>", "<cmd>BufferLineCycleNext<cr>", desc = "Next buffer" },
+      { "[b", "<cmd>BufferLineCyclePrev<cr>", desc = "Prev buffer" },
+      { "]b", "<cmd>BufferLineCycleNext<cr>", desc = "Next buffer" },
+      { "[B", "<cmd>BufferLineMovePrev<cr>", desc = "Move buffer prev" },
+      { "]B", "<cmd>BufferLineMoveNext<cr>", desc = "Move buffer next" },
+    },
+    opts = {
+      options = {
+        diagnostics = "nvim_lsp",
+        always_show_bufferline = false,
+        offsets = {
+          {
+            filetype = "neo-tree",
+            text = "Neo-tree",
+            highlight = "Directory",
+            text_align = "left",
+          },
+          {
+            filetype = "NvimTree",
+            text = "NvimTree",
+            highlight = "Directory",
+            text_align = "left",
+          },
+        },
+      },
+    },
+    config = function(_, opts)
+      require("bufferline").setup(opts)
+      vim.api.nvim_create_autocmd({ "BufAdd", "BufDelete" }, {
+        callback = function()
+          vim.schedule(function()
+            pcall(nvim_bufferline)
+          end)
+        end,
+      })
+    end,
+  },
+
+  {
     "nvim-lualine/lualine.nvim",
     enabled = true,
     event = "VeryLazy",
