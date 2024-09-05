@@ -37,7 +37,10 @@ map("n", "<s-l>", "<cmd>bnext<cr>", { desc = "Next buffer" })
 map("n", "[b", "<cmd>bprevious<cr>", { desc = "Prev buffer" })
 map("n", "]b", "<cmd>bnext<cr>", { desc = "Next buffer" })
 map("n", "<leader>bb", "<cmd>e #<cr>", { desc = "Alternate buffer" })
-map("n", "<leader>bd", "<cmd>:bd<cr>", { desc = "Delete buffer" })
+map("n", "<leader>bD", "<cmd>:bd<cr>", { desc = "Delete buffer" })
+map("n", "<leader>bd", function()
+  require("config.utils").bufremove()
+end, { desc = "Delete buffer" })
 
 -- windows
 map("n", "<leader>ww", "<c-w>p", { desc = "Other window", remap = true })
@@ -117,7 +120,7 @@ Utils.toggle("<leader>ub", {
   end,
   set = function(state)
     vim.o.background = state and "dark" or "light"
-  end
+  end,
 })
 
 -- misc

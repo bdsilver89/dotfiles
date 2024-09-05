@@ -29,7 +29,7 @@ return {
     "neovim/nvim-lspconfig",
     opts = {
       servers = {
-        tsserver = {
+        ts_ls = {
           enabled = false,
         },
         vtsls = {
@@ -163,7 +163,7 @@ return {
         },
       },
       setup = {
-        tsserver = function()
+        ts_ls = function()
           return false
         end,
         -- vtsls = function(_, opts) end,

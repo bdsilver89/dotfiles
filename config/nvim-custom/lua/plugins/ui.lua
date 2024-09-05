@@ -223,6 +223,12 @@ return {
     },
     opts = {
       options = {
+        close_command = function(n)
+          require("config.utils").bufremove(n)
+        end,
+        right_mouse_command = function(n)
+          require("config.utils").bufremove(n)
+        end,
         diagnostics = "nvim_lsp",
         always_show_bufferline = false,
         offsets = {
