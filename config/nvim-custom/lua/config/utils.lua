@@ -39,7 +39,11 @@ end
 
 ---@param name string
 function M.get_plugin(name)
-  return require("lazy.core.config").spec.plugins[name]
+  local has_lazy, lazy_config = pcall(require, "lazy.core.config")
+  if not has_lazy then
+    return nil
+  end
+  return lazy_config.spec.plugins[name]
 end
 
 ---@param name string

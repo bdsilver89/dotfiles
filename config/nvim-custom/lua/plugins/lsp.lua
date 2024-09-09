@@ -111,8 +111,8 @@ return {
       local diagnostic_icons = {
         ERROR = vim.g.enable_icons and " " or "E",
         WARN = vim.g.enable_icons and " " or "W",
-        HINT =vim.g.enable_icons and " " or "H",
-        INFO =vim.g.enable_icons and " " or "I",
+        HINT = vim.g.enable_icons and " " or "H",
+        INFO = vim.g.enable_icons and " " or "I",
       }
 
       -- diagnostic setup
@@ -122,14 +122,6 @@ return {
         virtual_text = {
           spacing = 4,
           source = "if_many",
-          -- NOTE: uncomment for using diagnostic icons as the virtual text icon
-          -- prefix = function(diag)
-          --   for d, icon in pairs(diagnostic_icons) do
-          --     if diag.severity == vim.diagnostic.severity[d:upper()] then
-          --       return icon
-          --     end
-          --   end
-          -- end,
         },
         severity_sort = true,
         signs = {
@@ -142,7 +134,7 @@ return {
         },
       })
 
-      require("lspconfig.ui.windows").default_options.border = "rounded"
+      -- require("lspconfig.ui.windows").default_options.border = "rounded"
 
       local servers = opts.servers
 
