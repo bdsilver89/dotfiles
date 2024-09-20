@@ -3,7 +3,7 @@ return {
     "catppuccin/nvim",
     lazy = true,
     priority = 1000,
-    enabled = true,
+    enabled = false,
     name = "catppuccin",
     init = function()
       vim.cmd.colorscheme("catppuccin")
@@ -40,6 +40,18 @@ return {
         which_key = true,
       },
     },
+  },
+
+  {
+    "rose-pine/neovim",
+    name = "rose-pine",
+    lazy = true,
+    priority = 1000,
+    enabled = true,
+    opts = {},
+    init = function()
+      vim.cmd.colorscheme("rose-pine")
+    end,
   },
 
   {
