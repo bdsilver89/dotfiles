@@ -3,7 +3,7 @@
 if [[ $# -eq 1 ]]; then
     selected=$1
 else
-    local os=$(uname)
+    os=$(uname)
     if [[ "$os" == "Darwin" ]]; then
         selected=$(find $HOME/Developer/projects -mindepth 1 -maxdepth 1 -type d | fzf)
     else
