@@ -166,10 +166,7 @@ return {
 
         -- prevent mason-disabled lspconfig from trying to setup a lsp that is not in the PATH
         local should_setup = true
-        if
-          not use_mason
-          and vim.fn.executable(require("lspconfig.server_configurations." .. server).default_config.cmd[1]) == 0
-        then
+        if not use_mason and vim.fn.executable(require("lspconfig.configs." .. server).default_config.cmd[1]) == 0 then
           should_setup = false
         end
 
