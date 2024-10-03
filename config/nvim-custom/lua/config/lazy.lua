@@ -12,8 +12,8 @@ if not (vim.env.LAZY or vim.uv.fs_stat(lazypath)) then
   if vim.v.shell_error ~= 0 then
     vim.api.nvim_echo({
       { "Failed to clone lazy.nvim\n", "ErrorMsg" },
-      { out, "WarningMsg" },
-      { "Press any key to exit...", "MoreMsg" },
+      { out,                           "WarningMsg" },
+      { "Press any key to exit...",    "MoreMsg" },
     }, true, {})
     vim.fn.getchar()
     vim.cmd.quit()
@@ -25,7 +25,7 @@ vim.opt.rtp:prepend(lazypath)
 if not pcall(require, "lazy") then
   vim.api.nvim_echo({
     { ("Unable to load lazy from: %s\n"):format(lazypath), "ErrorMsg" },
-    { "Press any key to exit...", "MoreMsg" },
+    { "Press any key to exit...",                          "MoreMsg" },
   }, true, {})
   vim.fn.getchar()
   vim.cmd.quit()

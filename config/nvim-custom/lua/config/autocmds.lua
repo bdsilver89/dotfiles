@@ -158,3 +158,24 @@ autocmd("FileType", {
     end)
   end,
 })
+
+autocmd({ "TextChanged", "TextChangedI", "TextChangedP", "VimResized", "LspAttach", "WinScrolled", "BufEnter" }, {
+  desc = "Colorify file",
+  group = augroup("colorify"),
+  callback = function(args)
+    local event = args.event
+    local buf = args.buf
+
+    local colorify = require("config.ui.colorify")
+
+    local tblen = #colorify.events
+    if colorify.events[tblen] == "BufEnter" and event == "WinScrolled" then
+      return
+    end
+    table.insert(colorify.events, event)
+
+    if vim.bo[buf].bl then
+      colorify.attach(buf, event)
+    end
+  end,
+})

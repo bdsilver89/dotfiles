@@ -27,14 +27,28 @@ return {
 
   {
     "hrsh7th/nvim-cmp",
-    dependencies = {
-      { "roobert/tailwindcss-colorizer-cmp.nvim", opts = {} },
-    },
     opts = function(_, opts)
       local format_kinds = opts.formatting.format
       opts.formatting.format = function(entry, item)
-        format_kinds(entry, item)
-        return require("tailwindcss-colorizer-cmp").formatter(entry, item)
+        local format_item = format_kinds(entry, item)
+
+        local entry_item = entry:get_completion_item()
+        local color = entry_item.documentation
+
+        if color and type(color) == "string" and color:match("^#%x%x%x%x%x%x$") then
+          local hl = "hex-" .. color:sub(2)
+
+          if #vim.api.nvim_get_hl(0, { name = hl }) == 0 then
+            vim.api.nvim_set_hl(0, hl, { fg = color })
+          end
+
+          item.kind = "󱓻"
+          item.kind_hl_group = hl
+          item.menu_hl_group = hl
+          return item
+        end
+
+        return format_item
       end
     end,
   },

@@ -90,14 +90,18 @@ return {
           },
         },
         sorting = defaults.sorting,
-        -- window = {
-        --   completion = {
-        --     border = "rounded",
-        --   },
-        --   documentation = {
-        --     border = "rounded",
-        --   },
-        -- },
+        window = {
+          completion = {
+            scrollbar = false,
+            side_padding = 1,
+            winhighlight = "Normal:CmpPmenu,CursorLine:CmpSel,Search:None,FloatBorder:CmpBorder",
+            border = "single",
+          },
+          documentation = {
+            border = "single",
+            winhighlight = "Normal:CmpDoc,FloatBorder:CmpDocBorder",
+          },
+        },
       }
 
       return opts

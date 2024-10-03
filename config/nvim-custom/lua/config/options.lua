@@ -49,6 +49,7 @@ opt.splitbelow = true
 opt.splitkeep = "screen"
 opt.splitright = true
 opt.statuscolumn = [[%!v:lua.require'config.ui.statuscolumn'.eval()]]
+-- opt.statusline = [[%!v:lua.require'config.ui.statusline'.eval()]]
 opt.tabstop = 2
 opt.termguicolors = true
 opt.title = true

@@ -4,3 +4,4 @@ end
 require("config.options")
 require("config.autocmds")
 require("config.keymaps")
+require("config.ui.colorify").init()

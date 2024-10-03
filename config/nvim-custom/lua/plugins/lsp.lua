@@ -3,16 +3,16 @@ return {
     "neovim/nvim-lspconfig",
     event = "LazyFile",
     dependencies = {
-      {
-        "j-hui/fidget.nvim",
-        opts = {
-          integration = {
-            ["nvim-tree"] = {
-              enable = false,
-            },
-          },
-        },
-      },
+      -- {
+      --   "j-hui/fidget.nvim",
+      --   opts = {
+      --     integration = {
+      --       ["nvim-tree"] = {
+      --         enable = false,
+      --       },
+      --     },
+      --   },
+      -- },
       "hrsh7th/cmp-nvim-lsp",
       {
         "williamboman/mason-lspconfig.nvim",
@@ -48,11 +48,46 @@ return {
           -- map("gG", vim.lsp.buf.workspace_symbol, "Search workspace symbols")
           -- map("gI", function() require("telescope.builtin").lsp_implementations() end, "Goto implementation")
           -- map("gy", function() require("telescope.builtin").lsp_type_definitions() end, "Goto type defintion")
-          map("<leader>cr", vim.lsp.buf.rename, "Rename")
+          -- map("<leader>cr", vim.lsp.buf.rename, "Rename")
           map("<leader>ca", vim.lsp.buf.code_action, "Code action")
           map("<leader>cd", vim.diagnostic.open_float, "Line diagnostics")
           map("<leader>cl", "<cmd>LspInfo<cr>", "Info")
           -- stylua: ignore end
+
+          map("<leader>cr", function()
+            local curr_name = vim.fn.expand("<cword>" .. " ")
+            local win = require("plenary.popup").create(curr_name, {
+              title = "Rename",
+              style = "minimal",
+              borderchars = { "─", "│", "─", "│", "╭", "╮", "╯", "╰" },
+              relative = "cursor",
+              borderhighlight = "RenamerBorder",
+              titlehighlight = "RenamerTitle",
+              focusable = true,
+              width = 25,
+              height = 1,
+              line = "cursor+2",
+              col = "cursor-1",
+            })
+
+            vim.cmd("normal A")
+            vim.cmd("startinsert")
+
+            vim.keymap.set({ "i", "n" }, "<esc>", "<cmd>q<cr>", { buffer = 0 })
+
+            vim.keymap.set({ "i", "n" }, "<cr>", function()
+              local new_name = vim.trim(vim.fn.getline("."))
+              vim.api.nvim_win_close(win, true)
+
+              if #new_name > 0 and new_name ~= curr_name then
+                local params = vim.lsp.util.make_position_params()
+                params.newName = new_name
+
+                vim.lsp.buf_request(0, "textDocument/rename", params)
+              end
+              vim.cmd.stopinsert()
+            end, { buffer = 0 })
+          end, "Rename")
 
           -- NOTE: word highlight, but using vim-illuminate instead...
           if client and client.server_capabilities.documentHighlightProvider then
@@ -105,6 +140,40 @@ return {
             -- TODO: codelens toggle
             map("<leader>cL", vim.lsp.codelens.run, "Codelens run")
           end
+
+          -- signature helper
+          if
+            client
+            and client.server_capabilities.signatureHelpProvider
+            and client.server_capabilities.signatureHelpProvider.triggerCharacters
+          then
+            local signature_group = vim.api.nvim_create_augroup("LspSignature", { clear = false })
+            vim.api.nvim_clear_autocmds({ group = signature_group, buffer = buf })
+            local trigger_chars = client.server_capabilities.signatureHelpProvider.triggerCharacters or {}
+
+            vim.api.nvim_create_autocmd("TextChangedI", {
+              group = signature_group,
+              buffer = buf,
+              callback = function()
+                local cur_line = vim.api.nvim_get_current_line()
+                local pos = vim.api.nvim_win_get_cursor(0)[2]
+                local prev_char = cur_line:sub(pos - 1, pos - 1)
+                local cur_char = cur_line:sub(pos, pos)
+
+                local triggered = false
+                for _, char in ipairs(trigger_chars) do
+                  if cur_char == char or prev_char == char then
+                    triggered = true
+                    break
+                  end
+                end
+
+                if triggered then
+                  vim.lsp.buf.signature_help()
+                end
+              end,
+            })
+          end
         end,
       })
 
@@ -122,6 +191,7 @@ return {
         virtual_text = {
           spacing = 4,
           source = "if_many",
+          prefix = vim.g.enable_icons and "",
         },
         severity_sort = true,
         signs = {
@@ -132,9 +202,26 @@ return {
             [vim.diagnostic.severity.INFO] = diagnostic_icons.INFO,
           },
         },
+        float = {
+          border = "single",
+        },
       })
 
-      -- require("lspconfig.ui.windows").default_options.border = "rounded"
+      -- Default border style
+      local orig_util_open_floating_preview = vim.lsp.util.open_floating_preview
+      function vim.lsp.util.open_floating_preview(contents, syntax, opts, ...)
+        opts = opts or {}
+        opts.border = "rounded"
+        return orig_util_open_floating_preview(contents, syntax, opts, ...)
+      end
+
+      -- Signature helper window
+      vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {
+        border = "rounded",
+        focusable = false,
+        silent = true,
+        max_height = 7,
+      })
 
       local servers = opts.servers
 
