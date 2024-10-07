@@ -125,13 +125,13 @@ autocmd("BufWritePre", {
   end,
 })
 
-autocmd("QuickFixCmdPost", {
-  desc = "Auto open Trouble quickfix",
-  -- group = augroup("auto_trouble_qflist"),
-  callback = function()
-    vim.cmd([[Trouble qflist open]])
-  end,
-})
+-- autocmd("QuickFixCmdPost", {
+--   desc = "Auto open Trouble quickfix",
+--   -- group = augroup("auto_trouble_qflist"),
+--   callback = function()
+--     vim.cmd([[Trouble qflist open]])
+--   end,
+-- })
 
 vim.filetype.add({
   pattern = {
@@ -162,20 +162,9 @@ autocmd("FileType", {
 autocmd({ "TextChanged", "TextChangedI", "TextChangedP", "VimResized", "LspAttach", "WinScrolled", "BufEnter" }, {
   desc = "Colorify file",
   group = augroup("colorify"),
-  callback = function(args)
-    local event = args.event
-    local buf = args.buf
-
-    local colorify = require("config.ui.colorify")
-
-    local tblen = #colorify.events
-    if colorify.events[tblen] == "BufEnter" and event == "WinScrolled" then
-      return
-    end
-    table.insert(colorify.events, event)
-
-    if vim.bo[buf].bl then
-      colorify.attach(buf, event)
+  callback = function(event)
+    if vim.bo[event.buf].bl then
+      require("config.ui.colorify").attach(event.buf, event.event)
     end
   end,
 })

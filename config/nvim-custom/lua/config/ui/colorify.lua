@@ -7,7 +7,7 @@ local conf = {
 }
 
 M.events = {}
-local ns = nil
+local ns = 1
 
 local function is_dark(hex)
   hex = hex:gsub("#", "")
@@ -98,7 +98,7 @@ function M.hex(buf, line, str)
 end
 
 function M.lsp_var(buf, line, min, max)
-  local param = { textDocument = vim.lsp.util.make_text_document_params() }
+  local param = { textDocument = vim.lsp.util.make_text_document_params(buf) }
 
   for _, client in pairs(vim.lsp.get_clients({ bufnr = buf })) do
     if client.server_capabilities.colorProvider then
