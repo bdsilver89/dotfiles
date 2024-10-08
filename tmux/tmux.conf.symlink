@@ -47,15 +47,15 @@ set -g @plugin 'tmux-plugins/tmux-yank'
 set -g @plugin 'tmux-plugins/tmux-resurrect'
 set -g @plugin 'tmux-plugins/tmux-continuum'
 set -g @plugin 'christoomey/vim-tmux-navigator'
-set -g @plugin 'rose-pine/tmux'
-# set -g @plugin 'catppuccin/tmux'
+# set -g @plugin 'rose-pine/tmux'
+set -g @plugin 'catppuccin/tmux'
 
 # plugin settings
 set -g @continuum-restore 'on'
 set -g @resurrect-strategy-nvim 'session'
 
 # catppuccin settings
-# set -g @catppuccin_flavor 'mocha' # latte,frappe, macchiato or mocha
+set -g @catppuccin_flavor 'mocha' # latte,frappe, macchiato or mocha
 # set -g @catppuccin_window_left_separator ""
 # set -g @catppuccin_window_right_separator " "
 # set -g @catppuccin_window_middle_separator " █"
@@ -76,9 +76,9 @@ set -g @resurrect-strategy-nvim 'session'
 # set -g @catppuccin_date_time_text "%H:%M"
 
 # rose-pine settings
-set -g @rose_pine_variant "main" # 'main', 'moon' or 'dawn'
-set -g @rose_pine_host "on"
-set -g @rose_pine_user "on"
-set -g @rose_pine_directory "on"
+# set -g @rose_pine_variant "main" # 'main', 'moon' or 'dawn'
+# set -g @rose_pine_host "on"
+# set -g @rose_pine_user "on"
+# set -g @rose_pine_directory "on"
 
 run '~/.tmux/plugins/tpm/tpm'
