@@ -121,7 +121,7 @@ function M.lsp_var(buf, line, min, max)
           local hex = string.format("#%02x%02x%02x", r * a * 255, g * a * 255, b * a * 255)
           local hl_group = add_hl(hex)
 
-          local range_start = match.range_start
+          local range_start = match.range.start
           local range_end = match.range["end"]
 
           local opts = { end_col = range_end.character, hl_group = hl_group }
