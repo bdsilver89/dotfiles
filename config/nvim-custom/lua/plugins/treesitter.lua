@@ -4,7 +4,8 @@ return {
     version = false,
     build = ":TSUpdate",
     event = { "LazyFile" },
-    cmd = { "TSUpdateSync", "TSUpdate", "TSInstall", "TSBufEnable", "TSBufDisable", "TSModuleInfo" },
+    lazy = vim.fn.argc(-1) == 0,
+    cmd = { "TSInstall", "TSBufEnable", "TSBufDisable", "TSModuleInfo" },
     dependencies = {
       {
         "nvim-treesitter/nvim-treesitter-textobjects",
@@ -25,20 +26,9 @@ return {
       indent = { enable = true },
       ensure_installed = {
         "diff",
-        "dockerfile",
-        -- "go",
-        -- "gomod",
-        -- "gowork",
-        -- "gosum",
-        -- "hcl",
-        -- "java",
-        -- "kotlin",
-        -- "printf",
+        "printf",
         "query",
         "regex",
-        -- "rst",
-        -- "sql",
-        -- "terraform",
         "vim",
         "vimdoc",
         "xml",
@@ -79,29 +69,6 @@ return {
     },
     config = function(_, opts)
       require("nvim-treesitter.configs").setup(opts)
-    end,
-  },
-
-  {
-    "nvim-treesitter/nvim-treesitter-context",
-    event = "VeryLazy",
-    enabled = false,
-    opts = function()
-      local tsc = require("treesitter-context")
-
-      require("config.utils").toggle("<leader>ut", {
-        name = "Treesitter Context",
-        get = tsc.enabled,
-        set = function(state)
-          if state then
-            tsc.enable()
-          else
-            tsc.disable()
-          end
-        end,
-      })
-
-      return { mode = "cursor", max_lines = 3 }
     end,
   },
 }

@@ -19,22 +19,22 @@ function M.toggle(lhs, info)
     end
   end, { desc = "Toggle " .. info.name })
 
-  if M.has_plugin("which-key.nvim") then
-    require("which-key").add({
-      {
-        lhs,
-        icon = function()
-          if not vim.g.enable_icons then
-            return {}
-          end
-          return info.get() and { icon = " ", color = "green" } or { icon = " ", color = "yellow" }
-        end,
-        desc = function()
-          return (info.get() and "Disable " or "Enable ") .. info.name
-        end,
-      },
-    })
-  end
+  -- if M.has_plugin("which-key.nvim") then
+  --   require("which-key").add({
+  --     {
+  --       lhs,
+  --       icon = function()
+  --         if not vim.g.enable_icons then
+  --           return {}
+  --         end
+  --         return info.get() and { icon = " ", color = "green" } or { icon = " ", color = "yellow" }
+  --       end,
+  --       desc = function()
+  --         return (info.get() and "Disable " or "Enable ") .. info.name
+  --       end,
+  --     },
+  --   })
+  -- end
 end
 
 ---@param name string

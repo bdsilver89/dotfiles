@@ -112,7 +112,7 @@ autocmd("FileType", {
 --     vim.opt_local.foldcolumn = "0"
 --   end,
 -- })
---
+
 autocmd("BufWritePre", {
   desc = "Auto create dir before saving buffer",
   group = augroup("auto_create_dir"),

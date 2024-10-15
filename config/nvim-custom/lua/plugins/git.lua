@@ -40,13 +40,14 @@ return {
           changedelete = { text = sign("▎", "~") },
           untracked = { text = sign("▎", "~") },
         },
-        -- signs_staged = {
-        --   add = { text = "▎" },
-        --   change = { text = "▎" },
-        --   delete = { text = "" },
-        --   topdelete = { text = "" },
-        --   changedelete = { text = "▎" },
-        -- },
+        signs_staged = {
+          add = { text = sign("▎", "+") },
+          change = { text = sign("▎", "~") },
+          delete = { text = sign("", "_") },
+          topdelete = { text = sign("", "‾") },
+          changedelete = { text = sign("▎", "~") },
+          untracked = { text = sign("▎", "~") },
+        },
         current_line_blame = true,
         on_attach = function(buffer)
           local gs = package.loaded.gitsigns

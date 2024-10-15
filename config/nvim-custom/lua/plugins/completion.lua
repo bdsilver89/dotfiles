@@ -180,25 +180,4 @@ return {
       },
     },
   },
-
-  {
-    "danymat/neogen",
-    cmd = "Neogen",
-    keys = {
-      {
-        "<leader>cn",
-        function()
-          require("neogen").generate()
-        end,
-        desc = "Generate annotations",
-      },
-    },
-    opts = function(_, opts)
-      if opts.snippet_engine ~= nil then
-        return
-      end
-
-      opts.snippet_engine = "nvim"
-    end,
-  },
 }

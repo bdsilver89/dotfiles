@@ -1,7 +1,13 @@
 return {
   -- icons
   {
+    "nvim-tree/nvim-web-devicons",
+    enabled = vim.g.enable_icons and vim.g.enable_nvim_devicons,
+    lazy = true,
+  },
+  {
     "echasnovski/mini.icons",
+    enabled = vim.g.enable_icons and vim.g.enable_mini_icons,
     lazy = true,
     opts = {
       style = vim.g.enable_icons and "glyph" or "ascii",
@@ -22,8 +28,48 @@ return {
     end,
   },
 
-  -- ui components
-  { "MunifTanjim/nui.nvim", lazy = true },
+  {
+    "catppuccin/nvim",
+    lazy = true,
+    priority = 1000,
+    enabled = true,
+    name = "catppuccin",
+    init = function()
+      vim.cmd.colorscheme("catppuccin")
+    end,
+    opts = {
+      integrations = {
+        cmp = true,
+        gitsigns = true,
+        headlines = true,
+        illuminate = true,
+        indent_blankline = { enabled = true },
+        lsp_trouble = true,
+        mason = true,
+        markdown = true,
+        mini = true,
+        native_lsp = {
+          enabled = true,
+          underlines = {
+            errors = { "undercurl" },
+            hints = { "undercurl" },
+            warnings = { "undercurl" },
+            information = { "undercurl" },
+          },
+        },
+        neotest = true,
+        neotree = true,
+        noice = true,
+        notify = true,
+        overseer = true,
+        semantic_tokens = true,
+        telescope = true,
+        treesitter = true,
+        treesitter_context = true,
+        which_key = true,
+      },
+    },
+  },
 
   -- indent guides
   {
@@ -58,18 +104,18 @@ return {
     "nvim-lualine/lualine.nvim",
     enabled = true,
     event = "VeryLazy",
-    -- init = function()
-    --   vim.g.lualine_laststatus = vim.o.laststatus
-    --   if vim.fn.argc(-1) > 0 then
-    --     vim.o.statusline = " "
-    --   else
-    --     vim.o.laststatus = 0
-    --   end
-    -- end,
+    init = function()
+      vim.g.lualine_laststatus = vim.o.laststatus
+      if vim.fn.argc(-1) > 0 then
+        vim.o.statusline = " "
+      else
+        vim.o.laststatus = 0
+      end
+    end,
     opts = function()
       local lualine_require = require("lualine_require")
       lualine_require.require = require
-      -- vim.o.laststatus = vim.g.lualine_laststatus
+      vim.o.laststatus = vim.g.lualine_laststatus
 
       local path_separator = vim.g.enable_icons and "" or ">"
 

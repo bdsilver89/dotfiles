@@ -1,35 +1,10 @@
 -- bootstrap lazy.nvim
-local lazypath = vim.env.LAZY or vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not (vim.env.LAZY or vim.uv.fs_stat(lazypath)) then
-  local out = vim.fn.system({
-    "git",
-    "clone",
-    "--filter=blob:none",
-    "https://github.com/folke/lazy.nvim.git",
-    "--branch=stable",
-    lazypath,
-  })
-  if vim.v.shell_error ~= 0 then
-    vim.api.nvim_echo({
-      { "Failed to clone lazy.nvim\n", "ErrorMsg" },
-      { out, "WarningMsg" },
-      { "Press any key to exit...", "MoreMsg" },
-    }, true, {})
-    vim.fn.getchar()
-    vim.cmd.quit()
-  end
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.uv.fs_stat(lazypath) then
+  local repo = "https://github.com/folke/lazy.nvim.git"
+  vim.fn.system({ "git", "clone", "--filter=blob:none", repo, "--branch=stable", lazypath })
 end
 vim.opt.rtp:prepend(lazypath)
-
--- validate lazy.nvim
-if not pcall(require, "lazy") then
-  vim.api.nvim_echo({
-    { ("Unable to load lazy from: %s\n"):format(lazypath), "ErrorMsg" },
-    { "Press any key to exit...", "MoreMsg" },
-  }, true, {})
-  vim.fn.getchar()
-  vim.cmd.quit()
-end
 
 -- setup LazyFile event
 local Event = require("lazy.core.handler.event")
@@ -39,9 +14,7 @@ Event.mappings["User LazyFile"] = Event.mappings.LazyFile
 -- lazy.nvim setup
 require("lazy").setup({
   spec = {
-    -- base plugin configuration
     { import = "plugins" },
-    -- language-specific plugin configuration
     { import = "plugins.lang" },
   },
   checker = {
@@ -51,20 +24,43 @@ require("lazy").setup({
     lazy = true,
     version = false,
   },
+  rocks = {
+    enabled = false,
+    hererocks = false,
+  },
   install = {
-    missing = true,
-    colorscheme = { "catppuccin", "rose-pine", "tokyonight" },
+    colorscheme = { "catppuccin" },
   },
   performance = {
     rtp = {
       disabled_plugins = {
-        "gzip",
-        "matchit",
-        "matchparen",
-        "netrwPlugin",
-        "tarPlugin",
+        "2html_plugin",
         "tohtml",
+        "getscript",
+        "getscriptPlugin",
+        "gzip",
+        "logipat",
+        "netrw",
+        "netrwPlugin",
+        "netrwSettings",
+        "netrwFileHandlers",
+        "matchit",
+        "tar",
+        "tarPlugin",
+        "rrhelper",
+        "spellfile_plugin",
+        "vimball",
+        "vimballPlugin",
+        "zip",
         "zipPlugin",
+        "tutor",
+        "rplugin",
+        "syntax",
+        "synmenu",
+        "optwin",
+        "compiler",
+        "bugreport",
+        "ftplugin",
       },
     },
   },

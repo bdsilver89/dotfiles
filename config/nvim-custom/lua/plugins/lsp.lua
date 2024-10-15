@@ -3,16 +3,16 @@ return {
     "neovim/nvim-lspconfig",
     event = "LazyFile",
     dependencies = {
-      -- {
-      --   "j-hui/fidget.nvim",
-      --   opts = {
-      --     integration = {
-      --       ["nvim-tree"] = {
-      --         enable = false,
-      --       },
-      --     },
-      --   },
-      -- },
+      {
+        "j-hui/fidget.nvim",
+        opts = {
+          integration = {
+            ["nvim-tree"] = {
+              enable = false,
+            },
+          },
+        },
+      },
       "hrsh7th/cmp-nvim-lsp",
       {
         "williamboman/mason-lspconfig.nvim",
@@ -20,6 +20,44 @@ return {
       },
     },
     opts = {
+      diagnostics = {
+        underline = true,
+        update_in_insert = false,
+        virtual_text = {
+          spacing = 4,
+          source = "if_many",
+          prefix = vim.g.enable_icons and "",
+        },
+        severity_sort = true,
+        signs = {
+          text = {
+            [vim.diagnostic.severity.ERROR] = vim.g.enable_icons and " " or "E",
+            [vim.diagnostic.severity.WARN] = vim.g.enable_icons and " " or "W",
+            [vim.diagnostic.severity.HINT] = vim.g.enable_icons and " " or "H",
+            [vim.diagnostic.severity.INFO] = vim.g.enable_icons and " " or "I",
+          },
+        },
+        float = {
+          border = "single",
+        },
+      },
+      inlay_hints = {
+        enabled = true,
+      },
+      codelens = {
+        enabled = true,
+      },
+      document_highlight = {
+        enabled = true,
+      },
+      capabilities = {
+        workspace = {
+          fileOperations = {
+            didRename = true,
+            willRename = true,
+          },
+        },
+      },
       servers = {},
       setup = {},
     },
@@ -27,7 +65,6 @@ return {
       local Utils = require("config.utils")
 
       vim.api.nvim_create_autocmd("LspAttach", {
-        group = vim.api.nvim_create_augroup("config_lsp_attach", { clear = true }),
         callback = function(event)
           local buf = event.buf
           local client = vim.lsp.get_client_by_id(event.data.client_id)
@@ -89,31 +126,12 @@ return {
             end, { buffer = 0 })
           end, "Rename")
 
-          -- NOTE: word highlight, but using vim-illuminate instead...
-          if client and client.server_capabilities.documentHighlightProvider then
-            local group = vim.api.nvim_create_augroup("config_lsp_highlight", { clear = false })
-            vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
-              buffer = buf,
-              group = group,
-              callback = vim.lsp.buf.document_highlight,
-            })
-            vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
-              buffer = buf,
-              group = group,
-              callback = vim.lsp.buf.clear_references,
-            })
-            vim.api.nvim_create_autocmd("LspDetach", {
-              buffer = buf,
-              group = group,
-              callback = function(event2)
-                vim.lsp.buf.clear_references()
-                vim.api.nvim_clear_autocmds({ group = "config_lsp_highlight", buffer = event2.buf })
-              end,
-            })
-          end
-
           -- inlay hints
-          if client and client.supports_method("textDocument/inlayHint", { bufnr = buf }) then
+          if
+            opts.inlay_hints.enabled
+            and client
+            and client.supports_method("textDocument/inlayHint", { bufnr = buf })
+          then
             if vim.api.nvim_buf_is_valid(buf) and vim.bo[buf].buftype == "" then
               Utils.toggle("<leader>uh", {
                 name = "Inlay hint",
@@ -130,7 +148,7 @@ return {
           end
 
           -- codelens
-          if client and client.supports_method("textDocument/codeLens", { bufnr = buf }) then
+          if opts.codelens.enabled and client and client.supports_method("textDocument/codeLens", { bufnr = buf }) then
             vim.lsp.codelens.refresh()
             vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
               buffer = buf,
@@ -177,35 +195,8 @@ return {
         end,
       })
 
-      local diagnostic_icons = {
-        ERROR = vim.g.enable_icons and " " or "E",
-        WARN = vim.g.enable_icons and " " or "W",
-        HINT = vim.g.enable_icons and " " or "H",
-        INFO = vim.g.enable_icons and " " or "I",
-      }
-
-      -- diagnostic setup
-      vim.diagnostic.config({
-        underline = true,
-        update_in_insert = false,
-        virtual_text = {
-          spacing = 4,
-          source = "if_many",
-          prefix = vim.g.enable_icons and "",
-        },
-        severity_sort = true,
-        signs = {
-          text = {
-            [vim.diagnostic.severity.ERROR] = diagnostic_icons.ERROR,
-            [vim.diagnostic.severity.WARN] = diagnostic_icons.WARN,
-            [vim.diagnostic.severity.HINT] = diagnostic_icons.HINT,
-            [vim.diagnostic.severity.INFO] = diagnostic_icons.INFO,
-          },
-        },
-        float = {
-          border = "single",
-        },
-      })
+      -- diagnostics
+      vim.diagnostic.config(vim.deepcopy(opts.diagnostics))
 
       -- Default border style
       local orig_util_open_floating_preview = vim.lsp.util.open_floating_preview
@@ -224,20 +215,14 @@ return {
       })
 
       local servers = opts.servers
-
       local cmp_avail, cmp = pcall(require, "cmp_nvim_lsp")
       local capabilities = vim.tbl_deep_extend(
         "force",
         {},
         vim.lsp.protocol.make_client_capabilities(),
-        cmp_avail and cmp.default_capabilities() or {}
+        cmp_avail and cmp.default_capabilities() or {},
+        opts.capabilities or {}
       )
-
-      local have_mason, mlsp = pcall(require, "mason-lspconfig")
-      local all_mlsp_servers = {}
-      if have_mason then
-        all_mlsp_servers = vim.tbl_keys(require("mason-lspconfig.mappings.server").lspconfig_to_package)
-      end
 
       local use_mason = false
       local function setup(server)
@@ -262,17 +247,16 @@ return {
         end
       end
 
-      -- using mason-tool-installer offloads mason-lspconfig setup here
-      -- language pack files now set that up separately from lspconfig
-      -- when mason is disabled, lspconfig setup is easier to deal with
-      local ensure_installed = {}
+      local have_mason, mlsp = pcall(require, "mason-lspconfig")
+      local all_mlsp_servers = {}
+      if have_mason then
+        all_mlsp_servers = vim.tbl_keys(require("mason-lspconfig.mappings.server").lspconfig_to_package)
+      end
+
+      local ensure_installed = {} ---@type string[]
       for server, server_opts in pairs(servers) do
         server_opts = server_opts and (server_opts == true and {} or server_opts) or {}
-        if
-          server_opts.enabled ~= false
-          -- and (vim.g.enable_mason_packages or
-          -- and (vim.fn.executable(require("lspconfig")[server].cmd) == 1)
-        then
+        if server_opts.enabled ~= false then
           if server_opts.mason == false or not vim.tbl_contains(all_mlsp_servers, server) then
             setup(server)
           else
@@ -290,41 +274,4 @@ return {
       end
     end,
   },
-
-  -- {
-  --   "RRethy/vim-illuminate",
-  --   event = { "BufReadPost", "BufNewFile" },
-  --   opts = {
-  --     delay = 200,
-  --     large_file_cutoff = 2000,
-  --     large_file_overrides = {
-  --       providers = { "lsp" },
-  --     },
-  --   },
-  --   config = function(_, opts)
-  --     require("illuminate").configure(opts)
-  --
-  --     local function map(key, dir, buffer)
-  --       vim.keymap.set("n", key, function()
-  --         require("illuminate")["goto_" .. dir .. "_reference"](false)
-  --       end, { desc = dir:sub(1, 1):upper() .. dir:sub(2) .. " Reference", buffer = buffer })
-  --     end
-  --
-  --     map("]]", "next")
-  --     map("[[", "prev")
-  --
-  --     -- also set it after loading ftplugins, since a lot overwrite [[ and ]]
-  --     vim.api.nvim_create_autocmd("FileType", {
-  --       callback = function()
-  --         local buffer = vim.api.nvim_get_current_buf()
-  --         map("]]", "next", buffer)
-  --         map("[[", "prev", buffer)
-  --       end,
-  --     })
-  --   end,
-  --   keys = {
-  --     { "]]", desc = "Next Reference" },
-  --     { "[[", desc = "Prev Reference" },
-  --   },
-  -- },
 }
