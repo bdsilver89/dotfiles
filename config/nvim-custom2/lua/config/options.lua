@@ -2,6 +2,7 @@ local opt = vim.opt
 
 opt.clipboard = "unnamed,unnamedplus"
 opt.completeopt = { "menu", "noselect" }
+opt.conceallevel = 2
 opt.confirm = true
 opt.cursorline = true
 opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
@@ -18,7 +19,7 @@ opt.smartcase = true
 opt.smoothscroll = true
 opt.splitbelow = true
 opt.splitright = true
--- opt.statuscolumn = ""
+opt.statuscolumn = "%!v:lua.require('config.ui.statuscolumn')()"
 opt.statusline = "%!v:lua.require('config.ui.statusline')()"
 opt.relativenumber = true
 opt.timeoutlen = 400

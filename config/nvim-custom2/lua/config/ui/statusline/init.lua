@@ -57,8 +57,7 @@ local function mode()
   end
 
   local m = vim.api.nvim_get_mode().mode
-  -- TODO: highlights
-  return modes[m][1] .. " "
+  return "%#St_" .. modes[m][2] .. "mode#" .. " " .. modes[m][1] .. " "
 end
 
 local function file()
@@ -74,13 +73,24 @@ local function file()
     end
   end
 
-  -- TODO: highlights
-  return icon .. " " .. name .. " "
+  return "%#St_file#" .. icon .. " " .. name .. " "
 end
 
 local function git()
-  -- TODO:
-  return ""
+  if not vim.b[stbufnr()].gitsigns_head or vim.b[stbufnr()].gitsigns_git_status then
+    return ""
+  end
+
+  local git_status = vim.b[stbufnr()].gitsigns_status_dict
+
+  local added = (git_status.added and git_status.added ~= 0) and ("  " .. git_status.added) or ""
+  local changed = (git_status.changed and git_status.changed ~= 0) and ("  " .. git_status.changed) or ""
+  local removed = (git_status.removed and git_status.removed ~= 0) and ("  " .. git_status.removed) or ""
+  local branch_name = " " .. git_status.head
+
+  local msg = " " .. branch_name .. added .. changed .. removed
+
+  return "%#St_gitIcons#" .. msg
 end
 
 local function lsp_msg()
@@ -94,7 +104,7 @@ local function lsp_msg()
   local ms = vim.uv.hrtime() / 1e6
   local frame = math.floor(ms / 100) % #spinners
 
-  return spinners[frame + 1] .. " " .. msg
+  return "%#St_LspMsg#" .. spinners[frame + 1] .. " " .. msg
 end
 
 local function diagnostics()
@@ -120,7 +130,7 @@ local function lsp()
   if rawget(vim, "lsp") then
     for _, client in ipairs(vim.lsp.get_clients()) do
       if client.attached_buffers[stbufnr()] then
-        return (vim.o.columns > 100 and "   LSP ~ " .. client.name .. " ") or "   LSP "
+        return "%#St_Lsp#" .. ((vim.o.columns > 100 and "   LSP ~ " .. client.name .. " ") or "   LSP ")
       end
     end
   end
@@ -131,13 +141,12 @@ end
 local function cwd()
   local name = vim.uv.cwd() or ""
   -- TODO: highlights
-  name = "󰉖 " .. (name:match("([^/\\]+)[/\\]*$") or name) .. " "
+  name = "%#St_cwd#" .. "󰉖 " .. (name:match("([^/\\]+)[/\\]*$") or name) .. " "
   return (vim.o.columns > 85 and name) or ""
 end
 
 local function cursor()
-  -- TODO: highlights
-  return "Ln %l, Col %c | %p %%"
+  return "%#St_text#" .. "Ln %l, Col %c | %p %%"
 end
 
 return function()

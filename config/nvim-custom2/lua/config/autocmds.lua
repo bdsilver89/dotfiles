@@ -72,12 +72,3 @@ autocmd({ "TextChanged", "TextChangedI", "TextChangedP", "VimResized", "LspAttac
     end
   end,
 })
-
-autocmd("LspProgress", {
-  callback = function(args)
-    if string.find(args.match, "end") then
-      vim.cmd("redrawstatus")
-    end
-    vim.cmd("redrawstatus")
-  end,
-})
