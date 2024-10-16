@@ -11,7 +11,9 @@ local function on_attach(_, buffer)
   map("n", "<leader>sh", vim.lsp.buf.signature_help, "Show signature help")
   map("n", "<leader>wa", vim.lsp.buf.add_workspace_folder, "Add workspace folder")
   map("n", "<leader>wr", vim.lsp.buf.remove_workspace_folder, "Remove workspace folder")
-  map("n", "<leader>wl", function() print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end, "List workspace folders")
+  map("n", "<leader>wl", function()
+    print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+  end, "List workspace folders")
   map({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, "Code action")
   map("n", "<leader>cr", vim.lsp.buf.rename, "Rename")
   map("n", "<leader>cl", "<cmd>LspInfo<cr>", "Info")
@@ -51,12 +53,12 @@ return {
       -- diagnostic config
       local x = vim.diagnostic.severity
 
-      vim.diagnostic.config {
+      vim.diagnostic.config({
         virtual_text = { prefix = "" },
         signs = { text = { [x.ERROR] = "󰅙", [x.WARN] = "", [x.INFO] = "󰋼", [x.HINT] = "󰌵" } },
         underline = true,
         float = { border = "single" },
-      }
+      })
 
       -- Default border style
       local orig_util_open_floating_preview = vim.lsp.util.open_floating_preview
@@ -73,6 +75,16 @@ return {
         silent = true,
         max_height = 7,
       })
+
+      local servers = { "clangd" }
+
+      for _, lsp in ipairs(servers) do
+        require("lspconfig")[lsp].setup({
+          on_attach = on_attach,
+          capabilities = capabilities,
+          on_init = on_init,
+        })
+      end
 
       require("lspconfig").lua_ls.setup({
         on_attach = on_attach,
@@ -97,7 +109,6 @@ return {
           },
         },
       })
-
     end,
   },
 }
