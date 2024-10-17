@@ -67,4 +67,6 @@ require("config.options")
 require("config.autocmds")
 vim.schedule(function()
   require("config.keymaps")
+
+  require("config.ui.colorify").init()
 end)
