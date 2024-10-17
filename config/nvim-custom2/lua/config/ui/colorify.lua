@@ -165,7 +165,7 @@ function M.attach(buf, event)
   end
 end
 
-function M.init()
+function M.setup()
   ns = vim.api.nvim_create_namespace("colorify")
   vim.api.nvim_set_hl_ns(ns)
 end
