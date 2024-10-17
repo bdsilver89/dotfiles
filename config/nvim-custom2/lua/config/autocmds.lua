@@ -63,6 +63,15 @@ autocmd("BufWritePre", {
   end,
 })
 
+autocmd("FileType", {
+  desc = "conceallevel for json",
+  group = augroup("json_conceal"),
+  pattern = { "json", "jsonc", "json5" },
+  callback = function()
+    vim.opt_local.conceallevel = 0
+  end,
+})
+
 autocmd({ "TextChanged", "TextChangedI", "TextChangedP", "VimResized", "LspAttach", "WinScrolled", "BufEnter" }, {
   desc = "Colorify file",
   group = augroup("colorify"),
