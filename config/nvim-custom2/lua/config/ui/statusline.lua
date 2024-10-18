@@ -172,6 +172,29 @@ local function cwd()
   return (vim.o.columns > 85 and name) or ""
 end
 
+local function search()
+  if vim.b.hlsearch == 0 then
+    return ""
+  end
+
+  local ok, count = pcall(vim.fn.searchcount, { recompute = true })
+  if not ok or count.current == nil or count.total == 0 then
+    return ""
+  end
+
+  local result = ""
+  if count.incomplete == 1 then
+    result = " [?/?] "
+  else
+    local too_many = ">" .. count.maxcount
+    local current = count.current > count.maxcount and too_many or count.current
+    local total = count.total > count.maxcount and too_many or count.total
+    result = " [" .. current .. "/" .. total .. "] "
+  end
+
+  return "%#StatuslineDevInfo#" .. result
+end
+
 local function cursor()
   local m = modes[vim.fn.mode()]
   return "%#" .. m.hl .. "# Ln %l, Col %c | %p %% "
@@ -189,6 +212,7 @@ function M.eval()
     diagnostics(),
     lsp(),
     cwd(),
+    search(),
     cursor(),
   }
 

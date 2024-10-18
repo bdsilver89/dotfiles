@@ -1,5 +1,6 @@
 local opt = vim.opt
 
+opt.breakindent = true
 opt.clipboard = "unnamed,unnamedplus"
 opt.cmdheight = 0
 opt.completeopt = { "menu", "noselect" }
@@ -11,7 +12,9 @@ opt.foldlevel = 99
 opt.foldmethod = "expr"
 opt.hlsearch = true
 opt.ignorecase = true
+opt.infercase = true
 opt.laststatus = 3
+opt.linebreak = true
 opt.list = true
 opt.mouse = "a"
 opt.number = true
@@ -21,7 +24,7 @@ opt.smoothscroll = true
 opt.splitbelow = true
 opt.splitright = true
 opt.statuscolumn = "%!v:lua.require('config.ui.statuscolumn')()"
-opt.statusline = "%!v:lua.require('config.ui.statusline').eval()"
+-- opt.statusline = "%!v:lua.require('config.ui.statusline').eval()"
 opt.relativenumber = true
 opt.timeoutlen = 400
 opt.undofile = true

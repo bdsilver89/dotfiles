@@ -11,10 +11,6 @@ return {
     lazy = true,
     opts = {
       style = vim.g.enable_icons and "glyph" or "ascii",
-      file = {
-        [".keep"] = { glyph = "󰊢", hl = "MiniIconsGrey" },
-        ["devcontainer.json"] = { glyph = "", hl = "MiniIconsAzure" },
-      },
       filetype = {
         dotenv = { glyph = "", hl = "MiniIconsYellow" },
         gotmpl = { glyph = "󰟓", hl = "MiniIconsGrey" },
@@ -55,5 +51,17 @@ return {
       },
     },
     main = "ibl",
+  },
+
+  {
+    "echasnovski/mini.statusline",
+    event = "VeryLazy",
+    opts = {},
+  },
+
+  {
+    "echasnovski/mini.tabline",
+    event = "VeryLazy",
+    opts = {},
   },
 }
