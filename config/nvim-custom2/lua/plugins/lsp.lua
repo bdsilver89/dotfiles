@@ -76,6 +76,16 @@ return {
         max_height = 7,
       })
 
+      local servers = { "clangd" }
+
+      for _, lsp in ipairs(servers) do
+        require("lspconfig")[lsp].setup({
+          on_attach = on_attach,
+          capabilities = capabilities,
+          on_init = on_init,
+        })
+      end
+
       require("lspconfig").lua_ls.setup({
         on_attach = on_attach,
         capabilities = capabilities,
