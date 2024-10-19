@@ -15,11 +15,6 @@ vim.g.enable_icons = true
 vim.g.enable_mini_icons = false
 vim.g.enable_nvim_devicons = true
 
-vim.g.tabline_lazyload = true
-
-vim.g.color_theme = "catppuccin"
-vim.g.color_cache = vim.fn.stdpath("data") .. "/colors/"
-
 -------------------------------------------------------------------------------
 -- lazy.nvim bootstrap and setup
 -------------------------------------------------------------------------------
@@ -72,7 +67,5 @@ require("config.options")
 require("config.autocmds")
 vim.schedule(function()
   require("config.keymaps")
-
-  -- require("config.ui.statusline").setup()
   require("config.ui.colorify").setup()
 end)
