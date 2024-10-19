@@ -95,13 +95,3 @@ autocmd("BufWritePre", {
     vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
   end,
 })
-
-autocmd({ "TextChanged", "TextChangedI", "TextChangedP", "VimResized", "LspAttach", "WinScrolled", "BufEnter" }, {
-  desc = "Colorify file",
-  group = augroup("colorify"),
-  callback = function(event)
-    if vim.bo[event.buf].bl then
-      require("config.ui.colorify").attach(event.buf, event.event)
-    end
-  end,
-})

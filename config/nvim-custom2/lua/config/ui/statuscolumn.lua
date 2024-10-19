@@ -1,3 +1,5 @@
+local M = {}
+
 local function get_signs(buf, lnum)
   local signs = {}
 
@@ -51,7 +53,7 @@ local function icon(sign, len)
   return sign.texthl and ("%#" .. sign.texthl .. "#" .. text .. "%*") or text
 end
 
-return function()
+function M.eval()
   local win = vim.g.statusline_winid
   local buf = vim.api.nvim_win_get_buf(win)
   local is_file = vim.bo[buf].buftype == ""
@@ -64,7 +66,7 @@ return function()
 
     local left, right, fold
     for _, s in ipairs(signs) do
-      if s.name and s.name:find("GitSign") then
+      if s.name and (s.name:find("GitSign"))  then
         right = s
       else
         left = s
@@ -105,3 +107,5 @@ return function()
 
   return table.concat(result)
 end
+
+return M

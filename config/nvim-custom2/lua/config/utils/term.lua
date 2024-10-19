@@ -9,26 +9,20 @@ local pos_data = {
   ["bo vsp"] = { resize = "width", area = "columns" },
 }
 
-local config = {
-  winopts = { number = false, relativenumber = false },
-  sizes = { sp = 0.3, vsp = 0.2, ["bo sp"] = 0.3, ["bo vsp"] = 0.2 },
-  float = {
-    relative = "editor",
-    row = 0.3,
-    col = 0.25,
-    width = 0.5,
-    height = 0.4,
-    border = "single",
-  },
+local default_sizes = {
+  sp = 0.3,
+  vsp = 0.2,
+  ["bo sp"] = 0.3,
+  ["bo vsp"] = 0.2
 }
 
-vim.g.termh = false
-vim.g.termv = false
+vim.g.hterm = false
+vim.g.vterm = false
 
 local function save_term_info(index, val)
-  local terms_list = vim.g.terms
-  terms_list[tostring(index)] = val
-  vim.g.terms = terms_list
+  local terms = vim.g.terms
+  terms[tostring(index)] = val
+  vim.g.terms = terms
 end
 
 local function opts_to_id(id)
@@ -40,7 +34,14 @@ local function opts_to_id(id)
 end
 
 local function create_float(buffer, float_opts)
-  local opts = vim.tbl_deep_extend("force", config.float, float_opts or {})
+  local opts = vim.tbl_deep_extend("force", {
+    relative = "editor",
+    row = 0.3,
+    col = 0.25,
+    width = 0.5,
+    height = 0.4,
+    border = "single",
+  }, float_opts or {})
 
   opts.width = math.ceil(opts.width * vim.o.columns)
   opts.height = math.ceil(opts.height * vim.o.lines)
@@ -51,7 +52,7 @@ local function create_float(buffer, float_opts)
 end
 
 local function format_cmd(cmd)
-  return type(cmd) == "string" and cmd or cmd()
+  return type(cmd) == "string" and cmd or {}
 end
 
 function M.display(opts)
@@ -67,16 +68,19 @@ function M.display(opts)
   vim.bo[opts.buf].buflisted = false
   vim.cmd("startinsert")
 
-  if (opts.pos == "sp" and not vim.g.termh) or (opts.pos == "vsp" and not vim.g.termh) or (opts.pos ~= "float") then
+  if (opts.pos == "sp" and not vim.g.hterm) or (opts.pos == "vsp" and not vim.g.vterm) or (opts.pos ~= "float") then
     local pos_type = pos_data[opts.pos]
-    local size = opts.size and opts.size or config.sizes[opts.pos]
+    local size = opts.size and opts.size or default_sizes[opts.pos]
     local new_size = vim.o[pos_type.area] * size
     vim.api["nvim_win_set_" .. pos_type.resize](0, math.floor(new_size))
   end
 
   vim.api.nvim_win_set_buf(win, opts.buf)
 
-  local winopts = vim.tbl_deep_extend("force", config.winopts, opts.winopts or {})
+  local winopts = vim.tbl_deep_extend("force", {
+    number = false,
+    relativenumber = false,
+  }, opts.winopts or {})
 
   for k, v in pairs(winopts) do
     vim.wo[win][k] = v
@@ -89,12 +93,11 @@ local function create(opts)
   local buf_exists = opts.buf
   opts.buf = opts.buf or vim.api.nvim_create_buf(false, true)
 
-  -- handle cmd opt
   local shell = vim.o.shell
   local cmd = shell
 
   if opts.cmd and opts.buf then
-    cmd = { shell, "-c", format_cmd(opts.cmd) .. "; " .. shell }
+    cmd = { shell, "-c", format_cmd(opts.cmd) .. ";" .. shell }
   else
     cmd = { shell }
   end
@@ -104,11 +107,11 @@ local function create(opts)
   save_term_info(opts.buf, opts)
 
   if not buf_exists then
-    vim.fn.termopen(cmd)
+    vim.fn.termopen(cmd, opts.termopen_opts or { detach = false })
   end
 
-  vim.g.termh = opts.pos == "sp"
-  vim.g.termv = opts.pos == "vsp"
+  vim.g.hterm = opts.pos == "sp"
+  vim.g.vterm = opts.pos == "vsp"
 end
 
 function M.new(opts)
@@ -151,10 +154,12 @@ function M.runner(opts)
   end
 end
 
-vim.api.nvim_create_autocmd("TermClose", {
-  callback = function(args)
-    save_term_info(args.buf, nil)
-  end,
-})
+function M.setup()
+  vim.api.nvim_create_autocmd("TermClose", {
+    callback = function(args)
+      save_term_info(args.buf, nil)
+    end,
+  })
+end
 
 return M

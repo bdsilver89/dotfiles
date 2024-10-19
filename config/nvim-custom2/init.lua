@@ -1,4 +1,9 @@
 -------------------------------------------------------------------------------
+-- global setup
+-------------------------------------------------------------------------------
+pcall(function() vim.loader.enable() end)
+
+-------------------------------------------------------------------------------
 -- global vim options
 -------------------------------------------------------------------------------
 vim.g.mapleader = " "
@@ -64,8 +69,27 @@ require("lazy").setup({
 -- config setup
 -------------------------------------------------------------------------------
 require("config.options")
-require("config.autocmds")
-vim.schedule(function()
-  require("config.keymaps")
-  require("config.ui.colorify").setup()
-end)
+
+local lazy_setup = vim.fn.argc(-1) == 0
+if not lazy_setup then
+  require("config.autocmds")
+end
+
+vim.api.nvim_create_autocmd("User", {
+  pattern = "VeryLazy",
+  callback = function()
+    if lazy_setup then
+      require("config.autocmds")
+    end
+      require("config.keymaps")
+
+      -- ui setup
+      require("config.ui.colorify").setup()
+      require("config.ui.statusline").setup()
+      vim.opt.statusline = "%!v:lua.require('config.ui.statusline').eval()"
+      vim.opt.statuscolumn = "%!v:lua.require('config.ui.statuscolumn').eval()"
+
+      -- utils setup
+      require("config.utils.term").setup()
+  end
+})

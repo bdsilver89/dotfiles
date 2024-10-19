@@ -49,9 +49,6 @@ return {
   {
     "neovim/nvim-lspconfig",
     event = { "BufReadPost", "BufNewFile" },
-    dependencies = {
-      "mason.nvim",
-    },
     config = function()
       -- diagnostic config
       local x = vim.diagnostic.severity
@@ -77,23 +74,6 @@ return {
         focusable = false,
         silent = true,
         max_height = 7,
-      })
-
-      local servers = { "bashls", "clangd", "neocmake" }
-
-      for _, lsp in ipairs(servers) do
-        require("lspconfig")[lsp].setup({
-          on_attach = on_attach,
-          capabilities = capabilities,
-          on_init = on_init,
-        })
-      end
-
-      --  FIX: use schemastore
-      require("lspconfig").jsonls.setup({
-        on_attach = on_attach,
-        capabilities = capabilities,
-        on_init = on_init,
       })
 
       require("lspconfig").lua_ls.setup({

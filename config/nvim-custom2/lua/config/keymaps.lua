@@ -122,28 +122,21 @@ map("n", "<leader><tab>d", "<cmd>tabclose<cr>", { desc = "Close tab" })
 -- terminal keymaps
 map("t", "<esc><esc>", "<c-\\><c-n>", { desc = "Exit terminal mode" })
 
-map("n", "<leader>nh", function()
+map("n", "<leader>th", function()
   require("config.utils.term").toggle({ pos = "sp", id = "hterm" })
 end, { desc = "Horizontal term" })
 
-map("n", "<leader>nv", function()
+map("n", "<leader>tv", function()
   require("config.utils.term").toggle({ pos = "vsp", id = "vterm" })
 end, { desc = "Vertical term" })
 
-map("n", "<leader>nf", function()
+map("n", "<leader>tf", function()
   require("config.utils.term").toggle({ pos = "float", id = "float_term" })
 end, { desc = "Floating term" })
+
 
 map("n", "<esc>", "<cmd>nohlsearch<cr><esc>", { desc = "Escape and clear hlsearch" })
 
 map("n", "<leader>qq", "<cmd>qa<cr>", { desc = "Quit all" })
 
 map("n", "<leader>l", "<cmd>Lazy<cr>", { desc = "Lazy package manager" })
-
--- map("n", "<leader>uf", function()
---   local state = vim.g.autoformat == nil or vim.g.autoformat
---   vim.g.autoformat = state
---   vim.b.autoformat = nil
--- end, { desc = "Autoformat (global)" })
---
--- map("n", "<leader>uF", function() end, { desc = "Autoformat (buffer)" })
