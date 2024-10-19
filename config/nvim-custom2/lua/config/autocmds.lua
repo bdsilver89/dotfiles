@@ -22,6 +22,16 @@ autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
   end,
 })
 
+autocmd("VimResized", {
+  desc = "Resize splits when window resizes",
+  group = augroup("resize_splits"),
+  callback = function()
+    local current_tab = vim.fn.tabpagenr()
+    vim.cmd("tabdo wincmd =")
+    vim.cmd("tabnext " .. current_tab)
+  end,
+})
+
 autocmd("Filetype", {
   desc = "Close with <q>",
   group = augroup("quick_close"),
@@ -51,15 +61,17 @@ autocmd("Filetype", {
   end,
 })
 
-autocmd("BufWritePre", {
-  desc = "Auto create dir before saving buffer",
-  group = augroup("auto_create_dir"),
-  callback = function(event)
-    if event.match:match("^%w%w+:[\\/][\\/]") then
-      return
-    end
-    local file = vim.uv.fs_realpath(event.match) or event.match
-    vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
+autocmd("FileType", {
+  desc = "wrap and check for spelling",
+  group = augroup("wrap_spell"),
+  pattern = {
+    "*.txt",
+    "gitcommit",
+    "markdown",
+  },
+  callback = function()
+    vim.opt_local.wrap = true
+    vim.opt_local.spell = true
   end,
 })
 
@@ -69,6 +81,18 @@ autocmd("FileType", {
   pattern = { "json", "jsonc", "json5" },
   callback = function()
     vim.opt_local.conceallevel = 0
+  end,
+})
+
+autocmd("BufWritePre", {
+  desc = "Auto create dir before saving buffer",
+  group = augroup("auto_create_dir"),
+  callback = function(event)
+    if event.match:match("^%w%w+:[\\/][\\/]") then
+      return
+    end
+    local file = vim.uv.fs_realpath(event.match) or event.match
+    vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
   end,
 })
 

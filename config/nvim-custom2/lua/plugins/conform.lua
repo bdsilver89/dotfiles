@@ -43,6 +43,7 @@ return {
     opts = {
       formatters_by_ft = {
         lua = { "stylua" },
+        sh = { "shfmt" },
       },
       format_on_save = function(bufnr)
         -- NOTE: vim.g.autoformat and vim.b.autoformat are driven from keymaps to toggle global/buffer autoformatting

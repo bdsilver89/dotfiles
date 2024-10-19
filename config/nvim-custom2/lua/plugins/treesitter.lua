@@ -37,6 +37,8 @@ return {
         "lua",
         "luadoc",
         "make",
+        "markdown",
+        "markdown_inline",
         "ninja",
         "printf",
         "python",

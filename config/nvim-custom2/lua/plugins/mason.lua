@@ -6,9 +6,25 @@ return {
     build = ":MasonUpdate",
     opts = {
       ensure_installed = {
+        -- bash
+        "bash-language-server",
+        "shfmt",
+
+        -- clangd
+        "codelldb",
+
+        -- cmake
+        "cmakelang",
+        "cmakelint",
+        "neocmakelsp",
+
+        -- json
+        "json-lsp",
+
+        -- lua
         "lua-language-server",
         "stylua",
-      }
+      },
     },
     config = function(_, opts)
       require("mason").setup(opts)
