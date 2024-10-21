@@ -1,15 +1,15 @@
 return {
   {
     "NeogitOrg/neogit",
-    -- dependencies = {
-    --   "sindrets/diffview.nvim",
-    -- },
+    dependencies = {
+      "sindrets/diffview.nvim",
+    },
     cmd = "Neogit",
     keys = {
       { "<leader>gs", "<cmd>Neogit<cr>", desc = "Git status" },
     },
     opts = {
-      kind = "split",
+      -- kind = "split",
       integrations = {
         diffview = true,
       },
@@ -20,9 +20,9 @@ return {
     "lewis6991/gitsigns.nvim",
     event = { "BufReadPost", "BufNewFile" },
     opts = function()
-    --   local function sign(glyph, text)
-    --     return vim.g.enable_icons and glyph or text
-    --   end
+      --   local function sign(glyph, text)
+      --     return vim.g.enable_icons and glyph or text
+      --   end
 
       return {
         -- signs = {
