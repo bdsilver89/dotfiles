@@ -76,7 +76,7 @@ return {
         max_height = 7,
       })
 
-      local servers = { "bashls", "clangd", "neocmake" }
+      local servers = { "bashls", "clangd", "neocmake", "tailwindcss", "vtsls" }
 
       for _, lsp in ipairs(servers) do
         require("lspconfig")[lsp].setup({

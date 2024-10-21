@@ -69,12 +69,39 @@ return {
           end,
         }),
         formatting = {
-          format = require("lspkind").cmp_format({
-            mode = vim.g.enable_icons and "symbol_text" or "text",
-            maxwidth = 50,
-            ellipsis_char = "...",
-            show_labelDetails = true,
-          }),
+          -- format = require("lspkind").cmp_format({
+          --   mode = vim.g.enable_icons and "symbol_text" or "text",
+          --   maxwidth = 50,
+          --   ellipsis_char = "...",
+          --   show_labelDetails = true,
+          -- }),
+
+          format = function(entry, item)
+            local format_item = require("lspkind").cmp_format({
+              mode = vim.g.enable_icons and "symbol_text" or "text",
+              maxwidth = 50,
+              ellipsis_char = "...",
+              show_labelDetails = true,
+            })(entry, item)
+
+            local entry_item = entry:get_completion_item()
+            local color = entry_item.documentation
+
+            if color and type(color) == "string" and color:match("^#%x%x%x%x%x%x$") then
+              local hl = "hex-" .. color:sub(2)
+
+              if #vim.api.nvim_get_hl(0, { name = hl }) == 0 then
+                vim.api.nvim_set_hl(0, hl, { fg = color })
+              end
+
+              item.kind = "󱓻"
+              item.kind_hl_group = hl
+              item.menu_hl_group = hl
+              return item
+            end
+
+            return format_item
+          end,
         },
         sources = cmp.config.sources({
           { name = "nvim_lsp" },

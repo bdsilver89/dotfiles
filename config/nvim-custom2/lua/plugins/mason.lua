@@ -21,6 +21,11 @@ return {
         -- lua
         "lua-language-server",
         "stylua",
+
+        -- typescript
+        "js-debug-adapter",
+        "tailwindcss-language-server",
+        "vtsls",
       },
     },
     config = function(_, opts)

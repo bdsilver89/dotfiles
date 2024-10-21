@@ -185,32 +185,7 @@ local function section_search(args)
   return current .. "/" .. total
 end
 
-function M.eval()
-  -- stylua: ignore start
-  local mode, mode_hl = section_mode({ trunc_width = 120 })
-  local git           = section_git({ trunc_width = 40 })
-  local diff          = section_diff({ trunc_width = 75 })
-  local diagnostics   = section_diagnostics({ trunc_width = 75 })
-  local lsp_msg       = section_lsp_msg({ trunc_width = 75 })
-  local lsp           = section_lsp({ trunc_width = 75 })
-  local filename      = section_filename({ trunc_width = 140 })
-  local fileinfo      = section_fileinfo({ trunc_width = 120 })
-  local location      = section_location({ trunc_width = 75 })
-  local search        = section_search({ trunc_width = 75 })
-
-  local groups = {
-    { hl = mode_hl,              strings = { mode } },
-    { hl = "StatuslineDevInfo",  strings = { git, diff } },
-    "%<",
-    { hl = "StatuslineFilename", strings = { filename } },
-    "%=",
-    { hl = "StatuslineFilename", strings = { lsp_msg } },
-    { hl = "StatuslineDevInfo",  strings = { diagnostics, lsp } },
-    { hl = "StatuslineFileInfo", strings = { fileinfo } },
-    { hl = mode_hl,              strings = { search, location } },
-  }
-  -- stylua: ignore end
-
+local function combine_groups(groups)
   local parts = vim.tbl_map(function(s)
     if type(s) == "string" then
       return s
@@ -236,6 +211,33 @@ function M.eval()
   end, groups)
 
   return table.concat(parts, " ")
+end
+
+function M.eval()
+  -- stylua: ignore start
+  local mode, mode_hl = section_mode({ trunc_width = 120 })
+  local git           = section_git({ trunc_width = 40 })
+  local diff          = section_diff({ trunc_width = 75 })
+  local diagnostics   = section_diagnostics({ trunc_width = 75 })
+  local lsp_msg       = section_lsp_msg({ trunc_width = 75 })
+  local lsp           = section_lsp({ trunc_width = 75 })
+  local filename      = section_filename({ trunc_width = 140 })
+  local fileinfo      = section_fileinfo({ trunc_width = 120 })
+  local location      = section_location({ trunc_width = 75 })
+  local search        = section_search({ trunc_width = 75 })
+
+  return combine_groups({
+    { hl = mode_hl,              strings = { mode } },
+    { hl = "StatuslineDevInfo",  strings = { git, diff } },
+    "%<",
+    { hl = "StatuslineFilename", strings = { filename } },
+    "%=",
+    { hl = "StatuslineFilename", strings = { lsp_msg } },
+    { hl = "StatuslineDevInfo",  strings = { diagnostics, lsp } },
+    { hl = "StatuslineFileInfo", strings = { fileinfo } },
+    { hl = mode_hl,              strings = { search, location } },
+  })
+  -- stylua: ignore end
 end
 
 local function setup_highlights()
