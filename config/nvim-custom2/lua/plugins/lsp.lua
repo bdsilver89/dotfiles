@@ -49,6 +49,8 @@ return {
   {
     "neovim/nvim-lspconfig",
     event = { "BufReadPost", "BufNewFile" },
+    -- NOTE: this cannot have a mason dependency for the current version of masoninstallall command
+    -- that depends on this loading to configure itself first...
     config = function()
       -- diagnostic config
       local x = vim.diagnostic.severity
