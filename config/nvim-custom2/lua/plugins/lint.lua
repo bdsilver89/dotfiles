@@ -6,7 +6,7 @@ return {
     opts = {
       events = { "BufWritePost", "BufReadPost", "InsertLeave" },
       linters_by_ft = {
-        cmake = { "cmakelint" },
+        -- cmake = { "cmakelint" },
       },
     },
     config = function(_, opts)
