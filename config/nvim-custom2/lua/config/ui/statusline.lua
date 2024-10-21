@@ -171,7 +171,7 @@ local function section_search(args)
   end
 
   local ok, scount = pcall(vim.fn.searchcount, (args or {}).options or { recompute = true })
-  if not ok or scount == nil or scount.total == 0 then
+  if not ok or scount == nil or scount.total == 0 or not scount.maxcount then
     return ""
   end
 
