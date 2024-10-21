@@ -6,6 +6,18 @@ return {
     build = ":MasonUpdate",
     opts = {
       ensure_installed = {
+        -- bash
+        "bash-language-server",
+        "shfmt",
+
+        -- clangd
+        "codelldb",
+
+        -- cmake
+        "neocmakelsp",
+        -- "cmakelint",
+        -- "cmakelang",
+
         -- lua
         "lua-language-server",
         "stylua",

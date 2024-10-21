@@ -76,7 +76,7 @@ return {
         max_height = 7,
       })
 
-      local servers = { "clangd" }
+      local servers = { "bashls", "clangd", "neocmake" }
 
       for _, lsp in ipairs(servers) do
         require("lspconfig")[lsp].setup({
