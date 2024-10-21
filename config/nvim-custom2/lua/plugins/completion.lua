@@ -23,7 +23,6 @@ return {
       },
     },
     dependencies = {
-      "onsails/lspkind.nvim",
       "hrsh7th/cmp-nvim-lsp",
       "hrsh7th/cmp-buffer",
       "hrsh7th/cmp-path",
@@ -69,24 +68,20 @@ return {
           end,
         }),
         formatting = {
-          -- format = require("lspkind").cmp_format({
-          --   mode = vim.g.enable_icons and "symbol_text" or "text",
-          --   maxwidth = 50,
-          --   ellipsis_char = "...",
-          --   show_labelDetails = true,
-          -- }),
-
           format = function(entry, item)
-            local format_item = require("lspkind").cmp_format({
-              mode = vim.g.enable_icons and "symbol_text" or "text",
-              maxwidth = 50,
-              ellipsis_char = "...",
-              show_labelDetails = true,
-            })(entry, item)
+            local icons = require("config.ui.icons.lspkind")
+
+            item.menu = item.kind
+            item.menu_hl_group = "CmpItemKind" .. (item.kind or "")
+
+            if vim.g.enable_icons then
+              item.kind = item.kind and icons[item.kind] .. " " or ""
+            end
 
             local entry_item = entry:get_completion_item()
             local color = entry_item.documentation
 
+            -- colorify completion formatting
             if color and type(color) == "string" and color:match("^#%x%x%x%x%x%x$") then
               local hl = "hex-" .. color:sub(2)
 
@@ -97,10 +92,9 @@ return {
               item.kind = "󱓻"
               item.kind_hl_group = hl
               item.menu_hl_group = hl
-              return item
             end
 
-            return format_item
+            return item
           end,
         },
         sources = cmp.config.sources({
