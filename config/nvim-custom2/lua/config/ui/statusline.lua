@@ -1,7 +1,7 @@
 local M = {}
 
-local CTRL_S = vim.api.nvim_replace_termcodes('<C-S>', true, true, true)
-local CTRL_V = vim.api.nvim_replace_termcodes('<C-V>', true, true, true)
+local CTRL_S = vim.api.nvim_replace_termcodes("<C-S>", true, true, true)
+local CTRL_V = vim.api.nvim_replace_termcodes("<C-V>", true, true, true)
 
 -- stylua: ignore start
 local modes = setmetatable({
@@ -46,11 +46,11 @@ local function section_git(args)
 
   local summary = vim.b.minigit_summary_string or vim.b.gitsigns_head
   if summary == nil then
-    return ''
+    return ""
   end
 
   local icon = vim.g.enable_icons and "" or "Git"
-  return icon .. ' ' .. (summary == '' and '-' or summary)
+  return icon .. " " .. (summary == "" and "-" or summary)
 end
 
 local function section_diff(args)
@@ -63,15 +63,15 @@ local function section_diff(args)
     return ""
   end
 
-  local icon = vim.g.enable_icons and '' or 'Diff'
-  return icon .. ' ' .. (summary == '' and '-' or summary)
+  local icon = vim.g.enable_icons and "" or "Diff"
+  return icon .. " " .. (summary == "" and "-" or summary)
 end
 
 local diagnostic_levels = {
-  { name = 'ERROR', sign = 'E' },
-  { name = 'WARN', sign = 'W' },
-  { name = 'INFO', sign = 'I' },
-  { name = 'HINT', sign = 'H' },
+  { name = "ERROR", sign = "E" },
+  { name = "WARN", sign = "W" },
+  { name = "INFO", sign = "I" },
+  { name = "HINT", sign = "H" },
 }
 
 local function section_diagnostics(args)
@@ -244,16 +244,16 @@ local function setup_highlights()
     vim.api.nvim_set_hl(0, name, data)
   end
 
-  set_default_hl('StatuslineModeNormal',  { link = 'Cursor' })
-  set_default_hl('StatuslineModeInsert',  { link = 'DiffChange' })
-  set_default_hl('StatuslineModeVisual',  { link = 'DiffAdd' })
-  set_default_hl('StatuslineModeReplace', { link = 'DiffDelete' })
-  set_default_hl('StatuslineModeCommand', { link = 'DiffText' })
-  set_default_hl('StatuslineModeOther',   { link = 'IncSearch' })
+  set_default_hl("StatuslineModeNormal", { link = "Cursor" })
+  set_default_hl("StatuslineModeInsert", { link = "DiffChange" })
+  set_default_hl("StatuslineModeVisual", { link = "DiffAdd" })
+  set_default_hl("StatuslineModeReplace", { link = "DiffDelete" })
+  set_default_hl("StatuslineModeCommand", { link = "DiffText" })
+  set_default_hl("StatuslineModeOther", { link = "IncSearch" })
 
-  set_default_hl('StatuslineDevinfo',  { link = 'StatusLine' })
-  set_default_hl('StatuslineFilename', { link = 'StatusLineNC' })
-  set_default_hl('StatuslineFileinfo', { link = 'StatusLine' })
+  set_default_hl("StatuslineDevinfo", { link = "StatusLine" })
+  set_default_hl("StatuslineFilename", { link = "StatusLineNC" })
+  set_default_hl("StatuslineFileinfo", { link = "StatusLine" })
 end
 
 local function create_autocmds()
@@ -278,7 +278,7 @@ local function create_autocmds()
       progress = icon .. data.percentage .. "%% "
     end
 
-    local str =  progress .. (data.message or "") .. " " .. (data.title or "")
+    local str = progress .. (data.message or "") .. " " .. (data.title or "")
     lsp_msg_state = data.kind == "end" and "" or str
     vim.cmd.redrawstatus()
   end, "Track LSP messages")

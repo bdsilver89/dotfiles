@@ -1,7 +1,9 @@
 -------------------------------------------------------------------------------
 -- global setup
 -------------------------------------------------------------------------------
-pcall(function() vim.loader.enable() end)
+pcall(function()
+  vim.loader.enable()
+end)
 
 -------------------------------------------------------------------------------
 -- global vim options
@@ -81,15 +83,16 @@ vim.api.nvim_create_autocmd("User", {
     if lazy_setup then
       require("config.autocmds")
     end
-      require("config.keymaps")
+    require("config.keymaps")
 
-      -- ui setup
-      require("config.ui.colorify").setup()
-      require("config.ui.statusline").setup()
-      vim.opt.statusline = "%!v:lua.require('config.ui.statusline').eval()"
-      vim.opt.statuscolumn = "%!v:lua.require('config.ui.statuscolumn').eval()"
+    -- ui setup
+    require("config.ui.colorify").setup()
+    require("config.ui.statusline").setup()
 
-      -- utils setup
-      require("config.utils.term").setup()
-  end
+    vim.opt.statusline = "%{%v:lua.require'config.ui.statusline'.eval()%}"
+    vim.opt.statuscolumn = "%!v:lua.require'config.ui.statuscolumn'.eval()"
+
+    -- utils setup
+    require("config.utils.term").setup()
+  end,
 })
