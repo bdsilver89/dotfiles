@@ -35,6 +35,17 @@ return {
           "rafamadriz/friendly-snippets",
         },
       },
+      {
+        "Saecki/crates.nvim",
+        ft = "toml",
+        opts = {
+          completion = {
+            cmp = {
+              enabled = true,
+            },
+          },
+        },
+      },
     },
     opts = function()
       local cmp = require("cmp")
@@ -74,7 +85,7 @@ return {
             item.menu = item.kind
             item.menu_hl_group = "CmpItemKind" .. (item.kind or "")
 
-            if vim.g.enable_icons then
+            if vim.g.enable_icons and icons.kind and icons[item.kind] then
               item.kind = item.kind and icons[item.kind] .. " " or ""
             end
 
@@ -103,7 +114,7 @@ return {
         }, {
           { name = "buffer" },
           { name = "snippets" },
-          { name = "lazydev" },
+          { name = "crates" },
         }),
         experimental = {
           ghost_text = {
