@@ -84,6 +84,16 @@ autocmd("FileType", {
   end,
 })
 
+autocmd("TermOpen", {
+  desc = "setup terminal view",
+  group = augroup("terminal_settings"),
+  callback = function()
+    vim.cmd("startinsert")
+    vim.opt_local.number = false
+    vim.opt_local.relativenumber = false
+  end,
+})
+
 autocmd("BufWritePre", {
   desc = "Auto create dir before saving buffer",
   group = augroup("auto_create_dir"),
