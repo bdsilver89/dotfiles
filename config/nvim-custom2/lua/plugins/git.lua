@@ -3,7 +3,6 @@ return {
     "NeogitOrg/neogit",
     dependencies = {
       "sindrets/diffview.nvim",
-      "isakbm/gitgraph.nvim",
     },
     cmd = "Neogit",
     keys = {
