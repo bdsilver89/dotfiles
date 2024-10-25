@@ -88,9 +88,11 @@ vim.api.nvim_create_autocmd("User", {
     -- ui setup
     require("config.ui.colorify").setup()
     require("config.ui.statusline").setup()
+    require("config.ui.winbar").setup()
 
     vim.opt.statusline = "%{%v:lua.require'config.ui.statusline'.eval()%}"
     vim.opt.statuscolumn = "%!v:lua.require'config.ui.statuscolumn'.eval()"
+    vim.opt.winbar = "%{%v:lua.require'config.ui.winbar'.eval()%}"
 
     -- utils setup
     require("config.utils.term").setup()
