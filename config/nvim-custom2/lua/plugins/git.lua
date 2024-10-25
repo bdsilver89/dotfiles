@@ -3,6 +3,7 @@ return {
     "NeogitOrg/neogit",
     dependencies = {
       "sindrets/diffview.nvim",
+      "isakbm/gitgraph.nvim",
     },
     cmd = "Neogit",
     keys = {
@@ -13,6 +14,7 @@ return {
       integrations = {
         diffview = true,
       },
+      graph_style = "unicode",
     },
   },
 
@@ -71,13 +73,13 @@ return {
           -- map("n", "<leader>ghS", gs.stage_buffer, "Stage buffer")
           -- map("n", "<leader>ghu", gs.undo_stage_hunk, "Undo stage hunk")
           -- map("n", "<leader>ghR", gs.reset_buffer, "Reset buffer")
-          -- map("n", "<leader>ghp", gs.preview_hunk_inline, "Preview hunk inline")
-          -- map("n", "<leader>ghb", function() gs.blame_line({ full = true }) end, "Blame line")
-          -- map("n", "<leader>ghB", function() gs.blame_line() end, "Blame buffer")
-          -- map("n", "<leader>ghd", gs.diffthis, "Diff this")
+          map("n", "<leader>ghp", gs.preview_hunk_inline, "Preview hunk inline")
+          map("n", "<leader>ghb", function() gs.blame_line({ full = true }) end, "Blame line")
+          map("n", "<leader>ghB", function() gs.blame_line() end, "Blame buffer")
+          map("n", "<leader>ghd", gs.diffthis, "Diff this")
           -- map("n", "<leader>ghD", function() gs.diffthis("~") end, "Diff this ~")
           -- map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", "GitSigns select hunk")
-          -- map("n", "<leader>gb", "<cmd>Git blame<cr>", "Blame")
+          map("n", "<leader>gb", "<cmd>Git blame<cr>", "Blame")
           --
           -- require("config.utils").toggle("<leader>ugb", {
           --   name = "Git Line Blame",
