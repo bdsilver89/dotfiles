@@ -28,10 +28,11 @@ return {
           },
           mappings = {
             n = {
+              ["d"] = actions.delete_buffer,
               ["q"] = actions.close,
             },
           },
-        }
+        },
       }
     end,
   },
