@@ -19,8 +19,12 @@ vim.g.loaded_ruby_provider = 0
 
 -- enable glyph icons, if false fallsback to text icons
 vim.g.enable_icons = true
-vim.g.enable_mini_icons = false
-vim.g.enable_nvim_devicons = true
+vim.g.enable_mini_icons = true
+vim.g.enable_nvim_devicons = false
+
+-- which picker to use
+vim.g.picker_fzf = true
+vim.g.picker_telescope = false
 
 -------------------------------------------------------------------------------
 -- lazy.nvim bootstrap and setup
@@ -38,6 +42,9 @@ require("lazy").setup({
   },
   defaults = {
     lazy = true,
+  },
+  rocks = {
+    enabled = false,
   },
   performance = {
     rtp = {

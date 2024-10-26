@@ -57,7 +57,16 @@ autocmd("Filetype", {
   },
   callback = function(event)
     vim.bo[event.buf].buflisted = false
-    vim.keymap.set("n", "q", "<cmd>close<cr>", { buffer = event.buf, silent = true, desc = "Quit buffer" })
+    vim.schedule(function()
+      vim.keymap.set("n", "q", function()
+        vim.cmd("close")
+        pcall(vim.api.nvim_buf_delete, event.buf, { force = true })
+      end, {
+        buffer = event.buf,
+        silent = true,
+        desc = "Quit buffer",
+      })
+    end)
   end,
 })
 
@@ -104,4 +113,15 @@ autocmd("BufWritePre", {
     local file = vim.uv.fs_realpath(event.match) or event.match
     vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
   end,
+})
+
+-- NOTE: mostly for WSL clipboard slowdown workaround
+autocmd("FocusGained", {
+  pattern = "*",
+  command = [[call setreg("@", getreg("+"))]],
+})
+
+autocmd("FocusLost", {
+  pattern = "*",
+  command = [[call setreg("+", getreg("@"))]],
 })

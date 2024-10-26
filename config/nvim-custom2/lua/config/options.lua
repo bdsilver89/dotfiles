@@ -2,7 +2,9 @@ local opt = vim.opt
 
 opt.backup = false
 opt.breakindent = true
-opt.clipboard = "unnamed,unnamedplus"
+-- NOTE: WSL nvim slows down when synced to system clipboard, disable and handle in autocmd
+opt.clipboard = ""
+-- opt.clipboard = "unnamed,unnamedplus"
 opt.cmdheight = 0
 opt.completeopt = { "menu", "noselect" }
 opt.conceallevel = 2

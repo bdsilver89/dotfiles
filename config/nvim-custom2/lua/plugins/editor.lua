@@ -139,6 +139,28 @@ return {
   },
 
   {
+    "folke/todo-comments.nvim",
+    event = { "BufReadPost", "BufNewFile" },
+    opts = {},
+    keys = {
+      {
+        "]t",
+        function()
+          require("todo-comments").jump_next()
+        end,
+        desc = "Next todo",
+      },
+      {
+        "[t",
+        function()
+          require("todo-comments").jump_prev()
+        end,
+        desc = "Prev todo",
+      },
+    },
+  },
+
+  {
     "folke/which-key.nvim",
     event = { "BufReadPost", "BufNewFile" },
     keys = {

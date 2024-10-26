@@ -2,6 +2,7 @@ return {
   {
     "nvim-telescope/telescope.nvim",
     cmd = "Telescope",
+    enabled = vim.g.picker_telescope,
     dependencies = {},
     keys = {
       { "<leader>,", "<cmd>Telescope buffers sort_mru=true sort_lastused=true<cr>", desc = "Switch buffer" },
