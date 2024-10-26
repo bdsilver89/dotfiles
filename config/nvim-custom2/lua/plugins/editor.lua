@@ -176,6 +176,7 @@ return {
       spec = {
         {
           mode = { "n", "v" },
+          { "<leader><tab>", group = "tab" },
           { "<leader>b", group = "buffer" },
           { "<leader>c", group = "code" },
           { "<leader>d", group = "debug" },
