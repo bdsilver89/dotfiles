@@ -42,6 +42,10 @@ opt.winblend = 10
 opt.wrap = false
 opt.writebackup = false
 
+vim.opt.statusline = "%{%v:lua.require'config.ui.statusline'.eval()%}"
+vim.opt.statuscolumn = "%!v:lua.require'config.ui.statuscolumn'.eval()"
+vim.opt.winbar = "%{%v:lua.require'config.ui.winbar'.eval()%}"
+
 -- add mason-installed binaries to PATH
 local is_windows = vim.fn.has("win32") ~= 0
 local sep = is_windows and "\\" or "/"

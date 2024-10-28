@@ -40,45 +40,9 @@ set -g status-position top    # macOS/darwin style status bar on top
 set -g default-terminal "${TERM}"
 setw -g mode-keys vi
 
-# plugins
-set -g @plugin 'tmux-plugins/tpm'
-set -g @plugin 'tmux-plugins/tmux-sensible'
-set -g @plugin 'tmux-plugins/tmux-yank'
-# set -g @plugin 'tmux-plugins/tmux-resurrect'
-# set -g @plugin 'tmux-plugins/tmux-continuum'
-set -g @plugin 'christoomey/vim-tmux-navigator'
-# set -g @plugin 'rose-pine/tmux'
-set -g @plugin 'omerxx/catppuccin-tmux'
-# set -g @plugin 'catppuccin/tmux'
+wg_prfx="#{?client_prefix,<Prefix>,}"
+wg_date=" #[fg=color231,bold,italics,bg=default]%d-%b-%Y#[none]"
+wg_time=" #[fg=220,bold,bg=default]%H:%M"
+set -g status-right "${wg_prfx}${wg_date}${wg_time}"
 
-# plugin settings
-# set -g @continuum-restore 'on'
-# set -g @resurrect-strategy-nvim 'session'
-
-# catppuccin settings
-set -g @catppuccin_window_left_separator ""
-set -g @catppuccin_window_right_separator " "
-set -g @catppuccin_window_middle_separator " █"
-set -g @catppuccin_window_number_position "right"
-set -g @catppuccin_window_default_fill "number"
-set -g @catppuccin_window_default_text "#W"
-set -g @catppuccin_window_current_fill "number"
-set -g @catppuccin_window_current_text "#W#{?window_zoomed_flag,(),}"
-set -g @catppuccin_status_modules_right "directory date_time"
-set -g @catppuccin_status_modules_left "session"
-set -g @catppuccin_status_left_separator  " "
-set -g @catppuccin_status_right_separator " "
-set -g @catppuccin_status_right_separator_inverse "no"
-set -g @catppuccin_status_fill "icon"
-set -g @catppuccin_status_connect_separator "no"
-set -g @catppuccin_directory_text "#{b:pane_current_path}"
-# set -g @catppuccin_meetings_text "#($HOME/.config/tmux/scripts/cal.sh)"
-set -g @catppuccin_date_time_text "%H:%M"
-
-# rose-pine settings
-# set -g @rose_pine_variant "main" # 'main', 'moon' or 'dawn'
-# set -g @rose_pine_host "on"
-# set -g @rose_pine_user "on"
-# set -g @rose_pine_directory "on"
-
-run '~/.tmux/plugins/tpm/tpm'
+set -g status-style fg=color241,bg=color233
