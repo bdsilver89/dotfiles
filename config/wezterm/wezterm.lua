@@ -19,5 +19,21 @@ return {
 			mods = "CTRL|SHIFT",
 			action = act.PasteFrom("Clipboard"),
 		},
+		{
+			key = "-",
+			mods = "CTRL|SHIFT",
+			action = act.SplitPane({
+				direction = "Down",
+				size = { Percent = 50 },
+			}),
+		},
+		{
+			key = "|",
+			mods = "CTRL|SHIFT",
+			action = act.SplitPane({
+				direction = "Right",
+				size = { Percent = 50 },
+			}),
+		},
 	},
 }
