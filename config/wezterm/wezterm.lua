@@ -20,19 +20,17 @@ return {
 			action = act.PasteFrom("Clipboard"),
 		},
 		{
-			key = "-",
-			mods = "CTRL|SHIFT",
-			action = act.SplitPane({
-				direction = "Down",
-				size = { Percent = 50 },
+			key = "_",
+			mods = "CTRL|SHIFT|ALT",
+			action = act.SplitVertical({
+				domain = "CurrentPaneDomain",
 			}),
 		},
 		{
 			key = "|",
-			mods = "CTRL|SHIFT",
-			action = act.SplitPane({
-				direction = "Right",
-				size = { Percent = 50 },
+			mods = "CTRL|SHIFT|ALT",
+			action = act.SplitHorizontal({
+				domain = "CurrentPaneDomain",
 			}),
 		},
 	},
