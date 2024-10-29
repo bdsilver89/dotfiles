@@ -218,8 +218,8 @@ if [ -x "$(command -v ninja)" ]; then
 fi
 
 # ninja
-export NINJA_STATUS=$(echo -e "\e[1;30m[\e[1;32m%f/%t \e[1;34m%p \e[1;36m%e\e[1;30m] \e[;0m")
-# export NINJA_STATUS=$(echo -e "[%f/%t %p %e]")
+# export NINJA_STATUS=$(echo -e "\e[1;30m[\e[1;32m%f/%t \e[1;34m%p \e[1;36m%e\e[1;30m] \e[;0m")
+export NINJA_STATUS=$(echo -e "[%f/%t %p %e]")
 
 # vcpkg
 export VCPKG_ROOT="$HOME/vcpkg"
