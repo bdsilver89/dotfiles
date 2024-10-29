@@ -5,7 +5,7 @@ opt.breakindent = true
 -- NOTE: WSL nvim slows down when synced to system clipboard, disable and handle in autocmd
 opt.clipboard = ""
 -- opt.clipboard = "unnamed,unnamedplus"
-opt.cmdheight = 0
+-- opt.cmdheight = 0 -- statusline disappears if this is uncommented and tmux c-[hjkl] used
 opt.completeopt = { "menu", "noselect" }
 opt.conceallevel = 2
 opt.confirm = true
