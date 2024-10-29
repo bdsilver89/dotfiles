@@ -134,9 +134,14 @@ map("n", "<leader>tf", function()
   require("config.utils.term").toggle({ pos = "float", id = "float_term" })
 end, { desc = "Floating term" })
 
-
 map("n", "<esc>", "<cmd>nohlsearch<cr><esc>", { desc = "Escape and clear hlsearch" })
 
 map("n", "<leader>qq", "<cmd>qa<cr>", { desc = "Quit all" })
 
 map("n", "<leader>l", "<cmd>Lazy<cr>", { desc = "Lazy package manager" })
+
+-- quickfix
+map("n", "<leader>xl", "<cmd>lopen<cr>", { desc = "Location list " })
+map("n", "<leader>xq", "<cmd>copen<cr>", { desc = "Quickfix list" })
+map("n", "[q", vim.cmd.cprev, { desc = "Prev quickfix" })
+map("n", "]q", vim.cmd.cnext, { desc = "Next quickfix" })
