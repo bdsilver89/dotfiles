@@ -156,6 +156,9 @@ alias c="clear"
 alias pg="ps -ef | grep"
 alias pkill!="pkill -9 -f"
 
+# fzf -> editor
+alias f='$EDITOR "$(fzf)"'
+
 # eza/exa/ls
 if [ -x "$(command -v eza)" ]; then
   # use eza
