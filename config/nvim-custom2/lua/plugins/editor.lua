@@ -161,6 +161,15 @@ return {
   },
 
   {
+    "stevearc/aerial.nvim",
+    event = { "BufReadPost", "BufNewFile" },
+    keys = {
+      { "<leader>cs", "<cmd>AerialToggle<cr>", desc = "Symbols" },
+    },
+    opts = {},
+  },
+
+  {
     "folke/which-key.nvim",
     event = { "BufReadPost", "BufNewFile" },
     keys = {
