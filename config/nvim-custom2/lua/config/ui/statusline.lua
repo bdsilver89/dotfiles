@@ -163,7 +163,15 @@ local function section_location(args)
     return "%l:%c"
   end
 
-  return "%l:%c %p %%"
+  local current_line = vim.fn.line(".")
+  local percentage = "%2p%%"
+  if current_line == 1 then
+    percentage = "Top"
+  elseif current_line == vim.fn.line("$") then
+    percentage = "Bot"
+  end
+
+  return "%l:%c " .. percentage
 end
 
 local function section_search(args)
