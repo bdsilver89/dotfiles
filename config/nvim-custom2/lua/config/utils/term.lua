@@ -13,7 +13,7 @@ local default_sizes = {
   sp = 0.3,
   vsp = 0.2,
   ["bo sp"] = 0.3,
-  ["bo vsp"] = 0.2
+  ["bo vsp"] = 0.2,
 }
 
 vim.g.hterm = false
@@ -77,14 +77,14 @@ function M.display(opts)
 
   vim.api.nvim_win_set_buf(win, opts.buf)
 
-  local winopts = vim.tbl_deep_extend("force", {
-    number = false,
-    relativenumber = false,
-  }, opts.winopts or {})
-
-  for k, v in pairs(winopts) do
-    vim.wo[win][k] = v
-  end
+  -- local winopts = vim.tbl_deep_extend("force", {
+  --   number = false,
+  --   relativenumber = false,
+  -- }, opts.winopts or {})
+  --
+  -- for k, v in pairs(winopts) do
+  --   vim.wo[win][k] = v
+  -- end
 
   save_term_info(opts.buf, opts)
 end
