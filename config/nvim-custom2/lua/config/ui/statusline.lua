@@ -113,7 +113,8 @@ local function section_lsp(args)
   return icon .. " " .. attached
 end
 
-local spinners = { "", "", "", "󰪞", "󰪟", "󰪠", "󰪢", "󰪣", "󰪤", "󰪥" }
+-- local spinners = { "", "", "", "󰪞", "󰪟", "󰪠", "󰪢", "󰪣", "󰪤", "󰪥" }
+local spinners = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" }
 local lsp_msg_state = ""
 local function section_lsp_msg(args)
   if is_truncated(args.trunc_width) then
