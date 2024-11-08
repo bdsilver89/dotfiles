@@ -29,6 +29,7 @@ return {
         "diff",
         "lua",
         "luadoc",
+        "java",
         "javascript",
         "jsdoc",
         "json",
