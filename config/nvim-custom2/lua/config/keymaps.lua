@@ -119,9 +119,14 @@ map("n", "<leader>qq", "<cmd>qa<cr>", { desc = "Quit all" })
 map("n", "<leader>l", "<cmd>Lazy<cr>", { desc = "Lazy package manager" })
 
 -- git
-if vim.fn.executable("lazgit") == 1 then
-  -- map("n", "<leader>gg", function()
-  -- end, { desc = "Lazygit" })
+if vim.fn.executable("lazygit") == 1 then
+  map("n", "<leader>gg", function()
+    require("config.utils.term").toggle({
+      pos = "float",
+      id = "lazygit_term",
+      cmd = "lazygit",
+    })
+  end, { desc = "Lazygit" })
 end
 
 -- diagnostic

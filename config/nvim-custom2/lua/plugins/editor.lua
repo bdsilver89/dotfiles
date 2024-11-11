@@ -165,6 +165,7 @@ return {
     event = { "BufReadPost", "BufNewFile" },
     keys = {
       { "<leader>cs", "<cmd>AerialToggle<cr>", desc = "Symbols" },
+      { "<leader>cn", "<cmd>AerialNavToggle<cr>", desc = "Symbols nav" },
     },
     opts = {},
   },

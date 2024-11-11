@@ -36,6 +36,8 @@ autocmd("Filetype", {
   desc = "Close with <q>",
   group = augroup("quick_close"),
   pattern = {
+    "aerial",
+    "aerial-nav",
     "checkhealth",
     "dbout",
     "fugitive",
