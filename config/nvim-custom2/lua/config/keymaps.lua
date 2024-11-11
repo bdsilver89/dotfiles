@@ -11,6 +11,8 @@ local function map(mode, lhs, rhs, opts)
   end
 end
 
+-- stylua: ignore start
+
 map("x", "<leader>p", [["_dP]], { desc = "Paste over" })
 
 -- better up/down
@@ -60,9 +62,9 @@ map("n", "[b", "<cmd>bprevious<cr>", { desc = "Prev buffer" })
 map("n", "]b", "<cmd>bnext<cr>", { desc = "Next buffer" })
 map("n", "<leader>bb", "<cmd>e #<cr>", { desc = "Alternate buffer" })
 map("n", "<leader>bD", "<cmd>:bd<cr>", { desc = "Delete buffer" })
-map("n", "<leader>bd", function()
-  require("config.utils.bufdelete")()
-end, { desc = "Delete buffer" })
+map("n", "<leader>bd", function() require("config.utils.bufdelete")() end, { desc = "Delete buffer" })
+map("n", "<leader>bo", function() require("config.utils.bufdelete").other() end, { desc = "Delete other buffers" })
+map("n", "<leader>bD", "<cmd>:bd<cr>", { desc = "Delete buffer and window" })
 
 -- windows
 map("n", "<leader>ww", "<c-w>p", { desc = "Other window", remap = true })
@@ -71,6 +73,20 @@ map("n", "<leader>w-", "<c-w>s", { desc = "Split window below", remap = true })
 map("n", "<leader>w|", "<c-w>v", { desc = "Split window right", remap = true })
 map("n", "<leader>-", "<c-w>s", { desc = "Split window below", remap = true })
 map("n", "<leader>|", "<c-w>v", { desc = "Split window right", remap = true })
+
+-- resize 
+map("n", "<c-up>", "<cmd>resize +2<cr>", { desc = "Increase window height" })
+map("n", "<c-down>", "<cmd>resize -2<cr>", { desc = "Decrease window height" })
+map("n", "<c-left>", "<cmd>vertical resize -2<cr>", { desc = "Increase window width" })
+map("n", "<c-right>", "<cmd>vertical resize +2<cr>", { desc = "Decrease window width" })
+
+-- move lines
+map("n", "<a-j>", "<cmd>execute 'move .+' . v:count1<cr>==", { desc = "Move down" })
+map("n", "<a-k>", "<cmd>execute 'move .-' . (v:count1 + 1)<cr>==", { desc = "Move up" })
+map("i", "<a-j>", "<esc><cmd>m .+1<cr>==gi", { desc = "Move down" })
+map("i", "<a-k>", "<esc><cmd>m .-2<cr>==gi", { desc = "Move up" })
+map("v", "<a-j>", ":<c-u>execute \"'<.'>move '>+\" . v:count1<cr>gv=gv", { desc = "Move down" })
+map("v", "<a-k>", ":<c-u>execute \"'<.'>move '>-\" . (v:count1 + 1)<cr>gv=gv", { desc = "Move up" })
 
 -- tabs
 map("n", "<leader><tab>l", "<cmd>tablast<cr>", { desc = "Last tab" })
@@ -101,6 +117,28 @@ map("n", "<esc>", "<cmd>nohlsearch<cr><esc>", { desc = "Escape and clear hlsearc
 map("n", "<leader>qq", "<cmd>qa<cr>", { desc = "Quit all" })
 
 map("n", "<leader>l", "<cmd>Lazy<cr>", { desc = "Lazy package manager" })
+
+-- git
+if vim.fn.executable("lazgit") == 1 then
+  -- map("n", "<leader>gg", function()
+  -- end, { desc = "Lazygit" })
+end
+
+-- diagnostic
+local function diagnostic_goto(next, severity)
+  local go = next and vim.diagnostic.goto_next or vim.diagnostic.goto_prev
+  severity = severity and vim.diagnostic.severity[severity] or nil
+  return function()
+    go({ severity = severity })
+  end
+end
+map("n", "<leader>cd", vim.diagnostic.open_float, { desc = "Line diagnostics" })
+map("n", "]d", diagnostic_goto(true), { desc = "Next diagnostics" })
+map("n", "[d", diagnostic_goto(false), { desc = "Prev diagnostics" })
+map("n", "]e", diagnostic_goto(true, "ERROR"), { desc = "Next error" })
+map("n", "[e", diagnostic_goto(false, "ERROR"), { desc = "Prev error" })
+map("n", "]w", diagnostic_goto(true, "WARN"), { desc = "Next warning" })
+map("n", "[w", diagnostic_goto(false, "WARN"), { desc = "Prev warning" })
 
 -- quickfix
 map("n", "<leader>xl", "<cmd>lopen<cr>", { desc = "Location list " })

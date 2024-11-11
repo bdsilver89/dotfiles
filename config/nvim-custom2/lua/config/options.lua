@@ -26,9 +26,11 @@ opt.number = true
 opt.pumblend = 10
 opt.pumheight = 10
 opt.ruler = false
+opt.scrolloff = 4
 opt.shortmess:append({ c = true, C = true, s = true, I = true, w = true, W = true })
 opt.showmode = false
 opt.smartcase = true
+opt.smartindent = true
 opt.smoothscroll = true
 opt.splitbelow = true
 opt.splitkeep = "screen"
