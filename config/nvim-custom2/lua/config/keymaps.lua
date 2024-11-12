@@ -34,27 +34,12 @@ map("x", "N", "'nN'[v:searchforward]", { expr = true, desc = "Prev Search Result
 map("o", "N", "'nN'[v:searchforward]", { expr = true, desc = "Prev Search Result" })
 
 -- buffers
--- map("n", "<s-h>", function()
---   require("config.ui.tabline").prev()
--- end, { desc = "Prev buffer" })
---
--- map("n", "<s-l>", function()
---   require("config.ui.tabline").next()
--- end, { desc = "Next buffer" })
---
--- map("n", "[b", function()
---   require("config.ui.tabline").prev()
--- end, { desc = "Prev buffer" })
---
--- map("n", "]b", function()
---   require("config.ui.tabline").next()
--- end, { desc = "Next buffer" })
---
+-- map("n", "<s-h>", function() require("config.ui.tabline").prev() end, { desc = "Prev buffer" })
+-- map("n", "<s-l>", function() require("config.ui.tabline").next() end, { desc = "Next buffer" })
+-- map("n", "[b", function() require("config.ui.tabline").prev() end, { desc = "Prev buffer" })
+-- map("n", "]b", function() require("config.ui.tabline").next() end, { desc = "Next buffer" })
 -- map("n", "<leader>bn", "<cmd>enew<cr>", { desc = "New buffer" })
---
--- map("n", "<leader>bd", function()
---   require("config.ui.tabline").close_buffer()
--- end, { desc = "Close buffer" })
+-- map("n", "<leader>bd", function() require("config.ui.tabline").close_buffer() end, { desc = "Close buffer" })
 
 map("n", "<s-h>", "<cmd>bprevious<cr>", { desc = "Prev buffer" })
 map("n", "<s-l>", "<cmd>bnext<cr>", { desc = "Next buffer" })
@@ -99,18 +84,13 @@ map("n", "<leader><tab>d", "<cmd>tabclose<cr>", { desc = "Close tab" })
 
 -- terminal keymaps
 map("t", "<esc><esc>", "<c-\\><c-n>", { desc = "Exit terminal mode" })
+map("n", "<leader>th", function() require("config.utils.terminal")() end, { desc = "Terminal horizontal" })
+map("n", "<leader>tv", function() require("config.utils.terminal")() end, { desc = "Terminal vertical" })
+map("n", "<leader>tf", function() require("config.utils.terminal")() end, { desc = "Terminal float" })
 
-map("n", "<leader>th", function()
-  require("config.utils.term").toggle({ pos = "sp", id = "hterm" })
-end, { desc = "Horizontal term" })
-
-map("n", "<leader>tv", function()
-  require("config.utils.term").toggle({ pos = "vsp", id = "vterm" })
-end, { desc = "Vertical term" })
-
-map("n", "<leader>tf", function()
-  require("config.utils.term").toggle({ pos = "float", id = "float_term" })
-end, { desc = "Floating term" })
+-- map("n", "<leader>th", function() require("config.utils.term").toggle({ pos = "sp", id = "hterm" }) end, { desc = "Horizontal term" })
+-- map("n", "<leader>tv", function() require("config.utils.term").toggle({ pos = "vsp", id = "vterm" }) end, { desc = "Vertical term" })
+-- map("n", "<leader>tf", function() require("config.utils.term").toggle({ pos = "float", id = "float_term" }) end, { desc = "Floating term" })
 
 map("n", "<esc>", "<cmd>nohlsearch<cr><esc>", { desc = "Escape and clear hlsearch" })
 
@@ -120,13 +100,10 @@ map("n", "<leader>l", "<cmd>Lazy<cr>", { desc = "Lazy package manager" })
 
 -- git
 if vim.fn.executable("lazygit") == 1 then
-  map("n", "<leader>gg", function()
-    require("config.utils.term").toggle({
-      pos = "float",
-      id = "lazygit_term",
-      cmd = "lazygit",
-    })
-  end, { desc = "Lazygit" })
+  map("n", "<leader>gg", function() require("config.utils.lazygit")() end, { desc = "Lazygit" })
+  map("n", "<leader>gb", function() require("config.utils.git").blame_line() end, { desc = "Blame line" })
+  map("n", "<leader>gf", function() require("config.utils.lazygit").log_file() end, { desc = "Lazygit file history" })
+  map("n", "<leader>gl", function() require("config.utils.lazygit").log() end, { desc = "Lazygit log" })
 end
 
 -- diagnostic

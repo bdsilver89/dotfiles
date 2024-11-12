@@ -21,4 +21,18 @@ function M.open(opts)
   return require("config.utils.terminal")(cmd, opts)
 end
 
+function M.log(opts)
+  opts = opts or {}
+  opts.args = opts.args or { "log" }
+  return M.open(opts)
+end
+
+function M.log_file(opts)
+  local file = vim.trim(vim.api.nvim_buf_get_name(0))
+  opts = opts or {}
+  opts.args = { "-f", file }
+  opts.cwd = vim.fn.fnamemodify(file, ":h")
+  return M.open(opts)
+end
+
 return M

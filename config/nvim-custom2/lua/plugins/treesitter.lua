@@ -45,6 +45,7 @@ return {
         "rust",
         "ron",
         "scss",
+        "sql",
         "toml",
         "tsx",
         "typescript",
