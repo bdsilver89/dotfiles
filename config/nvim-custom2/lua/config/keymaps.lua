@@ -98,6 +98,14 @@ map("n", "<leader>qq", "<cmd>qa<cr>", { desc = "Quit all" })
 
 map("n", "<leader>l", "<cmd>Lazy<cr>", { desc = "Lazy package manager" })
 
+map("n", "<leader>ut", function()
+  if vim.opt.background:get() == "dark" then
+    vim.opt.background = "light"
+  else
+    vim.opt.background = "dark"
+  end
+end, { desc = "Toggle background dark" })
+
 -- git
 if vim.fn.executable("lazygit") == 1 then
   map("n", "<leader>gg", function() require("config.utils.lazygit")() end, { desc = "Lazygit" })

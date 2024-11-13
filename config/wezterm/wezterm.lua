@@ -35,9 +35,24 @@ if wezterm.target_triple == "x86_64-pc-windows-msvc" then
 	end
 end
 
+wezterm.on("toggle-colorscheme", function(window, pane)
+	local overrides = window:get_config_overrides() or {}
+	if overrides.color_scheme == "Catppuccin Mocha" then
+		overrides.color_scheme = "Catppuccin Latte"
+	else
+		overrides.color_scheme = "Catppuccin Mocha"
+	end
+	window:set_config_overrides(overrides)
+end)
+
 return {
+	animation_fps = 1,
 	color_scheme = "Catppuccin Mocha",
+	cursor_blink_rate = 500,
+	default_cursor_style = "BlinkingBlock",
+	hide_tab_bar_if_only_one_tab = true,
 	launch_menu = launch_menu,
+	default_prog = { "powershell.exe", "-NoLogo" },
 	enable_tab_bar = true,
 	font_size = 12.0,
 	macos_window_background_blur = 0,
@@ -45,8 +60,13 @@ return {
 	-- window_decorations = "RESIZE",
 	keys = {
 		{
+			key = "e",
+			mods = "CTRL|SHIFT|ALT",
+			action = act.EmitEvent("toggle-colorscheme"),
+		},
+		{
 			key = "f",
-			mods = "CTRL|SHIFT",
+			mods = "CTRL|SHIFT|ALT",
 			action = act.ToggleFullScreen,
 		},
 		{
