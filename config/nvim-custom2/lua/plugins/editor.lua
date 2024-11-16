@@ -27,7 +27,7 @@ return {
       {
         "<leader>o",
         function()
-          require("oil").open_float()
+          require("oil").open()
         end,
         desc = "File explorer (oil)",
       },
@@ -46,6 +46,12 @@ return {
         border = "rounded",
       },
     },
+    init = function()
+      local stats = vim.uv.fs_stat(vim.fn.argv(0))
+      if stats and stats.type == "directory" then
+        require("oil").open()
+      end
+    end,
   },
 
   -- file tree
@@ -158,16 +164,6 @@ return {
         desc = "Prev todo",
       },
     },
-  },
-
-  {
-    "stevearc/aerial.nvim",
-    event = { "BufReadPost", "BufNewFile" },
-    keys = {
-      { "<leader>cs", "<cmd>AerialToggle<cr>", desc = "Symbols" },
-      { "<leader>cn", "<cmd>AerialNavToggle<cr>", desc = "Symbols nav" },
-    },
-    opts = {},
   },
 
   {

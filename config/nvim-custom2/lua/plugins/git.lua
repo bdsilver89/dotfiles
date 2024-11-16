@@ -73,12 +73,12 @@ return {
           -- map("n", "<leader>ghu", gs.undo_stage_hunk, "Undo stage hunk")
           -- map("n", "<leader>ghR", gs.reset_buffer, "Reset buffer")
           map("n", "<leader>ghp", gs.preview_hunk_inline, "Preview hunk inline")
-          map("n", "<leader>ghb", function() gs.blame_line({ full = true }) end, "Blame line")
-          map("n", "<leader>ghB", function() gs.blame_line() end, "Blame buffer")
+          -- map("n", "<leader>ghb", function() gs.blame_line({ full = true }) end, "Blame line")
+          -- map("n", "<leader>ghB", function() gs.blame_line() end, "Blame buffer")
           map("n", "<leader>ghd", gs.diffthis, "Diff this")
           -- map("n", "<leader>ghD", function() gs.diffthis("~") end, "Diff this ~")
           -- map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", "GitSigns select hunk")
-          map("n", "<leader>gB", "<cmd>Git blame<cr>", "Blame")
+          map("n", "<leader>ghb", "<cmd>Git blame<cr>", "Blame")
           --
           -- require("config.utils").toggle("<leader>ugb", {
           --   name = "Git Line Blame",

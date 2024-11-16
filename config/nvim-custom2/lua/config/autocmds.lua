@@ -95,16 +95,6 @@ autocmd("FileType", {
   end,
 })
 
-autocmd("TermOpen", {
-  desc = "setup terminal view",
-  group = augroup("terminal_settings"),
-  callback = function()
-    vim.cmd("startinsert")
-    vim.opt_local.number = false
-    vim.opt_local.relativenumber = false
-  end,
-})
-
 autocmd("BufWritePre", {
   desc = "Auto create dir before saving buffer",
   group = augroup("auto_create_dir"),
@@ -115,15 +105,4 @@ autocmd("BufWritePre", {
     local file = vim.uv.fs_realpath(event.match) or event.match
     vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
   end,
-})
-
--- NOTE: mostly for WSL clipboard slowdown workaround
-autocmd("FocusGained", {
-  pattern = "*",
-  command = [[call setreg("@", getreg("+"))]],
-})
-
-autocmd("FocusLost", {
-  pattern = "*",
-  command = [[call setreg("+", getreg("@"))]],
 })

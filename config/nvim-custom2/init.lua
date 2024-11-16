@@ -32,7 +32,16 @@ vim.g.picker_telescope = false
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.uv.fs_stat(lazypath) then
   local repo = "https://github.com/folke/lazy.nvim.git"
-  vim.fn.system({ "git", "clone", "--filter=blob:none", repo, "--branch=stable", lazypath })
+  local out = vim.fn.system({ "git", "clone", "--filter=blob:none", repo, "--branch=stable", lazypath })
+  if vim.v.shell_error ~= 0 then
+    vim.api.nvim_echo({
+      { "Failed to clone lazy.nvim:\n", "ErrorMsg" },
+      { out, "WarningMsg" },
+      { "\nPress any key to exit..." },
+    }, true, {})
+    vim.fn.getchar()
+    os.exit(1)
+  end
 end
 vim.opt.rtp:prepend(lazypath)
 
@@ -40,8 +49,13 @@ require("lazy").setup({
   spec = {
     { import = "plugins" },
   },
+  checker = {
+    enabled = true,
+    notify = false,
+  },
   defaults = {
     lazy = true,
+    version = false,
   },
   rocks = {
     enabled = false,
@@ -92,12 +106,12 @@ vim.api.nvim_create_autocmd("User", {
     end
     require("config.keymaps")
 
+    -- utils setup
+    require("config.utils.lazygit").setup()
+
     -- ui setup
     require("config.ui.colorify").setup()
     require("config.ui.statusline").setup()
-    require("config.ui.winbar").setup()
-
-    -- utils setup
-    require("config.utils.term").setup()
+    -- require("config.ui.winbar").setup()
   end,
 })

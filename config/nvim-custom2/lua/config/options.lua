@@ -3,9 +3,8 @@ local opt = vim.opt
 opt.backup = false
 opt.breakindent = true
 -- NOTE: WSL nvim slows down when synced to system clipboard, disable and handle in autocmd
-opt.clipboard = ""
--- opt.clipboard = "unnamed,unnamedplus"
--- opt.cmdheight = 0 -- statusline disappears if this is uncommented and tmux c-[hjkl] used
+-- opt.clipboard = ""
+opt.clipboard = "unnamedplus"
 opt.completeopt = { "menu", "noselect" }
 opt.conceallevel = 2
 opt.confirm = true
@@ -46,7 +45,7 @@ opt.writebackup = false
 
 vim.opt.statusline = "%{%v:lua.require'config.ui.statusline'.eval()%}"
 vim.opt.statuscolumn = "%!v:lua.require'config.ui.statuscolumn'.eval()"
-vim.opt.winbar = "%{%v:lua.require'config.ui.winbar'.eval()%}"
+-- vim.opt.winbar = "%{%v:lua.require'config.ui.winbar'.eval()%}"
 
 -- add mason-installed binaries to PATH
 local is_windows = vim.fn.has("win32") ~= 0

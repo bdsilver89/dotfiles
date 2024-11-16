@@ -83,7 +83,6 @@ map("n", "<leader><tab>[", "<cmd>tabprev<cr>", { desc = "Prev tab" })
 map("n", "<leader><tab>d", "<cmd>tabclose<cr>", { desc = "Close tab" })
 
 -- terminal keymaps
-map("t", "<esc><esc>", "<c-\\><c-n>", { desc = "Exit terminal mode" })
 map("n", "<leader>th", function() require("config.utils.terminal")() end, { desc = "Terminal horizontal" })
 map("n", "<leader>tv", function() require("config.utils.terminal")() end, { desc = "Terminal vertical" })
 map("n", "<leader>tf", function() require("config.utils.terminal")() end, { desc = "Terminal float" })
@@ -110,6 +109,7 @@ end, { desc = "Toggle background dark" })
 if vim.fn.executable("lazygit") == 1 then
   map("n", "<leader>gg", function() require("config.utils.lazygit")() end, { desc = "Lazygit" })
   map("n", "<leader>gb", function() require("config.utils.git").blame_line() end, { desc = "Blame line" })
+  map("n", "<leader>gB", function() require("config.utils.git").browse() end, { desc = "Browse" })
   map("n", "<leader>gf", function() require("config.utils.lazygit").log_file() end, { desc = "Lazygit file history" })
   map("n", "<leader>gl", function() require("config.utils.lazygit").log() end, { desc = "Lazygit log" })
 end
