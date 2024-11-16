@@ -1,3 +1,112 @@
+-- LSP word navigation
+local W = {}
+
+W.defaults = {
+  enabled = true,
+  debounce = 200,
+  notify_jump = false,
+  notify_end = true,
+  foldopen = true,
+  jumplist = true,
+  modes = { "n", "i", "c" },
+}
+
+W.ns = vim.api.nvim_create_namespace("vim_lsp_references")
+W.timer = vim.uv.new_timer()
+
+function W.is_enabled(buf)
+  buf = buf or vim.api.nvim_get_current_buf()
+  local mode = vim.api.nvim_get_mode().mode:lower()
+  mode = mode:gsub("\22", "v"):gsub("\19", "s")
+  mode = mode:sub(1, 2) == "no" and "o" or mode
+  mode = mode:sub(1, 1):match("[ncitsvo]") or "n"
+  local clients = vim.lsp.get_clients({ bufnr = buf })
+  clients = vim.tbl_filter(function(client)
+    return client.supports_method("textDocument/documentHighlight", { bufnr = buf })
+  end, clients)
+  return W.defaults.enabled and vim.tbl_contains(W.defaults.modes, mode) and #clients > 0
+end
+
+function W.clear()
+  vim.lsp.buf.clear_references()
+end
+
+function W.update()
+  local buf = vim.api.nvim_get_current_buf()
+  W.timer:start(W.defaults.debounce, 0, function()
+    vim.schedule(function()
+      if vim.api.nvim_buf_is_valid(buf) then
+        vim.api.nvim_buf_call(buf, function()
+          if not W.is_enabled() then
+            return
+          end
+          vim.lsp.buf.document_highlight()
+          W.clear()
+        end)
+      end
+    end)
+  end)
+end
+
+function W.get()
+  local cursor = vim.api.nvim_win_get_cursor(0)
+  local current, ret = nil, {}
+  for _, extmark in ipairs(vim.api.nvim_buf_get_extmarks(0, W.ns, 0, -1, { details = true })) do
+    local w = {
+      from = { extmark[2] + 1, extmark[3] },
+      to = { extmark[4].end_row + 1, extmark[4].end_col },
+    }
+    ret[#ret + 1] = w
+    if cursor[1] >= w.from[1] and cursor[1] <= w.to[1] and cursor[2] >= w.from[2] and cursor[2] <= w.to[2] then
+      current = #ret
+    end
+  end
+  return ret, current
+end
+
+function W.jump(count, cycle)
+  local words, idx = W.get()
+  if not idx then
+    return
+  end
+  idx = idx + count
+  if cycle then
+    idx = (idx - 1) % #words + 1
+  end
+  local target = words[idx]
+  if target then
+    if W.defaults.jumplist then
+      vim.cmd.normal({ "m`", bang = true })
+    end
+    vim.api.nvim_win_set_cursor(0, target.from)
+    if W.defaults.notify_jump then
+      vim.notify(("Reference [%d/%d]"):format(idx, #words), vim.log.levels.INFO, { title = "Words" })
+    end
+    if W.defaults.foldopen then
+      vim.cmd.normal({ "zv", bang = true })
+    end
+  elseif W.defaults.notify_end then
+    vim.notify("No more references", vim.log.levels.WARN, { title = "Words" })
+  end
+end
+
+function W.setup()
+  local group = vim.api.nvim_create_augroup("lsp_words", { clear = true })
+
+  vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI", "ModeChanged" }, {
+    group = group,
+    callback = function()
+      if not W.is_enabled() then
+        W.clear()
+        return
+      end
+      if not ({ W.get() })[2] then
+        W.update()
+      end
+    end,
+  })
+end
+
 local function on_attach(_, buffer)
   local function map(mode, lhs, rhs, desc)
     vim.keymap.set(mode, lhs, rhs, { buffer = buffer, desc = "LSP: " .. desc })
@@ -17,6 +126,13 @@ local function on_attach(_, buffer)
   map({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, "Code action")
   map("n", "<leader>cr", vim.lsp.buf.rename, "Rename")
   map("n", "<leader>cl", "<cmd>LspInfo<cr>", "Info")
+
+  map("n", "]]", function()
+    W.jump(vim.v.count1)
+  end, "Next reference")
+  map("n", "[[", function()
+    W.jump(-vim.v.count1)
+  end, "Next reference")
 end
 
 local function on_init(client, _)
@@ -77,6 +193,8 @@ return {
         silent = true,
         max_height = 7,
       })
+
+      W.setup()
 
       local servers = { "bashls", "clangd", "jdtls", "jsonls", "neocmake", "ruff", "tailwindcss", "vtsls" }
 
