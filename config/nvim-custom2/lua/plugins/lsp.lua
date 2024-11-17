@@ -1,3 +1,5 @@
+local Notify = require("config.utils.notify")
+
 -- LSP word navigation
 local W = {}
 
@@ -80,13 +82,13 @@ function W.jump(count, cycle)
     end
     vim.api.nvim_win_set_cursor(0, target.from)
     if W.defaults.notify_jump then
-      vim.notify(("Reference [%d/%d]"):format(idx, #words), vim.log.levels.INFO, { title = "Words" })
+      Notify.info(("Reference [%d/%d]"):format(idx, #words), { title = "Words" })
     end
     if W.defaults.foldopen then
       vim.cmd.normal({ "zv", bang = true })
     end
   elseif W.defaults.notify_end then
-    vim.notify("No more references", vim.log.levels.WARN, { title = "Words" })
+    Notify.warn("No more references", { title = "Words" })
   end
 end
 

@@ -1,3 +1,5 @@
+local Notify = require("config.utils.notify")
+
 local M = setmetatable({}, {
   __call = function(t, ...)
     return t.open(...)
@@ -47,7 +49,7 @@ local function env(opts)
         "# Error:",
         vim.trim(out),
       }
-      vim.notify(table.concat(msg, "\n"), vim.log.levels.ERROR, { title = "Lazygit" })
+      Notify.error(table.concat(msg, "\n"), { title = "Lazygit" })
     end
   end
 end
@@ -122,7 +124,7 @@ function M.open(opts)
 
   if opts.configure then
     if dirty then
-      vim.notify("UPDATING LAZYGIT CONFIG")
+      Notify.info("UPDATING LAZYGIT CONFIG")
       update_config(opts)
     end
     env(opts)

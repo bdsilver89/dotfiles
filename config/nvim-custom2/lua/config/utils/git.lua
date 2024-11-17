@@ -1,3 +1,5 @@
+local Notify = require("config.utils.notify")
+
 local M = {}
 
 local defaults = {
@@ -34,7 +36,7 @@ local defaults = {
 local function system(cmd, err)
   local proc = vim.fn.system(cmd)
   if vim.v.shell_error ~= 0 then
-    vim.notify(table.concat({ err, proc }, "\n"), vim.log.levels.ERROR, { title = "Git" })
+    Notify.error(table.concat({ err, proc }, "\n"), { title = "Git" })
     error(err)
   end
   return vim.split(vim.trim(proc), "\n")
@@ -121,13 +123,13 @@ function M.browse(opts)
 
   local function open(remote)
     if remote then
-      vim.notify(("Opening [%s](%s)"):format(remote.name, remote.url), vim.log.levels.INFO, { title = "Git Browse" })
+      Notify.info(("Opening [%s](%s)"):format(remote.name, remote.url), { title = "Git Browse" })
       opts.open(remote.url)
     end
   end
 
   if #remotes == 0 then
-    vim.notify("No git remotes found", vim.log.levels.ERROR, { title = "Git Browse" })
+    Notify.error("No git remotes found", { title = "Git Browse" })
     return
   elseif #remotes == 1 then
     return open(remotes[1])

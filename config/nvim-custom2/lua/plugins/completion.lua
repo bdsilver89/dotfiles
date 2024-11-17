@@ -1,3 +1,5 @@
+local Notify = require("config.utils.notify")
+
 return {
   {
     "hrsh7th/nvim-cmp",
@@ -153,11 +155,11 @@ return {
         if state then
           require("nvim-autopairs").enable()
           vim.g.enable_autopairs = true
-          vim.notify("Enabled autopairs", vim.log.levels.INFO, { title = "Autopairs" })
+          Notify.info("Enabled autopairs", { title = "Autopairs" })
         else
           require("nvim-autopairs").disable()
           vim.g.enable_autopairs = false
-          vim.notify("Disabled autopairs", vim.log.levels.WARN, { title = "Autopairs" })
+          Notify.warn("Disabled autopairs", { title = "Autopairs" })
         end
       end, { desc = "Toggle autopairs" })
     end,

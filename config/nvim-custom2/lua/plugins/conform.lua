@@ -1,3 +1,5 @@
+local Notify = require("config.utils.notify")
+
 return {
   {
     "stevearc/conform.nvim",
@@ -14,9 +16,9 @@ return {
         vim.g.autoformat = state
         vim.b.autoformat = nil
         if state then
-          vim.notify("Enabled Autoformat (global)", vim.log.levels.INFO, { title = "Autoformat" })
+          Notify.info("Enabled Autoformat (global)", { title = "Autoformat" })
         else
-          vim.notify("Disabled Autoformat (global)", vim.log.levels.WARN, { title = "Autoformat" })
+          Notify.warn("Disabled Autoformat (global)", { title = "Autoformat" })
         end
       end, { desc = "Toggle autoformat (global)" })
 
@@ -34,9 +36,9 @@ return {
 
         vim.b.autoformat = state
         if state then
-          vim.notify("Enabled Autoformat (buffer)", vim.log.levels.INFO, { title = "Autoformat" })
+          Notify.info("Enabled Autoformat (buffer)", { title = "Autoformat" })
         else
-          vim.notify("Disabled Autoformat (buffer)", vim.log.levels.WARN, { title = "Autoformat" })
+          Notify.warn("Disabled Autoformat (buffer)", { title = "Autoformat" })
         end
       end, { desc = "Toggle autoformat (buffer)" })
     end,

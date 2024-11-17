@@ -1,3 +1,5 @@
+local Notify = require("config.utils.notify")
+
 local M = setmetatable({}, {
   __call = function(t, ...)
     return t.open(...)
@@ -18,7 +20,7 @@ local styles = {
       gf = function(self)
         local f = vim.fn.findfile(vim.fn.expand("<cfile>"), "**")
         if f == "" then
-          vim.notify("No file under cursor", vim.log.levels.WARN, { title = "Config" })
+          Notify.warn("No file under cursor", { title = "Config" })
         else
           self:hide()
           vim.schedule(function()
@@ -85,9 +87,8 @@ function M.open(cmd, opts)
       buffer = terminal.buf,
       callback = function()
         if type(vim.v.event) == "table" and vim.v.event.status ~= 0 then
-          vim.notify(
+          Notify.error(
             "Terminal exited with code " .. vim.v.event.status .. ".\nCheck for any errors.",
-            vim.log.levels.ERROR,
             { title = "Terminal" }
           )
           return

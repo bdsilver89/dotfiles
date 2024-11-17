@@ -169,16 +169,17 @@ function M.setup()
   ns = vim.api.nvim_create_namespace("colorify")
   vim.api.nvim_set_hl_ns(ns)
 
-
   vim.api.nvim_create_autocmd(
-    { "TextChanged", "TextChangedI", "TextChangedP", "VimResized", "LspAttach", "WinScrolled", "BufEnter" }, {
-    desc = "Colorify file",
-    callback = function(event)
-      if vim.bo[event.buf].bl then
-        M.attach(event.buf, event.event)
-      end
-    end,
-  })
+    { "TextChanged", "TextChangedI", "TextChangedP", "VimResized", "LspAttach", "WinScrolled", "BufEnter" },
+    {
+      desc = "Colorify file",
+      callback = function(event)
+        if vim.bo[event.buf].bl then
+          M.attach(event.buf, event.event)
+        end
+      end,
+    }
+  )
 end
 
 return M

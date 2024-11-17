@@ -1,3 +1,5 @@
+local Notify = require("config.utils.notify")
+
 return {
   {
     "mrcjkb/rustaceanvim",
@@ -38,7 +40,7 @@ return {
     config = function(_, opts)
       vim.g.rustaceanvim = vim.tbl_deep_extend("force", vim.g.rustaceanvim or {}, opts or {})
       if vim.fn.executable("rust-analyzer") == 0 then
-        vim.notify("**rust-analyzer** not found in PATH", vim.log.levels.ERROR, { title = "rustaceanvim" })
+        Notify.error("**rust-analyzer** not found in PATH", { title = "rustaceanvim" })
       end
     end,
   },

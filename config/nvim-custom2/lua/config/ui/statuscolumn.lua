@@ -66,7 +66,7 @@ function M.eval()
 
     local left, right, fold
     for _, s in ipairs(signs) do
-      if s.name and (s.name:find("GitSign"))  then
+      if s.name and (s.name:find("GitSign")) then
         right = s
       else
         left = s

@@ -1,3 +1,5 @@
+local Notify = require("config.utils.notify")
+
 local M = setmetatable({}, {
   __call = function(t, ...)
     return t.new(...)
@@ -416,9 +418,8 @@ function M:set_options(type)
       win = self.win,
     } or { buf = self.buf })
     if not ok then
-      vim.notify(
+      Notify.error(
         "Error setting option `" .. tostring(k) .. "=" .. tostring(v) .. "`\n\n" .. err,
-        vim.log.levels.ERROR,
         { title = "Window" }
       )
     end

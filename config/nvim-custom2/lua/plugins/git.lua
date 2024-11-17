@@ -1,20 +1,25 @@
 return {
+  -- {
+  --   "NeogitOrg/neogit",
+  --   dependencies = {
+  --     "sindrets/diffview.nvim",
+  --   },
+  --   cmd = "Neogit",
+  --   keys = {
+  --     { "<leader>gs", "<cmd>Neogit<cr>", desc = "Git status" },
+  --   },
+  --   opts = {
+  --     -- kind = "split",
+  --     integrations = {
+  --       diffview = true,
+  --     },
+  --     graph_style = "unicode",
+  --   },
+  -- },
+
   {
-    "NeogitOrg/neogit",
-    dependencies = {
-      "sindrets/diffview.nvim",
-    },
-    cmd = "Neogit",
-    keys = {
-      { "<leader>gs", "<cmd>Neogit<cr>", desc = "Git status" },
-    },
-    opts = {
-      -- kind = "split",
-      integrations = {
-        diffview = true,
-      },
-      graph_style = "unicode",
-    },
+    "tpope/vim-fugitive",
+    event = { "BufReadPost", "BufNewFile" },
   },
 
   {
