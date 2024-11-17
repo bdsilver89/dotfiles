@@ -52,3 +52,26 @@ local is_windows = vim.fn.has("win32") ~= 0
 local sep = is_windows and "\\" or "/"
 local delim = is_windows and ";" or ":"
 vim.env.PATH = table.concat({ vim.fn.stdpath("data"), "mason", "bin" }, sep) .. delim .. vim.env.PATH
+
+-- shell configuration
+local shell = is_windows and "powershell" or vim.o.shell
+vim.o.shell = shell or vim.o.shell
+if shell == "pwsh" or "powershell" then
+  if vim.fn.executable("pwsh") == 1 then
+    vim.o.shell = "pwsh"
+  elseif vim.fn.executable("powershell") == 1 then
+    vim.o.shell = "powershell"
+  else
+    vim.notify("No powershell executable found", vim.log.levels.ERROR)
+  end
+
+  vim.o.shellcmdflag =
+    "-NoLogo -NonInteractive -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.UTF8Encoding]::new();$PSDefaultParameterValues['Out-File:Encoding']='utf8';$PSStyle.OutputRendering='plaintext';Remove-Alias -Force -ErrorAction SilentlyContinue tee;"
+
+  vim.o.shellredir = '2>&1 | %%{ "$_" } | Out-File %s; exit $LastExitCode'
+
+  vim.o.shellpipe = '2>&1 | %%{ "$_" } | tee %s; exit $LastExitCode'
+
+  vim.o.shellquote = ""
+  vim.o.shellxquote = ""
+end
