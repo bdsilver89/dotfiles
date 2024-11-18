@@ -114,6 +114,8 @@ local function on_attach(_, buffer)
     vim.keymap.set(mode, lhs, rhs, { buffer = buffer, desc = "LSP: " .. desc })
   end
 
+  -- NOTE: these assume fzf-lua for now...
+
   map("n", "gD", vim.lsp.buf.declaration, "Go to declaration")
   map("n", "gd", vim.lsp.buf.definition, "Go to definition")
   map("n", "gr", vim.lsp.buf.references, "Show references")
@@ -125,9 +127,13 @@ local function on_attach(_, buffer)
   map("n", "<leader>wl", function()
     print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
   end, "List workspace folders")
-  map({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, "Code action")
+  -- map({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, "Code action")
+  map({ "n", "v" }, "<leader>ca", "<cmd>FzfLua lsp_code_actions<cr>", "Code action")
   map("n", "<leader>cr", vim.lsp.buf.rename, "Rename")
   map("n", "<leader>cl", "<cmd>LspInfo<cr>", "Info")
+
+  map("n", "<leader>cs", vim.lsp.buf.document_symbol, "symbols (document)")
+  map("n", "<leader>cS", vim.lsp.buf.workspace_symbol, "symbols (workspace)")
 
   map("n", "]]", function()
     W.jump(vim.v.count1)
