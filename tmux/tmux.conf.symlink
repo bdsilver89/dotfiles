@@ -27,6 +27,20 @@ bind \\ select-pane -l
 # custom key bindings
 bind-key -r f run-shell "tmux neww ~/.local/bin/tmux-sessionizer"
 
+# fuzzy active session switcher in popup
+bind-key -r s display-popup -E "\
+    tmux list-sessions -F '#{?session_attached,,#{session_name}}' |\
+    sed '/^$/d' |\
+    fzf --reverse --header jump-to-session |\
+    xargs tmux switch-client -t"
+
+bind-key -r S display-popup -E "\
+    tmux list-windows -F '#{window_index} #{window_name}' |\
+    sed '/^$/d' |\
+    fzf --reverse --header jump-to-window |\
+    cut -d ' ' -f 1 |\
+    xargs tmux switch-client -t"
+
 bind C-a send-prefix
 
 # tmux settings

@@ -24,9 +24,9 @@ if [[ $# -eq 1 ]]; then
 else
     os=$(uname)
     if [[ "$os" == "Darwin" ]]; then
-        selected=$(find $HOME/Developer/projects -mindepth 1 -maxdepth 1 -type d | fzf)
+        selected=$(find $HOME/Developer/projects -mindepth 1 -maxdepth 1 -type d | fzf --reverse --header "sessionizer")
     else
-        selected=$(find $HOME/dev/projects -mindepth 1 -maxdepth 1 -type d | fzf)
+        selected=$(find $HOME/dev/projects -mindepth 1 -maxdepth 1 -type d | fzf --reverse --header "sessionizer")
     fi
 fi
 
