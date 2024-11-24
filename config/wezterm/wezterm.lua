@@ -61,17 +61,17 @@ return {
 	keys = {
 		{
 			key = "e",
-			mods = "CTRL|SHIFT|ALT",
+			mods = "CTRL|SHIFT",
 			action = act.EmitEvent("toggle-colorscheme"),
 		},
 		{
 			key = "f",
-			mods = "CTRL|SHIFT|ALT",
+			mods = "CTRL|SHIFT",
 			action = act.ToggleFullScreen,
 		},
 		{
 			key = "Space",
-			mods = "CTRL|SHIFT|ALT",
+			mods = "CTRL|SHIFT",
 			action = act.ShowLauncherArgs({ flags = "LAUNCH_MENU_ITEMS|FUZZY" }),
 		},
 		{
@@ -81,17 +81,37 @@ return {
 		},
 		{
 			key = "_",
-			mods = "CTRL|SHIFT|ALT",
+			mods = "CTRL|SHIFT",
 			action = act.SplitVertical({
 				domain = "CurrentPaneDomain",
 			}),
 		},
 		{
 			key = "|",
-			mods = "CTRL|SHIFT|ALT",
+			mods = "CTRL|SHIFT",
 			action = act.SplitHorizontal({
 				domain = "CurrentPaneDomain",
 			}),
 		},
+		-- {
+		-- 	key = "h",
+		-- 	mods = "CTRL|SHIFT",
+		-- 	action = act.ActivatePaneDirection("Left"),
+		-- },
+		-- {
+		-- 	key = "j",
+		-- 	mods = "CTRL|SHIFT",
+		-- 	action = act.ActivatePaneDirection("Down"),
+		-- },
+		-- {
+		-- 	key = "k",
+		-- 	mods = "CTRL|SHIFT",
+		-- 	action = act.ActivatePaneDirection("Up"),
+		-- },
+		-- {
+		-- 	key = "l",
+		-- 	mods = "CTRL|SHIFT",
+		-- 	action = act.ActivatePaneDirection("Right"),
+		-- },
 	},
 }
