@@ -229,3 +229,8 @@ export VCPKG_ROOT="$HOME/vcpkg"
 if [ -d $VCPKG_ROOT ]; then
   export PATH="$VCPKG_ROOT:$PATH"
 fi
+
+# starship prompt
+if [ -x "$(command -v starship)" ]; then
+  eval "$(starship init zsh)"
+fi
