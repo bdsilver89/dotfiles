@@ -1,11 +1,10 @@
 return {
   {
     "nvim-treesitter/nvim-treesitter",
-    version = false,
-    build = ":TSUpdate",
-    event = { "LazyFile" },
     lazy = vim.fn.argc(-1) == 0,
+    event = { "BufReadPost", "BufNewFile", "VeryLazy" },
     cmd = { "TSInstall", "TSBufEnable", "TSBufDisable", "TSModuleInfo" },
+    build = ":TSUpdate",
     dependencies = {
       {
         "nvim-treesitter/nvim-treesitter-textobjects",
@@ -20,18 +19,46 @@ return {
       require("lazy.core.loader").add_to_rtp(plugin)
       require("nvim-treesitter.query_predicates")
     end,
-    opts_extend = { "ensure_installed" },
     opts = {
-      highlight = { enable = true },
-      indent = { enable = true },
       ensure_installed = {
+        "bash",
+        "c",
+        "cmake",
+        "cpp",
+        "css",
         "diff",
+        "lua",
+        "luadoc",
+        "java",
+        "javascript",
+        "jsdoc",
+        "json",
+        "json5",
+        "make",
+        "markdown",
+        "markdown_inline",
+        "ninja",
         "printf",
+        "python",
         "query",
         "regex",
+        "rust",
+        "ron",
+        "scss",
+        "sql",
+        "toml",
+        "tsx",
+        "typescript",
         "vim",
         "vimdoc",
         "xml",
+        "yaml",
+      },
+      highlight = {
+        enable = true,
+      },
+      indent = {
+        enable = true,
       },
       incremental_selection = {
         enable = true,

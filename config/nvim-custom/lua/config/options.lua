@@ -1,62 +1,53 @@
 local opt = vim.opt
 
+opt.backup = false
 opt.breakindent = true
-opt.clipboard = "unnamed,unnamedplus"
-opt.cmdheight = 0
-opt.completeopt = { "menu", "menuone", "noselect" }
+-- NOTE: WSL nvim slows down when synced to system clipboard, disable and handle in autocmd
+-- opt.clipboard = ""
+opt.clipboard = "unnamedplus"
+opt.completeopt = { "menu", "noselect" }
 opt.conceallevel = 2
 opt.confirm = true
 opt.cursorline = true
-opt.fillchars = {
-  foldopen = "",
-  foldclose = "",
-  fold = " ",
-  foldsep = " ",
-  diff = "╱",
-  eob = " ",
-}
-opt.foldcolumn = "1"
+opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 opt.foldlevel = 99
 opt.foldmethod = "expr"
-opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-opt.foldlevelstart = 99
-opt.formatoptions = "jcroqlnt"
-opt.grepformat = "%f:%l:%c:%m"
+opt.fillchars = "eob: "
 opt.hlsearch = true
 opt.ignorecase = true
 opt.infercase = true
-opt.jumpoptions = "view"
 opt.laststatus = 3
 opt.linebreak = true
+opt.listchars = "tab:> ,extends:…,precedes:…,trail:-,nbsp:␣"
 opt.list = true
 opt.mouse = "a"
 opt.number = true
+opt.pumblend = 10
 opt.pumheight = 10
-opt.relativenumber = true
-opt.scrolloff = 8
-opt.shiftround = true
-opt.shortmess:append({ s = true, I = true })
+opt.ruler = false
+opt.scrolloff = 4
+opt.shortmess:append({ c = true, C = true, s = true, I = true, w = true, W = true })
 opt.showmode = false
+-- opt.showtabline = 3
+opt.smartcase = true
 opt.smartindent = true
 opt.smoothscroll = true
-opt.signcolumn = "yes"
-opt.smartcase = true
 opt.splitbelow = true
 opt.splitkeep = "screen"
 opt.splitright = true
-opt.statuscolumn = [[%!v:lua.require'config.ui.statuscolumn'.eval()]]
--- opt.statusline = [[%!v:lua.require'config.ui.statusline'.eval()]]
-opt.tabstop = 2
-opt.title = true
+opt.relativenumber = true
 opt.timeoutlen = 400
 opt.undofile = true
 opt.updatetime = 250
 opt.virtualedit = "block"
-opt.wildmode = "longest:full,full"
-opt.winminwidth = 5
+opt.winblend = 10
 opt.wrap = false
+opt.writebackup = false
 
-vim.g.markdown_recommended_style = 0
+vim.opt.statusline = "%{%v:lua.require'config.ui.statusline'.eval()%}"
+vim.opt.statuscolumn = "%!v:lua.require'config.ui.statuscolumn'.eval()"
+-- vim.opt.tabline = "%{%v:lua.require'config.ui.tabline'.eval()%}"
+-- vim.opt.winbar = "%{%v:lua.require'config.ui.winbar'.eval()%}"
 
 -- add mason-installed binaries to PATH
 local is_windows = vim.fn.has("win32") ~= 0

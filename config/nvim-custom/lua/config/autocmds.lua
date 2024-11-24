@@ -32,28 +32,12 @@ autocmd("VimResized", {
   end,
 })
 
-autocmd("BufReadPost", {
-  desc = "Go to last loc when opening a buffer",
-  group = augroup("lastloc"),
-  callback = function(event)
-    local exclude = { "gitcommit" }
-    local buf = event.buf
-    if vim.tbl_contains(exclude, vim.bo[buf].filetype) or vim.b[buf].config_last_loc then
-      return
-    end
-    vim.b[buf].config_last_loc = true
-    local mark = vim.api.nvim_buf_get_mark(buf, '"')
-    local lcount = vim.api.nvim_buf_line_count(buf)
-    if mark[1] > 0 and mark[1] <= lcount then
-      pcall(vim.api.nvim_win_set_cursor, 0, mark)
-    end
-  end,
-})
-
 autocmd("Filetype", {
   desc = "Close with <q>",
   group = augroup("quick_close"),
   pattern = {
+    "aerial",
+    "aerial-nav",
     "checkhealth",
     "dbout",
     "fugitive",
@@ -75,7 +59,16 @@ autocmd("Filetype", {
   },
   callback = function(event)
     vim.bo[event.buf].buflisted = false
-    vim.keymap.set("n", "q", "<cmd>close<cr>", { buffer = event.buf, silent = true, desc = "Quit buffer" })
+    vim.schedule(function()
+      vim.keymap.set("n", "q", function()
+        vim.cmd("close")
+        pcall(vim.api.nvim_buf_delete, event.buf, { force = true })
+      end, {
+        buffer = event.buf,
+        silent = true,
+        desc = "Quit buffer",
+      })
+    end)
   end,
 })
 
@@ -102,17 +95,6 @@ autocmd("FileType", {
   end,
 })
 
--- autocmd("FileType", {
---   desc = "foldcolumn",
---   group = augroup("foldcolumn"),
---   pattern = {
---     "Neogit*",
---   },
---   callback = function()
---     vim.opt_local.foldcolumn = "0"
---   end,
--- })
-
 autocmd("BufWritePre", {
   desc = "Auto create dir before saving buffer",
   group = augroup("auto_create_dir"),
@@ -122,49 +104,5 @@ autocmd("BufWritePre", {
     end
     local file = vim.uv.fs_realpath(event.match) or event.match
     vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
-  end,
-})
-
--- autocmd("QuickFixCmdPost", {
---   desc = "Auto open Trouble quickfix",
---   -- group = augroup("auto_trouble_qflist"),
---   callback = function()
---     vim.cmd([[Trouble qflist open]])
---   end,
--- })
-
-vim.filetype.add({
-  pattern = {
-    [".*"] = {
-      function(path, buf)
-        return vim.bo[buf]
-            and vim.bo[buf].filetype ~= "bigfile"
-            and path
-            and vim.fn.getfsize(path) > vim.g.bigfile_size
-            and "bigfile"
-          or nil
-      end,
-    },
-  },
-})
-
-autocmd("FileType", {
-  desc = "Big file",
-  pattern = "bigfile",
-  callback = function(ev)
-    vim.b.minianimate_disable = true
-    vim.schedule(function()
-      vim.bo[ev.buf].syntax = vim.filetype.match({ buf = ev.buf }) or ""
-    end)
-  end,
-})
-
-autocmd({ "TextChanged", "TextChangedI", "TextChangedP", "VimResized", "LspAttach", "WinScrolled", "BufEnter" }, {
-  desc = "Colorify file",
-  group = augroup("colorify"),
-  callback = function(event)
-    if vim.bo[event.buf].bl then
-      require("config.ui.colorify").attach(event.buf, event.event)
-    end
   end,
 })

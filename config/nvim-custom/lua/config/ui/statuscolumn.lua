@@ -1,12 +1,10 @@
 local M = {}
 
----@alias Sign {name: string, text:string, texthl:string, priority:number}
-
 local function get_signs(buf, lnum)
-  local signs = {} ---@type Sign[]
+  local signs = {}
 
   for _, sign in ipairs(vim.fn.sign_getplaced(buf, { group = "*", lnum = lnum })[1].signs) do
-    local ret = vim.fn.sign_getdefined(sign.name)[1] --[[@as Sign]]
+    local ret = vim.fn.sign_getdefined(sign.name)[1]
     if ret then
       ret.priority = sign.priority
       signs[#signs + 1] = ret
@@ -36,9 +34,6 @@ local function get_signs(buf, lnum)
   return signs
 end
 
----@return Sign?
----@param buf number
----@param lnum number
 local function get_mark(buf, lnum)
   local marks = vim.fn.getmarklist(buf)
   vim.list_extend(marks, vim.fn.getmarklist())
@@ -49,8 +44,6 @@ local function get_mark(buf, lnum)
   end
 end
 
----@param sign? Sign
----@param len? number
 local function icon(sign, len)
   sign = sign or {}
   len = len or 2
@@ -66,7 +59,7 @@ function M.eval()
   local is_file = vim.bo[buf].buftype == ""
   local show_signs = vim.wo[win].signcolumn ~= "no"
 
-  local components = { "", "", "", "" }
+  local result = { "", "", "", "" }
 
   if show_signs then
     local signs = get_signs(buf, vim.v.lnum)
@@ -80,40 +73,39 @@ function M.eval()
       end
     end
 
-    -- folds
     vim.api.nvim_win_call(win, function()
       if vim.fn.foldclosed(vim.v.lnum) >= 0 then
-        fold = { text = vim.opt.fillchars:get().foldclose, texthl = "Folded" }
+        fold = { text = vim.opt.fillchars:get().foldclose or "", texthl = "Folded" }
       elseif tostring(vim.treesitter.foldexpr(vim.v.lnum)):sub(1, 1) == ">" then
-        fold = { text = vim.opt.fillchars:get().foldopen }
+        fold = { text = vim.opt.fillchars:get().foldopen or "" }
       end
     end)
 
-    components[1] = icon(get_mark(buf, vim.v.lnum) or left)
-    components[3] = is_file and icon(fold) or " "
-    components[4] = is_file and icon(right, 1) or ""
+    result[1] = icon(get_mark(buf, vim.v.lnum) or left)
+    result[3] = is_file and icon(fold) or " "
+    result[4] = is_file and icon(right, 1) or " "
   end
 
   local is_num = vim.wo[win].number
   local is_relnum = vim.wo[win].relativenumber
   if (is_num or is_relnum) and vim.v.virtnum == 0 then
     if vim.fn.has("nvim-0.11") == 1 then
-      components[2] = "%l" -- 0.11 handles both the current and other lines with %l
+      result[2] = "%l"
     else
       if vim.v.relnum == 0 then
-        components[2] = is_num and "%l" or "%r" -- the current line
+        result[2] = is_num and "%l" or "%r"
       else
-        components[2] = is_relnum and "%r" or "%l" -- other lines
+        result[2] = is_relnum and "%r" or "%l"
       end
     end
-    components[2] = "%=" .. components[2] .. " " -- right align
+    result[2] = "%=" .. result[2] .. " "
   end
 
   if vim.v.virtnum ~= 0 then
-    components[2] = "%= "
+    result[2] = "%= "
   end
 
-  return table.concat(components, "")
+  return table.concat(result)
 end
 
 return M

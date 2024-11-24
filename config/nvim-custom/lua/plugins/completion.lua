@@ -1,8 +1,9 @@
+local Notify = require("config.utils.notify")
+
 return {
   {
     "hrsh7th/nvim-cmp",
-    version = false,
-    event = { "InsertEnter" },
+    event = "InsertEnter",
     keys = {
       {
         "<tab>",
@@ -24,7 +25,6 @@ return {
       },
     },
     dependencies = {
-      "onsails/lspkind.nvim",
       "hrsh7th/cmp-nvim-lsp",
       "hrsh7th/cmp-buffer",
       "hrsh7th/cmp-path",
@@ -37,13 +37,25 @@ return {
           "rafamadriz/friendly-snippets",
         },
       },
+      {
+        "Saecki/crates.nvim",
+        ft = "toml",
+        opts = {
+          completion = {
+            cmp = {
+              enabled = true,
+            },
+          },
+        },
+      },
     },
     opts = function()
       local cmp = require("cmp")
       local defaults = require("cmp.config.default")()
 
       vim.api.nvim_set_hl(0, "CmpGhostText", { link = "Comment", default = true })
-      local opts = {
+
+      return {
         auto_brackets = {},
         completion = {
           completeopt = "menu,menuone,noinsert",
@@ -69,12 +81,34 @@ return {
           end,
         }),
         formatting = {
-          format = require("lspkind").cmp_format({
-            mode = vim.g.enable_icons and "symbol_text" or "text",
-            maxwidth = 50,
-            ellipsis_char = "...",
-            show_labelDetails = true,
-          }),
+          format = function(entry, item)
+            local icons = require("config.ui.icons.lspkind")
+
+            item.menu = item.kind
+            item.menu_hl_group = "CmpItemKind" .. (item.kind or "")
+
+            if vim.g.enable_icons and icons.kind and icons[item.kind] then
+              item.kind = item.kind and icons[item.kind] .. " " or ""
+            end
+
+            local entry_item = entry:get_completion_item()
+            local color = entry_item.documentation
+
+            -- colorify completion formatting
+            if color and type(color) == "string" and color:match("^#%x%x%x%x%x%x$") then
+              local hl = "hex-" .. color:sub(2)
+
+              if #vim.api.nvim_get_hl(0, { name = hl }) == 0 then
+                vim.api.nvim_set_hl(0, hl, { fg = color })
+              end
+
+              item.kind = "󱓻"
+              item.kind_hl_group = hl
+              item.menu_hl_group = hl
+            end
+
+            return item
+          end,
         },
         sources = cmp.config.sources({
           { name = "nvim_lsp" },
@@ -82,7 +116,7 @@ return {
         }, {
           { name = "buffer" },
           { name = "snippets" },
-          { name = "lazydev" },
+          { name = "crates" },
         }),
         experimental = {
           ghost_text = {
@@ -103,15 +137,6 @@ return {
           },
         },
       }
-
-      return opts
-    end,
-    config = function(_, opts)
-      for _, source in ipairs(opts.sources) do
-        source.group_index = source.group_index or 1
-      end
-      local cmp = require("cmp")
-      cmp.setup(opts)
     end,
   },
 
@@ -124,60 +149,25 @@ return {
     opts = {},
     init = function()
       vim.g.enable_autopairs = true
-      require("config.utils").toggle("<leader>up", {
-        name = "autopairs",
-        get = function()
-          return vim.g.enable_autopairs
-        end,
-        set = function(state)
-          if state then
-            require("nvim-autopairs").enable()
-            vim.g.enable_autopairs = true
-          else
-            require("nvim-autopairs").disable()
-            vim.g.enable_autopairs = false
-          end
-        end,
-      })
+
+      vim.keymap.set("n", "<leader>up", function()
+        local state = not vim.g.enable_autopairs
+        if state then
+          require("nvim-autopairs").enable()
+          vim.g.enable_autopairs = true
+          Notify.info("Enabled autopairs", { title = "Autopairs" })
+        else
+          require("nvim-autopairs").disable()
+          vim.g.enable_autopairs = false
+          Notify.warn("Disabled autopairs", { title = "Autopairs" })
+        end
+      end, { desc = "Toggle autopairs" })
     end,
     config = function(_, opts)
       require("nvim-autopairs").setup(opts)
 
       local cmp_autopairs = require("nvim-autopairs.completion.cmp")
-      local cmp = require("cmp")
-      cmp.event:on("confirm_down", cmp_autopairs.on_confirm_done())
+      require("cmp").event:on("confirm_down", cmp_autopairs.on_confirm_done())
     end,
-  },
-
-  {
-    "echasnovski/mini.surround",
-    recommended = true,
-    keys = function(_, keys)
-      -- Populate the keys based on the user's options
-      local mappings = {
-        { "gsa", desc = "Add surrounding", mode = { "n", "v" } },
-        { "gsd", desc = "Delete surrounding" },
-        { "gsf", desc = "Find right surrounding" },
-        { "gsF", desc = "Find left surrounding" },
-        { "gsh", desc = "Highlight surrounding" },
-        { "gsr", desc = "Replace surrounding" },
-        { "gsn", desc = "Update `MiniSurround.config.n_lines`" },
-      }
-      mappings = vim.tbl_filter(function(m)
-        return m[1] and #m[1] > 0
-      end, mappings)
-      return vim.list_extend(mappings, keys)
-    end,
-    opts = {
-      mappings = {
-        add = "gsa", -- Add surrounding in Normal and Visual modes
-        delete = "gsd", -- Delete surrounding
-        find = "gsf", -- Find surrounding (to the right)
-        find_left = "gsF", -- Find surrounding (to the left)
-        highlight = "gsh", -- Highlight surrounding
-        replace = "gsr", -- Replace surrounding
-        update_n_lines = "gsn", -- Update `n_lines`
-      },
-    },
   },
 }

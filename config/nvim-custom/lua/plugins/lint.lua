@@ -1,11 +1,15 @@
+local Notify = require("config.utils.notify")
+
 return {
   {
     "mfussenegger/nvim-lint",
     lazy = true,
-    event = "LazyFile",
+    event = { "BufReadPost", "BufNewFile" },
     opts = {
       events = { "BufWritePost", "BufReadPost", "InsertLeave" },
-      linters_by_ft = {},
+      linters_by_ft = {
+        -- cmake = { "cmakelint" },
+      },
     },
     config = function(_, opts)
       local M = {}
@@ -39,7 +43,7 @@ return {
         names = vim.tbl_filter(function(name)
           local linter = lint.linters[name]
           if not linter then
-            vim.notify("Linter not found: " .. name, vim.log.levels.WARN, { title = "nvim-lint" })
+            Notify.warn("Linter not found: " .. name, { title = "nvim-lint" })
           end
           return linter and not (type(linter) == "table" and linter.condition and not linter.condition(ctx))
         end, names)
