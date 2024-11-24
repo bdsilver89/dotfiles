@@ -1,26 +1,28 @@
 return {
-  {
-    "nvim-tree/nvim-web-devicons",
-    enabled = vim.g.enable_icons,
-  },
+  "folke/snacks.nvim",
+  opts = function(_, opts)
+    local snacks = require("snacks")
 
-  {
-    "nvim-lualine/lualine.nvim",
-    opts = function(_, opts)
-      -- disable icons in lualine if needed
-      opts.options.icons_enabled = vim.g.enable_icons
+    opts.dashboard = {
+      sections = {
+        { section = "header" },
+        { title = "Keymaps", section = "keys", indent = 2, padding = 1 },
+        { title = "Recent Files", section = "recent_files", indent = 2, padding = 1 },
+        { title = "Projects", section = "projects", indent = 2, padding = 1 },
+        {
+          title = "Git Status",
+          section = "terminal",
+          enabled = snacks.git.get_root() ~= nil,
+          cmd = "git status --short --branch --renames",
+          height = 5,
+          indent = 2,
+          padding = 1,
+          ttl = 5 * 60,
+        },
+        { section = "startup" },
+      },
+    }
 
-      -- prefer these separators over defaults
-      opts.options.component_separators = "|"
-      opts.options.section_separators = ""
-
-      -- add fileencoding
-      vim.list_extend(opts.sections.lualine_x, { "encoding" })
-
-      -- add fileformat to track line endings
-      vim.list_extend(opts.sections.lualine_x, { "fileformat" })
-
-      return opts
-    end,
-  },
+    return opts
+  end,
 }
