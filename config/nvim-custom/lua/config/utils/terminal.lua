@@ -2,7 +2,7 @@ local Notify = require("config.utils.notify")
 
 local M = setmetatable({}, {
   __call = function(t, ...)
-    return t.open(...)
+    return t.toggle(...)
   end,
 })
 
@@ -11,6 +11,14 @@ local defaults = {
     -- style = "terminal",
   },
 }
+
+local function term_nav(dir)
+  return function(self)
+    return self:is_floating() and "<c-" .. dir .. ">" or vim.schedule(function()
+      vim.cmd.wincmd(dir)
+    end)
+  end
+end
 
 local styles = {
   terminal = {
@@ -44,6 +52,10 @@ local styles = {
         expr = true,
         desc = "Double escape to normal mode",
       },
+      nav_h = { "<c-h>", term_nav("h"), desc = "Go to left window", expr = true, mode = "t" },
+      nav_j = { "<c-j>", term_nav("j"), desc = "Go to lower window", expr = true, mode = "t" },
+      nav_k = { "<c-k>", term_nav("k"), desc = "Go to upper window", expr = true, mode = "t" },
+      nav_l = { "<c-l>", term_nav("l"), desc = "Go to right window", expr = true, mode = "t" },
     },
   },
 }
@@ -109,17 +121,21 @@ function M.open(cmd, opts)
   return terminal
 end
 
-function M.toggle(cmd, opts)
+function M.get(cmd, opts)
   opts = opts or {}
 
   local id = vim.inspect({ cmd = cmd, cwd = opts.cwd, env = opts.env, count = vim.v.count1 })
-
-  if terminals[id] and terminals[id]:buf_valid() then
-    terminals[id]:toggle()
-  else
-    terminals[id] = M.open(cmd, opts)
+  local created = false
+  if not (terminals[id] and terminals[id]:buf_valid()) and (opts.create ~= false) then
+    terminals[id] = M.open(cmd)
+    created = true
   end
-  return terminals[id]
+  return terminals[id], created
+end
+
+function M.toggle(cmd, opts)
+  local terminal, created = M.get(cmd, opts)
+  return created and terminal or assert(terminal):toggle()
 end
 
 function M.parse(cmd)

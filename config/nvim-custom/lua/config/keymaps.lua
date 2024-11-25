@@ -83,13 +83,11 @@ map("n", "<leader><tab>[", "<cmd>tabprev<cr>", { desc = "Prev tab" })
 map("n", "<leader><tab>d", "<cmd>tabclose<cr>", { desc = "Close tab" })
 
 -- terminal keymaps
-map("n", "<leader>th", function() require("config.utils.terminal")() end, { desc = "Terminal horizontal" })
-map("n", "<leader>tv", function() require("config.utils.terminal")() end, { desc = "Terminal vertical" })
-map("n", "<leader>tf", function() require("config.utils.terminal")() end, { desc = "Terminal float" })
-
--- map("n", "<leader>th", function() require("config.utils.term").toggle({ pos = "sp", id = "hterm" }) end, { desc = "Horizontal term" })
--- map("n", "<leader>tv", function() require("config.utils.term").toggle({ pos = "vsp", id = "vterm" }) end, { desc = "Vertical term" })
--- map("n", "<leader>tf", function() require("config.utils.term").toggle({ pos = "float", id = "float_term" }) end, { desc = "Floating term" })
+map("n", "<leader>ft", function() require("config.utils.terminal")() end, { desc = "Terminal" })
+map("n", "<c-/>", function() require("config.utils.terminal")(nil) end, { desc = "Terminal" })
+map("n", "<c-_>", function() require("config.utils.terminal")(nil) end, { desc = "which_key_ignore" })
+map("t", "<c-/>", "<cmd>close<cr>", { desc = "Hide terminal" })
+map("t", "<c-_>", "<cmd>close<cr>", { desc = "which_key_ignore" })
 
 map("n", "<esc>", "<cmd>nohlsearch<cr><esc>", { desc = "Escape and clear hlsearch" })
 
