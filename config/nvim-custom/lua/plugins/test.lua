@@ -4,6 +4,20 @@ return {
     dependencies = {
       "nvim-neotest/nvim-nio",
       "nvim-neotest/neotest-python",
+      {
+        "orjangj/neotest-ctest",
+        opts = {
+          is_test_file = function(file)
+            local lib = require("neotest.lib")
+            local elems = vim.split(file, lib.files.sep, { plain = true })
+            local name, extension = unpack(vim.split(elems[#elems], ".", { plain = true }))
+            local supported_extensinos = { "cpp", "cc", "cxx" }
+            return vim.tbl_contains(supported_extensinos, extension)
+                and (vim.endswith(name, "_test") or vim.endswith(name, "Test"))
+              or false
+          end,
+        },
+      },
     },
     -- stylua: ignore
     keys = {
@@ -22,6 +36,8 @@ return {
       return {
         adapters = {
           ["rustaceanvim.neotest"] = {},
+          ["neotest-python"] = {},
+          ["neotest-ctest"] = {},
         },
         consumers = {
           overseer = require("neotest.consumers.overseer"),
