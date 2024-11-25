@@ -8,16 +8,16 @@ return {
     },
     -- stylua: ignore
     keys = {
-      { "<leader>Tt", function() require("neotest").run.run(vim.fn.expand("%")) end,                      desc = "Run file" },
-      { "<leader>TT", function() require("neotest").run.run(vim.uv.cwd()) end,                            desc = "Run all test files" },
-      { "<leader>Tr", function() require("neotest").run.run() end,                                        desc = "Run nearest" },
-      { "<leader>Tl", function() require("neotest").run.run_last() end,                                   desc = "Run last" },
-      { "<leader>Ts", function() require("neotest").summary.toggle() end,                                 desc = "Toggle summary" },
-      { "<leader>To", function() require("neotest").output.open({ enter = true, auto_close = true }) end, desc = "Show output" },
-      { "<leader>TO", function() require("neotest").output_panel.toggle() end,                            desc = "Toggle output panel" },
-      { "<leader>TS", function() require("neotest").run.stop() end,                                       desc = "Stop" },
-      { "<leader>Tw", function() require("neotest").watch.toggle(vim.fn.expand("%")) end,                 desc = "Toggle watch" },
-      { "<leader>Td", function() require("neotest").run.run({ strategy = "dap" }) end,                    desc = "Debug nearest" },
+      { "<leader>tt", function() require("neotest").run.run(vim.fn.expand("%")) end,                      desc = "Run file" },
+      { "<leader>tT", function() require("neotest").run.run(vim.uv.cwd()) end,                            desc = "Run all test files" },
+      { "<leader>tr", function() require("neotest").run.run() end,                                        desc = "Run nearest" },
+      { "<leader>tl", function() require("neotest").run.run_last() end,                                   desc = "Run last" },
+      { "<leader>ts", function() require("neotest").summary.toggle() end,                                 desc = "Toggle summary" },
+      { "<leader>to", function() require("neotest").output.open({ enter = true, auto_close = true }) end, desc = "Show output" },
+      { "<leader>tO", function() require("neotest").output_panel.toggle() end,                            desc = "Toggle output panel" },
+      { "<leader>tS", function() require("neotest").run.stop() end,                                       desc = "Stop" },
+      { "<leader>tw", function() require("neotest").watch.toggle(vim.fn.expand("%")) end,                 desc = "Toggle watch" },
+      { "<leader>td", function() require("neotest").run.run({ strategy = "dap" }) end,                    desc = "Debug nearest" },
     },
     opts = function()
       return {
@@ -25,7 +25,9 @@ return {
           ["rustaceanvim.neotest"] = {},
           ["neotest-python"] = {},
           ["neotest-ctest"] = {
-
+            extra_args = {
+              "--output-on-failure",
+            },
             is_test_file = function(file)
               local lib = require("neotest.lib")
               local elems = vim.split(file, lib.files.sep, { plain = true })
@@ -37,14 +39,15 @@ return {
             end,
           },
         },
-        consumers = {
-          overseer = require("neotest.consumers.overseer"),
-        },
+        -- consumers = {
+        --   overseer = require("neotest.consumers.overseer"),
+        -- },
         status = { virtual_text = true },
         output = { open_on_run = true },
         quickfix = {
           open = function()
-            require("trouble").open({ mode = "quickfix", focus = false })
+            -- require("trouble").open({ mode = "quickfix", focus = false })
+            vim.cmd("copen")
           end,
         },
       }
