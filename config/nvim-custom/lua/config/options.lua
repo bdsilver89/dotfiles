@@ -44,8 +44,8 @@ opt.winblend = 10
 opt.wrap = false
 opt.writebackup = false
 
-vim.opt.statusline = "%{%v:lua.require'config.ui.statusline'.eval()%}"
 vim.opt.statuscolumn = "%!v:lua.require'config.ui.statuscolumn'.eval()"
+vim.opt.statusline = "%{%v:lua.require'config.ui.statusline'.eval()%}"
 -- vim.opt.tabline = "%{%v:lua.require'config.ui.tabline'.eval()%}"
 -- vim.opt.winbar = "%{%v:lua.require'config.ui.winbar'.eval()%}"
 

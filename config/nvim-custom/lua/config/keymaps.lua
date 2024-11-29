@@ -129,7 +129,9 @@ map("n", "]w", diagnostic_goto(true, "WARN"), { desc = "Next warning" })
 map("n", "[w", diagnostic_goto(false, "WARN"), { desc = "Prev warning" })
 
 -- quickfix
-map("n", "<leader>xl", "<cmd>lopen<cr>", { desc = "Location list " })
-map("n", "<leader>xq", "<cmd>copen<cr>", { desc = "Quickfix list" })
+-- map("n", "<leader>xl", "<cmd>lopen<cr>", { desc = "Location list " })
+-- map("n", "<leader>xq", "<cmd>copen<cr>", { desc = "Quickfix list" })
 map("n", "[q", vim.cmd.cprev, { desc = "Prev quickfix" })
 map("n", "]q", vim.cmd.cnext, { desc = "Next quickfix" })
+map("n", "<c-p>", vim.cmd.cprev, { desc = "Prev quickfix" })
+map("n", "<c-n>", vim.cmd.cnext, { desc = "Next quickfix" })

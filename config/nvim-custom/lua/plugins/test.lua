@@ -24,9 +24,9 @@ return {
           ["rustaceanvim.neotest"] = {},
           ["neotest-python"] = {},
         },
-        -- consumers = {
-        --   overseer = require("neotest.consumers.overseer"),
-        -- },
+        consumers = {
+          overseer = require("neotest.consumers.overseer"),
+        },
         status = { virtual_text = true },
         output = { open_on_run = true },
         quickfix = {
