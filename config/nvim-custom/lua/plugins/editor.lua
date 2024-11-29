@@ -1,11 +1,24 @@
 return {
   {
     "NMAC427/guess-indent.nvim",
+    enabled = false,
     event = { "BufReadPost" },
     cmd = "GuessIndent",
     opts = {
       auto_cmd = true,
     },
+  },
+
+  {
+    "tpope/vim-sleuth",
+    event = { "BufReadPost", "BufNewFile" },
+    cmd = "Sleuth",
+  },
+
+  {
+    "tpope/vim-dispatch",
+    cmd = { "Dispatch", "Make", "Focus", "Start" },
+    lazy = true,
   },
 
   {
