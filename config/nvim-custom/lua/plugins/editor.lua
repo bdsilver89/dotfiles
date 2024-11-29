@@ -17,7 +17,7 @@ return {
 
   {
     "tpope/vim-dispatch",
-    cmd = { "Dispatch", "Make", "Focus", "Start" },
+    cmd = { "Dispatch", "Make", "Focus", "FocusDispatch", "Spawn", "Start" },
     lazy = true,
   },
 
