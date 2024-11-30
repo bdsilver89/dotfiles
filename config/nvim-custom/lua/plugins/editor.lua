@@ -15,12 +15,12 @@ return {
     cmd = "Sleuth",
   },
 
-  {
-    "tpope/vim-dispatch",
-    cmd = { "Dispatch", "Make", "Focus", "FocusDispatch", "Spawn", "Start" },
-    lazy = true,
-  },
-
+  -- {
+  --   "tpope/vim-dispatch",
+  --   cmd = { "Dispatch", "Make", "Focus", "FocusDispatch", "Spawn", "Start" },
+  --   lazy = true,
+  -- },
+  --
   {
     "alexghergh/nvim-tmux-navigation",
     keys = {
