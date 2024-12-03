@@ -3,7 +3,7 @@ return {
     "neovim/nvim-lspconfig",
     event = { "BufReadPost", "BufNewFile" },
     dependencies = {
-      { "williamboman/mason.nvim", config = true },
+      "williamboman/mason.nvim",
       "williamboman/mason-lspconfig.nvim",
       "WhoIsSethDaniel/mason-tool-installer.nvim",
       "hrsh7th/cmp-nvim-lsp",
@@ -29,9 +29,6 @@ return {
           map("n", "<leader>sh", vim.lsp.buf.signature_help, "Show signature help")
           map("n", "<leader>wa", vim.lsp.buf.add_workspace_folder, "Add workspace folder")
           map("n", "<leader>wr", vim.lsp.buf.remove_workspace_folder, "Remove workspace folder")
-          -- map("n", "<leader>wl", function()
-          --   print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-          -- end, "List workspace folders")
           map({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, "Code action")
           map("n", "<leader>cr", vim.lsp.buf.rename, "Rename")
 
@@ -51,13 +48,6 @@ return {
             vim.cmd.lopen()
             vim.api.nvim_set_current_win(win)
           end, "set loclist diagnostics")
-
-          -- map("n", "]]", function()
-          --   W.jump(vim.v.count1)
-          -- end, "Next reference")
-          -- map("n", "[[", function()
-          --   W.jump(-vim.v.count1)
-          -- end, "Next reference")
 
           -- highlight word references in document
           local client = vim.lsp.get_client_by_id(event.data.client_id)
@@ -82,6 +72,58 @@ return {
                 vim.api.nvim_clear_autocmds({ group = "config_lsp_highlight", buffer = event2.buf })
               end,
             })
+
+            local ns = vim.api.nvim_create_namespace("vim_lsp_references")
+
+            local function get()
+              local cursor = vim.api.nvim_win_get_cursor(0)
+              local current, ret = nil, {}
+              for _, extmark in ipairs(vim.api.nvim_buf_get_extmarks(event.buf, ns, 0, -1, { details = true })) do
+                local w = {
+                  from = { extmark[2] + 1, extmark[3] },
+                  to = { extmark[4].end_row + 1, extmark[4].end_col },
+                }
+                ret[#ret + 1] = w
+                if
+                  cursor[1] >= w.from[1]
+                  and cursor[1] <= w.to[1]
+                  and cursor[2] >= w.from[2]
+                  and cursor[2] <= w.to[2]
+                then
+                  current = #ret
+                end
+              end
+              return ret, current
+            end
+
+            local function jump(count, cycle)
+              local words, idx = get()
+              if not idx then
+                return
+              end
+              idx = idx + count
+              if cycle then
+                idx = (idx - 1) % #words + 1
+              end
+              local target = words[idx]
+              if target then
+                -- add to jumplist
+                vim.cmd.normal({ "m`", bang = true })
+
+                vim.api.nvim_win_set_cursor(0, target.from)
+                require("config.utils.notify").info(("Reference [%d/%d]"):format(idx, #words), { title = "References" })
+
+                -- open foldcolumn
+                vim.cmd.normal({ "zv", bang = true })
+              else
+                require("config.utils.notify").warn("No more references", { title = "References" })
+              end
+            end
+
+            -- stylua: ignore start
+            map("n", "]]", function() jump(vim.v.count1) end, "Next reference")
+            map("n", "[[", function() jump(-vim.v.count1) end, "Next reference")
+            -- stylua: ignore end
           end
 
           -- inlay hints
@@ -108,7 +150,7 @@ return {
           },
         },
         underline = true,
-        float = { border = "single" },
+        float = { border = "rounded" },
       })
 
       -- Default border style
@@ -190,5 +232,20 @@ return {
         },
       })
     end,
+  },
+
+  {
+    "williamboman/mason.nvim",
+    lazy = true,
+    opts = {
+      ui = {
+        -- icons = {
+        --   package_pending = " ",
+        --   package_installed = "󰄳 ",
+        --   package_uninstalled = " ",
+        -- },
+        border = "rounded",
+      },
+    },
   },
 }

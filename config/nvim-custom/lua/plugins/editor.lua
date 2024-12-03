@@ -202,6 +202,9 @@ return {
       },
     },
     opts = {
+      win = {
+        border = "rounded",
+      },
       spec = {
         {
           mode = { "n", "v" },

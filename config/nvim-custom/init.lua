@@ -23,8 +23,8 @@ vim.g.enable_mini_icons = true
 vim.g.enable_nvim_devicons = false
 
 -- which picker to use
-vim.g.picker_fzf = true
-vim.g.picker_telescope = false
+vim.g.picker_fzf = false
+vim.g.picker_telescope = true
 
 -------------------------------------------------------------------------------
 -- lazy.nvim bootstrap and setup
@@ -59,6 +59,9 @@ require("lazy").setup({
   },
   rocks = {
     enabled = false,
+  },
+  ui = {
+    border = "rounded",
   },
   performance = {
     rtp = {

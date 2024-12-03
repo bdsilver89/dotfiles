@@ -129,10 +129,10 @@ return {
             scrollbar = false,
             side_padding = 1,
             winhighlight = "Normal:CmpPmenu,CursorLine:CmpSel,Search:None,FloatBorder:CmpBorder",
-            border = "single",
+            border = "rounded",
           },
           documentation = {
-            border = "single",
+            border = "rounded",
             winhighlight = "Normal:CmpDoc,FloatBorder:CmpDocBorder",
           },
         },

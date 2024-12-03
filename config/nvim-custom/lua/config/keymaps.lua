@@ -95,6 +95,8 @@ map("n", "<leader>qq", "<cmd>qa<cr>", { desc = "Quit all" })
 
 map("n", "<leader>l", "<cmd>Lazy<cr>", { desc = "Lazy package manager" })
 
+map("n", "<leader>m", "<cmd>Mason<cr>", { desc = "Mason package manager" })
+
 map("n", "<leader>ut", function()
   if vim.opt.background:get() == "dark" then
     vim.opt.background = "light"
