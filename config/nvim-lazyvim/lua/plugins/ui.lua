@@ -24,6 +24,8 @@ return {
         },
       }
 
+      opts.scroll = { enabled = false }
+
       return opts
     end,
   },

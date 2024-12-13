@@ -40,13 +40,14 @@ return {
 
   {
     "nvim-telescope/telescope.nvim",
+    optional = true,
     opts = {
-      defaults = {
-        sorting_strategy = "ascending",
-        layout_config = {
-          prompt_position = "top",
-        },
-      },
+      -- defaults = {
+      --   sorting_strategy = "ascending",
+      --   layout_config = {
+      --     prompt_position = "top",
+      --   },
+      -- },
     },
   },
 
