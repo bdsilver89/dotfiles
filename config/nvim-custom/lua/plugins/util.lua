@@ -15,6 +15,9 @@ return {
     opts = {
       bigfile = { enabled = true },
       quickfile = { enabled = true },
+      scope = { enabled = true },
+      indent = { enabled = true },
+      statuscolumn = { enabled = true },
       terminal = {
         win = {
           keys = {
@@ -61,8 +64,11 @@ return {
               return {}
             end
 
-            local in_github_repo = repo:find("github")
-            local in_gitlab_repo = repo:find("gitlab")
+            local in_github_repo = repo:find("github") ~= nil
+            local in_gitlab_repo = repo:find("gitlab") ~= nil
+
+            vim.notify(vim.inspect(in_github_repo))
+            vim.notify(vim.inspect(in_gitlab_repo))
 
             local has_gh = vim.fn.executable("gh") == 1
             local has_glab = vim.fn.executable("glab") == 1
