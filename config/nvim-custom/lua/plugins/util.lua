@@ -104,7 +104,7 @@ return {
                 title = "Open MRs",
                 icon = " ",
                 key = "m",
-                cmd = "glab mr list -L 3",
+                cmd = "glab mr list -P 3",
                 enabled = has_glab and in_gitlab_repo,
                 height = 7,
               },
