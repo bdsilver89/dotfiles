@@ -4,7 +4,15 @@ return {
     event = { "BufReadPost", "BufNewFile", "BufWritePre" },
     opts = {
       events = { "BufWritePost", "BufReadPost", "InsertLeave" },
-      linters_by_ft = {},
+      linters_by_ft = {
+        cmake = { "cmakelint" },
+        dockerfile = { "hadolint" },
+        sql = { "sqlfluff" },
+        mysql = { "sqlfluff" },
+        plsql = { "sqlfluff" },
+        terraform = { "terraform_validate" },
+        tf = { "terraform_validate" },
+      },
     },
     config = function(_, opts)
       local lint = require("lint")

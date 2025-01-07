@@ -1,56 +1,64 @@
 local opt = vim.opt
+local g = vim.g
 
-opt.backup = false
-opt.breakindent = true
--- NOTE: WSL nvim slows down when synced to system clipboard, disable and handle in autocmd
--- opt.clipboard = ""
-opt.clipboard = "unnamedplus"
-opt.completeopt = { "menu", "noselect" }
-opt.conceallevel = 2
-opt.confirm = true
-opt.cursorline = true
-opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-opt.foldlevel = 99
-opt.foldmethod = "expr"
-opt.fillchars = "eob: "
-opt.hlsearch = true
-opt.ignorecase = true
-opt.infercase = true
-opt.laststatus = 3
-opt.linebreak = true
-opt.listchars = "tab:> ,extends:…,precedes:…,trail:-,nbsp:␣"
-opt.list = true
-opt.mouse = "a"
+-- disable providers
+g.loaded_node_prodiver = 0
+g.loaded_python3_prodiver = 0
+g.loaded_perl_prodiver = 0
+g.loaded_ruby_prodiver = 0
+
+-- formatting setup
+g.autoformat = nil
+
+-- clipboard settings
+opt.clipboard = "unnamed,unnamedplus"
+
+-- line numbers
 opt.number = true
-opt.pumblend = 10
-opt.pumheight = 10
-opt.ruler = false
-opt.scrolloff = 4
-opt.shortmess:append({ c = true, C = true, s = true, I = true, w = true, W = true })
-opt.showmode = false
--- opt.showtabline = 3
-opt.smartcase = true
-opt.smartindent = true
-opt.smoothscroll = true
-opt.splitbelow = true
-opt.splitkeep = "screen"
-opt.splitright = true
 opt.relativenumber = true
-opt.timeoutlen = 400
-opt.undofile = true
-opt.updatetime = 250
-opt.virtualedit = "block"
-opt.winblend = 10
+opt.cursorline = true
+
+-- search
+opt.hlsearch = true
+opt.incsearch = true
+opt.ignorecase = true
+opt.smartcase = true
+
+-- splits
+opt.splitbelow = true
+opt.splitright = true
+opt.splitkeep = "screen"
+
+-- statusline settings
+opt.laststatus = 3
+opt.showmode = false
+opt.ruler = false
+
+-- folds
+opt.foldlevel = 99
+opt.foldlevelstart = 99
+opt.foldenable = true
+opt.foldcolumn = "0"
+opt.foldmethod = "expr"
+opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+
+-- text behavior
+opt.fillchars = { eob = " " }
+opt.list = true
 opt.wrap = false
-opt.writebackup = false
+opt.virtualedit = "block"
 
-vim.opt.statuscolumn = "%!v:lua.require'config.ui.statuscolumn'.eval()"
-vim.opt.statusline = "%{%v:lua.require'config.ui.statusline'.eval()%}"
--- vim.opt.tabline = "%{%v:lua.require'config.ui.tabline'.eval()%}"
--- vim.opt.winbar = "%{%v:lua.require'config.ui.winbar'.eval()%}"
+-- decrease update time
+opt.updatetime = 250
 
--- add mason-installed binaries to PATH
-local is_windows = vim.fn.has("win32") ~= 0
-local sep = is_windows and "\\" or "/"
-local delim = is_windows and ";" or ":"
-vim.env.PATH = table.concat({ vim.fn.stdpath("data"), "mason", "bin" }, sep) .. delim .. vim.env.PATH
+-- timeoutlen
+opt.timeoutlen = 400
+
+-- undofile
+opt.undofile = true
+
+-- shortmess
+opt.shortmess:append("sI")
+
+-- cursor wrap settings
+opt.whichwrap:append("<>[]hl")

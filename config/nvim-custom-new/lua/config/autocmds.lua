@@ -45,7 +45,6 @@ vim.api.nvim_create_autocmd("FileType", {
   pattern = {
     "checkhealth",
     "dbout",
-    "fugitive",
     "gitsigns-blame",
     "grug-far",
     "help",

@@ -183,7 +183,7 @@ if [ -x "$(command -v fzf)" ]; then
 fi
 
 if [ -x "$(command -v zoxide)" ]; then
-  eval "$(zoxide init bash)"
+  eval "$(zoxide init zsh)"
 fi
 
 # sometimes bat is installed as batcat
@@ -194,6 +194,14 @@ fi
 # sometimes fd is installed as fdfind
 if [ -x "$(command -v fdfind)" ]; then
   alias fd="fdfind"
+fi
+
+# github and gitlab cli completion
+if [ -x "$(command -v gh)" ]; then
+  eval "$(gh completion -s zsh)"
+fi
+if [ -x "$(command -v glab)" ]; then
+  eval "$(glab completion -s zsh)"
 fi
 
 # nvm
@@ -233,4 +241,10 @@ fi
 # starship prompt
 if [ -x "$(command -v starship)" ]; then
   eval "$(starship init zsh)"
+fi
+
+# zig
+export ZIG_ROOT="$HOME/zig-linux-x86_64-0.13.0"
+if [ -d "$ZIG_ROOT" ]; then
+  export PATH="$ZIG_ROOT:$PATH"
 fi

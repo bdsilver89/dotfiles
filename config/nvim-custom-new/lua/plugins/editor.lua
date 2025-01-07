@@ -137,39 +137,39 @@ return {
     },
   },
 
-  -- {
-  --   "folke/todo-comments.nvim",
-  --   event = { "BufReadPost", "BufNewFile" },
-  --   dependencies = {
-  --     "nvim-lua/plenary.nvim",
-  --   },
-  --   opts = {
-  --     signs = false,
-  --   },
-  -- },
+  {
+    "folke/todo-comments.nvim",
+    event = { "BufReadPost", "BufNewFile" },
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+    },
+    opts = {
+      signs = false,
+    },
+  },
 
-  -- {
-  --   "MagicDuck/grug-far.nvim",
-  --   opts = { headerMaxWidth = 80 },
-  --   cmd = "GrugFar",
-  --   keys = {
-  --     {
-  --       "<leader>sr",
-  --       function()
-  --         local grug = require("grug-far")
-  --         local ext = vim.bo.buftype == "" and vim.fn.expand("%:e")
-  --         grug.open({
-  --           transient = true,
-  --           prefills = {
-  --             filesFilter = ext and ext ~= "" and "*." .. ext or nil,
-  --           },
-  --         })
-  --       end,
-  --       mode = { "n", "v" },
-  --       desc = "Search and Replace",
-  --     },
-  --   },
-  -- },
+  {
+    "MagicDuck/grug-far.nvim",
+    opts = { headerMaxWidth = 80 },
+    cmd = "GrugFar",
+    keys = {
+      {
+        "<leader>sr",
+        function()
+          local grug = require("grug-far")
+          local ext = vim.bo.buftype == "" and vim.fn.expand("%:e")
+          grug.open({
+            transient = true,
+            prefills = {
+              filesFilter = ext and ext ~= "" and "*." .. ext or nil,
+            },
+          })
+        end,
+        mode = { "n", "v" },
+        desc = "Search and Replace",
+      },
+    },
+  },
 
   {
     "folke/which-key.nvim",
@@ -202,7 +202,7 @@ return {
           { "<leader>f", group = "file/find" },
           { "<leader>g", group = "git" },
           { "<leader>s", group = "search" },
-          { "<leader>t", group = "terminal/test" },
+          { "<leader>t", group = "test" },
           { "<leader>u", group = "ui" },
           { "<leader>q", group = "session" },
           { "<leader>x", group = "diagnostics" },

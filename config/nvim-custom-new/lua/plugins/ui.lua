@@ -13,40 +13,29 @@ return {
     end,
   },
 
-  {
-    "lukas-reineke/indent-blankline.nvim",
-    event = { "BufReadPost", "BufNewFile" },
-    opts = {
-      indent = {
-        char = "│",
-        tab_char = "│",
-      },
-      scope = {
-        char = "│",
-        -- show_start = false,
-        -- show_end = false,
-      },
-      exclude = {
-        filetypes = {
-          "help",
-          "lazy",
-          "mason",
-        },
-      },
-    },
-    main = "ibl",
-  },
+  -- {
+  --   "lukas-reineke/indent-blankline.nvim",
+  --   event = { "BufReadPost", "BufNewFile" },
+  --   opts = {
+  --     indent = {
+  --       char = "│",
+  --       tab_char = "│",
+  --     },
+  --     scope = {
+  --       show_start = false,
+  --       show_end = false,
+  --     },
+  --     exclude = {
+  --       filetypes = {
+  --         "help",
+  --         "lazy",
+  --         "mason",
+  --       },
+  --     },
+  --   },
+  --   main = "ibl",
+  -- },
 
-  -- winbar
-  {
-    "utilyre/barbecue.nvim",
-    dependencies = {
-      "SmiteshP/nvim-navic",
-    },
-    opts = {},
-  },
-
-  -- bufferline
   {
     "akinsho/bufferline.nvim",
     event = "VeryLazy",
@@ -70,12 +59,6 @@ return {
         right_mouse_command = function(n) Snacks.bufdelete(n) end,
         diagnostics = "nvim_lsp",
         always_show_bufferline = false,
-        -- diagnostics_indicator = function(_, _, diag)
-        --   local icons = LazyVim.config.icons.diagnostics
-        --   local ret = (diag.error and icons.Error .. diag.error .. " " or "")
-        --     .. (diag.warning and icons.Warn .. diag.warning or "")
-        --   return vim.trim(ret)
-        -- end,
         offsets = {
           {
             filetype = "NvimTree",
@@ -84,10 +67,6 @@ return {
             text_align = "left",
           },
         },
-        ---@param opts bufferline.IconFetcherOpts
-        -- get_element_icon = function(opts)
-        --   return LazyVim.config.icons.ft[opts.filetype]
-        -- end,
       },
     },
     config = function(_, opts)
@@ -109,76 +88,38 @@ return {
     init = function()
       vim.g.lualine_laststatus = vim.o.laststatus
       if vim.fn.argc(-1) > 0 then
-        -- set an empty statusline till lualine loads
         vim.o.statusline = " "
       else
-        -- hide the statusline on the starter page
         vim.o.laststatus = 0
       end
     end,
     opts = function()
-      -- PERF: we don't need this lualine require madness 🤷
+      local icons = require("config.icons")
+
       local lualine_require = require("lualine_require")
       lualine_require.require = require
 
-      local icons = require("config.icons")
+      vim.o.laststatus = vim.g.lualine_laststatus
 
-      return {
+      local opts = {
         options = {
+          theme = "auto",
           component_separators = "",
-          section_separators = { left = "", right = "" },
-          disabled_filetypes = {
-            "Lazy",
-            "Mason",
-            "NvimTree",
-            "help",
-            "man",
-            "dap-repl",
-            "dapui_scopes",
-            "dapui_breakpoints",
-            "dapui_stacks",
-            "dapui_watches",
-            "dapui_console",
-          },
-          ignore_focus = {
-            "Lazy",
-            "Mason",
-            "NvimTree",
-            "help",
-            "man",
-            "dap-repl",
-            "dapui_scopes",
-            "dapui_breakpoints",
-            "dapui_stacks",
-            "dapui_watches",
-            "dapui_console",
-          },
+          section_separators = "",
+          globalstatus = vim.o.laststatus == 3,
+          disabled_filetypes = { statusline = { "dashboard", "alpha", "ministarter", "snacks_dashboard" } },
         },
         sections = {
-          lualine_a = {
-            {
-              "mode",
-              padding = { left = 2, right = 2 },
-              separator = { left = "", right = icons.separators.rounded.right },
-              icon = "",
-              color = { gui = "italic" },
-            },
-          },
+          lualine_a = { "mode" },
           lualine_b = {
-            {
-              "branch",
-              icon = icons.git.branch,
-              -- color = { bg = bg, fg = colors.accent, gui = "italic" },
-              color = { gui = "italic" },
-              padding = { left = 1, right = 1 },
-              separator = { left = "", right = icons.separators.rounded.right },
-            },
+            "branch",
             {
               "diff",
-              symbols = { added = icons.git.added, modified = icons.git.modified, removed = icons.git.removed },
-              -- color = { bg = bg, gui = "italic" },
-              color = { gui = "italic" },
-              separator = { left = "", right = icons.separators.rounded.right },
+              symbols = {
+                added = icons.git.added,
+                modified = icons.git.added,
+                removed = icons.git.removed,
+              },
               source = function()
                 local gitsigns = vim.b.gitsigns_status_dict
                 if gitsigns then
@@ -192,57 +133,41 @@ return {
             },
           },
           lualine_c = {
-            { "filetype", icon_only = true, separator = "", padding = { left = 1, right = 0 } },
-            { "filename" },
-          },
-
-          lualine_x = {
             {
               "diagnostics",
-              sources = { "nvim_diagnostic" },
               symbols = {
-                error = icons.misc.rounded_square,
-                warn = icons.misc.rounded_square,
-                hint = icons.misc.rounded_square,
-                info = icons.misc.rounded_square,
+                error = icons.diagnostics.Error,
+                warn = icons.diagnostics.Warn,
+                info = icons.diagnostics.Info,
+                hint = icons.diagnostics.Hint,
               },
-              sections = { "error", "warn", "info", "hint" },
-              padding = { left = 2, right = 1 },
-              separator = { right = "", left = "" },
-              diagnostics_color = {
-                error = "DiagnosticSignError",
-                warn = "DiagnosticSignWarn",
-                info = "DiagnosticSignInfo",
-                hint = "DiagnosticSignHint",
-              },
-              -- colored = true, -- Displays diagnostics status in color if set to true.
-              update_in_insert = true, -- Update diagnostics in insert mode.
-              -- always_visible = false, -- Show diagnostics even if there are none.
+            },
+            { "filetype", icon_only = true, separator = "", padding = { left = 1, right = 0 } },
+            { "filename", path = 1 },
+          },
+          lualine_x = {
+            -- stylua: ignore
+            {
+              function() return "  " .. require("dap").status() end,
+              cond = function() return package.loaded["dap"] and require("dap").status() ~= "" end,
+              -- color = function() return { fg = Snacks.util.color("Debug") } end,
+            },
+            -- stylua: ignore
+            {
+              require("lazy.status").updates,
+              cond = require("lazy.status").has_updates,
+              -- color = function() return { fg = Snacks.util.color("Special") } end,
             },
           },
           lualine_y = {
-            {
-              function()
-                return vim.fn.fnamemodify(vim.fn.getcwd(), ":t") .. " "
-              end,
-              icon = "󰉖 ",
-              separator = { left = icons.separators.rounded.left },
-              padding = { left = 1, right = 1 },
-              -- color = { bg = colors.yellow, fg = colors.bg, gui = "italic" },
-              color = { gui = "italic" },
-            },
-          },
-          lualine_z = {
-            {
-              "progress",
-              -- separator = " ",
-              padding = { left = 1, right = 1 },
-              separator = { left = icons.separators.rounded.left },
-            },
-            { "location", padding = { left = 0, right = 1 } },
+            "searchcount",
+            "encoding",
+            "fileformat",
           },
         },
+        extensions = { "neo-tree", "lazy", "fzf" },
       }
+      return opts
     end,
   },
 

@@ -51,7 +51,6 @@ return {
         "vimdoc",
         "xml",
         "yaml",
-        "zig",
       },
       highlight = {
         enable = true,
@@ -98,9 +97,9 @@ return {
     end,
   },
 
-  -- {
-  --   "windwp/nvim-ts-autotag",
-  --   event = { "BufReadPost", "BufNewFile" },
-  --   opts = {},
-  -- },
+  {
+    "windwp/nvim-ts-autotag",
+    event = { "BufReadPost", "BufNewFile" },
+    opts = {},
+  },
 }

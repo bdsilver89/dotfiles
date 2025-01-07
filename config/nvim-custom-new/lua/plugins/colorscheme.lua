@@ -2,8 +2,10 @@ return {
   {
     "catppuccin/nvim",
     name = "catppuccin",
-    lazy = false,
     priority = 1000,
+    init = function()
+      vim.cmd.colorscheme("catppuccin")
+    end,
     opts = {
       integrations = {
         blink_cmp = true,
@@ -29,7 +31,6 @@ return {
         },
         neogit = true,
         neotest = true,
-        snacks = true,
         telescope = true,
         treesitter = true,
         which_key = true,
@@ -46,12 +47,5 @@ return {
         end,
       },
     },
-  },
-
-  {
-    "folke/tokyonight.nvim",
-    lazy = false,
-    priority = 1000,
-    opts = {},
   },
 }
