@@ -39,7 +39,7 @@ local function renamer()
   end)
 end
 
-function M.keymap_setup(_, buffer)
+function M.keymap_setup(client, buffer)
   -- stylua: ignore start
   if vim.g.picker == "fzf"  then
     map(buffer, "n", "gd", "<cmd>FzfLua lsp_definitions jump_to_single_result=true ignore_current_line=true<cr>", "defintion")
@@ -61,33 +61,25 @@ function M.keymap_setup(_, buffer)
   map(buffer, "i", "<c-k>", vim.lsp.buf.signature_help, "signature help")
   map(buffer, "n", "<leader>ca", vim.lsp.buf.code_action, "code actions")
   map(buffer, "n", "<leader>cr", renamer, "rename")
-  -- stylua: ignore end
-end
 
-function M.document_highlight_setup(client, buffer)
-  if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
-    local highlight_augroup = vim.api.nvim_create_augroup("config_lsphighlight", { clear = false })
-    vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
-      buffer = buffer,
-      group = highlight_augroup,
-      callback = vim.lsp.buf.document_highlight,
-    })
-
-    vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
-      buffer = buffer,
-      group = highlight_augroup,
-      callback = vim.lsp.buf.clear_references,
-    })
-
-    vim.api.nvim_create_autocmd("LspDetach", {
-      buffer = buffer,
-      group = highlight_augroup,
-      callback = function(event)
-        vim.lsp.buf.clear_references()
-        vim.api.nvim_clear_autocmds({ group = "config_lsphighlight", buffer = event.buf })
-      end,
-    })
+  if
+    client
+    and client.supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight)
+    and Snacks.words.is_enabled()
+  then
+    map(buffer, "n", "]]", function() Snacks.words.jump(vim.v.count1) end,"next refernece")
+    map(buffer, "n", "[[", function() Snacks.words.jump(-vim.v.count1) end,"prev refernece")
   end
+
+  if
+    vim.lsp.codelens
+    and client
+    and client.supports_method(vim.lsp.protocol.Methods.textDocument_codeLens)
+  then
+    map(buffer, { "n", "v" }, "<leader>cc", vim.lsp.codelens.run, "run codelens")
+    map(buffer, { "n", "v" }, "<leader>cC", vim.lsp.codelens.refresh, "refresh codelens")
+  end
+  -- stylua: ignore end
 end
 
 function M.inlay_hint_setup(client, buffer)
@@ -102,44 +94,6 @@ function M.inlay_hint_setup(client, buffer)
   end
 end
 
-function M.codelens_setup(client, buffer)
-  if vim.lsp.codelens and client and client.supports_method(vim.lsp.protocol.Methods.textDocument_codeLens) then
-    map(buffer, "n", "<leader>cc", vim.lsp.codelens.run, "run codelens")
-    map(buffer, "n", "<leader>cR", vim.lsp.codelens.refresh, "refresh codelens")
-  end
-end
-
--- function M.signature_help_setup(client, buffer)
---   if
---     client
---     and client.server_capabilities.signatureHelpProvider
---     and client.server_capabilities.signatureHelpProvider.triggerCharacters
---   then
---     local group = vim.api.nvim_create_augroup("config_lspsignature", { clear = false })
---     vim.api.nvim_clear_autocmds({ group = group, buffer = buffer })
---
---     local trigger_chars = client.server_capabilities.signatureHelpProvider.triggerCharacters
---
---     vim.api.nvim_create_autocmd("TextChangedI", {
---       group = group,
---       buffer = buffer,
---       callback = function()
---         local cur_line = vim.api.nvim_get_current_line()
---         local pos = vim.api.nvim_win_get_cursor(0)[2]
---         local prev_char = cur_line:sub(pos - 1, pos - 1)
---         local cur_char = cur_line:sub(pos, pos)
---
---         for _, char in ipairs(trigger_chars) do
---           if cur_char == char or prev_char == char then
---             vim.lsp.buf.signature_help()
---             break
---           end
---         end
---       end,
---     })
---   end
--- end
-
 function M.setup()
   vim.api.nvim_create_autocmd("LspAttach", {
     group = vim.api.nvim_create_augroup("config_lspattach", { clear = true }),
@@ -148,10 +102,7 @@ function M.setup()
       local buffer = event.buf
 
       M.keymap_setup(client, buffer)
-      M.document_highlight_setup(client, buffer)
       M.inlay_hint_setup(client, buffer)
-      M.codelens_setup(client, buffer)
-      -- M.signature_help_setup(client, buffer)
     end,
   })
 end

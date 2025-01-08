@@ -151,7 +151,12 @@ return {
             },
             {
               "diff",
-              symbols = { added = icons.git.added, modified = icons.git.modified, removed = icons.git.removed },
+              symbols = {
+                added = icons.misc.large_circle,
+                modified = icons.misc.large_circle,
+                removed = icons.misc.large_circle,
+              },
+              -- symbols = { added = icons.git.added, modified = icons.git.modified, removed = icons.git.removed },
               -- color = { bg = bg, gui = "italic" },
               color = { gui = "italic" },
               separator = { left = "", right = icons.separators.rounded.right },
@@ -177,10 +182,10 @@ return {
               "diagnostics",
               sources = { "nvim_diagnostic" },
               symbols = {
-                error = icons.misc.rounded_square,
-                warn = icons.misc.rounded_square,
-                hint = icons.misc.rounded_square,
-                info = icons.misc.rounded_square,
+                error = icons.misc.large_circle,
+                warn = icons.misc.large_circle,
+                hint = icons.misc.large_circle,
+                info = icons.misc.large_circle,
               },
               sections = { "error", "warn", "info", "hint" },
               padding = { left = 2, right = 1 },
