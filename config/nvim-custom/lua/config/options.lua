@@ -7,6 +7,10 @@ g.loaded_python3_prodiver = 0
 g.loaded_perl_prodiver = 0
 g.loaded_ruby_prodiver = 0
 
+-- disable netrw
+g.loaded_netrwPlugin = 1
+g.loaded_netrw = 1
+
 -- formatting setup
 g.autoformat = nil
 
