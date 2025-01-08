@@ -13,15 +13,6 @@ return {
     end,
   },
 
-  -- winbar
-  {
-    "utilyre/barbecue.nvim",
-    dependencies = {
-      "SmiteshP/nvim-navic",
-    },
-    opts = {},
-  },
-
   -- bufferline
   {
     "akinsho/bufferline.nvim",
@@ -99,8 +90,20 @@ return {
 
       local icons = require("config.icons")
 
+      local trouble = require("trouble")
+      local symbols = trouble.statusline({
+        mode = "lsp_document_symbols",
+        groups = {},
+        title = false,
+        filter = { range = true },
+        format = icons.misc.separator .. "  {kind_icon}{symbol.name:Normal}",
+        hl_group = "lualine_c_normal",
+      })
+
       return {
         options = {
+          theme = "auto",
+          globalstatus = vim.o.laststatus == 3,
           component_separators = "",
           section_separators = { left = "", right = "" },
           disabled_filetypes = {
@@ -115,6 +118,7 @@ return {
             "dapui_stacks",
             "dapui_watches",
             "dapui_console",
+            "snacks_dashboard",
           },
           ignore_focus = {
             "Lazy",
@@ -128,6 +132,7 @@ return {
             "dapui_stacks",
             "dapui_watches",
             "dapui_console",
+            "snacks_dashboard",
           },
         },
         sections = {
@@ -175,6 +180,10 @@ return {
           lualine_c = {
             { "filetype", icon_only = true, separator = "", padding = { left = 1, right = 0 } },
             { "filename" },
+            {
+              symbols.get,
+              cond = symbols.has,
+            },
           },
 
           lualine_x = {

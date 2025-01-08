@@ -3,6 +3,7 @@ local icons = {
     large_circle = " ",
     small_circle = "●",
     rounded_square = "󱓻 ",
+    separator = "",
   },
   spinners = { "", "󰪞", "󰪟", "󰪠", "󰪡", "󰪢", "󰪣", "󰪤", "󰪥", "" },
   dap = {
