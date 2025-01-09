@@ -1,3 +1,5 @@
+pcall(vim.loader.enable)
+
 -- leader key
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
