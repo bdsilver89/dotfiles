@@ -18,7 +18,7 @@ return {
       bigfile = { enabled = true },
       quickfile = { enabled = true },
       scope = { enabled = true },
-      indent = { enabled = true },
+      indent = { enabled = true, animate = { enabled = false } },
       statuscolumn = { enabled = true },
       words = { enabled = true },
       terminal = {
@@ -138,5 +138,77 @@ return {
         },
       },
     },
+    -- stylua: ignore
+    keys = function()
+      local keys = {
+        -- buf
+        { "<leader>bd", function() Snacks.bufdelete() end, desc = "Delete Buffer" },
+        { "<leader>bo", function() Snacks.bufdelete.other() end, desc = "Delete Other Buffers" },
+        { "<leader>bo", function() Snacks.bufdelete.other() end, desc = "Delete Other Buffers" },
+
+        -- git
+        { "<leader>gb", function() Snacks.git.blame_line() end, desc = "Git Blame Line" },
+        { "<leader>gB", function() Snacks.gitbrowse() end, desc = "Git Browse (open)" },
+      }
+
+      -- lazygit (if installed in env)
+      if vim.fn.executable("lazygit") == 1 then
+        vim.list_extend(keys, {
+          { "<leader>gg", function() Snacks.lazygit() end, desc = "Lazygit"},
+          { "<leader>gf", function() Snacks.lazygit.log_file() end, desc = "Lazygit Current File History" },
+          { "<leader>gl", function() Snacks.lazygit.log() end, desc = "Lazygit Log" },
+        })
+      end
+
+      return keys
+    end,
+    init = function()
+      vim.api.nvim_create_autocmd("User", {
+        pattern = "VeryLazy",
+        callback = function()
+          -- stylua: ignore start
+          Snacks.toggle.option("spell", { name = "Spelling" }):map("<leader>us")
+          Snacks.toggle.option("wrap", { name = "Wrap" }):map("<leader>uw")
+          Snacks.toggle.option("relativenumber", { name = "Relative Number" }):map("<leader>uL")
+          Snacks.toggle.diagnostics():map("<leader>ud")
+          Snacks.toggle.line_number():map("<leader>ul")
+          Snacks.toggle.treesitter():map("<leader>uT")
+          Snacks.toggle.option("background", { off = "light", on = "dark", name = "Dark Background" }):map("<leader>ub")
+          if vim.lsp.inlay_hint then
+            Snacks.toggle.inlay_hints():map("<leader>uh")
+          end
+
+          Snacks.toggle({
+            name = "Autoformat (Global)",
+            get = function()
+              return vim.g.autoformat == nil or vim.g.autoformat
+            end,
+            set = function(state)
+              vim.g.autoformat = state
+              vim.b.autoformat = nil
+            end,
+          }):map("<leader>uf")
+
+          Snacks.toggle({
+            name = "Autoformat (Buffer)",
+            get = function()
+              local buf = vim.api.nvim_get_current_buf()
+              local gaf = vim.g.autoformat
+              local baf = vim.b[buf].autoformat
+
+              if baf ~= nil then
+                return baf
+              end
+              return gaf == nil or gaf
+            end,
+            set = function(state)
+              vim.b.autoformat = state
+            end,
+          }):map("<leader>uF")
+
+          -- stylua: ignore end
+        end,
+      })
+    end,
   },
 }

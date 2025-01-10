@@ -1,9 +1,10 @@
 local icons = {
   misc = {
+    vim = " ",
     large_circle = " ",
     small_circle = "●",
     rounded_square = "󱓻 ",
-    separator = "",
+    folder = "󰉖 ",
   },
   spinners = { "", "󰪞", "󰪟", "󰪠", "󰪡", "󰪢", "󰪣", "󰪤", "󰪥", "" },
   dap = {
@@ -14,10 +15,10 @@ local icons = {
     LogPoint = ".>",
   },
   diagnostics = {
-    Error = " ",
-    Warn = " ",
-    Hint = " ",
-    Info = " ",
+    error = " ",
+    warn = " ",
+    hint = " ",
+    info = " ",
   },
   git = {
     branch = "",
@@ -27,17 +28,23 @@ local icons = {
   },
   separators = {
     rounded = {
-      left = "",
-      right = "",
+      left = "",
+      right = "",
+    },
+    rounded_outline = {
+      left = "",
+      right = "",
     },
   },
 }
 
 local text = {
   misc = {
+    vim = "",
     large_circle = "",
     small_circle = "",
     rounded_square = "",
+    folder = "",
   },
   spinners = { "", "", "", "", "", "", "", "", "", "" },
   dap = {
@@ -48,10 +55,10 @@ local text = {
     LogPoint = ".>",
   },
   diagnostics = {
-    Error = "E",
-    Warn = "W",
-    Hint = "H",
-    Info = "I",
+    error = "E",
+    warn = "W",
+    hint = "H",
+    info = "I",
   },
   git = {
     branch = "",
@@ -61,6 +68,10 @@ local text = {
   },
   separators = {
     rounded = {
+      left = "",
+      right = "",
+    },
+    rounded_outline = {
       left = "",
       right = "",
     },

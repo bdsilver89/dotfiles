@@ -13,62 +13,68 @@ return {
     end,
   },
 
-  -- bufferline
   {
-    "akinsho/bufferline.nvim",
-    event = "VeryLazy",
-    keys = {
-      { "<leader>bp", "<Cmd>BufferLineTogglePin<CR>", desc = "Toggle Pin" },
-      { "<leader>bP", "<Cmd>BufferLineGroupClose ungrouped<CR>", desc = "Delete Non-Pinned Buffers" },
-      { "<leader>br", "<Cmd>BufferLineCloseRight<CR>", desc = "Delete Buffers to the Right" },
-      { "<leader>bl", "<Cmd>BufferLineCloseLeft<CR>", desc = "Delete Buffers to the Left" },
-      { "<S-h>", "<cmd>BufferLineCyclePrev<cr>", desc = "Prev Buffer" },
-      { "<S-l>", "<cmd>BufferLineCycleNext<cr>", desc = "Next Buffer" },
-      { "[b", "<cmd>BufferLineCyclePrev<cr>", desc = "Prev Buffer" },
-      { "]b", "<cmd>BufferLineCycleNext<cr>", desc = "Next Buffer" },
-      { "[B", "<cmd>BufferLineMovePrev<cr>", desc = "Move buffer prev" },
-      { "]B", "<cmd>BufferLineMoveNext<cr>", desc = "Move buffer next" },
-    },
-    opts = {
-      options = {
-        -- stylua: ignore
-        close_command = function(n) Snacks.bufdelete(n) end,
-        -- stylua: ignore
-        right_mouse_command = function(n) Snacks.bufdelete(n) end,
-        diagnostics = "nvim_lsp",
-        always_show_bufferline = false,
-        -- diagnostics_indicator = function(_, _, diag)
-        --   local icons = LazyVim.config.icons.diagnostics
-        --   local ret = (diag.error and icons.Error .. diag.error .. " " or "")
-        --     .. (diag.warning and icons.Warn .. diag.warning or "")
-        --   return vim.trim(ret)
-        -- end,
-        offsets = {
-          {
-            filetype = "NvimTree",
-            text = "NvimTree",
-            highlight = "Directory",
-            text_align = "left",
-          },
-        },
-        ---@param opts bufferline.IconFetcherOpts
-        -- get_element_icon = function(opts)
-        --   return LazyVim.config.icons.ft[opts.filetype]
-        -- end,
-      },
-    },
-    config = function(_, opts)
-      require("bufferline").setup(opts)
-      -- Fix bufferline when restoring a session
-      vim.api.nvim_create_autocmd({ "BufAdd", "BufDelete" }, {
-        callback = function()
-          vim.schedule(function()
-            pcall(nvim_bufferline)
-          end)
-        end,
-      })
-    end,
+    "Bekaboo/dropbar.nvim",
+    event = { "BufReadPost", "BufNewFile" },
+    opts = {},
   },
+
+  -- bufferline
+  -- {
+  --   "akinsho/bufferline.nvim",
+  --   event = "VeryLazy",
+  --   keys = {
+  --     { "<leader>bp", "<Cmd>BufferLineTogglePin<CR>", desc = "Toggle Pin" },
+  --     { "<leader>bP", "<Cmd>BufferLineGroupClose ungrouped<CR>", desc = "Delete Non-Pinned Buffers" },
+  --     { "<leader>br", "<Cmd>BufferLineCloseRight<CR>", desc = "Delete Buffers to the Right" },
+  --     { "<leader>bl", "<Cmd>BufferLineCloseLeft<CR>", desc = "Delete Buffers to the Left" },
+  --     { "<S-h>", "<cmd>BufferLineCyclePrev<cr>", desc = "Prev Buffer" },
+  --     { "<S-l>", "<cmd>BufferLineCycleNext<cr>", desc = "Next Buffer" },
+  --     { "[b", "<cmd>BufferLineCyclePrev<cr>", desc = "Prev Buffer" },
+  --     { "]b", "<cmd>BufferLineCycleNext<cr>", desc = "Next Buffer" },
+  --     { "[B", "<cmd>BufferLineMovePrev<cr>", desc = "Move buffer prev" },
+  --     { "]B", "<cmd>BufferLineMoveNext<cr>", desc = "Move buffer next" },
+  --   },
+  --   opts = {
+  --     options = {
+  --       -- stylua: ignore
+  --       close_command = function(n) Snacks.bufdelete(n) end,
+  --       -- stylua: ignore
+  --       right_mouse_command = function(n) Snacks.bufdelete(n) end,
+  --       diagnostics = "nvim_lsp",
+  --       always_show_bufferline = false,
+  --       -- diagnostics_indicator = function(_, _, diag)
+  --       --   local icons = LazyVim.config.icons.diagnostics
+  --       --   local ret = (diag.error and icons.Error .. diag.error .. " " or "")
+  --       --     .. (diag.warning and icons.Warn .. diag.warning or "")
+  --       --   return vim.trim(ret)
+  --       -- end,
+  --       offsets = {
+  --         {
+  --           filetype = "NvimTree",
+  --           text = "NvimTree",
+  --           highlight = "Directory",
+  --           text_align = "left",
+  --         },
+  --       },
+  --       ---@param opts bufferline.IconFetcherOpts
+  --       -- get_element_icon = function(opts)
+  --       --   return LazyVim.config.icons.ft[opts.filetype]
+  --       -- end,
+  --     },
+  --   },
+  --   config = function(_, opts)
+  --     require("bufferline").setup(opts)
+  --     -- Fix bufferline when restoring a session
+  --     vim.api.nvim_create_autocmd({ "BufAdd", "BufDelete" }, {
+  --       callback = function()
+  --         vim.schedule(function()
+  --           pcall(nvim_bufferline)
+  --         end)
+  --       end,
+  --     })
+  --   end,
+  -- },
 
   {
     "nvim-lualine/lualine.nvim",
@@ -90,22 +96,12 @@ return {
 
       local icons = require("config.icons")
 
-      local trouble = require("trouble")
-      local symbols = trouble.statusline({
-        mode = "lsp_document_symbols",
-        groups = {},
-        title = false,
-        filter = { range = true },
-        format = icons.misc.separator .. "  {kind_icon}{symbol.name:Normal}",
-        hl_group = "lualine_c_normal",
-      })
-
       return {
         options = {
           theme = "auto",
           globalstatus = vim.o.laststatus == 3,
-          component_separators = "",
-          section_separators = { left = "", right = "" },
+          section_separators = icons.separators.rounded,
+          component_separators = icons.separators.rounded_outline,
           disabled_filetypes = {
             "Lazy",
             "Mason",
@@ -141,9 +137,8 @@ return {
           lualine_a = {
             {
               "mode",
-              padding = { left = 2, right = 2 },
-              separator = { left = "", right = icons.separators.rounded.right },
-              icon = "",
+              padding = { left = 1, right = 1 },
+              icon = icons.misc.vim,
               color = { gui = "italic" },
             },
           },
@@ -151,22 +146,14 @@ return {
             {
               "branch",
               icon = icons.git.branch,
-              -- color = { bg = bg, fg = colors.accent, gui = "italic" },
               color = { gui = "italic" },
               padding = { left = 1, right = 1 },
-              separator = { left = "", right = icons.separators.rounded.right },
+              separator = "",
             },
             {
               "diff",
-              symbols = {
-                added = icons.misc.large_circle,
-                modified = icons.misc.large_circle,
-                removed = icons.misc.large_circle,
-              },
-              -- symbols = { added = icons.git.added, modified = icons.git.modified, removed = icons.git.removed },
-              -- color = { bg = bg, gui = "italic" },
+              symbols = icons.git,
               color = { gui = "italic" },
-              separator = { left = "", right = icons.separators.rounded.right },
               source = function()
                 local gitsigns = vim.b.gitsigns_status_dict
                 if gitsigns then
@@ -181,55 +168,36 @@ return {
           },
           lualine_c = {
             { "filetype", icon_only = true, separator = "", padding = { left = 1, right = 0 } },
-            { "filename" },
-            {
-              symbols.get,
-              cond = symbols.has,
-            },
-          },
-
-          lualine_x = {
+            { "filename", separator = "" },
             {
               "diagnostics",
               sources = { "nvim_diagnostic" },
-              symbols = {
-                error = icons.misc.large_circle,
-                warn = icons.misc.large_circle,
-                hint = icons.misc.large_circle,
-                info = icons.misc.large_circle,
-              },
+              -- symbols = icons.diagnostics,
               sections = { "error", "warn", "info", "hint" },
               padding = { left = 2, right = 1 },
-              separator = { right = "", left = "" },
-              diagnostics_color = {
-                error = "DiagnosticSignError",
-                warn = "DiagnosticSignWarn",
-                info = "DiagnosticSignInfo",
-                hint = "DiagnosticSignHint",
-              },
-              -- colored = true, -- Displays diagnostics status in color if set to true.
+              separator = "",
               update_in_insert = true, -- Update diagnostics in insert mode.
-              -- always_visible = false, -- Show diagnostics even if there are none.
             },
+          },
+          lualine_x = {
+            { "encoding", separator = "" },
+            { "fileformat", separator = "", symbols = { unix = "unix", dos = "dos", mac = "mac" } },
           },
           lualine_y = {
             {
               function()
                 return vim.fn.fnamemodify(vim.fn.getcwd(), ":t") .. " "
               end,
-              icon = "󰉖 ",
-              separator = { left = icons.separators.rounded.left },
+              icon = icons.misc.folder,
               padding = { left = 1, right = 1 },
-              -- color = { bg = colors.yellow, fg = colors.bg, gui = "italic" },
               color = { gui = "italic" },
             },
           },
           lualine_z = {
             {
               "progress",
-              -- separator = " ",
               padding = { left = 1, right = 1 },
-              separator = { left = icons.separators.rounded.left },
+              separator = "",
             },
             { "location", padding = { left = 0, right = 1 } },
           },
