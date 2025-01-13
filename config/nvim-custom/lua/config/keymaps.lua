@@ -35,10 +35,10 @@ map("n", "<leader>`", "<cmd>e #<cr>", { desc = "Switch to other buffer" })
 map("n", "<leader>bD", "<cmd>:bd<cr>", { desc = "Delete Buffer and Window" })
 
 -- move windows
--- map("n", "<c-h>", "<c-w><c-h>", { desc = "Move focus to left window" })
--- map("n", "<c-j>", "<c-w><c-j>", { desc = "Move focus to right window" })
--- map("n", "<c-k>", "<c-w><c-k>", { desc = "Move focus to lower window" })
--- map("n", "<c-l>", "<c-w><c-l>", { desc = "Move focus to upper window" })
+map("n", "<c-h>", "<c-w><c-h>", { desc = "Move focus to left window" })
+map("n", "<c-j>", "<c-w><c-j>", { desc = "Move focus to right window" })
+map("n", "<c-k>", "<c-w><c-k>", { desc = "Move focus to lower window" })
+map("n", "<c-l>", "<c-w><c-l>", { desc = "Move focus to upper window" })
 
 -- windows
 map("n", "<leader>ww", "<c-w>p", { desc = "Other window", remap = true })

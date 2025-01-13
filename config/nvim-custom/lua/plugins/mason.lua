@@ -13,7 +13,7 @@ return {
         "neocmakelsp",
 
         -- clangd
-        -- "codelldb",
+        "codelldb",
 
         -- json
         "json-lsp",
@@ -24,6 +24,9 @@ return {
 
         -- python
         "ruff",
+
+        -- typescript
+        "vtsls",
 
         -- zig
         "zls",
