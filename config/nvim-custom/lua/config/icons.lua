@@ -12,7 +12,7 @@ local icons = {
     Breakpoint = " ",
     BreakpointCondition = " ",
     BreakpointRejected = { " ", "DiagnosticError" },
-    LogPoint = ".>",
+    LogPoint = "◆",
   },
   diagnostics = {
     error = " ",

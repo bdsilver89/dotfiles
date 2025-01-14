@@ -24,7 +24,6 @@ return {
   -- tmux navigation
   {
     "christoomey/vim-tmux-navigator",
-    enabled = false,
     cmd = {
       "TmuxNavigateLeft",
       "TmuxNavigateDown",
@@ -43,17 +42,17 @@ return {
   },
 
   -- tmux + wezterm + nvim navigation
-  {
-    "numToStr/Navigator.nvim",
-    opts = {},
-    keys = {
-      { "<c-h>", "<cmd>NavigatorLeft<cr>" },
-      { "<c-j>", "<cmd>NavigatorDown<cr>" },
-      { "<c-k>", "<cmd>NavigatorUp<cr>" },
-      { "<c-l>", "<cmd>NavigatorRight<cr>" },
-      { "<c-\\>", "<cmd>NavigatorPrevious<cr>" },
-    },
-  },
+  -- {
+  --   "numToStr/Navigator.nvim",
+  --   opts = {},
+  --   keys = {
+  --     { "<c-h>", "<cmd>NavigatorLeft<cr>" },
+  --     { "<c-j>", "<cmd>NavigatorDown<cr>" },
+  --     { "<c-k>", "<cmd>NavigatorUp<cr>" },
+  --     { "<c-l>", "<cmd>NavigatorRight<cr>" },
+  --     { "<c-\\>", "<cmd>NavigatorPrevious<cr>" },
+  --   },
+  -- },
 
   {
     "folke/trouble.nvim",
