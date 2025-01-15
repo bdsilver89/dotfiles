@@ -1,3 +1,7 @@
+if vim.fn.executable("zig") == 0 then
+  return {}
+end
+
 return {
   {
     "nvim-treesitter/nvim-treesitter",
