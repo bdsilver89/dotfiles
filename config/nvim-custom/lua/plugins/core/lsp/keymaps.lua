@@ -57,6 +57,7 @@ function M.resolve(buffer)
   local clients = vim.lsp.get_clients({ bufnr = buffer })
   for _, client in ipairs(clients) do
     local maps = opts.servers[client.name] and opts.servers[client.name].keys or {}
+    vim.list_extend(spec, maps)
   end
   return Keys.resolve(spec)
 end
