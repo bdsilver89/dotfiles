@@ -8,35 +8,11 @@ return {
       "MasonToolsUpdateSync",
       "MasonToolsClean",
     },
+    opts_extend = { "ensure_installed" },
     opts = {
       ensure_installed = {
-        -- bash
-        "bash-language-server",
-        -- "shfmt",
-
-        -- cmake
-        -- "cmakelang",
-        -- "cmakelint",
-        "neocmakelsp",
-
-        -- clangd
-        "codelldb",
-
-        -- json
-        "json-lsp",
-
-        -- lua
         "lua-language-server",
         "stylua",
-
-        -- python
-        "ruff",
-
-        -- typescript
-        "vtsls",
-
-        -- zig
-        "zls",
       },
     },
   },

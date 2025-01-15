@@ -51,6 +51,12 @@ function M.keymap_setup(client, buffer)
     map(buffer, "n", "gr", function() require("telescope.builtin").lsp_references({ reuse_win = true }) end, "references")
     map(buffer, "n", "gI", function() require("telescope.builtin").lsp_implementations({ reuse_win = true }) end, "implementations")
     map(buffer, "n", "gy", function() require("telescope.builtin").lsp_type_implementations({ reuse_win = true }) end, "type implementations")
+  elseif vim.g.picker == "snacks" then
+    map(buffer, "n", "gd", function() Snacks.picker.lsp_definitions() end, "defintion")
+    map(buffer, "n", "gr", function() Snacks.picker.lsp_references() end, "references")
+    map(buffer, "n", "gI", function() Snacks.picker.lsp_implementations() end, "implementations")
+    map(buffer, "n", "gy", function() Snckas.picker.lsp_type_definitions() end, "type implementations")
+    map(buffer, "n", "<leader>ss", function() Snacks.picker.lsp_symbols() end, "symbols")
   else
     map(buffer, "n", "gd", vim.lsp.buf.definition, "defintion")
     map(buffer, "n", "gr", vim.lsp.buf.references, "references")

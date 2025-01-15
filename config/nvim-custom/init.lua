@@ -8,7 +8,7 @@ vim.g.maplocalleader = " "
 vim.g.has_nerd_font = true
 
 -- file picker
-vim.g.picker = vim.fn.executable("fzf") == 1 and "fzf" or "telescope"
+vim.g.picker = "snacks"
 
 -- completion engine
 vim.g.completion_engine = vim.fn.executable("cargo") == 1 and "blink.cmp" or "nvim-cmp"

@@ -3,7 +3,7 @@ return {
   event = "BufWritePre",
   cmd = "ConformInfo",
   dependencies = {
-    "mason.nvim",
+    "mason-tool-installer.nvim",
   },
   keys = {
     {

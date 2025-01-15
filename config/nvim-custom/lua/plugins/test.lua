@@ -18,9 +18,7 @@ return {
       { "<leader>tw", function() require("neotest").watch.toggle(vim.fn.expand("%")) end, desc = "Toggle Watch (Neotest)" },
     },
     opts = {
-      adapters = {
-        ["rustaceanvim.neotest"] = {},
-      },
+      adapters = {},
       status = { virtual_text = true },
       output = { open_on_run = true },
       quickfix = {
