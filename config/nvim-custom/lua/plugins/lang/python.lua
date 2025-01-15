@@ -7,10 +7,19 @@ return {
   },
 
   {
-    "WhoIsSethDaniel/mason-tool-installer.nvim",
+    "williamboman/mason.nvim",
     opts = {
       ensure_installed = {
         "ruff",
+      },
+    },
+  },
+
+  {
+    "neovim/nvim-lspconfig",
+    opts = {
+      servers = {
+        ruff = {},
       },
     },
   },

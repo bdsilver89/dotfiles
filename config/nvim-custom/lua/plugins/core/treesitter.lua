@@ -1,7 +1,7 @@
 return {
   {
     "nvim-treesitter/nvim-treesitter",
-    event = { "BufReadPost", "BufNewFile" },
+    event = "LazyFile",
     build = ":TSUpdate",
     cmd = { "TSUpdateSync", "TSUpdate", "TSInstall" },
     keys = {
@@ -20,21 +20,14 @@ return {
       ensure_installed = {
         "c",
         "diff",
-        "dockerfile",
-        "go",
         "http",
         "ini",
         "lua",
         "luadoc",
         "luap",
-        "markdown",
-        "markdown_inline",
         "printf",
-        "python",
         "query",
         "regex",
-        "rst",
-        "toml",
         "vim",
         "vimdoc",
         "xml",

@@ -7,8 +7,8 @@ return {
     import = "plugins.picker.fzf",
     enabled = vim.g.picker == "fzf",
   },
-  -- {
-  --   import = "plugins.picker.snacks",
-  --   enabled = vim.g.picker == "snacks",
-  -- },
+  {
+    import = "plugins.core.picker.snacks",
+    enabled = vim.g.picker == "snacks",
+  },
 }

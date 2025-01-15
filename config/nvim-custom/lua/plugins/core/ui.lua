@@ -1,0 +1,228 @@
+return {
+  {
+    "echasnovski/mini.icons",
+    lazy = true,
+    opts = {
+      style = vim.g.has_nerd_font and "glyph" or "ascii",
+    },
+    init = function()
+      package.preload["nvim-web-devicons"] = function()
+        require("mini.icons").mock_nvim_web_devicons()
+        return package.loaded["nvim-web-devicons"]
+      end
+    end,
+  },
+
+  {
+    "Bekaboo/dropbar.nvim",
+    event = "LazyFile",
+    opts = {},
+  },
+
+  {
+    "snacks.nvim",
+    opts = {
+      statuscolumn = { enabled = true },
+      indent = { enabled = true },
+      scope = { enabled = true },
+      words = { enabled = true },
+    },
+  },
+
+  -- bufferline
+  {
+    "akinsho/bufferline.nvim",
+    event = "VeryLazy",
+    keys = {
+      { "<leader>bp", "<Cmd>BufferLineTogglePin<CR>", desc = "Toggle Pin" },
+      { "<leader>bP", "<Cmd>BufferLineGroupClose ungrouped<CR>", desc = "Delete Non-Pinned Buffers" },
+      { "<leader>br", "<Cmd>BufferLineCloseRight<CR>", desc = "Delete Buffers to the Right" },
+      { "<leader>bl", "<Cmd>BufferLineCloseLeft<CR>", desc = "Delete Buffers to the Left" },
+      { "<S-h>", "<cmd>BufferLineCyclePrev<cr>", desc = "Prev Buffer" },
+      { "<S-l>", "<cmd>BufferLineCycleNext<cr>", desc = "Next Buffer" },
+      { "[b", "<cmd>BufferLineCyclePrev<cr>", desc = "Prev Buffer" },
+      { "]b", "<cmd>BufferLineCycleNext<cr>", desc = "Next Buffer" },
+      { "[B", "<cmd>BufferLineMovePrev<cr>", desc = "Move buffer prev" },
+      { "]B", "<cmd>BufferLineMoveNext<cr>", desc = "Move buffer next" },
+    },
+    opts = {
+      options = {
+        close_command = function(n)
+          if Snacks then
+            Snacks.bufdelete(n)
+          else
+            vim.cmd("bdelete! " .. n)
+          end
+        end,
+        right_mouse_command = function(n)
+          if Snacks then
+            Snacks.bufdelete(n)
+          else
+            vim.cmd("bdelete! " .. n)
+          end
+        end,
+        diagnostics = "nvim_lsp",
+        always_show_bufferline = false,
+        -- diagnostics_indicator = function(_, _, diag)
+        --   local icons = LazyVim.config.icons.diagnostics
+        --   local ret = (diag.error and icons.Error .. diag.error .. " " or "")
+        --     .. (diag.warning and icons.Warn .. diag.warning or "")
+        --   return vim.trim(ret)
+        -- end,
+        offsets = {
+          {
+            filetype = "NvimTree",
+            text = "NvimTree",
+            highlight = "Directory",
+            text_align = "left",
+          },
+        },
+        ---@param opts bufferline.IconFetcherOpts
+        -- get_element_icon = function(opts)
+        --   return LazyVim.config.icons.ft[opts.filetype]
+        -- end,
+      },
+    },
+    config = function(_, opts)
+      require("bufferline").setup(opts)
+      -- Fix bufferline when restoring a session
+      vim.api.nvim_create_autocmd({ "BufAdd", "BufDelete" }, {
+        callback = function()
+          vim.schedule(function()
+            pcall(nvim_bufferline)
+          end)
+        end,
+      })
+    end,
+  },
+
+  {
+    "nvim-lualine/lualine.nvim",
+    event = "VeryLazy",
+    init = function()
+      vim.g.lualine_laststatus = vim.o.laststatus
+      if vim.fn.argc(-1) > 0 then
+        -- set an empty statusline till lualine loads
+        vim.o.statusline = " "
+      else
+        -- hide the statusline on the starter page
+        vim.o.laststatus = 0
+      end
+    end,
+    opts = function()
+      -- PERF: we don't need this lualine require madness 🤷
+      local lualine_require = require("lualine_require")
+      lualine_require.require = require
+
+      local icons = require("config.icons")
+
+      return {
+        options = {
+          theme = "auto",
+          globalstatus = vim.o.laststatus == 3,
+          section_separators = icons.separators.rounded,
+          component_separators = icons.separators.rounded_outline,
+          disabled_filetypes = {
+            "Lazy",
+            "Mason",
+            "NvimTree",
+            "help",
+            "man",
+            "oil",
+            "dap-repl",
+            "dapui_scopes",
+            "dapui_breakpoints",
+            "dapui_stacks",
+            "dapui_watches",
+            "dapui_console",
+            "snacks_dashboard",
+          },
+          ignore_focus = {
+            "Lazy",
+            "Mason",
+            "NvimTree",
+            "help",
+            "man",
+            "oil",
+            "dap-repl",
+            "dapui_scopes",
+            "dapui_breakpoints",
+            "dapui_stacks",
+            "dapui_watches",
+            "dapui_console",
+            "snacks_dashboard",
+          },
+        },
+        sections = {
+          lualine_a = {
+            {
+              "mode",
+              padding = { left = 1, right = 1 },
+              icon = icons.misc.vim,
+              color = { gui = "italic" },
+            },
+          },
+          lualine_b = {
+            {
+              "branch",
+              icon = icons.git.branch,
+              color = { gui = "italic" },
+              padding = { left = 1, right = 1 },
+              separator = "",
+            },
+            {
+              "diff",
+              symbols = icons.git,
+              color = { gui = "italic" },
+              source = function()
+                local gitsigns = vim.b.gitsigns_status_dict
+                if gitsigns then
+                  return {
+                    added = gitsigns.added,
+                    modified = gitsigns.changed,
+                    removed = gitsigns.removed,
+                  }
+                end
+              end,
+            },
+          },
+          lualine_c = {
+            { "filetype", icon_only = true, separator = "", padding = { left = 1, right = 0 } },
+            { "filename", separator = "" },
+            {
+              "diagnostics",
+              sources = { "nvim_diagnostic" },
+              -- symbols = icons.diagnostics,
+              sections = { "error", "warn", "info", "hint" },
+              padding = { left = 2, right = 1 },
+              separator = "",
+              update_in_insert = true, -- Update diagnostics in insert mode.
+            },
+          },
+          lualine_x = {
+            { "encoding", separator = "" },
+            { "fileformat", separator = "", symbols = { unix = "unix", dos = "dos", mac = "mac" } },
+          },
+          lualine_y = {
+            {
+              function()
+                return vim.fn.fnamemodify(vim.fn.getcwd(), ":t") .. " "
+              end,
+              icon = icons.misc.folder,
+              padding = { left = 1, right = 1 },
+              color = { gui = "italic" },
+            },
+          },
+          lualine_z = {
+            {
+              "progress",
+              padding = { left = 1, right = 1 },
+              separator = "",
+            },
+            { "location", padding = { left = 0, right = 1 } },
+          },
+        },
+      }
+    end,
+  },
+}

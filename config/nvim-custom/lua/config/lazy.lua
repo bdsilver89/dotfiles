@@ -15,10 +15,15 @@ if not vim.uv.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+-- add 'LazyFile' event
+local Event = require("lazy.core.handler.event")
+Event.mappings.LazyFile = { id = "LazyFile", event = { "BufReadPost", "BufNewFile", "BufWritePre" } }
+Event.mappings["User LazyFile"] = Event.mappings.LazyFile
+
 -- lazy setup
 require("lazy").setup({
   spec = {
-    { import = "plugins" },
+    { import = "plugins.core" },
     { import = "plugins.lang" },
   },
   defaults = {
@@ -29,6 +34,7 @@ require("lazy").setup({
     enabled = true,
     notify = false,
   },
+  install = { colorscheme = { "catppuccin" } },
   performance = {
     rtp = {
       disabled_plugins = {

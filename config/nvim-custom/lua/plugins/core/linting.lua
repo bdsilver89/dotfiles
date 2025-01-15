@@ -1,16 +1,29 @@
 return {
   {
     "mfussenegger/nvim-lint",
-    event = { "BufReadPre", "BufNewFile" },
+    event = "LazyFile",
     opts = {
       events = { "BufWritePost", "BufReadPost", "InsertLeave" },
       linters_by_ft = {},
+      linters = {},
     },
     config = function(_, opts)
+      local M = {}
       local lint = require("lint")
+
+      for name, linter in pairs(opts.linters) do
+        if type(linter) == "table" and type(lint.linters[name]) == "table" then
+          lint.linters[name] = vim.tbl_deep_extend("force", lint.linters[name], linter)
+          if type(linter.prepend_args) == "table" then
+            lint.linters[name].args = lint.linters[name].args or {}
+            vim.list_extend(lint.linters[name].args, lint.prepend_args)
+          end
+        else
+          lint.linters[name] = linter
+        end
+      end
       lint.linters_by_ft = opts.linters_by_ft
 
-      local M = {}
       function M.debounce(ms, fn)
         local timer = vim.uv.new_timer()
         return function(...)
@@ -24,8 +37,8 @@ return {
 
       function M.lint()
         local names = lint._resolve_linter_by_ft(vim.bo.filetype)
-
         names = vim.list_extend({}, names)
+
         if #names == 0 then
           vim.list_extend(names, lint.linters_by_ft["_"] or {})
         end

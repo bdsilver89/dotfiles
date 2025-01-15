@@ -1,10 +1,10 @@
 return {
   {
-    import = "plugins.completion.blink",
+    import = "plugins.core.completion.blink",
     enabled = vim.g.completion_engine == "blink.cmp",
   },
   {
-    import = "plugins.completion.nvim-cmp",
+    import = "plugins.core.completion.nvim-cmp",
     enabled = vim.g.completion_engine == "nvim-cmp",
   },
 
@@ -76,7 +76,7 @@ return {
   -- autotags
   {
     "windwp/nvim-ts-autotag",
-    event = { "BufReadPost", "BufNewFile" },
+    event = "LazyFile",
     opts = {},
   },
 }

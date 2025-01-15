@@ -1,3 +1,7 @@
+if vim.fn.executable("cmake") ~= 1 then
+  return {}
+end
+
 return {
   {
     "nvim-treesitter/nvim-treesitter",
@@ -7,12 +11,31 @@ return {
   },
 
   {
-    "WhoIsSethDaniel/mason-tool-installer.nvim",
+    "williamboman/mason.nvim",
     opts = {
       ensure_installed = {
-        -- "cmakelang",
-        -- "cmakelint",
+        "cmakelang",
+        "cmakelint",
         "neocmakelsp",
+      },
+    },
+  },
+
+  {
+    "neovim/nvim-lspconfig",
+    opts = {
+      servers = {
+        neocmake = {},
+      },
+    },
+  },
+
+  {
+    "mfussenegger/nvim-lint",
+    optional = true,
+    opts = {
+      linters_by_ft = {
+        cmake = { "cmakelint" },
       },
     },
   },

@@ -1,3 +1,7 @@
+if vim.fn.executable("go") == 0 then
+  return {}
+end
+
 return {
   {
     "nvim-treesitter/nvim-treesitter",
@@ -12,7 +16,7 @@ return {
   },
 
   {
-    "WhoIsSethDaniel/mason-tool-installer.nvim",
+    "williamboman/mason.nvim",
     opts = {
       ensure_installed = {
         "goimports",

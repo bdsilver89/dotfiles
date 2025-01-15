@@ -11,7 +11,8 @@ vim.g.has_nerd_font = true
 vim.g.picker = "snacks"
 
 -- completion engine
-vim.g.completion_engine = vim.fn.executable("cargo") == 1 and "blink.cmp" or "nvim-cmp"
+-- vim.g.completion_engine = vim.fn.executable("cargo") == 1 and "blink.cmp" or "nvim-cmp"
+vim.g.completion_engine = "nvim-cmp"
 
 -- colorscheme
 vim.g.colorscheme_dark = "catppuccin-mocha"
