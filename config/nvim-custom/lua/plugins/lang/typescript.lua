@@ -106,7 +106,7 @@ return {
           executable = {
             command = "node",
             args = {
-              require("config.util").get_pkg_path("js-debug-adapter", "/js-debug/src/dapDebugServer.js"),
+              require("config.util").get_package_path("js-debug-adapter", "/js-debug/src/dapDebugServer.js"),
               "${port}",
             },
           },

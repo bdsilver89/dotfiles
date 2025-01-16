@@ -22,10 +22,18 @@ return {
   {
     "snacks.nvim",
     opts = {
-      statuscolumn = { enabled = true },
       indent = { enabled = true },
+      input = { enabled = true },
+      dashboard = {},
+      notifier = { enabled = true },
       scope = { enabled = true },
+      statuscolumn = { enabled = true },
       words = { enabled = true },
+    },
+    -- stylua: ignore
+    keys = {
+      { "<leader>n", function() Snacks.notifier.show_history() end, desc = "Notification History" },
+      { "<leader>un", function() Snacks.notifier.hide() end, desc = "Dismiss All Notifications" },
     },
   },
 

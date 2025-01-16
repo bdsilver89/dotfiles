@@ -12,6 +12,7 @@ return {
       ensure_installed = {
         "ruff",
         "black",
+        "debugpy",
       },
     },
   },
@@ -62,9 +63,9 @@ return {
         config = function()
           local util = require("config.util")
           if vim.fn.has("win32") == 1 then
-            require("dap-python").setup(util.get_pkg_path("debugpy", "/venv/Scripts/pythonw.exe"))
+            require("dap-python").setup(util.get_package_path("debugpy", "/venv/Scripts/pythonw.exe"))
           else
-            require("dap-python").setup(util.get_pkg_path("debugpy", "/venv/bin/python"))
+            require("dap-python").setup(util.get_package_path("debugpy", "/venv/bin/python"))
           end
         end,
       },
