@@ -13,6 +13,7 @@ g.loaded_netrw = 1
 
 -- formatting setup
 g.autoformat = nil
+opt.formatexpr = "v:lua.require'config.format'.formatexpr()"
 
 -- clipboard settings
 opt.clipboard = "unnamed,unnamedplus"

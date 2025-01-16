@@ -107,4 +107,14 @@ return {
       })
     end,
   },
+
+  {
+    "folke/todo-comments.nvim",
+    optional = true,
+    -- stylua: ignore
+    keys = {
+      { "<leader>st", "<cmd>TodoTelescope<cr>", desc = "Todo" },
+      { "<leader>sT", "<cmd>TodoTelescope keywords=TODO,FIX,FIXME<cr>", desc = "Todo/Fix/Fixme" },
+    },
+  },
 }

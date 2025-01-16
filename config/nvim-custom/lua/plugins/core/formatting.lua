@@ -4,17 +4,29 @@ return {
     dependencies = {
       "mason.nvim",
     },
-    event = "BufWritePre",
+    lazy = true,
     cmd = "ConformInfo",
-    keys = {
-      {
-        "<leader>cf",
-        function()
-          require("conform").format()
+    init = function()
+      vim.api.nvim_create_autocmd("User", {
+        pattern = "VeryLazy",
+        callback = function()
+          require("config.util.format").register({
+            name = "conform.nvim",
+            priority = 100,
+            primary = true,
+            format = function(buf)
+              require("conform").format({ bufnr = buf })
+            end,
+            sources = function(buf)
+              local ret = require("conform").list_formatters(buf)
+              return vim.tbl_map(function(v)
+                return v.name
+              end, ret)
+            end,
+          })
         end,
-        desc = "Format buffer",
-      },
-    },
+      })
+    end,
     opts = {
       default_format_options = {
         timeout_ms = 3000,
@@ -24,18 +36,6 @@ return {
       },
       formatters = {},
       formatters_by_ft = {},
-      format_on_save = function(bufnr)
-        if vim.g.autoformat == nil then
-          vim.g.autoformat = true
-        end
-        local autoformat = vim.b[bufnr].autoformat
-        if autoformat == nil then
-          autoformat = vim.g.autoformat
-        end
-        if autoformat then
-          return { timeout_ms = 500, lsp_fallback = true }
-        end
-      end,
     },
   },
 }

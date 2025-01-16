@@ -31,6 +31,8 @@ vim.api.nvim_create_autocmd("User", {
     if lazy_clipboard ~= nil then
       vim.opt.clipboard = lazy_clipboard
     end
+
+    require("config.util.format").setup()
   end,
 })
 

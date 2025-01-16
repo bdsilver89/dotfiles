@@ -40,10 +40,17 @@ return {
     config = function(_, opts)
       local lsp_util = require("plugins.core.lsp.util")
 
+      -- lsp formatter
+      require("config.util.format").register(lsp_util.formatter())
+
+      -- lsp setup
       lsp_util.on_attach(function(client, buffer)
         require("plugins.core.lsp.keymaps").on_attach(client, buffer)
       end)
+      lsp_util.setup()
+      lsp_util.on_dynamic_capability(require("plugins.core.lsp.keymaps").on_attach)
 
+      -- diagnostics setup
       vim.diagnostic.config(vim.deepcopy(opts.diagnostics))
 
       -- default border style

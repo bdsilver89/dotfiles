@@ -39,6 +39,17 @@ return {
           ["<C-y>"] = cmp.mapping.confirm({ select = true }),
           ["<S-CR>"] = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace }),
         }),
+        formatting = defaults.formatting,
+        window = {
+          completion = {
+            scrollbar = false,
+            side_padding = 1,
+            border = "rounded",
+          },
+          documentation = {
+            border = "rounded",
+          },
+        },
         sources = cmp.config.sources({
           { name = "nvim_lsp" },
           { name = "path" },

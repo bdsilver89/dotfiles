@@ -63,39 +63,13 @@ return {
           Snacks.toggle.diagnostics():map("<leader>ud")
           Snacks.toggle.line_number():map("<leader>ul")
           Snacks.toggle.treesitter():map("<leader>uT")
-          Snacks.toggle.option("background", { off = "light", right = "dark", name = "Dark Background" }):map("<leader>ub")
+          Snacks.toggle.option("background", { off = "light", on = "dark" , name = "Dark Background" }):map("<leader>ub")
           if vim.lsp.inlay_hint then
             Snacks.toggle.inlay_hints():map("<leader>uh")
           end
 
-          Snacks.toggle({
-            name = "Autoformat (Global)",
-            get = function()
-              return vim.g.autoformat == nil or vim.g.autoformat
-            end,
-            set = function(state)
-              vim.g.autoformat = state
-              vim.b.autoformat = nil
-            end,
-          }):map("<leader>uf")
-
-          Snacks.toggle({
-            name = "Autoformat (Buffer)",
-            get = function()
-              local buf = vim.api.nvim_get_current_buf()
-              local gaf = vim.g.autoformat
-              local baf = vim.b[buf].autoformat
-
-              if baf ~= nil then
-                return baf
-              end
-              return gaf == nil or gaf
-            end,
-            set = function(state)
-              vim.b.autoformat = state
-            end,
-          }):map("<leader>uF")
-
+          require("config.util.format").snacks_toggle():map("<leader>uf")
+          require("config.util.format").snacks_toggle(true):map("<leader>uf")
           -- stylua: ignore end
         end,
       })
