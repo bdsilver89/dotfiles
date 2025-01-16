@@ -10,23 +10,45 @@ return {
   },
 
   {
+    "folke/lazydev.nvim",
+    ft = "lua",
+    cmd = "LazyDev",
+    opts = {
+      library = {
+        { path = "${3rd}/luv/library", words = { "vim%.uv" } },
+        { path = "LazyVim", words = { "LazyVim" } },
+        { path = "snacks.nvim", words = { "Snacks" } },
+        { path = "lazy.nvim", words = { "LazyVim" } },
+      },
+    },
+  },
+
+  {
     "neovim/nvim-lspconfig",
     opts = {
       servers = {
         lua_ls = {
           settings = {
             Lua = {
-              diagnostics = {
-                gloabls = { "vim" },
-              },
               workspace = {
                 checkThirdParty = false,
-                library = {
-                  vim.fn.expand("$VIMRUNTIME/lua"),
-                  vim.fn.expand("$VIMRUNTIME/lua/vim/lsp"),
-                  vim.fn.stdpath("data") .. "/lazy/lazy.nvim/lua/lazy",
-                  "${3rd}/luv/library",
-                },
+              },
+              codeLens = {
+                enable = true,
+              },
+              completion = {
+                callSnippet = "Replace",
+              },
+              doc = {
+                privateName = { "^_" },
+              },
+              hint = {
+                enable = true,
+                setType = false,
+                paramType = true,
+                paramName = "Disable",
+                semicolon = "Disable",
+                arrayIndex = "Disable",
               },
             },
           },
