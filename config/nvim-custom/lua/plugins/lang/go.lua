@@ -1,4 +1,6 @@
-if vim.fn.executable("go") == 0 then
+vim.g.enable_lang_go = vim.fn.executable("go") == 1
+
+if not (vim.g.enable_lang_go ~= false) then
   return {}
 end
 

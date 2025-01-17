@@ -1,4 +1,6 @@
-if vim.fn.executable("zig") == 0 then
+vim.g.enable_lang_zig = vim.fn.executable("zig") == 1
+
+if not (vim.g.enable_lang_zig ~= false) then
   return {}
 end
 

@@ -54,6 +54,7 @@ return {
           { name = "lazydev" },
           { name = "nvim_lsp" },
           { name = "path" },
+          { name = "snippets" },
         }, {
           { name = "buffer" },
         }),

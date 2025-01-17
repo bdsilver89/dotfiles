@@ -1,4 +1,6 @@
-if vim.fn.executable("rustc") == 0 then
+vim.g.enable_lang_rust = vim.fn.executable("rustc") == 1
+
+if not (vim.g.enable_lang_rust ~= false) then
   return {}
 end
 

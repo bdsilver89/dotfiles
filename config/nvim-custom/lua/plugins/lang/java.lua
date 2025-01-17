@@ -1,4 +1,6 @@
-if vim.fn.executable("java") == 0 then
+vim.g.enable_lang_java = vim.fn.executable("java") == 1
+
+if not (vim.g.enable_lang_java ~= false) then
   return {}
 end
 

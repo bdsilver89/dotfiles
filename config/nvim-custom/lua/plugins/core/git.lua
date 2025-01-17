@@ -1,8 +1,8 @@
 return {
-  {
-    "tpope/vim-fugitive",
-    cmd = "Git",
-  },
+  -- {
+  --   "tpope/vim-fugitive",
+  --   cmd = "Git",
+  -- },
 
   {
     "lewis6991/gitsigns.nvim",
@@ -68,6 +68,25 @@ return {
         end, "Diff This ~")
         map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", "GitSigns Select Hunk")
       end,
+    },
+  },
+
+  {
+    "snacks.nvim",
+    -- stylua: ignore
+    keys = {
+      { "<leader>gb", function() Snacks.git.blame_line() end, desc = "Git Blame Line" },
+      { "<leader>gB", function() Snacks.gitbrowse() end, desc = "Git Browse (open)" },
+      {
+      "<leader>gg", function()
+        if vim.fn.executable("lazygit") == 1 then
+          Snacks.lazygit()
+        else
+          vim.notify("No lazygit executable found", vim.log.levels.WARN, {title = "Lazygit" })
+        end
+        end,
+          desc = "Lazygit"
+      },
     },
   },
 }

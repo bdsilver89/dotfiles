@@ -36,4 +36,25 @@ function M.get_package_path(package, path, opts)
   return ret
 end
 
+function M.is_loaded(name)
+  local Config = require("lazy.core.config")
+  return Config.plugins[name] and Config.plugins[name]._.loaded
+end
+
+function M.on_load(name, callback)
+  if M.is_loaded(name) then
+    callback(name)
+  else
+    vim.api.nvim_create_autocmd("User", {
+      pattern = "LazyLoad",
+      callback = function(event)
+        if event.data == name then
+          callback(name)
+          return true
+        end
+      end,
+    })
+  end
+end
+
 return M

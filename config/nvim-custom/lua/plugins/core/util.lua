@@ -11,6 +11,16 @@ return {
   "nvim-lua/plenary.nvim",
 
   {
+    "echasnovski/mini.nvim",
+    opts = {},
+    config = function(_, opts)
+      for k, v in pairs(opts) do
+        require("mini." .. k).setup(v)
+      end
+    end,
+  },
+
+  {
     "snacks.nvim",
     -- stylua: ignore
     keys = {
@@ -18,20 +28,6 @@ return {
       { "<leader>bd", function() Snacks.bufdelete() end, desc = "Delete Buffer" },
       { "<leader>bo", function() Snacks.bufdelete.other() end, desc = "Delete Other Buffers" },
       { "<leader>bo", function() Snacks.bufdelete.other() end, desc = "Delete Other Buffers" },
-
-      -- git
-      { "<leader>gb", function() Snacks.git.blame_line() end, desc = "Git Blame Line" },
-      { "<leader>gB", function() Snacks.gitbrowse() end, desc = "Git Browse (open)" },
-      {
-      "<leader>gg", function()
-        if vim.fn.executable("lazygit") == 1 then
-          Snacks.lazygit()
-        else
-          vim.notify("No lazygit executable found", vim.log.levels.WARN, {title = "Lazygit" })
-        end
-        end,
-          desc = "Lazygit"
-      },
 
       -- terminal
       { "<leader>ft", function() Snacks.terminal() end, desc = "Terminal" },

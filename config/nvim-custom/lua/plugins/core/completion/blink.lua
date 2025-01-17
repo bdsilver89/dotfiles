@@ -1,10 +1,12 @@
+vim.g.blink_main = false
+
 return {
   {
     "saghen/blink.cmp",
     event = "InsertEnter",
     dependencies = "rafamadriz/friendly-snippets",
-    version = "*",
-    build = "cargo build --release",
+    version = not vim.g.blink_main and "*",
+    build = vim.g.blink_main and "cargo build --release",
     opts = {
       appearance = {
         use_nvim_cmp_as_default = true,

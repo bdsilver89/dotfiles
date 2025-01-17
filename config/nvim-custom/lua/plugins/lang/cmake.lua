@@ -1,4 +1,6 @@
-if vim.fn.executable("cmake") ~= 1 then
+vim.g.enable_lang_cmake = vim.fn.executable("cmake") == 1
+
+if not (vim.g.enable_lang_cmake ~= false) then
   return {}
 end
 

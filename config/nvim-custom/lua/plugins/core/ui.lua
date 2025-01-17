@@ -1,9 +1,10 @@
 return {
   {
-    "echasnovski/mini.icons",
-    lazy = true,
+    "mini.nvim",
     opts = {
-      style = vim.g.has_nerd_font and "glyph" or "ascii",
+      icons = {
+        style = vim.g.has_nerd_font and "glyph" or "ascii",
+      },
     },
     init = function()
       package.preload["nvim-web-devicons"] = function()
@@ -23,18 +24,11 @@ return {
     "snacks.nvim",
     opts = {
       indent = { enabled = true },
-      -- input = { enabled = true },
       dashboard = {},
-      -- notifier = { enabled = true },
       scope = { enabled = true },
       statuscolumn = { enabled = true },
       words = { enabled = true },
     },
-    -- stylua: ignore
-    -- keys = {
-    --   { "<leader>n", function() Snacks.notifier.show_history() end, desc = "Notification History" },
-    --   { "<leader>un", function() Snacks.notifier.hide() end, desc = "Dismiss All Notifications" },
-    -- },
   },
 
   -- bufferline
@@ -85,10 +79,6 @@ return {
             text_align = "left",
           },
         },
-        ---@param opts bufferline.IconFetcherOpts
-        -- get_element_icon = function(opts)
-        --   return LazyVim.config.icons.ft[opts.filetype]
-        -- end,
       },
     },
     config = function(_, opts)

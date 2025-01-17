@@ -1,4 +1,6 @@
-if vim.fn.executable("node") == 0 then
+vim.g.enable_lang_tailwind = vim.fn.executable("node") == 1
+
+if not (vim.g.enable_lang_tailwind ~= false) then
   return {}
 end
 

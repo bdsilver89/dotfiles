@@ -1,3 +1,9 @@
+vim.g.enable_clangd = vim.fn.executable("clangd") == 1
+
+if not (vim.g.enable_lang_clangd ~= false) then
+  return {}
+end
+
 return {
   {
     "nvim-treesitter/nvim-treesitter",

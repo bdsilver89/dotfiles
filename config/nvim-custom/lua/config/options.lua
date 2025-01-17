@@ -1,6 +1,11 @@
 local opt = vim.opt
 local g = vim.g
 
+-- switch to powershell if available on windows
+if vim.fn.has("win32") == 1 then
+  require("config.util.terminal").setup("powershell")
+end
+
 -- disable providers
 g.loaded_node_prodiver = 0
 g.loaded_python3_prodiver = 0

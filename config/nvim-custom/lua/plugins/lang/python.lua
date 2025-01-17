@@ -1,3 +1,9 @@
+vim.g.enable_lang_python = vim.fn.executable("python") == 1 or vim.fn.executable("python3") == 1
+
+if not (vim.g.enable_lang_python ~= false) then
+  return {}
+end
+
 return {
   {
     "nvim-treesitter/nvim-treesitter",

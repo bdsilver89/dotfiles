@@ -1,3 +1,9 @@
+-- TODO: enable/disable docker automatically
+
+if not (vim.g.enable_lang_docker ~= false) then
+  return {}
+end
+
 return {
   {
     "nvim-treesitter/nvim-treesitter",
