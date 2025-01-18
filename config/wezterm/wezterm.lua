@@ -24,14 +24,21 @@ if wezterm.target_triple == "x86_64-pc-windows-msvc" then
 	-- detect VS dev shell
 	for _, vsvers in ipairs(wezterm.glob("Microsoft Visual Studio/20*/*", "C:/Program Files")) do
 		local version = vsvers:gsub("Microsoft Visual Studio/", ""):gsub("/", " ")
-		table.insert(launch_menu, {
-			label = "x64 Native Tools VS " .. version,
-			args = {
-				"cmd.exe",
-				"/k",
-				"C:/Program Files/" .. vsvers .. "/Common7/Tools/VsDevCmd.bat",
-			},
-		})
+		local root = "C:/Program Files/" .. vsvers .. "/VC/Auxiliary/Build"
+		for _, script in ipairs(wezterm.glob("vcvars*.bat", root)) do
+			local arch = string.gsub(script, "vcvars", "")
+			arch = string.gsub(arch, ".bat", "")
+			if arch ~= "all" then
+				table.insert(launch_menu, {
+					label = "VS " .. version .. " DevTools" .. arch,
+					args = {
+						"cmd.exe",
+						"/k",
+						root .. "/" .. script,
+					},
+				})
+			end
+		end
 	end
 end
 
