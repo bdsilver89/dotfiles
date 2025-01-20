@@ -2,9 +2,17 @@ return {
   {
     "neovim/nvim-lspconfig",
     event = "LazyFile",
+    cmd = { "LspInfo", "LspLog", "LspStart" },
     dependencies = {
-      "mason.nvim",
-      { "williamboman/mason-lspconfig.nvim", config = function() end },
+      {
+        "williamboman/mason-lspconfig.nvim",
+        dependencies = {
+          "mason.nvim",
+        },
+        cmd = { "LspInstall", "LspUninstall" },
+        opts_extend = { "ensure_installed" },
+        opts = {},
+      },
     },
     opts = function()
       local icons = require("config.icons")

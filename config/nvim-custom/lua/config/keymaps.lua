@@ -42,6 +42,13 @@ map("n", "<leader>w|", "<c-w>v", { desc = "Split window right", remap = true })
 map("n", "<leader>-", "<c-w>s", { desc = "Split window below", remap = true })
 map("n", "<leader>|", "<c-w>v", { desc = "Split window right", remap = true })
 
+if not require("config.util").has_plugin("vim-tmux-navigator") then
+  map("n", "<C-h>", "<C-w>h", { desc = "Go to Left Window", remap = true })
+  map("n", "<C-j>", "<C-w>j", { desc = "Go to Lower Window", remap = true })
+  map("n", "<C-k>", "<C-w>k", { desc = "Go to Upper Window", remap = true })
+  map("n", "<C-l>", "<C-w>l", { desc = "Go to Right Window", remap = true })
+end
+
 -- resize
 map("n", "<c-up>", "<cmd>resize +2<cr>", { desc = "Increase window height" })
 map("n", "<c-down>", "<cmd>resize -2<cr>", { desc = "Decrease window height" })

@@ -1,7 +1,11 @@
 local M = {}
 
 function M.get_plugin(name)
-  return require("lazy.core.config").spec.plugins[name]
+  local ok, cfg = pcall(require, "lazy.core.config")
+  if not ok then
+    return false
+  end
+  return cfg.spec.plugins[name]
 end
 
 function M.has_plugin(name)
@@ -37,8 +41,11 @@ function M.get_package_path(package, path, opts)
 end
 
 function M.is_loaded(name)
-  local Config = require("lazy.core.config")
-  return Config.plugins[name] and Config.plugins[name]._.loaded
+  local ok, cfg = pcall(require, "lazy.core.config")
+  if not ok then
+    return false
+  end
+  return cfg.plugins[name] and cfg.plugins[name]._.loaded
 end
 
 function M.on_load(name, callback)
