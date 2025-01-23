@@ -65,7 +65,7 @@ return {
           end
 
           require("config.util.format").snacks_toggle():map("<leader>uf")
-          require("config.util.format").snacks_toggle(true):map("<leader>uf")
+          require("config.util.format").snacks_toggle(true):map("<leader>uF")
           -- stylua: ignore end
         end,
       })

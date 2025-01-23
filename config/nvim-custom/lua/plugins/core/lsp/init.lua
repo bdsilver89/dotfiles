@@ -48,9 +48,6 @@ return {
     config = function(_, opts)
       local lsp_util = require("plugins.core.lsp.util")
 
-      -- lsp formatter
-      require("config.util.format").register(lsp_util.formatter())
-
       -- lsp setup
       lsp_util.on_attach(function(client, buffer)
         require("plugins.core.lsp.keymaps").on_attach(client, buffer)

@@ -1,12 +1,9 @@
 require("config.lazy")
 
 local function load_module(name)
-  local ok = pcall(require, "config." .. name)
-  if not ok then
-    vim.schedule(function()
-      vim.notify("Failed loading " .. name, vim.log.levels.ERROR)
-    end)
-  end
+  require("config.util").try(function()
+    require("config." .. name)
+  end, { msg = "Failed loading `" .. name .. "`" })
 end
 
 -- load options first
@@ -36,10 +33,7 @@ vim.api.nvim_create_autocmd("User", {
   end,
 })
 
-local colorscheme = vim.o.background == "dark" and vim.g.colorscheme_dark or vim.g.colorscheme_light
-local ok = pcall(vim.cmd.colorscheme, colorscheme)
-if not ok then
-  vim.schedule(function()
-    vim.notify("Failed loading colorscheme " .. colorscheme, vim.log.levels.ERROR)
-  end)
-end
+require("config.util").try(function()
+  local colorscheme = vim.o.background == "dark" and vim.g.colorscheme_dark or vim.g.colorscheme_light
+  vim.cmd.colorscheme(colorscheme)
+end, { msg = "Could not load colorscheme" })
