@@ -17,6 +17,7 @@ return {
     opts = {
       ensure_installed = {
         "ruff",
+        "pyright",
         "black",
         "debugpy",
       },
@@ -28,6 +29,7 @@ return {
     opts = {
       servers = {
         ruff = {},
+        pyright = {},
       },
     },
   },
