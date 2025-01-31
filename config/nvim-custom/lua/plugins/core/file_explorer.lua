@@ -55,6 +55,7 @@ return {
   -- file tree
   {
     "nvim-tree/nvim-tree.lua",
+    enabled = false,
     cmd = { "NvimTreeToggle", "NvimTreeFocus" },
     keys = {
       { "<leader>e", "<cmd>NvimTreeToggle<cr>", desc = "File explorer (tree)" },
@@ -92,6 +93,21 @@ return {
           },
         },
       },
+    },
+  },
+
+  {
+    "snacks.nvim",
+    opts = { explorer = {} },
+    keys = {
+      {
+        "<leader>fe",
+        function()
+          Snacks.explorer()
+        end,
+        desc = "Explorer Snacks",
+      },
+      { "<leader>e", "<leader>fe", desc = "Explorer Snacks", remap = true },
     },
   },
 }

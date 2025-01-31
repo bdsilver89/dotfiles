@@ -1,8 +1,9 @@
 return {
-  -- {
-  --   "tpope/vim-fugitive",
-  --   cmd = "Git",
-  -- },
+  {
+    "tpope/vim-fugitive",
+    enabled = vim.fn.executable("lazygit") == 0,
+    cmd = "Git",
+  },
 
   {
     "lewis6991/gitsigns.nvim",
@@ -73,20 +74,39 @@ return {
 
   {
     "snacks.nvim",
-    -- stylua: ignore
-    keys = {
-      { "<leader>gb", function() Snacks.git.blame_line() end, desc = "Git Blame Line" },
-      { "<leader>gB", function() Snacks.gitbrowse() end, desc = "Git Browse (open)" },
-      {
-      "<leader>gg", function()
-        if vim.fn.executable("lazygit") == 1 then
-          Snacks.lazygit()
-        else
-          vim.notify("No lazygit executable found", vim.log.levels.WARN, {title = "Lazygit" })
-        end
-        end,
-          desc = "Lazygit"
-      },
-    },
+    keys = function(_, keys)
+      vim.list_extend(keys, {
+        {
+          "<leader>gb",
+          function()
+            Snacks.git.blame_line()
+          end,
+          desc = "Git Blame Line",
+        },
+        {
+          "<leader>gB",
+          function()
+            Snacks.gitbrowse()
+          end,
+          desc = "Git Browse (open)",
+        },
+      })
+
+      if vim.fn.executable("lazygit") == 1 then
+        vim.list_extend(keys, {
+          {
+            "<leader>gg",
+            function()
+              if vim.fn.executable("lazygit") == 1 then
+                Snacks.lazygit()
+              else
+                vim.notify("No lazygit executable found", vim.log.levels.WARN, { title = "Lazygit" })
+              end
+            end,
+            desc = "Lazygit",
+          },
+        })
+      end
+    end,
   },
 }
