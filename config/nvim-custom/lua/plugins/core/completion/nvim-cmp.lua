@@ -32,12 +32,17 @@ return {
           ["<C-f>"] = cmp.mapping.scroll_docs(4),
           ["<C-n>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
           ["<C-p>"] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
-          ["<Tab>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
-          ["<S-Tab>"] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
           ["<C-Space>"] = cmp.mapping.complete(),
           ["<CR>"] = cmp.mapping.confirm({ select = auto_select }),
           ["<C-y>"] = cmp.mapping.confirm({ select = true }),
           ["<S-CR>"] = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace }),
+          ["<C-CR>"] = function(fallback)
+            cmp.abort()
+            fallback()
+          end,
+          ["<Tab>"] = function(fallback)
+            return require("plugins.core.completion.utils").map({ "snippet_forward" }, fallback)()
+          end,
         }),
         formatting = defaults.formatting,
         window = {
