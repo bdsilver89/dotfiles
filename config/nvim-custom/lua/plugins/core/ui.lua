@@ -121,8 +121,8 @@ return {
         options = {
           theme = "auto",
           globalstatus = vim.o.laststatus == 3,
-          section_separators = icons.separators.rounded,
-          component_separators = icons.separators.rounded_outline,
+          section_separators = "",
+          component_separators = "",
           disabled_filetypes = {
             "Lazy",
             "Mason",
@@ -158,7 +158,6 @@ return {
           lualine_a = {
             {
               "mode",
-              padding = { left = 1, right = 1 },
               icon = icons.misc.vim,
               color = { gui = "italic" },
             },
@@ -168,8 +167,6 @@ return {
               "branch",
               icon = icons.git.branch,
               color = { gui = "italic" },
-              padding = { left = 1, right = 1 },
-              separator = "",
             },
             {
               "diff",
@@ -195,14 +192,12 @@ return {
               sources = { "nvim_diagnostic" },
               -- symbols = icons.diagnostics,
               sections = { "error", "warn", "info", "hint" },
-              padding = { left = 2, right = 1 },
-              separator = "",
               update_in_insert = true, -- Update diagnostics in insert mode.
             },
           },
           lualine_x = {
-            { "encoding", separator = "" },
-            { "fileformat", separator = "", symbols = { unix = "unix", dos = "dos", mac = "mac" } },
+            { "encoding" },
+            { "fileformat", symbols = { unix = "unix", dos = "dos", mac = "mac" } },
           },
           lualine_y = {
             {
@@ -210,17 +205,12 @@ return {
                 return vim.fn.fnamemodify(vim.fn.getcwd(), ":t") .. " "
               end,
               icon = icons.misc.folder,
-              padding = { left = 1, right = 1 },
               color = { gui = "italic" },
             },
           },
           lualine_z = {
-            {
-              "progress",
-              padding = { left = 1, right = 1 },
-              separator = "",
-            },
-            { "location", padding = { left = 0, right = 1 } },
+            { "progress" },
+            { "location" },
           },
         },
       }
