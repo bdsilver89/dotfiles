@@ -79,6 +79,15 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
+vim.api.nvim_create_autocmd("FileType", {
+  desc = "Disable formatexpr for gitcommit in fugitive",
+  group = augroup("gitcommit_format"),
+  pattern = { "gitcommit" },
+  callback = function()
+    vim.opt_local.formatexpr = ""
+  end,
+})
+
 vim.api.nvim_create_autocmd("BufWritePre", {
   desc = "Auto create dirs when saving file",
   group = augroup("auto_create_dirs"),

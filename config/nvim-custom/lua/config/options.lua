@@ -72,4 +72,7 @@ opt.undofile = true
 opt.shortmess:append("sI")
 
 -- cursor wrap settings
-opt.whichwrap:append("<>[]hl")
+-- opt.whichwrap:append("<>[]hl")
+
+-- diff settings
+opt.diffopt = vim.list_extend(opt.diffopt:get(), { "algorithm:histogram", "linematch:60" })

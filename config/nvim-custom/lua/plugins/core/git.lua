@@ -1,8 +1,10 @@
 return {
   {
     "tpope/vim-fugitive",
-    enabled = vim.fn.executable("lazygit") == 0,
     cmd = "Git",
+    keys = {
+      { "<leader>gs", "<cmd>Git<cr>", desc = "Git (Fugitive)" },
+    },
   },
 
   {
