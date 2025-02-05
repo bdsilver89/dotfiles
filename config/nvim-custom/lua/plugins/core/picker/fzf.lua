@@ -66,7 +66,7 @@ return {
       { "<leader>fg", "<cmd>FzfLua git_files<cr>", desc = "Find Files(git-files)" },
       { "<leader>fr", "<cmd>FzfLua oldfiles<cr>", desc = "Recent" },
       -- git
-      { "<leader>gc", "<cmd>FzfLua git_commits<CR>", desc = "Commits" },
+      -- { "<leader>gc", "<cmd>FzfLua git_commits<CR>", desc = "Commits" },
       -- { "<leader>gs", "<cmd>FzfLua git_status<CR>", desc = "Status" },
       -- search
       { '<leader>s"', "<cmd>FzfLua registers<cr>", desc = "Registers" },

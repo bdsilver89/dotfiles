@@ -47,6 +47,8 @@ vim.api.nvim_create_autocmd("FileType", {
     "dbout",
     "fugitive",
     "gitsigns-blame",
+    "git",
+    "gitcommit",
     "grug-far",
     "help",
     "lspinfo",
@@ -61,10 +63,12 @@ vim.api.nvim_create_autocmd("FileType", {
   callback = function(event)
     vim.bo[event.buf].buflisted = false
     vim.schedule(function()
-      vim.keymap.set("n", "q", function()
-        vim.cmd("close")
-        pcall(vim.api.nvim_buf_delete, event.buf, { force = true })
-      end, { buffer = event.buf, silent = true, desc = "Quit buffer" })
+      if vim.api.nvim_buf_is_valid(event.buf) then
+        vim.keymap.set("n", "q", function()
+          vim.cmd("close")
+          pcall(vim.api.nvim_buf_delete, event.buf, { force = true })
+        end, { buffer = event.buf, silent = true, desc = "Quit buffer" })
+      end
     end)
   end,
 })

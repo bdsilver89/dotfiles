@@ -17,10 +17,10 @@ return {
       { "<leader>fg", function() Snacks.picker.git_files() end, desc = "Find Git Files" },
       { "<leader>fr", function() Snacks.picker.recent() end, desc = "Recent" },
       -- git
-      { "<leader>gc", function() Snacks.picker.git_log() end, desc = "Git Log" },
+      -- { "<leader>gc", function() Snacks.picker.git_log() end, desc = "Git Log" },
       -- { "<leader>gs", function() Snacks.picker.git_status() end, desc = "Git Status" },
-      { "<leader>gf", function() Snacks.picker.git_log_file() end, desc = "Git File History" },
-      { "<leader>gl", function() Snacks.picker.git_log() end, desc = "Git Log" },
+      -- { "<leader>gf", function() Snacks.picker.git_log_file() end, desc = "Git File History" },
+      -- { "<leader>gl", function() Snacks.picker.git_log() end, desc = "Git Log" },
       -- Grep
       { "<leader>sb", function() Snacks.picker.lines() end, desc = "Buffer Lines" },
       { "<leader>sB", function() Snacks.picker.grep_buffers() end, desc = "Grep Open Buffers" },

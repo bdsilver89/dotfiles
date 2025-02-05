@@ -1,9 +1,21 @@
 return {
   {
-    "tpope/vim-fugitive",
-    cmd = "Git",
+    "NeogitOrg/neogit",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "sindrets/diffview.nvim",
+    },
+    cmd = { "Neogit" },
     keys = {
-      { "<leader>gs", "<cmd>Git<cr>", desc = "Git (Fugitive)" },
+      { "<leader>gs", "<cmd>Neogit<cr>", desc = "Git (Neogit)" },
+      { "<leader>gc", "<cmd>Neogit commit<cr>", desc = "Git Commit (Neogit)" },
+      { "<leader>gp", "<cmd>Neogit pull<cr>", desc = "Git Pull (Neogit)" },
+      { "<leader>gP", "<cmd>Neogit push<cr>", desc = "Git Push (Neogit)" },
+    },
+    opts = {
+      integrations = {
+        diffview = true,
+      },
     },
   },
 
@@ -11,6 +23,7 @@ return {
     "lewis6991/gitsigns.nvim",
     event = "LazyFile",
     opts = {
+      current_line_blame = true,
       signs = {
         add = { text = "▎" },
         change = { text = "▎" },
@@ -70,6 +83,8 @@ return {
           gs.diffthis("~")
         end, "Diff This ~")
         map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", "GitSigns Select Hunk")
+
+        map("n", "<leader>ug", gs.toggle_current_line_blame, "Toggle Current Line Blame")
       end,
     },
   },
@@ -77,36 +92,18 @@ return {
   {
     "snacks.nvim",
     keys = function(_, keys)
+      -- stylua: ignore
       vim.list_extend(keys, {
-        {
-          "<leader>gb",
-          function()
-            Snacks.git.blame_line()
-          end,
-          desc = "Git Blame Line",
-        },
-        {
-          "<leader>gB",
-          function()
-            Snacks.gitbrowse()
-          end,
-          desc = "Git Browse (open)",
-        },
+        { "<leader>gb", function() Snacks.git.blame_line() end, desc = "Git Blame Line" },
+        { "<leader>gB", function() Snacks.gitbrowse() end, desc = "Git Browse (open)" },
       })
 
       if vim.fn.executable("lazygit") == 1 then
+        -- stylua: ignore
         vim.list_extend(keys, {
-          {
-            "<leader>gg",
-            function()
-              if vim.fn.executable("lazygit") == 1 then
-                Snacks.lazygit()
-              else
-                vim.notify("No lazygit executable found", vim.log.levels.WARN, { title = "Lazygit" })
-              end
-            end,
-            desc = "Lazygit",
-          },
+          { "<leader>gg", function() Snacks.lazygit() end, desc = "Lazygit" },
+          { "<leader>gl", function() Snacks.lazygit.log() end, desc = "Lazygit Log" },
+          { "<leader>gf", function() Snacks.lazygit.log_file() end, desc = "Lazygit File History" },
         })
       end
     end,

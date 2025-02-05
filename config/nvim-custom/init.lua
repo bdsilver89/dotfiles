@@ -7,11 +7,10 @@ vim.g.maplocalleader = " "
 -- nerd font enable
 vim.g.has_nerd_font = true
 
--- file picker
+-- file picker ("telescope", "fzf", "snacks")
 vim.g.picker = "snacks"
 
--- completion engine
--- vim.g.completion_engine = vim.fn.executable("cargo") == 1 and "blink.cmp" or "nvim-cmp"
+-- completion engine ("nvim-cmp", "blink")
 vim.g.completion_engine = "nvim-cmp"
 
 -- colorscheme
