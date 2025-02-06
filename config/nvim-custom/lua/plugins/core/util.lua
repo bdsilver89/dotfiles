@@ -8,6 +8,8 @@ local function term_nav(dir)
 end
 
 return {
+  { "folke/lazy.nvim", version = "*" },
+
   "nvim-lua/plenary.nvim",
 
   {
@@ -21,7 +23,9 @@ return {
   },
 
   {
-    "snacks.nvim",
+    "folke/snacks.nvim",
+    priority = 1000,
+    lazy = false,
     -- stylua: ignore
     keys = {
       -- buf

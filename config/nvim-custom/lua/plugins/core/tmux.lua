@@ -1,4 +1,6 @@
 return {
+  -- NOTE: keep this enabled on non-tmux platforms
+  -- the keymaps provide fallbacks for typical window navigation
   "christoomey/vim-tmux-navigator",
   cmd = {
     "TmuxNavigateLeft",

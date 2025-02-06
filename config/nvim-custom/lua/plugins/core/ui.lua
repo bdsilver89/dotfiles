@@ -15,12 +15,6 @@ return {
   },
 
   {
-    "Bekaboo/dropbar.nvim",
-    event = "LazyFile",
-    opts = {},
-  },
-
-  {
     "snacks.nvim",
     opts = {
       indent = { enabled = true },
@@ -29,6 +23,12 @@ return {
       statuscolumn = { enabled = true },
       words = { enabled = true },
     },
+  },
+
+  {
+    "Bekaboo/dropbar.nvim",
+    event = "LazyFile",
+    opts = {},
   },
 
   -- bufferline
