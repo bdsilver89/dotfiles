@@ -6,12 +6,15 @@ return {
       "sindrets/diffview.nvim",
     },
     cmd = { "Neogit" },
-    keys = {
-      { "<leader>gs", "<cmd>Neogit<cr>", desc = "Git (Neogit)" },
-      { "<leader>gc", "<cmd>Neogit commit<cr>", desc = "Git Commit (Neogit)" },
-      { "<leader>gp", "<cmd>Neogit pull<cr>", desc = "Git Pull (Neogit)" },
-      { "<leader>gP", "<cmd>Neogit push<cr>", desc = "Git Push (Neogit)" },
-    },
+    keys = function(_, keys)
+      if vim.fn.executable("lazygit") == 0 then
+        -- stylua: ignore
+        vim.list_extend(keys, {
+          { "<leader>gs", "<cmd>Neogit<cr>", desc = "Git (Neogit)" },
+        })
+      end
+      return keys
+    end,
     opts = {
       integrations = {
         diffview = true,
@@ -106,6 +109,7 @@ return {
           { "<leader>gf", function() Snacks.lazygit.log_file() end, desc = "Lazygit File History" },
         })
       end
+      return keys
     end,
   },
 }
