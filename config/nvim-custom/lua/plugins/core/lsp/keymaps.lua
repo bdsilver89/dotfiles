@@ -9,7 +9,6 @@ function M.get()
 
   -- stylua: ignore
   M._keys = {
-    -- { "<leader>cl", "<cmd>LspInfo<cr>", desc = "Lsp Info" },
     { "gd", vim.lsp.buf.definition, desc = "Goto Definition", has = "definition" },
     { "gr", vim.lsp.buf.references, desc = "References", nowait = true },
     { "gI", vim.lsp.buf.implementation, desc = "Goto Implementation" },
@@ -33,6 +32,22 @@ function M.get()
     { "<a-p>", function() Snacks.words.jump(-vim.v.count1, true) end, has = "documentHighlight",
       desc = "Prev Reference", cond = function() return Snacks.words.is_enabled() end },
   }
+
+  if vim.g.picker == "snacks" then
+    vim.list_extend(M._keys, {
+      {
+        "<leader>cl",
+        function()
+          Snacks.picker.lsp_config()
+        end,
+        desc = "Lsp Info",
+      },
+    })
+  else
+    vim.list_extend(M._keys, {
+      { "<leader>cl", "<cmd>LspInfo<cr>", desc = "Lsp Info" },
+    })
+  end
 
   return M._keys
 end
