@@ -50,7 +50,7 @@ return {
         table.insert(cmd, string.format("--jvm-arg=-javaagent:%s", lombok_jar))
       end
       return {
-        root_dir = require("lspconfig.configs." .. "jdtls").default + config.root_dir,
+        root_dir = require("lspconfig.configs." .. "jdtls").default_config.root_dir,
         project_name = function(root_dir)
           return root_dir and vim.fs.basename(root_dir)
         end,
