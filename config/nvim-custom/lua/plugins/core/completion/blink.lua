@@ -7,6 +7,10 @@ return {
     dependencies = "rafamadriz/friendly-snippets",
     version = not vim.g.blink_main and "*",
     build = vim.g.blink_main and "cargo build --release",
+    opts_extend = {
+      "sources.completion.enabled_providers",
+      "sources.default",
+    },
     opts = {
       appearance = {
         use_nvim_cmp_as_default = true,
@@ -49,5 +53,23 @@ return {
         ["<C-y>"] = { "select_and_accept" },
       },
     },
+    -- config = function(_, opts)
+    --   if not opts.keymap["<Tab>"] then
+    --     if opts.keymap.preset == "super-tab" then
+    --       opts.keymap["<Tab>"] = {
+    --         require("blink.cmp.keymap.presets")["super-tab"]["<Tab>"][1],
+    --         require("plugins.core.completion.utils").map({ "snippet_forward" }),
+    --         "fallback",
+    --       }
+    --     else
+    --       opts.keymap["<Tab>"] = {
+    --         require("plugins.core.completion.utils").map({ "snippet_forward" }),
+    --         "fallback",
+    --       }
+    --     end
+    --   end
+    --
+    --   require("blink.cmp").setup(opts)
+    -- end,
   },
 }

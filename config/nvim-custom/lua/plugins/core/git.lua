@@ -1,26 +1,33 @@
 return {
   {
-    "NeogitOrg/neogit",
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "sindrets/diffview.nvim",
-    },
-    cmd = { "Neogit" },
-    keys = function(_, keys)
-      if vim.fn.executable("lazygit") == 0 then
-        -- stylua: ignore
-        vim.list_extend(keys, {
-          { "<leader>gs", "<cmd>Neogit<cr>", desc = "Git (Neogit)" },
-        })
-      end
-      return keys
-    end,
-    opts = {
-      integrations = {
-        diffview = true,
-      },
-    },
+    "tpope/vim-fugitive",
+    lazy = false,
+    enabled = true,
   },
+
+  -- {
+  --   "NeogitOrg/neogit",
+  --   enabled = true,
+  --   dependencies = {
+  --     "nvim-lua/plenary.nvim",
+  --     "sindrets/diffview.nvim",
+  --   },
+  --   cmd = { "Neogit" },
+  --   keys = function(_, keys)
+  --     if vim.fn.executable("lazygit") == 0 then
+  --       -- stylua: ignore
+  --       vim.list_extend(keys, {
+  --         { "<leader>gg", "<cmd>Neogit<cr>", desc = "Git (Neogit)" },
+  --       })
+  --     end
+  --     return keys
+  --   end,
+  --   opts = {
+  --     integrations = {
+  --       diffview = true,
+  --     },
+  --   },
+  -- },
 
   {
     "lewis6991/gitsigns.nvim",
@@ -72,7 +79,7 @@ return {
         map({ "n", "v" }, "<leader>ghs", ":Gitsigns stage_hunk<CR>", "Stage Hunk")
         map({ "n", "v" }, "<leader>ghr", ":Gitsigns reset_hunk<CR>", "Reset Hunk")
         map("n", "<leader>ghS", gs.stage_buffer, "Stage Buffer")
-        map("n", "<leader>ghu", gs.undo_stage_hunk, "Undo Stage Hunk")
+        map("n", "<leader>ghu", gs.stage_hunk, "Undo Stage Hunk")
         map("n", "<leader>ghR", gs.reset_buffer, "Reset Buffer")
         map("n", "<leader>ghp", gs.preview_hunk_inline, "Preview Hunk Inline")
         map("n", "<leader>ghb", function()

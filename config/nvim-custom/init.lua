@@ -10,7 +10,7 @@ vim.g.has_nerd_font = true
 -- file picker ("telescope", "fzf", "snacks")
 vim.g.picker = "snacks"
 
--- completion engine ("nvim-cmp", "blink")
+-- completion engine ("nvim-cmp", "blink.cmp")
 vim.g.completion_engine = "nvim-cmp"
 
 -- colorscheme
