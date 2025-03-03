@@ -1,10 +1,4 @@
 return {
-  -- {
-  --   "folke/ts-comments.nvim",
-  --   event = "VeryLazy",
-  --   opts = {},
-  -- },
-
   -- autotags
   {
     "windwp/nvim-ts-autotag",

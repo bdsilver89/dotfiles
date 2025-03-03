@@ -5,6 +5,14 @@ return {
       icons = {
         style = vim.g.has_nerd_font and "glyph" or "ascii",
       },
+      hipatterns = {
+        highlighters = {
+          fixme = { pattern = "FIXME", group = "MiniHipatternsFixme" },
+          hack = { pattern = "HACK", group = "MiniHipatternsHack" },
+          todo = { pattern = "TODO", group = "MiniHipatternsTodo" },
+          note = { pattern = "NOTE", group = "MiniHipatternsNote" },
+        },
+      },
     },
     init = function()
       package.preload["nvim-web-devicons"] = function()
