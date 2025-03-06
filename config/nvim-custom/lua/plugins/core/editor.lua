@@ -2,8 +2,7 @@ return {
   -- automatic tab/space detection
   {
     "tpope/vim-sleuth",
-    cmd = "Sleuth",
-    lazy = false,
+    event = "LazyFile",
   },
 
   -- task worker

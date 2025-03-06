@@ -1,33 +1,17 @@
 return {
   {
-    "tpope/vim-fugitive",
-    lazy = false,
-    enabled = true,
+    "NeogitOrg/neogit",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      -- "sindrets/diffview.nvim",
+    },
+    cmd = { "Neogit" },
+    opts = {
+      -- integrations = {
+      --   diffview = true,
+      -- },
+    },
   },
-
-  -- {
-  --   "NeogitOrg/neogit",
-  --   enabled = true,
-  --   dependencies = {
-  --     "nvim-lua/plenary.nvim",
-  --     "sindrets/diffview.nvim",
-  --   },
-  --   cmd = { "Neogit" },
-  --   keys = function(_, keys)
-  --     if vim.fn.executable("lazygit") == 0 then
-  --       -- stylua: ignore
-  --       vim.list_extend(keys, {
-  --         { "<leader>gg", "<cmd>Neogit<cr>", desc = "Git (Neogit)" },
-  --       })
-  --     end
-  --     return keys
-  --   end,
-  --   opts = {
-  --     integrations = {
-  --       diffview = true,
-  --     },
-  --   },
-  -- },
 
   {
     "lewis6991/gitsigns.nvim",

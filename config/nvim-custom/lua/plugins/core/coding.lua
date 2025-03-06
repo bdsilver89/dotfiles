@@ -9,7 +9,6 @@ return {
   -- surround
   {
     "mini.nvim",
-    event = "VeryLazy",
     keys = function(_, keys)
       local opts = require("config.util").plugin_opts("mini.nvim")
       local mappings = {
@@ -44,7 +43,6 @@ return {
   -- textobjects
   {
     "mini.nvim",
-    event = "VeryLazy",
     opts = function(_, opts)
       local ai = require("mini.ai")
       opts.ai = {
@@ -147,7 +145,6 @@ return {
   -- pairs
   {
     "mini.nvim",
-    event = "VeryLazy",
     opts = function(_, opts)
       opts.pairs = {
         modes = { insert = true, command = true, terminal = false },

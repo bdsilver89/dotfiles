@@ -7,18 +7,19 @@ if vim.fn.has("win32") == 1 then
 end
 
 -- disable providers
-g.loaded_node_prodiver = 0
-g.loaded_python3_prodiver = 0
-g.loaded_perl_prodiver = 0
-g.loaded_ruby_prodiver = 0
+g.loaded_node_provider = 0
+g.loaded_python3_provider = 0
+g.loaded_perl_provider = 0
+g.loaded_ruby_provider = 0
 
 -- disable netrw
 g.loaded_netrwPlugin = 1
 g.loaded_netrw = 1
 
 -- formatting setup
-g.autoformat = nil
-opt.formatexpr = "v:lua.require'config.format'.formatexpr()"
+opt.formatexpr = "v:lua.vim.lsp.formatexpr()"
+opt.formatexpr = "n"
+
 opt.formatoptions = "jcroqlnt"
 
 -- clipboard settings

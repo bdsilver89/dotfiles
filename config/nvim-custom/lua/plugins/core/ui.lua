@@ -13,19 +13,33 @@ return {
           note = { pattern = "NOTE", group = "MiniHipatternsNote" },
         },
       },
+      -- statusline = {
+      --   use_icons = vim.g.has_nerd_font,
+      -- },
+      -- tabline = {},
     },
     init = function()
       package.preload["nvim-web-devicons"] = function()
         require("mini.icons").mock_nvim_web_devicons()
         return package.loaded["nvim-web-devicons"]
       end
+
+      -- local stl = require("mini.statusline")
+      -- stl.section_location = function()
+      --   return "%2l:%-2v"
+      -- end
     end,
   },
 
   {
     "snacks.nvim",
     opts = {
-      indent = { enabled = true },
+      indent = {
+        enabled = true,
+        animate = {
+          enabled = false,
+        },
+      },
       dashboard = {},
       scope = { enabled = true },
       statuscolumn = { enabled = true },

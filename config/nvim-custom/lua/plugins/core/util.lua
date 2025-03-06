@@ -14,6 +14,8 @@ return {
 
   {
     "echasnovski/mini.nvim",
+    priority = 1000,
+    lazy = false,
     opts = {},
     config = function(_, opts)
       for k, v in pairs(opts) do
@@ -68,8 +70,6 @@ return {
             Snacks.toggle.inlay_hints():map("<leader>uh")
           end
 
-          require("config.util.format").snacks_toggle():map("<leader>uf")
-          require("config.util.format").snacks_toggle(true):map("<leader>uF")
           -- stylua: ignore end
         end,
       })

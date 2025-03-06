@@ -1,13 +1,11 @@
-require("config.lazy")
-
 local function load_module(name)
-  require("config.util").try(function()
-    require("config." .. name)
-  end, { msg = "Failed loading `" .. name .. "`" })
+  pcall(require, "config." .. name)
 end
 
 -- load options first
 load_module("options")
+
+load_module("lazy")
 
 -- defer built-in clipboard loading since it can be slow
 local lazy_clipboard = vim.opt.clipboard
@@ -28,12 +26,11 @@ vim.api.nvim_create_autocmd("User", {
     if lazy_clipboard ~= nil then
       vim.opt.clipboard = lazy_clipboard
     end
-
-    require("config.util.format").setup()
   end,
 })
 
-require("config.util").try(function()
-  local colorscheme = vim.o.background == "dark" and vim.g.colorscheme_dark or vim.g.colorscheme_light
-  vim.cmd.colorscheme(colorscheme)
-end, { msg = "Could not load colorscheme" })
+local colorscheme = vim.o.background == "dark" and vim.g.colorscheme_dark or vim.g.colorscheme_light
+local ok, _ = pcall(vim.cmd.colorscheme, colorscheme)
+if not ok then
+  vim.cmd.colorscheme("default")
+end

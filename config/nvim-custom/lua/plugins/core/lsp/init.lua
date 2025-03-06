@@ -24,7 +24,7 @@ return {
           virtual_text = {
             spacing = 4,
             source = "if_many",
-            prefix = require("config.icons").misc.rounded_square,
+            prefix = icons.misc.rounded_square,
           },
           severity_sort = true,
           float = {
