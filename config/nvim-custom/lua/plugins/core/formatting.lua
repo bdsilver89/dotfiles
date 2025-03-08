@@ -13,8 +13,8 @@ return {
     -- stylua: ignore
     keys = {
       { "<leader>cf", function() require("conform").format() end, desc = "Format" },
-      -- { "<leader>uf", desc = "Auto Format (Global)" },
-      -- { "<leader>uF", desc = "Auto Format (Buffer)"},
+      { "<leader>uf", desc = "Auto Format (Global)" },
+      { "<leader>uF", desc = "Auto Format (Buffer)"},
     },
     event = "BufWritePre",
     init = function()
@@ -72,25 +72,25 @@ return {
         end
       end, { desc = "Enable autoformat on save", bang = true })
 
-      -- Snacks.toggle({
-      --   name = "Auto Format (Global)",
-      --   get = function()
-      --     return vim.g.autoformat == nil or vim.g.autoformat
-      --   end,
-      --   set = function(state)
-      --     enable(state)
-      --   end,
-      -- }):map("<leader>uf")
-      --
-      -- Snacks.toggle({
-      --   name = "Auto Format (Buffer)",
-      --   get = function()
-      --     return enabled()
-      --   end,
-      --   set = function(state)
-      --     enable(state, true)
-      --   end,
-      -- }):map("<leader>uF")
+      Snacks.toggle({
+        name = "Auto Format (Global)",
+        get = function()
+          return not vim.g.disable_autoformat
+        end,
+        set = function(state)
+          vim.g.disable_autoformat = not state
+        end,
+      }):map("<leader>uf")
+
+      Snacks.toggle({
+        name = "Auto Format (Buffer)",
+        get = function()
+          return not vim.b.disable_autoformat
+        end,
+        set = function(state)
+          vim.b.disable_autoformat = not state
+        end,
+      }):map("<leader>uF")
     end,
   },
 }
