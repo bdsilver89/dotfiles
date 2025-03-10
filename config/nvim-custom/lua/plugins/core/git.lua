@@ -77,10 +77,21 @@ return {
           gs.diffthis("~")
         end, "Diff This ~")
         map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", "GitSigns Select Hunk")
-
-        map("n", "<leader>ug", gs.toggle_current_line_blame, "Toggle Current Line Blame")
       end,
     },
+    config = function(_, opts)
+      require("gitsigns").setup(opts)
+
+      Snacks.toggle({
+        name = "Gitsigns Line Blame",
+        get = function()
+          return require("gitsigns.config").config.current_line_blame
+        end,
+        set = function(state)
+          require("gitsigns").toggle_current_line_blame(state)
+        end,
+      }):map("<leader>ul")
+    end,
   },
 
   {

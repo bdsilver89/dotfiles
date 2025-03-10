@@ -3,7 +3,30 @@ local g = vim.g
 
 -- switch to powershell if available on windows
 if vim.fn.has("win32") == 1 then
-  require("config.util.terminal").setup("powershell")
+  local function setup_powershell(shell)
+    vim.o.shell = shell
+    -- Setting shell command flags
+    vim.o.shellcmdflag =
+      "-NoLogo -NonInteractive -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.UTF8Encoding]::new();$PSDefaultParameterValues['Out-File:Encoding']='utf8';$PSStyle.OutputRendering='plaintext';Remove-Alias -Force -ErrorAction SilentlyContinue tee;"
+
+    -- Setting shell redirection
+    vim.o.shellredir = '2>&1 | %%{ "$_" } | Out-File %s; exit $LastExitCode'
+
+    -- Setting shell pipe
+    vim.o.shellpipe = '2>&1 | %%{ "$_" } | tee %s; exit $LastExitCode'
+
+    -- Setting shell quote options
+    vim.o.shellquote = ""
+    vim.o.shellxquote = ""
+  end
+
+  if vim.fn.executable("pwsh") == 1 then
+    setup_powershell("pwsh")
+  elseif vim.fn.executable("powershell") == 1 then
+    setup_powershell("powershell")
+  else
+    vim.notify("No powershell executable found", vim.log.levels.ERROR, { title = "Config" })
+  end
 end
 
 -- disable providers
@@ -55,6 +78,7 @@ opt.foldmethod = "expr"
 opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 
 -- text behavior
+opt.conceallevel = 2
 opt.fillchars = { eob = " " }
 opt.list = true
 opt.wrap = false

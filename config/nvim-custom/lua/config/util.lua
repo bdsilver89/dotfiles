@@ -1,5 +1,12 @@
 local M = {}
 
+setmetatable(M, {
+  __index = function(t, k)
+    t[k] = require("config.util." .. k)
+    return t[k]
+  end,
+})
+
 function M.get_plugin(name)
   local ok, cfg = pcall(require, "lazy.core.config")
   if not ok then
@@ -62,25 +69,6 @@ function M.on_load(name, callback)
       end,
     })
   end
-end
-
-function M.try(fn, opts)
-  opts = type(opts) == "string" and { msg = opts } or opts or {}
-  local msg = opts.smg
-  local error_handler = function(err)
-    msg = (msg and (msg .. "\n\n") or "") .. err
-    if opts.on_error then
-      opts.on_error(msg)
-    else
-      vim.schedule(function()
-        vim.notify(msg, vim.log.levels.ERROR, { title = opts.title or "Config" })
-      end)
-    end
-    return err
-  end
-
-  local ok, result = xpcall(fn, error_handler)
-  return ok and result or nil
 end
 
 return M
