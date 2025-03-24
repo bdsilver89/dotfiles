@@ -2,6 +2,18 @@ export EDITOR='nvim'
 export PATH="$HOME/.local/bin:$PATH"
 export DOTFILES_DIR=$HOME/dotfiles
 
+# VI mode
+set -o vi
+
+# prompt
+# PS1="\[\033[01;34m\]\\u@\h\[\034[01;34m\]\ \w\[\033[00m\]\ \$"
+PS1="\[\033[01;32m\]\\u@\h \[\033[01;34m\]\w[\033[00m\]\$ "
+
+# alias
+alias c="clear"
+alias pg="ps -ef | grep"
+alias g="git"
+
 # eza/exa/ls
 if [ -x "$(command -v eza)" ]; then
   # use eza
@@ -23,7 +35,7 @@ if [ -x "$(command -v fzf)" ]; then
 fi
 
 if [ -x "$(command -v zoxide)" ]; then
-  eval "$(zoxide init zsh)"
+  eval "$(zoxide init bash)"
 fi
 
 # sometimes bat is installed as batcat
@@ -57,6 +69,9 @@ if [ -x "$(command -v ninja)" ]; then
   export CMAKE_GENERATOR="Ninja"
   export CONAN_CMAKE_GENERATOR="Ninja"
 fi
+
+# ninja
+export NINJA_STATUS=$(echo -e "[%f/%t %p %e]")
 
 # vcpkg
 export VCPKG_ROOT="$HOME/vcpkg"
