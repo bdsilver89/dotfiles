@@ -171,6 +171,9 @@ elif [ -x "$(command -v exa)" ]; then
 else
   # fallback on ls
   alias ls="ls --color=auto"
+  if [ -x "$(command -v tree)" ]; then
+    alias lt="tree"
+  fi
 fi
 alias l="ls -lah"
 
