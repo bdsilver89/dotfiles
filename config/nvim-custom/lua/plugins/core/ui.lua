@@ -1,33 +1,44 @@
 return {
   {
     "mini.nvim",
-    opts = {
-      icons = {
+    opts = function(_, opts)
+      opts.icons = {
         style = vim.g.has_nerd_font and "glyph" or "ascii",
-      },
-      hipatterns = {
+      }
+
+      opts.hipatterns = {
         highlighters = {
           fixme = { pattern = "FIXME", group = "MiniHipatternsFixme" },
           hack = { pattern = "HACK", group = "MiniHipatternsHack" },
           todo = { pattern = "TODO", group = "MiniHipatternsTodo" },
           note = { pattern = "NOTE", group = "MiniHipatternsNote" },
         },
-      },
-      -- statusline = {
-      --   use_icons = vim.g.has_nerd_font,
-      -- },
-      -- tabline = {},
-    },
+      }
+
+      if vim.g.statusline == "mini" then
+        opts.statusline = {
+          use_icons = vim.g.has_nerd_font,
+        }
+      end
+
+      if vim.g.bufferline == "mini" then
+        opts.tabline = {
+          use_icons = vim.g.has_nerd_font,
+        }
+      end
+    end,
     init = function()
       package.preload["nvim-web-devicons"] = function()
         require("mini.icons").mock_nvim_web_devicons()
         return package.loaded["nvim-web-devicons"]
       end
 
-      -- local stl = require("mini.statusline")
-      -- stl.section_location = function()
-      --   return "%2l:%-2v"
-      -- end
+      if vim.g.statusline == "mini" then
+        local stl = require("mini.statusline")
+        stl.section_location = function()
+          return "%2l:%-2v"
+        end
+      end
     end,
   },
 
@@ -56,6 +67,7 @@ return {
   -- bufferline
   {
     "akinsho/bufferline.nvim",
+    enabled = vim.g.bufferline == "bufferline",
     event = "VeryLazy",
     keys = {
       { "<leader>bp", "<Cmd>BufferLineTogglePin<CR>", desc = "Toggle Pin" },
@@ -121,6 +133,7 @@ return {
 
   {
     "nvim-lualine/lualine.nvim",
+    enabled = vim.g.statusline == "lualine",
     event = "VeryLazy",
     init = function()
       vim.g.lualine_laststatus = vim.o.laststatus

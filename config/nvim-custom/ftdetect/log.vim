@@ -1,1 +1,1 @@
-au BufNewFile,BufRead *{.,_}log set filetype=log
+au BufNewFile,BufRead *{.,_}log set filetype=log-simple
