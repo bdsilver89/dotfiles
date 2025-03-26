@@ -11,7 +11,7 @@ vim.g.has_nerd_font = true
 vim.g.picker = "snacks"
 
 -- completion engine ("nvim-cmp", "blink.cmp", "mini")
-vim.g.completion_engine = "mini"
+vim.g.completion_engine = "blink.cmp"
 
 -- statusline ("lualine", "mini")
 vim.g.statusline = "mini"
