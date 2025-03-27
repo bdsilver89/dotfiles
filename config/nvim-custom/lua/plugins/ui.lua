@@ -52,4 +52,18 @@ return {
       },
     },
   },
+
+  -- {
+  --   "snacks.nvim",
+  --   opts = {
+  --     indent = {
+  --       enabled = true,
+  --       animate = {
+  --         enabled = false,
+  --       },
+  --     },
+  --     scope = { enabled = true },
+  --     words = { enabled = true },
+  --   },
+  -- },
 }

@@ -113,3 +113,43 @@ vim.api.nvim_create_autocmd("BufWritePre", {
     vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
   end,
 })
+
+vim.api.nvim_create_autocmd("LspAttach", {
+  desc = "LSP autocompletion",
+  callback = function(event)
+    local client = vim.lsp.get_client_by_id(event.data.client_id)
+    if client and client:supports_method("textDocument/completion") then
+      vim.lsp.completion.enable(true, client.id, event.buf, { autotrigger = true })
+    end
+
+    -- docs popup window
+    local _, cancel_prev = nil, function() end
+    vim.api.nvim_create_autocmd("CompleteChanged", {
+      buffer = event.buf,
+      callback = function()
+        cancel_prev()
+        local info = vim.fn.complete_info({ "selected" })
+        local completion_item = vim.tbl_get(vim.v.completed_item, "user_data", "nvim", "lsp", "completion_item")
+        if completion_item == nil then
+          return
+        end
+        _, cancel_prev = vim.lsp.buf_request(
+          event.buf,
+          vim.lsp.protocol.Methods.completionItem_resolve,
+          completion_item,
+          function(_err, item, _ctx)
+            if not item then
+              return
+            end
+            local docs = (item.documentation or {}).value
+            local win = vim.api.nvim__complete_set(info["selected"], { info = docs })
+            if win.winid and vim.api.nvim_win_is_valid(win.winid) then
+              vim.treesitter.start(win.bufnr, "markdown")
+              vim.wo[win.winid].conceallevel = 3
+            end
+          end
+        )
+      end,
+    })
+  end,
+})

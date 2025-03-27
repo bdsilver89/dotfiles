@@ -1,27 +1,49 @@
-pcall(vim.loader.enable)
+---Helps load config modules and stops on errors
+---@param name string
+local function load_module(name)
+  local ok, err = pcall(require, "config." .. name)
+  if not ok then
+    vim.api.nvim_echo({
+      { "Failed to load config module '" .. name .. "':\n", "ErrorMsg" },
+      { err, "WarningMsg" },
+      { "\nPress any key to exit..." },
+    }, true, {})
+    vim.fn.getchar()
+    os.exit(1)
+  end
+end
 
--- leader key
-vim.g.mapleader = " "
-vim.g.maplocalleader = " "
+-- load options
+load_module("options")
 
--- nerd font enable
-vim.g.has_nerd_font = true
+-- load lsp configuration
+load_module("lsp")
 
--- file picker ("telescope", "fzf", "snacks")
-vim.g.picker = "snacks"
+local lazy_clipboard = vim.opt.clipboard
+vim.opt.clipboard = ""
 
--- completion engine ("nvim-cmp", "blink.cmp", "mini")
-vim.g.completion_engine = "blink.cmp"
+-- load lazy.nvim
+load_module("lazy")
 
--- statusline ("lualine", "mini")
-vim.g.statusline = "mini"
+-- autocmds
+local lazy_autocmds = vim.fn.argc(-1) == 0
+if not lazy_autocmds then
+  load_module("autocmds")
+end
 
--- bufferline ("bufferline", "mini")
-vim.g.buffer = "mini"
+-- lazy init of everything else
+vim.api.nvim_create_autocmd("User", {
+  pattern = "VeryLazy",
+  callback = function()
+    if lazy_autocmds then
+      load_module("autocmds")
+    end
+    load_module("keymaps")
 
--- colorscheme
-vim.g.colorscheme_dark = "catppuccin-mocha"
-vim.g.colorscheme_light = "catppuccin-latte"
+    if lazy_clipboard ~= nil then
+      vim.opt.clipboard = lazy_clipboard
+    end
+  end,
+})
 
--- load config
-require("config")
+vim.cmd.colorscheme("catppuccin")
