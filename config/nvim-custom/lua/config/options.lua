@@ -43,7 +43,7 @@ if vim.fn.has("win32") == 1 then
 end
 
 opt.autowrite = true -- enable auto write
-opt.clipboard = "unnamed,unnamedplus" -- sync with sytem clipboard
+opt.clipboard = vim.env.SSH_TTY and "" or "unnamedplus" -- sync with sytem clipboard
 opt.completeopt = "menuone,noselect,popup,fuzzy" -- completion behavior
 opt.conceallevel = 2 -- hide some visual text components
 opt.confirm = true -- confirm to save changes before exiting modified buffers

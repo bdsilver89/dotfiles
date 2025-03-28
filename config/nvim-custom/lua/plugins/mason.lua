@@ -19,13 +19,35 @@ return {
       "cmakelint",
       "neocmakelsp",
 
+      -- go
+      "goimports",
+      "gofumpt",
+      "gopls",
+
+      -- json
+      "json-lsp",
+
       -- lua
       "lua-language-server",
       "stylua",
+
+      -- python
+      "ruff",
+      "pyright",
+      "black",
+      -- "debugpy",
+
+      -- typescript
+      -- "js-debug-adpater",
+      "prettier",
+      "vtsls",
+
+      -- yaml
+      "yaml-language-server",
     },
-    ui = {
-      border = "rounded",
-    },
+    -- ui = {
+    --   border = "rounded",
+    -- },
   },
   config = function(_, opts)
     require("mason").setup(opts)

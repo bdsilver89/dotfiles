@@ -1,7 +1,7 @@
 return {
   cmd = { "lua-language-server" },
-  root_markers = { ".luarc.json" },
   filetypes = { "lua" },
+  root_markers = { ".luarc.json" },
   settings = {
     Lua = {
       runtime = {
@@ -27,7 +27,7 @@ return {
         },
       },
       completion = {
-        callSnippet = "Replace"
+        callSnippet = "Replace",
       },
       doc = {
         privateName = { "^_" },

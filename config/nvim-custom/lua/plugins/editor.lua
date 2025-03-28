@@ -151,12 +151,13 @@ return {
           F12 = "<F12>",
         },
       },
-      preset = "modern",
+      -- preset = "modern",
       defaults = {},
       spec = {
         {
           mode = { "n", "v" },
           { "<leader><tab>", group = "tabs" },
+          { "<leader>b", group = "buffer" },
           { "<leader>c", group = "code" },
           { "<leader>d", group = "debug" },
           { "<leader>f", group = "file/find" },

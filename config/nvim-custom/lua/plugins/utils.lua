@@ -10,7 +10,15 @@
 return {
   { "folke/lazy.nvim", version = "*" },
 
+  -- general lua utilities
   "nvim-lua/plenary.nvim",
+
+  -- schema utilities for json and yaml lsp
+  {
+    "b0o/SchemaStore.nvim",
+    lazy = true,
+    version = false,
+  },
 
   -- {
   --   "folke/snacks.nvim",

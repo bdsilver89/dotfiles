@@ -22,6 +22,8 @@ return {
     dependencies = {
       "rcarriga/nvim-dap-ui",
       { "theHamsta/nvim-dap-virtual-text", opts = {} },
+      -- TODO: mfussenegger/nvim-dap-python -> requires setup
+      -- TODO: leoluz/nvim-dap-go
     },
     -- stylua: ignore
     keys = {

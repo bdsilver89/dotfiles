@@ -115,41 +115,108 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 })
 
 vim.api.nvim_create_autocmd("LspAttach", {
-  desc = "LSP autocompletion",
+  desc = "LSP setup",
+  group = augroup("lspattach"),
   callback = function(event)
     local client = vim.lsp.get_client_by_id(event.data.client_id)
-    if client and client:supports_method("textDocument/completion") then
-      vim.lsp.completion.enable(true, client.id, event.buf, { autotrigger = true })
+
+    local function map(keys, func, desc, mode)
+      mode = mode or "n"
+      vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = desc })
     end
 
-    -- docs popup window
-    local _, cancel_prev = nil, function() end
-    vim.api.nvim_create_autocmd("CompleteChanged", {
-      buffer = event.buf,
-      callback = function()
-        cancel_prev()
-        local info = vim.fn.complete_info({ "selected" })
-        local completion_item = vim.tbl_get(vim.v.completed_item, "user_data", "nvim", "lsp", "completion_item")
-        if completion_item == nil then
-          return
-        end
-        _, cancel_prev = vim.lsp.buf_request(
-          event.buf,
-          vim.lsp.protocol.Methods.completionItem_resolve,
-          completion_item,
-          function(_err, item, _ctx)
-            if not item then
-              return
-            end
-            local docs = (item.documentation or {}).value
-            local win = vim.api.nvim__complete_set(info["selected"], { info = docs })
-            if win.winid and vim.api.nvim_win_is_valid(win.winid) then
-              vim.treesitter.start(win.bufnr, "markdown")
-              vim.wo[win.winid].conceallevel = 3
-            end
+    -- enable LSP completion
+    if client and client:supports_method("textDocument/completion") then
+      vim.lsp.completion.enable(true, client.id, event.buf, { autotrigger = true })
+
+      -- LSP completion doc popup
+      local _, cancel_prev = nil, function() end
+      vim.api.nvim_create_autocmd("CompleteChanged", {
+        buffer = event.buf,
+        callback = function()
+          cancel_prev()
+          local info = vim.fn.complete_info({ "selected" })
+          local completion_item = vim.tbl_get(vim.v.completed_item, "user_data", "nvim", "lsp", "completion_item")
+          if completion_item == nil then
+            return
           end
-        )
-      end,
-    })
+          _, cancel_prev = vim.lsp.buf_request(
+            event.buf,
+            vim.lsp.protocol.Methods.completionItem_resolve,
+            completion_item,
+            function(_err, item, _ctx)
+              if not item then
+                return
+              end
+              local docs = (item.documentation or {}).value
+              local win = vim.api.nvim__complete_set(info["selected"], { info = docs })
+              if win.winid and vim.api.nvim_win_is_valid(win.winid) then
+                vim.treesitter.start(win.bufnr, "markdown")
+                vim.wo[win.winid].conceallevel = 3
+              end
+            end
+          )
+        end,
+      })
+    end
+
+    -- LSP codelens mappings
+    if client and client:supports_method("textDocument/codeLens") then
+      map("grc", vim.lsp.codelens.run, "vim.lsp.codelens.run", { "n", "v" })
+      map("grC", vim.lsp.codelens.refresh, "vim.lsp.codelens.refresh")
+    end
+
+    -- LSP word references
+    if client and client:supports_method("textDocument/documentHighlight") then
+      local word_group = vim.api.nvim_create_augroup("lsp_words", { clear = false })
+      vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
+        group = word_group,
+        buffer = event.buf,
+        callback = vim.lsp.buf.document_highlight,
+      })
+      vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
+        group = word_group,
+        buffer = event.buf,
+        callback = vim.lsp.buf.clear_references,
+      })
+      vim.api.nvim_create_autocmd("LspDetach", {
+        group = vim.api.nvim_create_augroup("lsp_words_detach", { clear = true }),
+        callback = function(event2)
+          vim.lsp.buf.clear_references()
+          vim.api.nvim_clear_autocmds({ group = "lsp_words", buffer = event2.buf })
+        end,
+      })
+
+      -- local jump_word = function(count, cycle)
+      --   count = count or 1
+      --
+      --   local cursor = vim.api.nvim_win_get_cursor(0)
+      --   local words, idx = {}, nil
+      --   local extmarks = {}
+      --   -- vim.list_extend(extmarks, vim.api.nvim_buf_get_extmarks(0,
+      --
+      --   if not idx then
+      --     return
+      --   end
+      --   idx = idx + count
+      --   if cycle then
+      --     idx = (idx - 1) % #words + 1
+      --   end
+      --   local target = words[idx]
+      --   if target then
+      --     vim.cmd.normal({ "m`", bang = true }) -- set jump point
+      --     vim.api.nvim_win_set_cursor(0, target.from)
+      --     vim.notify(("Reference [%d/%d]"):format(idx, #words), vim.log.levels.INFO)
+      --     vim.cmd.normal({ "zv", bang = true }) -- open folds
+      --   else
+      --     vim.notify("No more references", vim.log.levels.WARN)
+      --   end
+      -- end
+      --
+      -- -- stylua: ignore start
+      -- map("[r", function() jump_word(vim.v.count1) end, "Previous Reference")
+      -- map("]r", function() jump_word(-vim.v.count1) end, "Next Refernece")
+      -- -- stylua: ignore end
+    end
   end,
 })

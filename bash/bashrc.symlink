@@ -2,6 +2,8 @@ export EDITOR='nvim'
 export PATH="$HOME/.local/bin:$PATH"
 export DOTFILES_DIR=$HOME/dotfiles
 
+export TERM="screen-256color"
+
 # VI mode
 set -o vi
 

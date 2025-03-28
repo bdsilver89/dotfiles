@@ -4,7 +4,10 @@ local sep = is_windows and "\\" or "/"
 local delim = is_windows and ";" or ":"
 vim.env.PATH = table.concat({ vim.fn.stdpath("data"), "mason", "bin" }, sep) .. delim .. vim.env.PATH
 
--- enable LSP configs
+-- lsp configuration for all
+-- vim.lsp.config("*", vim.lsp.protocol.make_client_capabilities())
+
+-- automatically enable LSP configs found in rtp
 local configs = {}
 for _, v in ipairs(vim.api.nvim_get_runtime_file("lsp/*", true)) do
   local name = vim.fn.fnamemodify(v, ":t:r")
