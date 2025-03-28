@@ -125,6 +125,9 @@ vim.api.nvim_create_autocmd("LspAttach", {
       vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = desc })
     end
 
+    map("gd", vim.lsp.buf.definition, "vim.lsp.buf.definition")
+    map("gD", vim.lsp.buf.declaration, "vim.lsp.buf.declaration")
+
     -- enable LSP completion
     if client and client:supports_method("textDocument/completion") then
       vim.lsp.completion.enable(true, client.id, event.buf, { autotrigger = true })
