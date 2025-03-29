@@ -21,104 +21,104 @@ LOG_COLOR_PURPLE="\e[$BG;35m"
 LOG_COLOR_CYAN="\e[$BG;36m"
 
 log() {
-	if [ -t 1 ]; then
-		printf "${@}"
-		printf "\n"
-	fi
+  if [ -t 1 ]; then
+    printf "${@}"
+    printf "\n"
+  fi
 }
 
 log_err() {
-	log "${LOG_COLOR_RED}$*${LOG_COLORDEFAULT}"
+  log "${LOG_COLOR_RED}$*${LOG_COLORDEFAULT}"
 }
 
 log_warn() {
-	log "${LOG_COLOR_YELLOW}$*${LOG_COLOR_DEFAULT}"
+  log "${LOG_COLOR_YELLOW}$*${LOG_COLOR_DEFAULT}"
 }
 
 log_info() {
-	log "${LOG_COLOR_GREEN}$*${LOG_COLOR_DEFAULT}"
+  log "${LOG_COLOR_GREEN}$*${LOG_COLOR_DEFAULT}"
 }
 
 log_status() {
-	log "${LOG_COLOR_BLUE}$*${LOG_COLOR_DEFAULT}"
+  log "${LOG_COLOR_BLUE}$*${LOG_COLOR_DEFAULT}"
 }
 
 log_success() {
-	log "${LOG_COLOR_GREEN}\nSuccess${LOG_COLOR_DEFAULT}!"
+  log "${LOG_COLOR_GREEN}\nSuccess${LOG_COLOR_DEFAULT}!"
 }
 
 log_failure() {
-	log "${LOG_COLOR_RED}\nFailure${LOG_COLOR_DEFAULT}!"
+  log "${LOG_COLOR_RED}\nFailure${LOG_COLOR_DEFAULT}!"
 }
 
 log_and_die() {
-	local rc=$?
-	local msg=${*:-"unknown error"}
-	if [ $rc -ne 0 ]; then
-		log_err "Aborting - command failed with rc=$rc - $msg"
-		exit $rc
-	else
-		log_err "Aborting - $msg"
-		exit $rc
-	fi
+  local rc=$?
+  local msg=${*:-"unknown error"}
+  if [ $rc -ne 0 ]; then
+    log_err "Aborting - command failed with rc=$rc - $msg"
+    exit $rc
+  else
+    log_err "Aborting - $msg"
+    exit $rc
+  fi
 }
 
 title() {
-	log "\n${LOG_COLOR_PURPLE}$*${LOG_COLOR_DEFAULT}"
-	log "${LOG_COLOR_GRAY}==============================${LOG_COLOR_DEFAULT}\n"
+  log "\n${LOG_COLOR_PURPLE}$*${LOG_COLOR_DEFAULT}"
+  log "${LOG_COLOR_GRAY}==============================${LOG_COLOR_DEFAULT}\n"
 }
 
 error() {
-	log_err "$*"
-	exit 1
+  log_err "$*"
+  exit 1
 }
 
 warning() {
-	log_warn "$*"
+  log_warn "$*"
 }
 
 info() {
-	log "$*"
+  log "$*"
 }
 
 status() {
-	log_status "$*"
+  log_status "$*"
 }
 
 success() {
-	log_info "$*"
+  log_info "$*"
 }
 
 # -----------------------------------------------------------------------------
 # OS/platform
 # -----------------------------------------------------------------------------
 os() {
-	local name=$(uname -s)
-	if [[ $name =~ MINGW ]] || [[ $os =~ MSYS ]]; then
-		echo windows
-	elif [[ $name =~ FreeBSD ]]; then
-		echo bsd
-	elif [[ $name =~ Darwin ]]; then
-		echo darwin
-	else
-		echo $name
-	fi
+  local name=$(uname -s)
+  if [[ $name =~ MINGW ]] || [[ $os =~ MSYS ]]; then
+    echo windows
+  elif [[ $name =~ FreeBSD ]]; then
+    echo bsd
+  elif [[ $name =~ Darwin ]]; then
+    echo darwin
+  else
+    echo $name
+  fi
 }
 
 platform() {
-	if [ -f /etc/debian_version ]; then
-		echo debian
-	elif [ -f /etc/os-release ]; then
-		local id=$(egrep ^ID= /etc/os-release | sed 's/.*=//; s/"//g')
-		local version=$(egrep ^VERSION_ID= /etc/os-release | sed 's/.*=//; s/"//g' | cut -d. -f1)
-		echo $id$version
-	elif [[ $(os) == "darwin" ]]; then
-		local id="macos"
-		local version=$(sw_vers | egrep ^ProductVersion | sed 's/.*://; s/ //g' | cut -d. -f1)
-		echo $id$version
-	else
-		echo win64
-	fi
+  if [ -f /etc/debian_version ]; then
+    echo debian
+  elif [ -f /etc/os-release ]; then
+    local id=$(egrep ^ID= /etc/os-release | sed 's/.*=//; s/"//g')
+    local version=$(egrep ^VERSION_ID= /etc/os-release | sed 's/.*=//; s/"//g' | cut -d. -f1)
+    echo $id$version
+  elif [[ $(os) == "darwin" ]]; then
+    local id="macos"
+    local version=$(sw_vers | egrep ^ProductVersion | sed 's/.*://; s/ //g' | cut -d. -f1)
+    echo $id$version
+  else
+    echo win64
+  fi
 }
 
 is_windows() {
@@ -162,239 +162,329 @@ unixstamp() {
 }
 
 link_file() {
-	local src=$1
-	local dst=$2
+  local src=$1
+  local dst=$2
 
-	local skip=
-	local overwrite=
-	local backup=
-	local action=
+  local skip=
+  local overwrite=
+  local backup=
+  local action=
 
-	if [ -f "$dst" -o -d "$dst" -o -L "$dst" ]; then
+  if [ -f "$dst" -o -d "$dst" -o -L "$dst" ]; then
 
-		if [ "$overwrite_all" == "false" ] && [ "$backup_all" == "false" ] && [ "$skip_all" == "false" ]; then
+    if [ "$overwrite_all" == "false" ] && [ "$backup_all" == "false" ] && [ "$skip_all" == "false" ]; then
 
-			local current_src="$(readlink $dst)"
-			if [ "$current_src" == "$src" ]; then
-				skip=true
+      local current_src="$(readlink $dst)"
+      if [ "$current_src" == "$src" ]; then
+        skip=true
 
-			else
-				warning "File already exists: $dst ($(basename "$src")), what should be done? [s]kip, [S]kip all, [o]verwrite, [O]verwrite all, [b]ackup, [B]ackup all?"
-				read -n 1 action
-				echo -e ""
+      else
+        warning "File already exists: $dst ($(basename "$src")), what should be done? [s]kip, [S]kip all, [o]verwrite, [O]verwrite all, [b]ackup, [B]ackup all?"
+        read -n 1 action
+        echo -e ""
 
-				case "$action" in
-				s) skip=true ;;
-				o) overwrite=true ;;
-				b) backup=true ;;
-				S) skip_all=true ;;
-				O) overwrite_all=true ;;
-				B) backup_all=true ;;
-				*) ;;
-				esac
-			fi
-		fi
-	fi
+        case "$action" in
+        s) skip=true ;;
+        o) overwrite=true ;;
+        b) backup=true ;;
+        S) skip_all=true ;;
+        O) overwrite_all=true ;;
+        B) backup_all=true ;;
+        *) ;;
+        esac
+      fi
+    fi
+  fi
 
-	overwrite=${overwrite:-$overwrite_all}
-	backup=${backup:-$backup_all}
-	skip=${skip:-$skip_all}
+  overwrite=${overwrite:-$overwrite_all}
+  backup=${backup:-$backup_all}
+  skip=${skip:-$skip_all}
 
-	if [ "$overwrite" == "true" ]; then
-		rm -rf "$dst"
-		status "Overwriting $dst"
-	fi
+  if [ "$overwrite" == "true" ]; then
+    rm -rf "$dst"
+    status "Overwriting $dst"
+  fi
 
-	if [ "$backup" == "true" ]; then
-		mv "$dst" "${dst}.backup"
-		status "Backing up $dst"
-	fi
+  if [ "$backup" == "true" ]; then
+    mv "$dst" "${dst}.backup"
+    status "Backing up $dst"
+  fi
 
-	if [ "$skip" == "true" ]; then
-		log "Skipping $dst"
-	fi
+  if [ "$skip" == "true" ]; then
+    log "Skipping $dst"
+  fi
 
-	if [ "$skip" != "true" ]; then
-		ln -s "$src" "$dst"
-		status "Linked $src to $dst"
-	fi
+  if [ "$skip" != "true" ]; then
+    ln -s "$src" "$dst"
+    status "Linked $src to $dst"
+  fi
+}
+
+git_clone() {
+  local repo="$1"
+  local dir="$2"
+
+  if [ ! -d "$dir" ]; then
+    git clone "$repo" "$dir"
+  fi
+}
+
+github_download_release() {
+  local user="$1"
+  local repo="$2"
+  local branch="$3"
+  local suffix="$4"
+  local dir="$5"
+
+  if [ ! -d "$dir" ]; then
+    mkdir -p "$dir"
+  fi
+
+  local baseurl="https://github.com/${user}/${repo}"
+  local tarfile="${repo}-${branch}${suffix}.tar.gz"
+
+  info "Downloading $tarfile from $baseurl"
+
+  pushd $dir >  /dev/null
+  curl -sL "${baseurl}/releases/download/${branch}/${tarfile}" > "${tarfile}"
+  tar -xzf ./${tarfile}
+  rm ./${tarfile}
+  popd > /dev/null
 }
 
 update() {
-	title "Updating"
-	git pull origin main
+  title "Updating dotfiles"
+  git pull origin main
 }
 
 setup_git() {
-	title "Setting up Git"
+  title "Setting up Git"
 }
 
 setup_symlinks() {
-	title "Setting up symlinks"
+  title "Setting up symlinks"
 
-	# global flags for conflict behavior, handled inside all calls to link_file
-	local overwrite_all=false
-	local skip_all=false
-	local backup_all=false
+  # global flags for conflict behavior, handled inside all calls to link_file
+  local overwrite_all=false
+  local skip_all=false
+  local backup_all=false
 
-	# link symlinked home files
-	for src in $(find -H "$DOTFILES_DIR" -maxdepth 3 -name '*.symlink'); do
-		dst="$HOME/.$(basename "${src%.*}")"
-		link_file "$src" "$dst"
-	done
+  # link symlinked home files
+  for src in $(find -H "$DOTFILES_DIR" -maxdepth 3 -name '*.symlink'); do
+    dst="$HOME/.$(basename "${src%.*}")"
+    link_file "$src" "$dst"
+  done
 
-	# link config files
-	if [ ! -d "$HOME/.config" ]; then
-		mkdir -p "$HOME/.config"
-	fi
-	for src in $(find "${DOTFILES_DIR}/config" -mindepth 1 -maxdepth 1); do
-		basename="$(basename ${src})"
-		if [ ${basename} != ".DS_Store" ]; then
-			dst="$HOME/.config/$(basename ${src})"
-			link_file "$src" "$dst"
-		fi
-	done
+  # link config files
+  if [ ! -d "$HOME/.config" ]; then
+    mkdir -p "$HOME/.config"
+  fi
+  for src in $(find "${DOTFILES_DIR}/config" -mindepth 1 -maxdepth 1); do
+    basename="$(basename ${src})"
+    if [ ${basename} != ".DS_Store" ]; then
+      dst="$HOME/.config/$(basename ${src})"
+      link_file "$src" "$dst"
+    fi
+  done
 
-	# link scripts
-	if [ ! -d "$HOME/.local/bin" ]; then
-		mkdir -p "$HOME/.local/bin"
-	fi
-	for src in $(find "${DOTFILES_DIR}/bin" -mindepth 1 -maxdepth 1); do
-		dst="$HOME/.local/bin/$(basename ${src})"
-		link_file "$src" "$dst"
-	done
+  # link scripts
+  if [ ! -d "$HOME/.local/bin" ]; then
+    mkdir -p "$HOME/.local/bin"
+  fi
+  for src in $(find "${DOTFILES_DIR}/bin" -mindepth 1 -maxdepth 1); do
+    dst="$HOME/.local/bin/$(basename ${src})"
+    link_file "$src" "$dst"
+  done
 }
 
 setup_apt_packages() {
-	local packages=(
-		bat
-		cmake
-		gcc
-		build-essential
-		clang
-		clang-format
-		ninja-build
-		ccache
-		automake
-		autoconf
-		libtool
-		pkg-config
-		rpm
-		zip
-		unzip
-		gdb
-		jq
-		tmux
-		zoxide
-		fzf
-		ripgrep
-		fd-find
-		exa # eza is not available on ubuntu
-	)
+  local packages=(
+    bat
+    cmake
+    gcc
+    build-essential
+    clang
+    clang-format
+    ninja-build
+    ccache
+    automake
+    autoconf
+    libtool
+    pkg-config
+    rpm
+    zip
+    unzip
+    gdb
+    # jq
+    tmux
+    # zoxide
+    # fzf
+    # ripgrep
+    # fd-find
+    # exa # eza is not available on ubuntu
+  )
 
-	info "Installing apt packages"
-	sudo apt install -y ${packages[@]} || log_and_die "Failed to install packages"
+  info "Installing apt packages"
+  sudo apt install -y ${packages[@]} || log_and_die "Failed to install packages"
 }
 
 setup_homebrew() {
-	if is_darwin; then
-		title "Setting up Darwin settings"
-		if test ! "$(command -v brew)"; then
-			info "Homebrew not installed. Installing now"
-			curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | bash --login
-		fi
+  if is_darwin; then
+    title "Setting up Darwin settings"
+    if test ! "$(command -v brew)"; then
+      info "Homebrew not installed. Installing now"
+      curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | bash --login
+    fi
 
-		info "Installing brew dependencies"
-		brew bundle
-	fi
+    info "Installing brew dependencies"
+    brew bundle
+  fi
 }
 
 setup_linux() {
-	if is_linux; then
-		title "Setting up Linux settings"
-		if is_debian || is_ubuntu; then
-			setup_apt_packages
-		fi
-	fi
+  if is_linux; then
+    title "Setting up Linux settings"
+    if is_debian || is_ubuntu; then
+      setup_apt_packages
+    fi
+  fi
 }
 
-setup_zsh() {
-	title "Setting up zsh"
+setup_zsh_omz() {
+  title "Setting up zsh (oh-my-zsh)"
 
-	if [ ! -d "${HOME}/.oh-my-zsh" ]; then
-		git clone "https://github.com/ohmyzsh/ohmyzsh" "${HOME}/.oh-my-zsh"
-	fi
+  local omz="${HOME}/.oh-my-zsh"
+  local omz_plugins="${omz}/custom/plugins"
+  local omz_themes="${omz}/custom/themes"
 
-	if [ ! -d "${HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestions" ]; then
-		git clone "https://github.com/zsh-users/zsh-autosuggestions" "$HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions"
-	fi
+  git_clone "https://github.com/ohmyzsh/ohmyzsh" "$omz"
+  git_clone "https://github.com/zsh-users/zsh-autosuggestions" "${omz_plugins}/zsh-autosuggestions"
+  git_clone "https://github.com/zsh-users/zsh-completions" "${omz_plugins}/zsh-completions"
+  git_clone "https://github.com/zsh-users/zsh-syntax-highlighting" "${omz_plugins}/zsh-syntax-highlighting"
+  git_clone "https://github.com/Aloxaf/fzf-tab" "${omz_plugins}/fzf-tab"
+  git_clone "https://github.com/romkatv/powerlevel10k" "${omz_themes}/powerlevel10k"
+}
 
-	if [ ! -d "${HOME}/.oh-my-zsh/custom/plugins/zsh-completions" ]; then
-		git clone "https://github.com/zsh-users/zsh-completions" "$HOME/.oh-my-zsh/custom/plugins/zsh-completions"
-	fi
+setup_zsh_zinit() {
+  title "Setting up zsh (zinit)"
 
-	if [ ! -d "${HOME}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting" ]; then
-		git clone "https://github.com/zsh-users/zsh-syntax-highlighting" "$HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting"
-	fi
-
-	if [ ! -d "${HOME}/.oh-my-zsh/custom/plugins/fzf-tab" ]; then
-		git clone "https://github.com/Aloxaf/fzf-tab" "$HOME/.oh-my-zsh/custom/plugins/fzf-tab"
-	fi
-
-	if [ ! -d "${HOME}/.oh-my-zsh/custom/thems/powerlevel10k" ]; then
-		git clone --depth 1 "https://github.com/romkatv/powerlevel10k" "$HOME/.oh-my-zsh/custom/themes/powerlevel10k"
-	fi
+  local zinit="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
+  git_clone "https://github.com/zdharma-continuum/zinit.git" "$zinit"
 }
 
 setup_tmux() {
-	title "Setting up tmux"
+  title "Setting up tmux"
 
-	if [ ! -d "${HOME}/.tmux/plugins/tpm" ]; then
-		git clone --depth 1 "https://github.com/tmux-plugins/tpm" "${HOME}/.tmux/plugins/tpm"
-	fi
+  local tpm="${HOME}/.tmux/plugins/tpm}"
+  if [ ! -d "$tpm" ]; then
+    git clone --depth 1 "https://github.com/tmux-plugins/tpm" "$tpm"
+  fi
+}
+
+setup_asdf() {
+  title "Setting up asdf"
+
+  local suffix=""
+  if is_linux; then
+    suffix="-linux-amd64"
+  elif is_darwin; then
+    suffix="-darwin-arm64"
+  fi
+  github_download_release "asdf-vm" "asdf" "v0.16.7" "$suffix" "${HOME}/.local/bin"
+
+  setup_asdf_tool() {
+    local name="$1"
+    local version="$2"
+
+    if test ! "$(command -v asdf)"; then
+      error "asdf command not found"
+      return 1
+    fi
+
+    info "Adding $name (version $version) with asdf"
+    asdf plugin add $name
+    asdf install $name $version
+    asdf set -u $name $version
+  }
+
+  setup_asdf_tool bat latest
+  setup_asdf_tool eza latest
+  setup_asdf_tool fdfind latest
+  setup_asdf_tool fzf latest
+  setup_asdf_tool jq latest
+  setup_asdf_tool ripgrep latest
+  setup_asdf_tool zoxide latest
 }
 
 main() {
-	case "$1" in
-	update)
-		update
-		;;
-	git)
-		setup_git
-		;;
-	mac)
-		setup_homebrew
-		;;
-	linux)
-		setup_linux
-		;;
-	symlinks)
-		setup_symlinks
-		;;
-	zsh)
-		setup_zsh
-		;;
-	tmux)
-		setup_tmux
-		;;
-	all)
-		setup_git
-		update
-		setup_symlinks
-		setup_homebrew
-		setup_linux
-		setup_tmux
-		setup_zsh
-		;;
-	*)
-		echo -e $"\nUsage: $(basename "$0") {all|git|mac|linux|symlinks|tmux|zsh|update}\n"
-		exit 1
-		;;
-	esac
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+    --update)
+      update
+      ;;
+    --git)
+      setup_git
+      ;;
+    --mac)
+      setup_homebrew
+      ;;
+    --linux)
+      setup_linux
+      ;;
+    --symlinks)
+      setup_symlinks
+      ;;
+    --asdf)
+      setup_asdf
+      ;;
+    --zsh-omz)
+      setup_zsh_omz
+      ;;
+    --zsh-zinit)
+      setup_zsh_zinit
+      ;;
+    --tmux)
+      setup_tmux
+      ;;
+    --all)
+      setup_git
+      update
+      setup_symlinks
+      setup_homebrew
+      setup_linux
+      setup_tmux
+      setup_asdf
+      # setup_zsh_omz
+      setup_zsh_zinit
+      ;;
+    --help)
+      echo "
+Usage: $(basename "$0")
 
-	echo -e
-	success "Done"
-	exit 0
+--all       Perform all of the configuration steps
+--git       Configures global git setup
+--mac       Install brew and brew utilities
+--linux     Installs utilities using system package manager (only apt for now)
+--symlinks  Configures dotfiles from this repo in system locations
+--tmux      Installs and configures tmux with tpm plugins
+--asdf      Installs and configures asdf package manager
+--zsh-omz   Installs zsh and plugins using oh-my-zsh
+--zsh-zinit Installs zsh and plugins using zinit
+--update    Update local dotfile repository
+"
+      exit 0
+      ;;
+    *)
+      error "Unknown option '$1'"
+      exit 1
+      ;;
+    esac
+    shift
+  done
+
+  echo -e
+  success "Done"
+  exit 0
 }
 
-main "$*"
+main "$@"

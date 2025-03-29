@@ -1,5 +1,5 @@
 set-option -g default-terminal 'tmux-256color'
-set-option -a terminal-overrides ',alacritty:RGB,screen-256color:RGB'
+set-option -a terminal-overrides ',alacritty:RGB,xterm-256color:RGB'
 
 # key bindings
 unbind C-b

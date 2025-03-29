@@ -51,7 +51,7 @@ nmap <leader>bb :e #<cr>
 nmap <leader>` :e #<cr>
 
 " terminals
- tmap <esc><esc> <c-\\><c-n>
+" tmap <esc><esc> <c-\\><c-n>
 " tmap <c-h> :wincmd h<cr>
 " tmap <c-j> :wincmd j<cr>
 " tmap <c-k> :wincmd k<cr>

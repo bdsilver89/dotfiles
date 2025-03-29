@@ -41,6 +41,8 @@ map("n", "<leader><tab>d", "<cmd>tabclose<cr>", { desc = "Close Tab" })
 map("n", "[<tab>", "<cmd>tabprevious<cr>", { desc = "Previous Tab" })
 map("n", "]<tab>", "<cmd>tabnext<cr>", { desc = "Next Tab" })
 
+map("n", "<esc>", "<cmd>nohlsearch<cr>")
+
 -- terminal
 map("t", "<esc><esc>", "<c-\\><c-n>", { desc = "Exit terminal mode" })
 
@@ -49,6 +51,9 @@ map("n", "<leader>qq", "<cmd>qa<cr>", { desc = "Quit All" })
 
 -- lazy
 map("n", "<leader>l", "<cmd>Lazy<cr>", { desc = "Lazy" })
+
+-- diagnostics
+map("n", "<leader>cd", vim.diagnostic.open_float, { desc = "Line Diagnostics" })
 
 -- popups/completion
 -- stylua: ignore start

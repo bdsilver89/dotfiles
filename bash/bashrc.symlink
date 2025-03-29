@@ -67,6 +67,8 @@ alias grh='git reset'
 alias grs='git restore'
 alias grs='git restore'
 alias gst='git status'
+alias gsta='git stash push'
+alias gstp='git stash pop'
 
 # eza/exa/ls
 if [ -x "$(command -v eza)" ]; then
