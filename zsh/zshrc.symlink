@@ -97,7 +97,7 @@ fi
 
 # shell integrations
 if [ -x "$(command -v fzf)" ]; then
-  eval "$(fzf --bash)"
+  eval "$(fzf --bash &>/dev/null)"
 fi
 
 if [ -x "$(command -v zoxide)" ]; then

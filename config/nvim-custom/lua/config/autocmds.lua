@@ -74,34 +74,6 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
-vim.api.nvim_create_autocmd("FileType", {
-  desc = "Wrap and spellcheck filetypes",
-  group = augroup("wrap_spell"),
-  pattern = { "text", "plaintex", "typst", "gitcommit", "markdown" },
-  callback = function()
-    vim.opt_local.wrap = true
-    vim.opt_local.spell = true
-  end,
-})
-
--- Fix conceallevel for json files
-vim.api.nvim_create_autocmd({ "FileType" }, {
-  group = augroup("json_conceal"),
-  pattern = { "json", "jsonc", "json5" },
-  callback = function()
-    vim.opt_local.conceallevel = 0
-  end,
-})
-
-vim.api.nvim_create_autocmd("FileType", {
-  desc = "Disable formatexpr for gitcommit in fugitive",
-  group = augroup("gitcommit_format"),
-  pattern = { "gitcommit" },
-  callback = function()
-    vim.opt_local.formatexpr = ""
-  end,
-})
-
 vim.api.nvim_create_autocmd("BufWritePre", {
   desc = "Auto create dirs when saving file",
   group = augroup("auto_create_dirs"),
@@ -119,6 +91,9 @@ vim.api.nvim_create_autocmd("LspAttach", {
   group = augroup("lspattach"),
   callback = function(event)
     local client = vim.lsp.get_client_by_id(event.data.client_id)
+    if not client then
+      return
+    end
 
     local function map(keys, func, desc, mode)
       mode = mode or "n"
@@ -128,8 +103,33 @@ vim.api.nvim_create_autocmd("LspAttach", {
     map("gd", vim.lsp.buf.definition, "vim.lsp.buf.definition")
     map("gD", vim.lsp.buf.declaration, "vim.lsp.buf.declaration")
 
+    -- diagnostics
+    vim.diagnostic.config({
+      underline = true,
+      update_in_insert = false,
+      signs = {
+        text = vim.g.has_nerd_font
+            and {
+              [vim.diagnostic.severity.ERROR] = " ",
+              [vim.diagnostic.severity.WARN] = " ",
+              [vim.diagnostic.severity.INFO] = " ",
+              [vim.diagnostic.severity.HINT] = "󰌶 ",
+              -- [vim.diagnostic.severity.ERROR] = " ",
+              -- [vim.diagnostic.severity.WARN] = " ",
+              -- [vim.diagnostic.severity.HINT] = " ",
+              -- [vim.diagnostic.severity.INFO] = " ",
+            }
+          or {},
+      },
+      virtual_text = {
+        spacing = 4,
+        source = "if_many",
+      },
+      severity_sort = true,
+    })
+
     -- enable LSP completion
-    if client and client:supports_method("textDocument/completion") then
+    if client:supports_method("textDocument/completion") then
       vim.lsp.completion.enable(true, client.id, event.buf, { autotrigger = true })
 
       -- LSP completion doc popup
@@ -164,62 +164,9 @@ vim.api.nvim_create_autocmd("LspAttach", {
     end
 
     -- LSP codelens mappings
-    if client and client:supports_method("textDocument/codeLens") then
+    if client:supports_method("textDocument/codeLens") then
       map("grc", vim.lsp.codelens.run, "vim.lsp.codelens.run", { "n", "v" })
       map("grC", vim.lsp.codelens.refresh, "vim.lsp.codelens.refresh")
-    end
-
-    -- LSP word references
-    if client and client:supports_method("textDocument/documentHighlight") then
-      local word_group = vim.api.nvim_create_augroup("lsp_words", { clear = false })
-      vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
-        group = word_group,
-        buffer = event.buf,
-        callback = vim.lsp.buf.document_highlight,
-      })
-      vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
-        group = word_group,
-        buffer = event.buf,
-        callback = vim.lsp.buf.clear_references,
-      })
-      vim.api.nvim_create_autocmd("LspDetach", {
-        group = vim.api.nvim_create_augroup("lsp_words_detach", { clear = true }),
-        callback = function(event2)
-          vim.lsp.buf.clear_references()
-          vim.api.nvim_clear_autocmds({ group = "lsp_words", buffer = event2.buf })
-        end,
-      })
-
-      -- local jump_word = function(count, cycle)
-      --   count = count or 1
-      --
-      --   local cursor = vim.api.nvim_win_get_cursor(0)
-      --   local words, idx = {}, nil
-      --   local extmarks = {}
-      --   -- vim.list_extend(extmarks, vim.api.nvim_buf_get_extmarks(0,
-      --
-      --   if not idx then
-      --     return
-      --   end
-      --   idx = idx + count
-      --   if cycle then
-      --     idx = (idx - 1) % #words + 1
-      --   end
-      --   local target = words[idx]
-      --   if target then
-      --     vim.cmd.normal({ "m`", bang = true }) -- set jump point
-      --     vim.api.nvim_win_set_cursor(0, target.from)
-      --     vim.notify(("Reference [%d/%d]"):format(idx, #words), vim.log.levels.INFO)
-      --     vim.cmd.normal({ "zv", bang = true }) -- open folds
-      --   else
-      --     vim.notify("No more references", vim.log.levels.WARN)
-      --   end
-      -- end
-      --
-      -- -- stylua: ignore start
-      -- map("[r", function() jump_word(vim.v.count1) end, "Previous Reference")
-      -- map("]r", function() jump_word(-vim.v.count1) end, "Next Refernece")
-      -- -- stylua: ignore end
     end
   end,
 })

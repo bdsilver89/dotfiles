@@ -63,3 +63,5 @@ map("i", "<down>", function() return vim.fn.pumvisible() == 1 and "<c-n>" or "<d
 map("i", "<up>", function() return vim.fn.pumvisible() == 1 and "<c-p>" or "<up>" end, { expr = true })
 map("i", "<cr>", function() return vim.fn.pumvisible() == 1 and "<c-y>" or "<cr>" end, { expr = true })
 -- stylua: ignore end
+
+-- TODO: toggle options

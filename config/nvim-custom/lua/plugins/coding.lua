@@ -6,19 +6,49 @@ return {
   },
 
   {
-    "echasnovski/mini.pairs",
-    event = "VeryLazy",
+    "echasnovski/mini.nvim",
+    keys = function(_, keys)
+      local opts = require("config.utils").opts("mini.nvim")
+      local mappings = {
+        { opts.surround.mappings.add, desc = "Add Surrounding", mode = { "n", "v" } },
+        { opts.surround.mappings.delete, desc = "Delete Surrounding" },
+        { opts.surround.mappings.find, desc = "Find Right Surrounding" },
+        { opts.surround.mappings.find_left, desc = "Find Left Surrounding" },
+        { opts.surround.mappings.highlight, desc = "Highlight Surrounding" },
+        { opts.surround.mappings.replace, desc = "Replace Surrounding" },
+        { opts.surround.mappings.update_n_lines, desc = "Update `MiniSurround.config.n_lines`" },
+      }
+      mappings = vim.tbl_filter(function(m)
+        return m[1] and #m[1] > 0
+      end, mappings)
+      return vim.list_extend(mappings, keys)
+    end,
     opts = {
-      modes = { insert = true, command = true, terminal = false },
-      -- skip autopair when next character is one of these
-      skip_next = [=[[%w%%%'%[%"%.%`%$]]=],
-      -- skip autopair when the cursor is inside these treesitter nodes
-      skip_ts = { "string" },
-      -- skip autopair when next character is closing pair
-      -- and there are more closing pairs than opening pairs
-      skip_unbalanced = true,
-      -- better deal with markdown code blocks
-      markdown = true,
+      pairs = {
+        opts = {
+          modes = { insert = true, command = true, terminal = false },
+          -- skip autopair when next character is one of these
+          skip_next = [=[[%w%%%'%[%"%.%`%$]]=],
+          -- skip autopair when the cursor is inside these treesitter nodes
+          skip_ts = { "string" },
+          -- skip autopair when next character is closing pair
+          -- and there are more closing pairs than opening pairs
+          skip_unbalanced = true,
+          -- better deal with markdown code blocks
+          markdown = true,
+        },
+      },
+      surround = {
+        mappings = {
+          add = "gsa", -- Add surrounding in Normal and Visual modes
+          delete = "gsd", -- Delete surrounding
+          find = "gsf", -- Find surrounding (to the right)
+          find_left = "gsF", -- Find surrounding (to the left)
+          highlight = "gsh", -- Highlight surrounding
+          replace = "gsr", -- Replace surrounding
+          update_n_lines = "gsn", -- Update `n_lines`
+        },
+      },
     },
   },
 

@@ -57,6 +57,7 @@ opt.foldenable = true
 opt.foldcolumn = "0"
 opt.foldmethod = "expr"
 opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+opt.foldtext = ""
 opt.formatexpr = "v:lua.vim.lsp.formatexpr()" -- use LSP for formatter
 opt.formatoptions = "jcroqlnt"
 opt.grepformat = "%f:%l:%c:%m"
@@ -68,7 +69,7 @@ opt.linebreak = true -- wrap lines at convenient points
 opt.list = true -- show some invisible characters
 opt.mouse = "a" -- enable mouse mode
 opt.number = true -- line number in numbercolumn
--- opt.pumblend = 10 -- popup blend
+opt.pumblend = 10 -- popup blend
 opt.pumheight = 10 -- maximum number of entries in a popup
 opt.relativenumber = true -- relative line numbers
 opt.ruler = false -- disable ruler
@@ -86,7 +87,7 @@ opt.spelllang = { "en" }
 opt.splitbelow = true -- split new windows below
 opt.splitkeep = "screen"
 opt.splitright = true -- split new windows to the right
-opt.statuscolumn = "%=%l%s"
+opt.statuscolumn = "%=%l %s"
 opt.tabstop = 2
 opt.timeoutlen = vim.g.vscode and 1000 or 300 -- lower the default to quickly trigger which-key
 opt.undofile = true
@@ -94,5 +95,31 @@ opt.undolevels = 10000
 opt.updatetime = 200 -- save sawp file and trigger CursorHold
 opt.virtualedit = "block" -- allow cursor to move where there is no text in visual-block mode
 opt.wildmode = "longest:full,full" -- command-line completion mode
+opt.winblend = 10
 opt.winminwidth = 5 -- minimum window width
 opt.wrap = false -- disable line wrap
+
+-- bigfile support
+vim.filetype.add({
+  pattern = {
+    [".*"] = {
+      function(path, buf)
+        if not path or not buf or vim.bo[buf].filetype == "bigfile" then
+          return
+        end
+        if path ~= vim.api.nvim_buf_get_name(buf) then
+          return
+        end
+        local size = vim.fn.getfsize(path)
+        if size <= 0 then
+          return
+        end
+        if size >= 1.5 * 1024 * 1024 then
+          return "bigfile"
+        end
+        local lines = vim.api.nvim_buf_line_count(buf)
+        return (size - lines) / lines > 1000 and "bigfile" or nil
+      end,
+    },
+  },
+})

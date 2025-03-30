@@ -12,8 +12,8 @@ if not vim.uv.fs_stat(lazypath) then
   })
   if vim.v.shell_error ~= 0 then
     vim.api.nvim_echo({
-      { "Failed to clone lazy.nvim:\n",  "ErrorMsg" },
-      { err,  "WarningMsg" },
+      { "Failed to clone lazy.nvim:\n", "ErrorMsg" },
+      { err, "WarningMsg" },
       { "\nPress any key to exit..." },
     }, true, {})
     vim.fn.getchar()
@@ -47,6 +47,23 @@ require("lazy").setup({
         "tutor",
         "zipPlugin",
       },
+    },
+  },
+  ui = {
+    icons = vim.g.has_nerd_font and {} or {
+      cmd = "⌘",
+      config = "🛠",
+      event = "📅",
+      ft = "📂",
+      init = "⚙",
+      keys = "🗝",
+      plugin = "🔌",
+      runtime = "💻",
+      require = "🌙",
+      source = "📄",
+      start = "🚀",
+      task = "📌",
+      lazy = "💤 ",
     },
   },
 })
