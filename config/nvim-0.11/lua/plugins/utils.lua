@@ -23,7 +23,18 @@ return {
   {
     "echasnovski/mini.nvim",
     event = "VeryLazy",
-    opts = {},
+    keys = {
+      {
+        "<leader>bd",
+        function()
+          MiniBufremove.delete(0, false)
+        end,
+        "Delete buffer",
+      },
+    },
+    opts = {
+      bufremove = {},
+    },
     config = function(_, opts)
       for k, v in pairs(opts) do
         require("mini." .. k).setup(v)

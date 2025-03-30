@@ -27,7 +27,7 @@ map("o", "N", "'nN'[v:searchforward]", { expr = true, desc = "Prev Search Result
 
 -- buffers
 map("n", "<leader>bb", "<cmd>e #<cr>", { desc = "Alternate Buffer" })
-map("n", "<leader>bd", "<cmd>bd<cr>", { desc = "Delete Buffer" })
+-- map("n", "<leader>bd", "<cmd>bd<cr>", { desc = "Delete Buffer" })
 map("n", "<leader>bD", "<cmd>:bd<cr>", { desc = "Delete Buffer And Window" })
 
 -- windows
