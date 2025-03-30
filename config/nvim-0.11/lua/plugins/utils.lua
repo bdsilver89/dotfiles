@@ -23,17 +23,17 @@ return {
   {
     "echasnovski/mini.nvim",
     event = "VeryLazy",
+    -- stylua: ignore
     keys = {
-      {
-        "<leader>bd",
-        function()
-          MiniBufremove.delete(0, false)
-        end,
-        "Delete buffer",
-      },
+      { "<leader>bd", function() MiniBufremove.delete(0, false) end, "Delete buffer", },
+      { "<leader><space>", "<cmd>Pick files<cr>", "Find files" },
+      { "<leader>/", "<cmd>Pick grep_live<cr>", "Grep Live" },
+      { "<leader>.", "<cmd>Pick grep<cr>", "Grep" },
+      { "<leader>,", "<cmd>Pick buffers<cr>", "Buffers" },
     },
     opts = {
       bufremove = {},
+      pick = {},
     },
     config = function(_, opts)
       for k, v in pairs(opts) do

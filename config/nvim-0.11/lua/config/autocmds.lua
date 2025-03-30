@@ -74,6 +74,66 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
+vim.api.nvim_create_autocmd("FileType", {
+  desc = "Wrap and spellcheck filetypes",
+  group = augroup("wrap_spell"),
+  pattern = { "text", "plaintex", "typst", "gitcommit", "markdown" },
+  callback = function()
+    vim.opt_local.wrap = true
+    vim.opt_local.spell = true
+  end,
+})
+
+-- Fix conceallevel for json files
+vim.api.nvim_create_autocmd({ "FileType" }, {
+  group = augroup("json_conceal"),
+  pattern = { "json", "jsonc", "json5" },
+  callback = function()
+    vim.opt_local.conceallevel = 0
+  end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  desc = "Disable formatexpr for gitcommit in fugitive",
+  group = augroup("gitcommit_format"),
+  pattern = { "gitcommit" },
+  callback = function()
+    vim.opt_local.formatexpr = ""
+  end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  desc = "Bigfile",
+  group = augroup("bigfile"),
+  pattern = "bigfile",
+  callback = function(event)
+    local path = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(event.buf), ":p:~:.")
+    vim.notify(
+      ("Big file detected `%s`.\nSome Neovim features have been **disabled**"):format(path),
+      vim.log.levels.WARN
+    )
+
+    vim.api.nvim_buf_call(event.buf, function()
+      local ft = vim.filetype.match({ buf = event.buf }) or ""
+      if vim.fn.exists(":NoMatchParen") ~= 0 then
+        vim.cmd([[NoMatchParen]])
+      end
+
+      vim.api.nvim_set_option_value("foldmethod", "manual", { scope = "local", win = 0 })
+      vim.api.nvim_set_option_value("statuscolumn", "", { scope = "local", win = 0 })
+      vim.api.nvim_set_option_value("conceallevel", 0, { scope = "local", win = 0 })
+
+      vim.b.minianimate_disable = true
+
+      vim.schedule(function()
+        if vim.api.nvim_buf_is_valid(event.buf) then
+          vim.bo[event.buf].syntax = ft
+        end
+      end)
+    end)
+  end,
+})
+
 vim.api.nvim_create_autocmd("BufWritePre", {
   desc = "Auto create dirs when saving file",
   group = augroup("auto_create_dirs"),
