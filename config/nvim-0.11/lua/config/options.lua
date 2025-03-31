@@ -11,6 +11,10 @@ g.loaded_python3_provider = 0
 g.loaded_perl_provider = 0
 g.loaded_ruby_provider = 0
 
+-- disable netrw
+g.loaded_netrwPlugin = 1
+g.loaded_netrw = 1
+
 -- nerd font
 g.has_nerd_font = true
 
