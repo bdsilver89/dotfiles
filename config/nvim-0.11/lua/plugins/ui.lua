@@ -48,7 +48,7 @@ return {
         return "%2l:%-2v"
       end
 
-      vim.api.create_autocmd("FileType", {
+      vim.api.nvim_create_autocmd("FileType", {
         pattern = { "lazy", "mason" },
         callback = function()
           vim.b.miniindentscope_disable = true
