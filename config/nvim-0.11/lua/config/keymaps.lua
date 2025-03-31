@@ -66,4 +66,44 @@ map("i", "<up>", function() return vim.fn.pumvisible() == 1 and "<c-p>" or "<up>
 map("i", "<cr>", function() return vim.fn.pumvisible() == 1 and "<c-y>" or "<cr>" end, { expr = true })
 -- stylua: ignore end
 
--- TODO: toggle options
+-- toggles
+
+map("n", "<leader>ud", function()
+  require("config.utils").toggle("Diagnostics", function()
+    return vim.diagnostic.is_enabled()
+  end, function(state)
+    vim.diagnostic.enable(state)
+  end)
+end, { desc = "Toggle Diagnostics" })
+
+map("n", "<leader>uh", function()
+  require("config.utils").toggle("Inlay Hints", function()
+    return vim.lsp.inlay_hint.is_enabled({ bufnr = 0 })
+  end, function(state)
+    vim.lsp.inlay_hint.enable(state, { bufnr = 0 })
+  end)
+end, { desc = "Toggle Inlay Hints" })
+
+map("n", "<leader>us", function()
+  require("config.utils").toggle_option("Spelling", "spell")
+end, { desc = "Toggle Spelling" })
+
+map("n", "<leader>uw", function()
+  require("config.utils").toggle_option("Wrap", "wrap")
+end, { desc = "Toggle Wrap" })
+
+map("n", "<leader>uL", function()
+  require("config.utils").toggle_option("Relative Number", "relativenumber")
+end, { desc = "Toggle Relative Number" })
+
+map("n", "<leader>ul", function()
+  require("config.utils").toggle_option("Number", "number")
+end, { desc = "Toggle Number" })
+
+map("n", "<leader>ub", function()
+  require("config.utils").toggle("Background", function()
+    return vim.opt.background:get() == "dark"
+  end, function(state)
+    vim.opt.background = state and "dark" or "light"
+  end)
+end, { desc = "Toggle Background" })

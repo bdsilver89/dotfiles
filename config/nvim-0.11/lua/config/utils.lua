@@ -39,4 +39,21 @@ function M.on_load(name, fn)
   end
 end
 
+function M.toggle(name, getter, setter)
+  local state = not getter()
+  vim.notify(
+    (state and "Enabled" or "Disabled") .. " **" .. name .. "**",
+    state and vim.log.levels.INFO or vim.log.levels.WARN
+  )
+  setter(state)
+end
+
+function M.toggle_option(name, option)
+  M.toggle(name, function()
+    return vim.opt[option]:get()
+  end, function(state)
+    vim.opt[option] = state
+  end)
+end
+
 return M
