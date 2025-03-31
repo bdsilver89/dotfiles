@@ -2,7 +2,7 @@ return {
   -- automatic tab/space detection
   {
     "tpope/vim-sleuth",
-    lazy = false,
+    event = { "BufReadPost", "BufNewFile" },
   },
 
   -- task worker
@@ -71,14 +71,14 @@ return {
     keys = function()
       local keys = {
         {
-          "<leader>H",
+          "<leader>M",
           function()
             require("harpoon"):list():add()
           end,
           desc = "Harpoon File",
         },
         {
-          "<leader>h",
+          "<leader>m",
           function()
             local harpoon = require("harpoon")
             harpoon.ui:toggle_quick_menu(harpoon:list())

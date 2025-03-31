@@ -53,9 +53,9 @@ map("n", "<leader>qq", "<cmd>qa<cr>", { desc = "Quit All" })
 map("n", "<leader>l", "<cmd>Lazy<cr>", { desc = "Lazy" })
 
 -- diagnostics
-map("n", "<leader>xd", vim.diagnostic.open_float, { desc = "Line Diagnostics" })
-map("n", "<leader>xq", vim.diagnostic.setqflist, { desc = "Quickfix Diagnostics" })
-map("n", "<leader>xl", vim.diagnostic.setloclist, { desc = "Loclist Diagnostics" })
+map("n", "grd", vim.diagnostic.open_float, { desc = "vim.diagnostic.open_float()" })
+map("n", "grq", vim.diagnostic.setqflist, { desc = "vim.diagnostic.setqflist()" })
+map("n", "grl", vim.diagnostic.setloclist, { desc = "vim.diagnostic.setloclist()" })
 
 -- popups/completion
 -- stylua: ignore start
@@ -64,6 +64,11 @@ map("i", "<s-tab>", function() return vim.fn.pumvisible() == 1 and "<c-p>" or "<
 map("i", "<down>", function() return vim.fn.pumvisible() == 1 and "<c-n>" or "<down>" end, { expr = true })
 map("i", "<up>", function() return vim.fn.pumvisible() == 1 and "<c-p>" or "<up>" end, { expr = true })
 map("i", "<cr>", function() return vim.fn.pumvisible() == 1 and "<c-y>" or "<cr>" end, { expr = true })
+
+map("i", "<c-[>", "<c-x><c-[>")
+map("i", "<c-f>", "<c-x><c-f>")
+map("i", "<c-l>", "<c-x><c-l>")
+map("i", "<c-d>", "<c-x><c-d>")
 -- stylua: ignore end
 
 -- toggles

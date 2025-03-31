@@ -47,6 +47,13 @@ return {
       stl.section_location = function()
         return "%2l:%-2v"
       end
+
+      vim.api.create_autocmd("FileType", {
+        pattern = { "lazy", "mason" },
+        callback = function()
+          vim.b.miniindentscope_disable = true
+        end,
+      })
     end,
   },
 }

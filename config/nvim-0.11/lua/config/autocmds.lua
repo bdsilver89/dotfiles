@@ -160,8 +160,9 @@ vim.api.nvim_create_autocmd("LspAttach", {
       vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = desc })
     end
 
-    map("gd", vim.lsp.buf.definition, "vim.lsp.buf.definition")
-    map("gD", vim.lsp.buf.declaration, "vim.lsp.buf.declaration")
+    map("gd", vim.lsp.buf.definition, "vim.lsp.buf.definition()")
+    map("gD", vim.lsp.buf.declaration, "vim.lsp.buf.declaration()")
+    map("grt", vim.lsp.buf.type_definition, "vim.lsp.buf.type_definition()")
 
     -- diagnostics
     vim.diagnostic.config({
@@ -207,7 +208,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
             event.buf,
             vim.lsp.protocol.Methods.completionItem_resolve,
             completion_item,
-            function(_err, item, _ctx)
+            function(_, item, _)
               if not item then
                 return
               end
