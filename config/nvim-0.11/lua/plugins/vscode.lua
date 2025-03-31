@@ -29,8 +29,8 @@ vim.api.nvim_create_autocmd("User", {
     vim.keymap.set("n", "<c-r>", "<cmd>call VSCodeNotify('redo')<cr>")
 
     -- Navigate VSCode tabs like bufferline
-    vim.keymap.set("n", "<s-h>", "<cmd>call VSCodeNotify('workbench.action.previousEditor')<cr>")
-    vim.keymap.set("n", "<s-l>", "<cmd>call VSCodeNotify('workbench.action.nextEditor')<cr>")
+    vim.keymap.set("n", "[b", "<cmd>call VSCodeNotify('workbench.action.previousEditor')<cr>")
+    vim.keymap.set("n", "]b", "<cmd>call VSCodeNotify('workbench.action.nextEditor')<cr>")
   end,
 })
 

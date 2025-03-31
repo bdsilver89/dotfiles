@@ -44,6 +44,13 @@ return {
       -- git
       { "<leader>gc", "<cmd>Pick git_commits<cr>", "Git Commits" },
       { "<leader>gb", "<cmd>Pick git_branches<cr>", "Git Branches" },
+      -- search
+      { "<leader>sd", "<cmd>Pick diagnostics scope='all'<cr>", "Diagnostics Workspace" },
+      { "<leader>sD", "<cmd>Pick diagnostics scope='current'<cr>", "Diagnostics Buffer" },
+      { "<leader>sw", "<cmd>Pick grep pattern='<cword>'<cr>", "Grep Current Word" },
+      { "<leader>cr", "<cmd>Pick lsp scope='references'<cr>", "LSP References" },
+      { "<leader>cw", "<cmd>Pick lsp scope='workspace_symbol'<cr>", "LSP Symbols Workspace" },
+      { "<leader>cd", "<cmd>Pick lsp scope='document_symbol'<cr>", "LSP Symbols Buffer" },
     },
     opts = {
       bufremove = {},
