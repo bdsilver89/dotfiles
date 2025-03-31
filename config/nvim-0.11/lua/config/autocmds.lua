@@ -47,8 +47,8 @@ vim.api.nvim_create_autocmd("FileType", {
     "dbout",
     "fugitive",
     "gitsigns-blame",
-    "git",
-    "gitcommit",
+    -- "git",
+    -- "gitcommit",
     "grug-far",
     "help",
     "lspinfo",
@@ -93,14 +93,14 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
   end,
 })
 
-vim.api.nvim_create_autocmd("FileType", {
-  desc = "Disable formatexpr for gitcommit in fugitive",
-  group = augroup("gitcommit_format"),
-  pattern = { "gitcommit" },
-  callback = function()
-    vim.opt_local.formatexpr = ""
-  end,
-})
+-- vim.api.nvim_create_autocmd("FileType", {
+--   desc = "Disable formatexpr for gitcommit in fugitive",
+--   group = augroup("gitcommit_format"),
+--   pattern = { "gitcommit" },
+--   callback = function()
+--     vim.opt_local.formatexpr = ""
+--   end,
+-- })
 
 vim.api.nvim_create_autocmd("FileType", {
   desc = "Bigfile",

@@ -7,7 +7,6 @@ local enabled = {
   "mini.nvim",
   "nvim-treesitter",
   "nvim-treesitter-textobjects",
-  "snacks.nvim"
 }
 
 local Config = require("lazy.core.config")

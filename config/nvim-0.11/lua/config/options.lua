@@ -69,7 +69,7 @@ opt.linebreak = true -- wrap lines at convenient points
 opt.list = true -- show some invisible characters
 opt.mouse = "a" -- enable mouse mode
 opt.number = true -- line number in numbercolumn
-opt.pumblend = 10 -- popup blend
+-- opt.pumblend = 10 -- popup blend
 opt.pumheight = 10 -- maximum number of entries in a popup
 opt.relativenumber = true -- relative line numbers
 opt.ruler = false -- disable ruler
@@ -95,7 +95,7 @@ opt.undolevels = 10000
 opt.updatetime = 200 -- save sawp file and trigger CursorHold
 opt.virtualedit = "block" -- allow cursor to move where there is no text in visual-block mode
 opt.wildmode = "longest:full,full" -- command-line completion mode
-opt.winblend = 10
+-- opt.winblend = 10
 opt.winminwidth = 5 -- minimum window width
 opt.wrap = false -- disable line wrap
 

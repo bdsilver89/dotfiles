@@ -3,8 +3,7 @@ return {
     "tpope/vim-fugitive",
     lazy = false,
     keys = {
-      { "<leader>gg", "<cmd>Git<cr>", desc = "Git Panel" },
-      { "<leader>gs", "<cmd>Git status<cr>", desc = "Git Status" },
+      { "<leader>gs", "<cmd>Git<cr>", desc = "Git Status" },
       -- { "<leader>gd", "<cmd>Gdiff<cr>", desc = "Git Diff" },
       { "<leader>gd", "<cmd>Gvdiffsplit<cr>", desc = "Git Diff" },
       { "<leader>gl", "<cmd>Git log<cr>", desc = "Git Log" },
@@ -18,6 +17,7 @@ return {
     "lewis6991/gitsigns.nvim",
     event = { "BufReadPost", "BufNewFile" },
     opts = {
+      current_line_blame = true,
       on_attach = function(buffer)
         local gs = require("gitsigns")
 
@@ -84,7 +84,7 @@ return {
         end, "Diff This ~")
 
         -- Toggles
-        map("n", "<leader>ub", gs.toggle_current_line_blame, "Toggle Git Line Blame")
+        map("n", "<leader>tb", gs.toggle_current_line_blame, "Toggle Git Line Blame")
 
         -- Text object
         map({ "o", "x" }, "ih", gs.select_hunk)

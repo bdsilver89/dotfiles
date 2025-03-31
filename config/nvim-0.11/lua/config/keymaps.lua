@@ -54,6 +54,8 @@ map("n", "<leader>l", "<cmd>Lazy<cr>", { desc = "Lazy" })
 
 -- diagnostics
 map("n", "<leader>cd", vim.diagnostic.open_float, { desc = "Line Diagnostics" })
+map("n", "<leader>cq", vim.diagnostic.setqflist, { desc = "Quickfix Diagnostics" })
+map("n", "<leader>cl", vim.diagnostic.setloclist, { desc = "Loclist Diagnostics" })
 
 -- popups/completion
 -- stylua: ignore start
