@@ -79,6 +79,7 @@ opt.relativenumber = true -- relative line numbers
 opt.ruler = false -- disable ruler
 opt.scrolloff = 4 -- lines of context
 opt.sessionoptions = { "buffers", "curdir", "tabpages", "winsize", "help", "globals", "skiprtp", "folds" }
+opt.showmode = false -- disable mode
 opt.shiftround = true -- round indent
 opt.shiftwidth = 2 -- size of an indent
 opt.shortmess:append({ W = true, I = true, c = true, C = true })
