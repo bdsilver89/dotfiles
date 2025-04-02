@@ -21,7 +21,7 @@ return {
     "mfussenegger/nvim-dap",
     dependencies = {
       "rcarriga/nvim-dap-ui",
-      { "theHamsta/nvim-dap-virtual-text", opts = {} },
+      -- { "theHamsta/nvim-dap-virtual-text", opts = {} },
       -- TODO: mfussenegger/nvim-dap-python -> requires setup
       -- TODO: leoluz/nvim-dap-go
     },

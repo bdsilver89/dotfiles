@@ -1,5 +1,7 @@
 return {
   "mfussenegger/nvim-lint",
+  -- FIXME: temporarily disabled
+  enabled = false,
   event = { "BufReadPost", "BufNewFile" },
   opts = {
     events = { "BufWritePost", "BufReadPost", "InsertLeave" },

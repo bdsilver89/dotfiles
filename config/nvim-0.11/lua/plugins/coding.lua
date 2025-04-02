@@ -23,8 +23,8 @@ return {
       end, mappings)
       return vim.list_extend(mappings, keys)
     end,
-    opts = {
-      pairs = {
+    opts = function(_, opts)
+      opts.pairs = {
         opts = {
           modes = { insert = true, command = true, terminal = false },
           -- skip autopair when next character is one of these
@@ -37,8 +37,9 @@ return {
           -- better deal with markdown code blocks
           markdown = true,
         },
-      },
-      surround = {
+      }
+
+      opts.surround = {
         mappings = {
           add = "gsa", -- Add surrounding in Normal and Visual modes
           delete = "gsd", -- Delete surrounding
@@ -48,16 +49,10 @@ return {
           replace = "gsr", -- Replace surrounding
           update_n_lines = "gsn", -- Update `n_lines`
         },
-      },
-    },
-  },
+      }
 
-  {
-    "echasnovski/mini.ai",
-    event = "VeryLazy",
-    opts = function()
       local ai = require("mini.ai")
-      return {
+      opts.ai = {
         n_lines = 500,
         custom_textobjects = {
           o = ai.gen_spec.treesitter({
@@ -68,9 +63,6 @@ return {
           c = ai.gen_spec.treesitter({ a = "@class.outer", i = "@class.inener" }),
         },
       }
-    end,
-    config = function(_, opts)
-      require("mini.ai").setup(opts)
 
       -- register text objects with which-key
       require("config.utils").on_load("which-key.nvim", function()

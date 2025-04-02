@@ -7,6 +7,7 @@ return {
   -- schema utilities for json and yaml lsp
   {
     "b0o/SchemaStore.nvim",
+    enabled = false, -- FIXME: disabled until native snippet integration works with this
     lazy = true,
     version = false,
   },
