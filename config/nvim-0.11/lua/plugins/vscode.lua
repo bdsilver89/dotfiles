@@ -7,6 +7,7 @@ local enabled = {
   "mini.nvim",
   "nvim-treesitter",
   "nvim-treesitter-textobjects",
+  "snacks.nvim",
 }
 
 local Config = require("lazy.core.config")
@@ -35,6 +36,18 @@ vim.api.nvim_create_autocmd("User", {
 })
 
 return {
+  {
+    "snacks.nvim",
+    opts = {
+      bigfile = { enabled = false },
+      dashboard = { enabled = false },
+      indent = { enabled = false },
+      notifier = { enabled = false },
+      picker = { enabled = false },
+      scroll = { enabled = false },
+      statuscolumn = { enabled = false },
+    },
+  },
   {
     "nvim-treesitter/nvim-treesitter",
     opts = { highlight = { enable = false } },

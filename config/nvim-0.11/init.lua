@@ -19,6 +19,7 @@ load_module("options")
 -- load lsp configuration
 load_module("lsp")
 
+-- clipboard loading is very slow, defer the setting
 local lazy_clipboard = vim.opt.clipboard
 vim.opt.clipboard = ""
 

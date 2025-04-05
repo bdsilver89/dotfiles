@@ -103,28 +103,3 @@ opt.wildmode = "longest:full,full" -- command-line completion mode
 -- opt.winblend = 10
 opt.winminwidth = 5 -- minimum window width
 opt.wrap = false -- disable line wrap
-
--- bigfile support
-vim.filetype.add({
-  pattern = {
-    [".*"] = {
-      function(path, buf)
-        if not path or not buf or vim.bo[buf].filetype == "bigfile" then
-          return
-        end
-        if path ~= vim.api.nvim_buf_get_name(buf) then
-          return
-        end
-        local size = vim.fn.getfsize(path)
-        if size <= 0 then
-          return
-        end
-        if size >= 1.5 * 1024 * 1024 then
-          return "bigfile"
-        end
-        local lines = vim.api.nvim_buf_line_count(buf)
-        return (size - lines) / lines > 1000 and "bigfile" or nil
-      end,
-    },
-  },
-})
