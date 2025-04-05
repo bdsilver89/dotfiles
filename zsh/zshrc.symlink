@@ -54,6 +54,7 @@ zinit cdreplay -q
 bindkey -v
 bindkey "^p" history-search-backward
 bindkey "^n" history-search-forward
+bindkey "^r" history-incremental-search-backward
 
 # history
 HISTSIZE=5000
@@ -91,13 +92,13 @@ else
 fi
 alias l="ls -lah"
 
-if [ -x "$(command -v fdfind)" ]; then
-  alias fd="fdfind"
+if [ -x "$(command -v bat)" ]; then
+  alias cat="bat"
 fi
 
 # shell integrations
 if [ -x "$(command -v fzf)" ]; then
-  eval "$(fzf --bash &>/dev/null)"
+  source <(fzf --zsh)
 fi
 
 if [ -x "$(command -v zoxide)" ]; then

@@ -409,7 +409,7 @@ setup_asdf() {
 
   setup_asdf_tool bat latest
   setup_asdf_tool eza latest
-  setup_asdf_tool fdfind latest
+  setup_asdf_tool fd latest
   setup_asdf_tool fzf latest
   setup_asdf_tool jq latest
   setup_asdf_tool lazygit latest
