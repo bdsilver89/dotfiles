@@ -1,50 +1,18 @@
-local g = vim.g
-local opt = vim.opt
+-- Leader key
+vim.g.mapleader = " "
+vim.g.mapllocaleader = " "
 
--- leader key
-g.mapleader = " "
-g.maplocalleader = " "
+-- Providers
+vim.g.loaded_python3_provider = 0
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_node_provider = 0
+vim.g.loaded_ruby_provider = 0
 
--- disable providers
-g.loaded_node_provider = 0
-g.loaded_python3_provider = 0
-g.loaded_perl_provider = 0
-g.loaded_ruby_provider = 0
-
--- disable netrw
-g.loaded_netrwPlugin = 1
-g.loaded_netrw = 1
-
--- nerd font
-g.has_nerd_font = true
-
--- switch to powershell if available on windows
 if vim.fn.has("win32") == 1 then
-  local function setup_powershell(shell)
-    vim.o.shell = shell
-    -- Setting shell command flags
-    vim.o.shellcmdflag =
-      "-NoLogo -NonInteractive -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.UTF8Encoding]::new();$PSDefaultParameterValues['Out-File:Encoding']='utf8';$PSStyle.OutputRendering='plaintext';Remove-Alias -Force -ErrorAction SilentlyContinue tee;"
-
-    -- Setting shell redirection
-    vim.o.shellredir = '2>&1 | %%{ "$_" } | Out-File %s; exit $LastExitCode'
-
-    -- Setting shell pipe
-    vim.o.shellpipe = '2>&1 | %%{ "$_" } | tee %s; exit $LastExitCode'
-
-    -- Setting shell quote options
-    vim.o.shellquote = ""
-    vim.o.shellxquote = ""
-  end
-
-  if vim.fn.executable("pwsh") == 1 then
-    setup_powershell("pwsh")
-  elseif vim.fn.executable("powershell") == 1 then
-    setup_powershell("powershell")
-  else
-    vim.notify("No powershell executable found", vim.log.levels.ERROR, { title = "Config" })
-  end
+  require("utils").powershell_setup()
 end
+
+local opt = vim.opt
 
 opt.autowrite = true -- enable auto write
 opt.clipboard = vim.env.SSH_TTY and "" or "unnamedplus" -- sync with sytem clipboard
@@ -100,6 +68,7 @@ opt.undolevels = 10000
 opt.updatetime = 200 -- save sawp file and trigger CursorHold
 opt.virtualedit = "block" -- allow cursor to move where there is no text in visual-block mode
 opt.wildmode = "longest:full,full" -- command-line completion mode
+opt.winborder = "rounded"
 -- opt.winblend = 10
 opt.winminwidth = 5 -- minimum window width
 opt.wrap = false -- disable line wrap

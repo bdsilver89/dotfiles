@@ -1,50 +1,64 @@
----Helps load config modules and stops on errors
----@param name string
-local function load_module(name)
-  local ok, err = pcall(require, "config." .. name)
-  if not ok then
+-- bootstrap lazy.nvim
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.uv.fs_stat(lazypath) then
+  local lazyrepo = "https://github.com/folke/lazy.nvim.git"
+  local out = vim.fn.system({
+    "git",
+    "clone",
+    "--filter=blob:none",
+    "--branch=stable",
+    lazyrepo,
+    lazypath,
+  })
+  if vim.v.shell_error ~= 0 then
     vim.api.nvim_echo({
-      { "Failed to load config module '" .. name .. "':\n", "ErrorMsg" },
-      { err, "WarningMsg" },
+      { "Failed to clone lazy.nvim:\n", "ErrorMsg" },
+      { out, "WarningMsg" },
       { "\nPress any key to exit..." },
     }, true, {})
     vim.fn.getchar()
     os.exit(1)
   end
 end
+vim.opt.rtp:prepend(lazypath)
 
--- load options
-load_module("options")
+-- general setup
+require("options")
+require("keymaps")
+require("autocmds")
+require("commands")
+require("winbar")
+require("statusline")
+require("lsp")
 
--- load lsp configuration
-load_module("lsp")
-
--- clipboard loading is very slow, defer the setting
-local lazy_clipboard = vim.opt.clipboard
-vim.opt.clipboard = ""
-
--- load lazy.nvim
-load_module("lazy")
-
--- autocmds
-local lazy_autocmds = vim.fn.argc(-1) == 0
-if not lazy_autocmds then
-  load_module("autocmds")
-end
-
--- lazy init of everything else
-vim.api.nvim_create_autocmd("User", {
-  pattern = "VeryLazy",
-  callback = function()
-    if lazy_autocmds then
-      load_module("autocmds")
-    end
-    load_module("keymaps")
-
-    if lazy_clipboard ~= nil then
-      vim.opt.clipboard = lazy_clipboard
-    end
-  end,
+-- setup lazy.nvim
+require("lazy").setup({
+  spec = {
+    { import = "plugins" },
+  },
+  defaults = {
+    lazy = true,
+    version = false,
+  },
+  checker = {
+    enabled = true,
+    notify = false,
+  },
+  performance = {
+    rtp = {
+      disabled_plugins = {
+        "gzip",
+        "matchit",
+        "matchparen",
+        "matchPlugin",
+        "tarPlugin",
+        "tohtml",
+        "tutor",
+        "zipPlugin",
+      },
+    },
+  },
+  ui = {
+    border = "rounded",
+  },
 })
-
-vim.cmd.colorscheme("catppuccin")

@@ -45,9 +45,9 @@ return {
       -- yaml
       "yaml-language-server",
     },
-    -- ui = {
-    --   border = "rounded",
-    -- },
+    ui = {
+      border = "rounded",
+    },
   },
   config = function(_, opts)
     require("mason").setup(opts)
