@@ -182,7 +182,7 @@ vim.api.nvim_create_autocmd("LspProgress", {
 
     -- percentage
     if data.percentage then
-      progress = progress .. data.percentage .. "%% "
+      progress = progress .. string.format("%.0f", data.percentage) .. "%% "
     end
 
     local loaded_count = data.message and string.match(data.message, "^(%d+/%d+)") or ""
