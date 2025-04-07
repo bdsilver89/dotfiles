@@ -98,10 +98,12 @@ vim.api.nvim_create_autocmd("LspAttach", {
       underline = true,
       update_in_insert = false,
       signs = {
-        [vim.diagnostic.severity.ERROR] = icons.diagnostics.ERROR,
-        [vim.diagnostic.severity.WARN] = icons.diagnostics.WARN,
-        [vim.diagnostic.severity.HINT] = icons.diagnostics.HINT,
-        [vim.diagnostic.severity.INFO] = icons.diagnostics.INFO,
+        text = {
+          [vim.diagnostic.severity.ERROR] = icons.diagnostics.ERROR,
+          [vim.diagnostic.severity.WARN] = icons.diagnostics.WARN,
+          [vim.diagnostic.severity.HINT] = icons.diagnostics.HINT,
+          [vim.diagnostic.severity.INFO] = icons.diagnostics.INFO,
+        },
       },
       virtual_text = {
         spacing = 4,

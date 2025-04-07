@@ -6,6 +6,7 @@ return {
     { "<leader><space>", "<cmd>FzfLua files<cr>", desc = "Find files" },
     { "<leader>/", "<cmd>FzfLua live_grep<cr>", desc = "Grep" },
     { "<leader>:", "<cmd>FzfLua commands<cr>", desc = "Commands" },
+    { "<leader>,", "<cmd>FzfLua buffers<cr>", desc = "Buffers" },
   },
   opts = function()
     local fzf = require("fzf-lua")
