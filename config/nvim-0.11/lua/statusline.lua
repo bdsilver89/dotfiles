@@ -288,48 +288,48 @@ function M.render()
 end
 
 -- setup highlight groups for statusline
--- local function create_hl()
---   local get_highlight = function(name)
---     return vim.api.nvim_get_hl(0, { name = name, link = false, create = false })
---   end
---
---   local red = get_highlight("DiagnosticError").fg
---   local green = get_highlight("String").fg
---   local cyan = get_highlight("Special").fg
---   local orange = get_highlight("Constant").fg
---   local purple = get_highlight("Statement").fg
---
---   local statusline = get_highlight("StatusLine")
---
---   local groups = {
---     StatuslineModeNormal = {}, -- { bg = red },
---     StatuslineModePending = {}, -- { bg = purple },
---     StatuslineModeVisual = {}, -- { bg = cyan },
---     StatuslineModeInsert = {}, --{ bg = green },
---     StatuslineModeCommand = {}, --{ bg = orange },
---     StatuslineModeOther = {}, --{ bg = purple },
---     StatuslineModeSeparatorNormal = {}, --{ fg = red },
---     StatuslineModeSeparatorPending = {}, --{ fg = purple },
---     StatuslineModeSeparatorVisual = {}, --{ fg = cyan },
---     StatuslineModeSeparatorInsert = {}, --{ fg = green },
---     StatuslineModeSepartorCommand = {}, --{ fg = orange },
---     StatuslineModeSeparatorOther = {}, -- { fg = purple },
---     StatuslineGitAdded = { fg = get_highlight("GitSignsAdd").fg, bg = statusline.bg },
---     StatuslineGitRemoved = { fg = get_highlight("GitSignsDelete").fg, bg = statusline.bg },
---     StatuslineGitChanged = { fg = get_highlight("GitSignsChange").fg, bg = statusline.bg },
---     StatuslineItalic = { fg = statusline.fg, bg = statusline.bg, italic = true },
---     StatuslineSpinner = { fg = green, bg = statusline.bg },
---     StatuslineTitle = { fg = statusline.fg, bg = statusline.bg, bold = true },
---   }
---
---   for group, opts in pairs(groups) do
---     vim.api.nvim_set_hl(0, group, opts)
---   end
--- end
---
--- vim.api.nvim_create_autocmd("ColorScheme", {
---   callback = create_hl,
--- })
+local function create_hl()
+  local get_highlight = function(name)
+    return vim.api.nvim_get_hl(0, { name = name, link = false, create = false })
+  end
+
+  --   local red = get_highlight("DiagnosticError").fg
+  --   local green = get_highlight("String").fg
+  --   local cyan = get_highlight("Special").fg
+  --   local orange = get_highlight("Constant").fg
+  --   local purple = get_highlight("Statement").fg
+  --
+  --   local statusline = get_highlight("StatusLine")
+
+  local groups = {
+    --     StatuslineModeNormal = {}, -- { bg = red },
+    --     StatuslineModePending = {}, -- { bg = purple },
+    --     StatuslineModeVisual = {}, -- { bg = cyan },
+    --     StatuslineModeInsert = {}, --{ bg = green },
+    --     StatuslineModeCommand = {}, --{ bg = orange },
+    --     StatuslineModeOther = {}, --{ bg = purple },
+    --     StatuslineModeSeparatorNormal = {}, --{ fg = red },
+    --     StatuslineModeSeparatorPending = {}, --{ fg = purple },
+    --     StatuslineModeSeparatorVisual = {}, --{ fg = cyan },
+    --     StatuslineModeSeparatorInsert = {}, --{ fg = green },
+    --     StatuslineModeSepartorCommand = {}, --{ fg = orange },
+    --     StatuslineModeSeparatorOther = {}, -- { fg = purple },
+    --     StatuslineGitAdded = { fg = get_highlight("GitSignsAdd").fg, bg = statusline.bg },
+    --     StatuslineGitRemoved = { fg = get_highlight("GitSignsDelete").fg, bg = statusline.bg },
+    --     StatuslineGitChanged = { fg = get_highlight("GitSignsChange").fg, bg = statusline.bg },
+    --     StatuslineItalic = { fg = statusline.fg, bg = statusline.bg, italic = true },
+    --     StatuslineSpinner = { fg = green, bg = statusline.bg },
+    --     StatuslineTitle = { fg = statusline.fg, bg = statusline.bg, bold = true },
+  }
+
+  for group, opts in pairs(groups) do
+    vim.api.nvim_set_hl(0, group, opts)
+  end
+end
+
+vim.api.nvim_create_autocmd("ColorScheme", {
+  callback = create_hl,
+})
 
 vim.o.statusline = "%!v:lua.require'statusline'.render()"
 

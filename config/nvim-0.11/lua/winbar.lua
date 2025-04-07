@@ -61,4 +61,26 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
   end,
 })
 
+local function create_hl()
+  local get_highlight = function(name)
+    return vim.api.nvim_get_hl(0, { name = name, link = false, create = false })
+  end
+
+  local winbar = get_highlight("WinBar")
+  local cyan = get_highlight("Function").fg
+
+  local groups = {
+    WinBarDir = { fg = cyan, bg = winbar.bg, italic = true },
+    WinBarSeparator = { fg = cyan, bg = winbar.bg },
+  }
+
+  for group, opts in pairs(groups) do
+    vim.api.nvim_set_hl(0, group, opts)
+  end
+end
+
+vim.api.nvim_create_autocmd("ColorScheme", {
+  callback = create_hl,
+})
+
 return M
