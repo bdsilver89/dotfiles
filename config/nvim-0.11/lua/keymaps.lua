@@ -44,6 +44,22 @@ vim.keymap.set("n", "<leader><tab>d", "<cmd>tabclose<cr>", { desc = "Close Tab" 
 vim.keymap.set("n", "[<tab>", "<cmd>tabprevious<cr>", { desc = "Previous Tab" })
 vim.keymap.set("n", "]<tab>", "<cmd>tabnext<cr>", { desc = "Next Tab" })
 
+-- Terminal
+local float_term = function()
+  require("float_term").float_term(vim.o.shell, { cwd = vim.fn.expand("%:p:h") })
+end
+
+local lazygit = function()
+  require("float_term").float_term("lazygit", {
+    size = { width = 0.85, height = 0.8 },
+    cwd = vim.b.gitsigns_status_dict.root,
+  })
+end
+
+vim.keymap.set({ "n", "t" }, "<c-/>", float_term, { desc = "Toggle floating terminal" })
+vim.keymap.set({ "n", "t" }, "<c-_>", float_term, { desc = "which_key_ignore" })
+vim.keymap.set({ "n", "t" }, "<leader>gg", lazygit, { desc = "Lazygit" })
+
 vim.keymap.set("n", "<esc>", "<cmd>nohlsearch<cr>")
 
 -- Open the package manager.
