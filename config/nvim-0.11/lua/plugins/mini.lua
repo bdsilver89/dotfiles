@@ -19,6 +19,7 @@ return {
   end,
   opts = function()
     local ai = require("mini.ai")
+    local hipatterns = require("mini.hipatterns")
 
     return {
       ai = {
@@ -42,6 +43,7 @@ return {
           hack = { pattern = "HACK", group = "MiniHipatternsHack" },
           todo = { pattern = "TODO", group = "MiniHipatternsTodo" },
           note = { pattern = "NOTE", group = "MiniHipatternsNote" },
+          hex_color = hipatterns.gen_highlighter.hex_color(),
         },
       },
 

@@ -77,6 +77,7 @@ function M.mode_component()
     string.format("%%#StatuslineModeSeparator%s#", hl),
     string.format("%%#StatuslineMode%s#%s", hl, mode),
     string.format("%%#StatuslineModeSeparator%s#", hl),
+    "%#StatusLine#",
   })
 end
 
@@ -86,7 +87,6 @@ function M.git_component()
   if not head or head == "" or not status_dict then
     return ""
   end
-  local status = ""
   local added = status_dict.added or 0
   local removed = status_dict.removed or 0
   local changed = status_dict.changed or 0
@@ -94,7 +94,10 @@ function M.git_component()
   local has_changes = added ~= 0 or removed ~= 0 or changed ~= 0
 
   return table.concat({
-    string.format(" %s", head),
+    "%#StatusLineGit#",
+    " ",
+    "%#StatusLine#",
+    head,
     has_changes and table.concat({
       "%#StatusLine#(",
       added > 0 and string.format("%%#StatuslineGitAdded#+%d", added) or "",
@@ -112,54 +115,6 @@ function M.dap_component()
 
   return string.format("%%#%s#%s  %s", M.get_or_create_hl("DapUIRestart"), icons.misc.bug, require("dap").status())
 end
-
--- local progress_status = {
---   client = nil,
---   kind = nil,
---   title = nil,
--- }
---
--- vim.api.nvim_create_autocmd("LspProgress", {
---   desc = "Update LSP progress in statusline",
---   group = vim.api.nvim_create_augroup("bdsilver89/statusline_lsp_progress", { clear = true }),
---   pattern = { "begin", "end" },
---   callback = function(args)
---     if not args.data then
---       return
---     end
---
---     progress_status = {
---       client = vim.lsp.get_client_by_id(args.data.client_id).name,
---       kind = args.data.params.value.kind,
---       title = args.data.params.value.title,
---     }
---
---     if progress_status.kind == "end" then
---       progress_status.title = nil
---       vim.defer_fn(function()
---         vim.cmd.redrawstatus()
---       end, 3000)
---     else
---       vim.cmd.redrawstatus()
---     end
---   end,
--- })
---
--- function M.lsp_progress_component()
---   if not progress_status.client or not progress_status.title then
---     return ""
---   end
---
---   if vim.startswith(vim.api.nvim_get_mode().mode, "i") then
---     return ""
---   end
---
---   return table.concat({
---     "%#StatuslineSpinner#󱥸 ",
---     string.format("%%#StatuslineTitle#%s  ", progress_status.client),
---     string.format("%%#StatuslineItalic#%s...", progress_status.title),
---   })
--- end
 
 local lsp_state = { msg = "", idx = 0 }
 local spinners = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" }
@@ -253,15 +208,7 @@ function M.encoding_component()
 end
 
 function M.position_component()
-  local line = vim.fn.line(".")
-  local line_count = vim.api.nvim_buf_line_count(0)
-  local col = vim.fn.virtcol(".")
-
-  return table.concat({
-    "%#StatuslineItalic#l: ",
-    string.format("%%#StatuslineTitle#%d", line),
-    string.format("%%#StatuslineItalic#/%d c: %d", line_count, col),
-  })
+  return "%#StatusLine#%3l:%-2c"
 end
 
 function M.render()
@@ -275,6 +222,9 @@ function M.render()
     concat_components({
       M.mode_component(),
       M.git_component(),
+    }),
+    "%#StatusLine#%=",
+    concat_components({
       M.dap_component() or M.lsp_progress_component(),
     }),
     "%#StatusLine#%=",
@@ -293,34 +243,36 @@ local function create_hl()
     return vim.api.nvim_get_hl(0, { name = name, link = false, create = false })
   end
 
-  --   local red = get_highlight("DiagnosticError").fg
-  --   local green = get_highlight("String").fg
-  --   local cyan = get_highlight("Special").fg
-  --   local orange = get_highlight("Constant").fg
-  --   local purple = get_highlight("Statement").fg
-  --
-  --   local statusline = get_highlight("StatusLine")
+  local statusline = get_highlight("StatusLine")
+  local purple = get_highlight("Conditional").fg
+  local green = get_highlight("String").fg
+  local pink = get_highlight("Special").fg
+  local orange = get_highlight("Constant").fg
+  local yellow = get_highlight("Type").fg
+  local blue = get_highlight("Function").fg
 
-  local groups = {
-    --     StatuslineModeNormal = {}, -- { bg = red },
-    --     StatuslineModePending = {}, -- { bg = purple },
-    --     StatuslineModeVisual = {}, -- { bg = cyan },
-    --     StatuslineModeInsert = {}, --{ bg = green },
-    --     StatuslineModeCommand = {}, --{ bg = orange },
-    --     StatuslineModeOther = {}, --{ bg = purple },
-    --     StatuslineModeSeparatorNormal = {}, --{ fg = red },
-    --     StatuslineModeSeparatorPending = {}, --{ fg = purple },
-    --     StatuslineModeSeparatorVisual = {}, --{ fg = cyan },
-    --     StatuslineModeSeparatorInsert = {}, --{ fg = green },
-    --     StatuslineModeSepartorCommand = {}, --{ fg = orange },
-    --     StatuslineModeSeparatorOther = {}, -- { fg = purple },
-    --     StatuslineGitAdded = { fg = get_highlight("GitSignsAdd").fg, bg = statusline.bg },
-    --     StatuslineGitRemoved = { fg = get_highlight("GitSignsDelete").fg, bg = statusline.bg },
-    --     StatuslineGitChanged = { fg = get_highlight("GitSignsChange").fg, bg = statusline.bg },
-    --     StatuslineItalic = { fg = statusline.fg, bg = statusline.bg, italic = true },
-    --     StatuslineSpinner = { fg = green, bg = statusline.bg },
-    --     StatuslineTitle = { fg = statusline.fg, bg = statusline.bg, bold = true },
-  }
+  local mode_groups = {}
+  for mode, color in pairs({
+    Normal = purple,
+    Pending = pink,
+    Visual = yellow,
+    Insert = green,
+    Command = blue,
+    Other = orange,
+  }) do
+    mode_groups["StatuslineMode" .. mode] = { fg = statusline.bg, bg = color }
+    mode_groups["StatuslineModeSeparator" .. mode] = { fg = color, bg = statusline.bg }
+  end
+
+  local groups = vim.tbl_extend("error", mode_groups, {
+    StatuslineGit = { fg = blue, bg = statusline.bg },
+    StatuslineGitAdded = { fg = get_highlight("GitSignsAdd").fg, bg = statusline.bg },
+    StatuslineGitRemoved = { fg = get_highlight("GitSignsDelete").fg, bg = statusline.bg },
+    StatuslineGitChanged = { fg = get_highlight("GitSignsChange").fg, bg = statusline.bg },
+    StatuslineItalic = { fg = statusline.fg, bg = statusline.bg, italic = true },
+    StatuslineSpinner = { fg = green, bg = statusline.bg },
+    StatuslineTitle = { fg = statusline.fg, bg = statusline.bg, bold = true },
+  })
 
   for group, opts in pairs(groups) do
     vim.api.nvim_set_hl(0, group, opts)
