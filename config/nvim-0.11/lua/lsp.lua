@@ -31,13 +31,15 @@ vim.api.nvim_create_autocmd("LspAttach", {
     -- keymaps
     map("gra", "<cmd>FzfLua lsp_code_actions<cr>", "vim.lsp.buf.code_action()", { "n", "x" })
     map("grr", "<cmd>FzfLua lsp_references<cr>", "vim.lsp.buf.references()")
-    map("gy", "<cmd>FzfLua lsp_typedefs<cr>", "vim.lsp.buf.type_definition()")
+    map("grt", "<cmd>FzfLua lsp_typedefs<cr>", "vim.lsp.buf.type_definition()")
+    map("gri", "<cmd>FzfLua lsp_implementations<cr>", "vim.lsp.buf.implementations()")
     map("<leader>fs", "<cmd>FzfLua lsp_document_symbols<cr>", "Document symbols")
+    map("<leader>fS", "<cmd>FzfLua lsp_workspace_symbols<cr>", "Workspace symbols")
 
     if client:supports_method(methods.textDocument_definition) then
       map("gd", function()
         require("fzf-lua").lsp_definitions({ jump1 = true })
-      end, "Go to definition")
+      end, "vim.lsp.buf.defintions()")
 
       map("gD", function()
         require("fzf-lua").lsp_definitions({ jump1 = false })

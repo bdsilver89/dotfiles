@@ -95,7 +95,7 @@ function M.git_component()
 
   return table.concat({
     "%#StatusLineGit#",
-    " ",
+    icons.misc.git,
     "%#StatusLine#",
     head,
     has_changes and table.concat({
