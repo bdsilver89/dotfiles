@@ -5,5 +5,5 @@ end, { desc = "Toggle conform.nvim auto-formatting", nargs = 0 })
 
 vim.api.nvim_create_user_command("LspRestart", function()
   vim.lsp.stop_client(vim.lsp.get_clients())
-  vim.cmd("edit)")
+  vim.cmd("edit")
 end, { desc = "LSP restart", nargs = 0 })
