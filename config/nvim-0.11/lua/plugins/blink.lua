@@ -3,6 +3,7 @@ local blink_main = false
 return {
   "saghen/blink.cmp",
   event = "InsertEnter",
+  enabled = false,
   version = not blink_main and "*",
   build = blink_main and "cargo --build release",
   opts = {

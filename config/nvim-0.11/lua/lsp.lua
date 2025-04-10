@@ -23,9 +23,11 @@ vim.api.nvim_create_autocmd("LspAttach", {
       return
     end
 
-    local function map(lhs, rhs, desc, mode)
+    local function map(lhs, rhs, opts, mode)
       mode = mode or "n"
-      vim.keymap.set(mode, lhs, rhs, { buffer = args.buf, desc = desc })
+      opts = type(opts) == "string" and { desc = opts } or type(opts) == "table" and opts or {}
+      opts = vim.tbl_deep_extend("force", { buffer = args.buf }, opts)
+      vim.keymap.set(mode, lhs, rhs, opts)
     end
 
     -- keymaps
@@ -46,6 +48,74 @@ vim.api.nvim_create_autocmd("LspAttach", {
       end, "Peek definition")
     end
 
+    -- autocompletion
+    if client:supports_method(methods.textDocument_completion) then
+      vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = true })
+
+      local function feedkeys(keys)
+        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(keys, true, false, true), "n", true)
+      end
+
+      local function pumvisible()
+        return tonumber(vim.fn.pumvisible()) ~= 0
+      end
+
+      map("<cr>", function()
+        return pumvisible() and "<C-y>" or "<cr>"
+      end, { expr = true }, "i")
+
+      map("/", function()
+        return pumvisible() and "<c-e>" or "/"
+      end, { expr = true }, "i")
+
+      map("<c-n>", function()
+        if pumvisible() then
+          feedkeys("<c-n>")
+        else
+          if next(vim.lsp.get_clients({ bufnr = 0 })) then
+            vim.lsp.completion.trigger()
+          else
+            if vim.bo.omnifunc == "" then
+              feedkeys("<c-x><c-n>")
+            else
+              feedkeys("<c-x><c-o>")
+            end
+          end
+        end
+      end, { desc = "Trigger/select next completion" }, "i")
+
+      map("<c-u>", "<c-x><c-n>", { desc = "Buffer completions" }, "i")
+
+      map("<c-f>", "<c-x><c-f>", { desc = "Path completions" }, "i")
+
+      map("<tab>", function()
+        -- local copilot = require("copilot.suggestion")
+        --
+        -- if copilot.is_visible() then
+        --   copilot.accept()
+        if pumvisible() then
+          feedkeys("<c-n>")
+        elseif vim.snippet.active({ direction = 1 }) then
+          vim.snippet.jump(1)
+        else
+          feedkeys("<tab>")
+        end
+      end, {}, { "i", "s" })
+
+      map("<s-tab>", function()
+        if pumvisible() then
+          feedkeys("<c-p>")
+        elseif vim.snippet.active({ direction = -1 }) then
+          vim.snippet.jump(-1)
+        else
+          feedkeys("<s-tab>")
+        end
+      end, {}, { "i", "s" })
+
+      map("<bs>", "<c-o>s", {}, "s")
+    end
+
+    -- cursorword higlights
     if client:supports_method(methods.textDocument_documentHighlight) then
       local under_cursor_highlights_group =
         vim.api.nvim_create_augroup("bdsilver89/cursor_highlights", { clear = false })
@@ -63,6 +133,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
       })
     end
 
+    -- inlay hints
     if client:supports_method(methods.textDocument_inlayHint) and vim.g.inlay_hints then
       local inlay_hints_group = vim.api.nvim_create_augroup("bdsilver89/toggle_inlay_hints", { clear = false })
 
