@@ -159,6 +159,12 @@ vim.api.nvim_create_autocmd("LspAttach", {
       })
     end
 
+    -- codelens
+    if client:supports_method(methods.textDocument_codeLens) then
+      map("grc", vim.lsp.codelens.run, "vim.lsp.codelens.run()")
+      map("grC", vim.lsp.codelens.refresh, "vim.lsp.codelens.refresh()")
+    end
+
     -- diagnostic config
     local icons = require("icons")
     vim.diagnostic.config({
