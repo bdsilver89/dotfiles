@@ -49,6 +49,12 @@ return {
 
       icons = {},
 
+      indentscope = {
+        draw = {
+          animation = require("mini.indentscope").gen_animation.none(),
+        },
+      },
+
       pairs = {
         opts = {
           modes = { insert = true, command = true, terminal = false },

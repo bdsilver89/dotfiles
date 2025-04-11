@@ -5,6 +5,14 @@ return {
   keys = {
     { "<leader>cm", "<cmd>Mason<cr>", desc = "Mason" },
   },
+  init = function()
+    -- need to add mason install dir to path for LSP binaries so mason can be lazy loaded
+    local is_windows = vim.fn.has("win32") == 1
+    local sep = is_windows and "\\" or "/"
+    local delim = is_windows and ";" or ":"
+    local mason_path = table.concat({ vim.fn.stdpath("data"), "mason", "bin" }, sep)
+    vim.env.PATH = mason_path .. delim .. vim.env.PATH
+  end,
   opts = {
     ensure_installed = {
       -- bash
