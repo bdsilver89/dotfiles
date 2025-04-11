@@ -44,6 +44,29 @@ vim.keymap.set("n", "<leader><tab>d", "<cmd>tabclose<cr>", { desc = "Close Tab" 
 vim.keymap.set("n", "[<tab>", "<cmd>tabprevious<cr>", { desc = "Previous Tab" })
 vim.keymap.set("n", "]<tab>", "<cmd>tabnext<cr>", { desc = "Next Tab" })
 
+-- Diagnostics
+vim.keymap.set("n", "grq", vim.diagnostic.setqflist, { desc = "vim.diagnostic.setqflist()" })
+vim.keymap.set("n", "grl", vim.diagnostic.setloclist, { desc = "vim.diagnostic.setloclist()" })
+
+vim.keymap.set("n", "<leader>xd", function()
+  local state = not vim.diagnostic.is_enabled()
+  vim.diagnostic.enable(state, filter)
+  vim.notify(
+    string.format("***%s diagnostics***", state and "Enabled" or "Disabled"),
+    state and vim.log.levels.INFO or vim.log.levels.WARN
+  )
+end, { desc = "Toggle diagnostics" })
+
+-- Formatting
+vim.keymap.set("n", "<leader>cf", function()
+  local state = not vim.g.autoformat
+  vim.g.autoformat = state
+  vim.notify(
+    string.format("***%s auto-formatting***", state and "Enabled" or "Disabled"),
+    state and vim.log.levels.INFO or vim.log.levels.WARN
+  )
+end, { desc = "Toggle auto-formatting" })
+
 -- Terminal
 local float_term = function()
   require("float_term").float_term(vim.o.shell, { cwd = vim.fn.expand("%:p:h") })
