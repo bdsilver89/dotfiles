@@ -45,6 +45,7 @@ vim.keymap.set("n", "[<tab>", "<cmd>tabprevious<cr>", { desc = "Previous Tab" })
 vim.keymap.set("n", "]<tab>", "<cmd>tabnext<cr>", { desc = "Next Tab" })
 
 -- Diagnostics
+vim.keymap.set("n", "grd", vim.diagnostic.open_float, { desc = "vim.diagnostic.open_float()" })
 vim.keymap.set("n", "grq", vim.diagnostic.setqflist, { desc = "vim.diagnostic.setqflist()" })
 vim.keymap.set("n", "grl", vim.diagnostic.setloclist, { desc = "vim.diagnostic.setloclist()" })
 

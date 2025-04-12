@@ -67,7 +67,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
           feedkeys("<c-n>")
         else
           if next(vim.lsp.get_clients({ bufnr = 0 })) then
-            vim.lsp.completion.trigger()
+            vim.lsp.completion.get()
           else
             if vim.bo.omnifunc == "" then
               feedkeys("<c-x><c-n>")
