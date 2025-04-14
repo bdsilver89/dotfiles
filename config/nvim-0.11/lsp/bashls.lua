@@ -1,4 +1,4 @@
 return {
   cmd = { "bash-language-server" },
-  filetypes = { "bash", "sh" },
+  filetypes = { "bash", "sh", "zsh" },
 }
