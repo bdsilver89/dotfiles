@@ -141,6 +141,10 @@ is_ubuntu() {
   [ -f /etc/lsb-release -o -d /etc/lsb-release.d ]
 }
 
+is_rhel() {
+  [ -f /etc/redhat-elease]
+}
+
 is_darwin() {
   [ $(os) = darwin ]
 }
@@ -321,11 +325,42 @@ setup_apt_packages() {
     # fzf
     # ripgrep
     # fd-find
-    # exa # eza is not available on ubuntu
+    # eza is not available on ubuntu
   )
 
   info "Installing apt packages"
   sudo apt install -y ${packages[@]} || log_and_die "Failed to install packages"
+}
+
+setup_dnf_packages() {
+  local packages=(
+    # bat
+    cmake
+    gcc-c++
+    clang
+    # clang-format
+    # ninja-build
+    # ccache
+    # automake
+    # autoconf
+    # libtool
+    # pkg-config
+    # rpm
+    # zip
+    # unzip
+    # gdb
+    # jq
+    tmux
+    # zoxide
+    # fzf
+    # ripgrep
+    # fd-find
+    # eza is not available on ubuntu
+    vim
+  )
+
+  info "Installing dnf packages"
+  sudo dnf install -y ${packages[@]} || log_and_die "Failed to install packages"
 }
 
 setup_homebrew() {
@@ -346,6 +381,8 @@ setup_linux() {
     title "Setting up Linux settings"
     if is_debian || is_ubuntu; then
       setup_apt_packages
+    elif is_rhel; then
+      setup_dnf_packages
     fi
   fi
 }
