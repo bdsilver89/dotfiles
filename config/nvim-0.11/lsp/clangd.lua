@@ -4,7 +4,7 @@ return {
     "--background-index",
     "--clang-tidy",
     "--header-insertion=iwyu",
-    "--completion-stye=detailed",
+    "--completion-style=detailed",
     "--function-arg-placeholders",
     "--fallback-style=none",
   },
