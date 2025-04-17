@@ -4,7 +4,7 @@ local M = {}
 local terminal = nil
 
 --- Opens an interactive floating terminal.
----@param cmd? string
+---@param cmd? string|string[]
 ---@param opts? LazyCmdOptions
 function M.float_term(cmd, opts)
   opts = vim.tbl_deep_extend("force", {
@@ -19,6 +19,22 @@ function M.float_term(cmd, opts)
     terminal = require("lazy.util").float_term(cmd, opts)
     vim.b[terminal.buf].lazyterm_cmd = cmd
   end
+end
+
+---@param args? string|string[]
+---@param opts? LazyCmdOptions
+function M.lazygit(args, opts)
+  local cmd = { "lazygit" } ---@type string[]
+
+  args = type(args) == "string" and { args } or type(args) == "table" and args or {}
+  vim.list_extend(cmd, args)
+
+  opts = vim.tbl_deep_extend("force", {
+    size = { width = 0.85, height = 0.8 },
+    cwd = vim.b.gitsigns_status_dict.root,
+  }, opts or {})
+
+  M.float_term(cmd, opts)
 end
 
 return M

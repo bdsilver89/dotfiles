@@ -73,16 +73,21 @@ local float_term = function()
   require("float_term").float_term(vim.o.shell, { cwd = vim.fn.expand("%:p:h") })
 end
 
-local lazygit = function()
-  require("float_term").float_term("lazygit", {
-    size = { width = 0.85, height = 0.8 },
-    cwd = vim.b.gitsigns_status_dict.root,
-  })
-end
-
 vim.keymap.set({ "n", "t" }, "<c-/>", float_term, { desc = "Toggle floating terminal" })
 vim.keymap.set({ "n", "t" }, "<c-_>", float_term, { desc = "which_key_ignore" })
-vim.keymap.set({ "n", "t" }, "<leader>gg", lazygit, { desc = "Lazygit" })
+
+vim.keymap.set({ "n", "t" }, "<leader>gg", function()
+  require("float_term").lazygit()
+end, { desc = "Lazygit" })
+
+vim.keymap.set({ "n", "t" }, "<leader>gl", function()
+  require("float_term").lazygit({ "log" })
+end, { desc = "Lazygit Log" })
+
+vim.keymap.set({ "n", "t" }, "<leader>gf", function()
+  local file = vim.trim(vim.api.nvim_buf_get_name(0))
+  require("float_term").lazygit({ "-f", file })
+end, { desc = "Lazygit file log" })
 
 vim.keymap.set("n", "<esc>", "<cmd>nohlsearch<cr>")
 
