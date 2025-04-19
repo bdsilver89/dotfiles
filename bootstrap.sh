@@ -109,12 +109,12 @@ platform() {
   if [ -f /etc/debian_version ]; then
     echo debian
   elif [ -f /etc/os-release ]; then
-    local id=$(egrep ^ID= /etc/os-release | sed 's/.*=//; s/"//g')
-    local version=$(egrep ^VERSION_ID= /etc/os-release | sed 's/.*=//; s/"//g' | cut -d. -f1)
+    local id=$(grep -E ^ID= /etc/os-release | sed 's/.*=//; s/"//g')
+    local version=$(grep -E ^VERSION_ID= /etc/os-release | sed 's/.*=//; s/"//g' | cut -d. -f1)
     echo $id$version
   elif [[ $(os) == "darwin" ]]; then
     local id="macos"
-    local version=$(sw_vers | egrep ^ProductVersion | sed 's/.*://; s/ //g' | cut -d. -f1)
+    local version=$(sw_vers | grep -E ^ProductVersion | sed 's/.*://; s/ //g' | cut -d. -f1)
     echo $id$version
   else
     echo win64
@@ -334,13 +334,18 @@ setup_apt_packages() {
 
 setup_dnf_packages() {
   local packages=(
-    # bat
+    bat
     ccache
     clang
-    clang-tools-extra:w
+    clang-tools-extra
     cmake
+    # eza
+    fd-find
+    fzf
     gcc
     gcc-c++
+    gdb
+    jq
     # automake
     # autoconf
     # libtool
@@ -351,15 +356,10 @@ setup_dnf_packages() {
     # rpm
     # zip
     # unzip
-    gdb
-    # jq
+    ripgrep
     tmux
-    # zoxide
-    # fzf
-    # ripgrep
-    # fd-find
-    # eza is not available on ubuntu
     vim
+    zoxide
   )
 
   info "Installing dnf packages"
@@ -384,8 +384,10 @@ setup_linux() {
     title "Setting up Linux settings"
     if is_debian || is_ubuntu; then
       setup_apt_packages
-    elif is_rhel; then
+    elif is_rhel && [ -x "$(command -v dnf)" ]; then
       setup_dnf_packages
+    else
+      log_warn "Could not figure out which package manager to use for platform: $(platform)"
     fi
   fi
 }
