@@ -142,7 +142,7 @@ is_ubuntu() {
 }
 
 is_rhel() {
-  [ -f /etc/redhat-elease]
+  [ -f /etc/redhat-release ]
 }
 
 is_darwin() {
