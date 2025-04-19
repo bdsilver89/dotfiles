@@ -335,22 +335,23 @@ setup_apt_packages() {
 setup_dnf_packages() {
   local packages=(
     # bat
+    ccache
+    clang
+    clang-tools-extra:w
     cmake
     gcc
     gcc-c++
-    clang
-    # clang-format
-    ninja-build
-    ccache
     # automake
     # autoconf
     # libtool
     make
+    neovim
+    ninja-build
     # pkg-config
     # rpm
     # zip
     # unzip
-    # gdb
+    gdb
     # jq
     tmux
     # zoxide
@@ -414,7 +415,7 @@ setup_zsh_zinit() {
 setup_tmux() {
   title "Setting up tmux"
 
-  local tpm="${HOME}/.tmux/plugins/tpm}"
+  local tpm="${HOME}/.tmux/plugins/tpm"
   if [ ! -d "$tpm" ]; then
     git clone --depth 1 "https://github.com/tmux-plugins/tpm" "$tpm"
   fi
