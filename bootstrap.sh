@@ -336,14 +336,16 @@ setup_dnf_packages() {
   local packages=(
     # bat
     cmake
+    gcc
     gcc-c++
     clang
     # clang-format
-    # ninja-build
-    # ccache
+    ninja-build
+    ccache
     # automake
     # autoconf
     # libtool
+    make
     # pkg-config
     # rpm
     # zip
