@@ -25,21 +25,14 @@ vim.api.nvim_create_autocmd("LspAttach", {
     end
 
     -- keymaps
-    map("gra", "<cmd>FzfLua lsp_code_actions<cr>", "vim.lsp.buf.code_action()", { "n", "x" })
-    map("grr", "<cmd>FzfLua lsp_references<cr>", "vim.lsp.buf.references()")
-    map("grt", "<cmd>FzfLua lsp_typedefs<cr>", "vim.lsp.buf.type_definition()")
-    map("gri", "<cmd>FzfLua lsp_implementations<cr>", "vim.lsp.buf.implementations()")
-    map("<leader>fs", "<cmd>FzfLua lsp_document_symbols<cr>", "Document symbols")
-    map("<leader>fS", "<cmd>FzfLua lsp_workspace_symbols<cr>", "Workspace symbols")
+    map("grt", vim.lsp.buf.type_definition, "vim.lsp.buf.type_definition")
+    map("gri", vim.lsp.buf.implementation, "vim.lsp.buf.implementation")
+    map("grs", vim.lsp.buf.document_symbol, "vim.lsp.buf.document_symbol")
+    map("grw", vim.lsp.buf.workspace_symbol, "vim.lsp.buf.workspace_symbol")
 
     if client:supports_method(methods.textDocument_definition) then
-      map("gd", function()
-        require("fzf-lua").lsp_definitions({ jump1 = true })
-      end, "vim.lsp.buf.defintions()")
-
-      map("gD", function()
-        require("fzf-lua").lsp_definitions({ jump1 = false })
-      end, "Peek definition")
+      map("gd", vim.lsp.buf.definition, "vim.lsp.buf.definition")
+      map("gD", vim.lsp.buf.declaration, "vim.lsp.buf.declaration")
     end
 
     -- autocompletion

@@ -1,139 +1,25 @@
-export EDITOR='nvim'
-export PATH="$HOME/.local/bin:$PATH"
-export DOTFILES_DIR=$HOME/dotfiles
+# .bashrc
 
-export TERM="screen-256color"
-
-# VI mode
-set -o vi
-
-# prompt
-# PS1="\[\033[01;34m\]\\u@\h\[\034[01;34m\]\ \w\[\033[00m\]\ \$"
-PS1="\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ "
-
-# alias
-alias c="clear"
-alias pg="ps -ef | grep"
-
-# git aliases (inspired by oh-my-zsh)
-alias g="git"
-alias ga='git add'
-alias gbl='git blame -w'
-alias gb='git branch'
-alias gba='git branch --all'
-alias gbd='git branch --delete'
-alias gco='git checkout'
-alias gcp='git cherry-pick'
-alias gcpa='git cherry-pick --abort'
-alias gcpc='git cherry-pick --continue'
-alias gclean='git clean --interactive -d'
-alias gcl='git clone --recurse-submodules'
-alias gc='git commit --verbose'
-alias gcmsg='git commit --message'
-alias gd='git diff'
-alias gdca='git diff --cached'
-alias gdcw='git diff --cached --word-diff'
-alias gds='git diff --staged'
-alias gdw='git diff --word-diff'
-alias gf='git fetch'
-alias gfo='git fetch origin'
-alias glgg='git log --graph'
-alias glo='git log --oneline --decorate'
-alias glog='git log --oneline --decorate --graph'
-alias gloga='git log --oneline --decorate --graph --all'
-alias glg='git log --stat'
-alias glgp='git log --stat --patch'
-alias gignored='git ls-files -v | grep "^[[:lower:]]"'
-alias gfg='git ls-files | grep'
-alias gm='git merge'
-alias gma='git merge --abort'
-alias gmc='git merge --continue'
-alias gms="git merge --squash"
-alias gmff="git merge --ff-only"
-alias gmom='git merge origin/$(git_main_branch)'
-alias gmum='git merge upstream/$(git_main_branch)'
-alias gmtl='git mergetool --no-prompt'
-alias gmtlvim='git mergetool --no-prompt --tool=vimdiff'
-alias gl='git pull'
-alias gp='git push'
-alias gpd='git push --dry-run'
-alias grb='git rebase'
-alias grba='git rebase --abort'
-alias grbc='git rebase --continue'
-alias grbi='git rebase --interactive'
-alias grbo='git rebase --onto'
-alias grbs='git rebase --skip'
-alias grh='git reset'
-alias grs='git restore'
-alias grs='git restore'
-alias gst='git status'
-alias gsta='git stash push'
-alias gstp='git stash pop'
-
-# eza/exa/ls
-if [ -x "$(command -v eza)" ]; then
-  # use eza
-  alias ls="eza --color=always --icons=always --git"
-  alias lt="eza --color=always --tree --level=2 --icons=always --long --git"
-elif [ -x "$(command -v exa)" ]; then
-  # use exa (deprecated, mostly for ubuntu)
-  alias ls="exa --color=always"
-  alias lt="exa --color=always --tree --level=2 --long"
-else
-  # fallback on ls
-  alias ls="ls --color=auto"
-  if [ -x "$(command -v tree)" ]; then
-    alias lt="tree"
-  fi
-fi
-alias l="ls -lah"
-
-if [ -x "$(command -v fzf)" ]; then
-  # ubuntu runs an older version of fzf
-  eval "$(fzf --zsh &>/dev/null)"
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+    . /etc/bashrc
 fi
 
-if [ -x "$(command -v zoxide)" ]; then
-  eval "$(zoxide init bash)"
+# User specific environment
+if ! [[ "$PATH" =~ "$HOME/.local/bin:$HOME/bin:" ]]; then
+    PATH="$HOME/.local/bin:$HOME/bin:$PATH"
 fi
+export PATH
 
-# sometimes bat is installed as batcat
-if [ -x "$(command -v batcat)" ]; then
-  alias bat="batcat"
+# Uncomment the following line if you don't like systemctl's auto-paging feature:
+# export SYSTEMD_PAGER=
+
+# User specific aliases and functions
+if [ -d ~/.bashrc.d ]; then
+    for rc in ~/.bashrc.d/*; do
+        if [ -f "$rc" ]; then
+            . "$rc"
+        fi
+    done
 fi
-
-# sometimes fd is installed as fdfind
-if [ -x "$(command -v fdfind)" ]; then
-  alias fd="fdfind"
-fi
-
-# nvm
-export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
-
-# pyenv
-export PYENV_ROOT="$HOME/.pyenv"
-if [ -d $PYENV_ROOT ]; then
-  export PATH="$PYENV_ROOT/bin:$PATH"
-  if command -v pyenv 1>/dev/null 2>&1; then
-    eval "$(pyenv init --path)"
-    eval "$(pyenv init -)"
-  fi
-fi
-
-# cmake
-export CMAKE_COLOR_DIAGNOSTICS="ON"
-if [ -x "$(command -v ninja)" ]; then
-  export CMAKE_GENERATOR="Ninja"
-  export CONAN_CMAKE_GENERATOR="Ninja"
-fi
-
-# ninja
-export NINJA_STATUS=$(echo -e "[%f/%t %p %e]")
-
-# vcpkg
-export VCPKG_ROOT="$HOME/vcpkg"
-if [ -d $VCPKG_ROOT ]; then
-  export PATH="$VCPKG_ROOT:$PATH"
-fi
+unset rc

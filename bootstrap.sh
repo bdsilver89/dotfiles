@@ -224,6 +224,24 @@ link_file() {
   fi
 }
 
+link_files_in_dir() {
+  local input=$1
+  local output=$2
+  local mindepth=${3:-1}
+  local maxdepth=${4:-1}
+
+  if [ ! -d "${output}" ]; then
+    mkdir -p "${output}"
+  fi
+  for src in $(find ${input} -mindepth $mindepth -maxdepth $maxdepth); do
+    basename="$(basename ${src})"
+    if [ ${basename} != ".DS_Store" ]; then
+      dst="${output}/$(basename ${src})"
+      link_file "$src" "$dst"
+    fi
+  done
+}
+
 git_clone() {
   local repo="$1"
   local dir="$2"
@@ -279,26 +297,10 @@ setup_symlinks() {
     link_file "$src" "$dst"
   done
 
-  # link config files
-  if [ ! -d "$HOME/.config" ]; then
-    mkdir -p "$HOME/.config"
-  fi
-  for src in $(find "${DOTFILES_DIR}/config" -mindepth 1 -maxdepth 1); do
-    basename="$(basename ${src})"
-    if [ ${basename} != ".DS_Store" ]; then
-      dst="$HOME/.config/$(basename ${src})"
-      link_file "$src" "$dst"
-    fi
-  done
-
-  # link scripts
-  if [ ! -d "$HOME/.local/bin" ]; then
-    mkdir -p "$HOME/.local/bin"
-  fi
-  for src in $(find "${DOTFILES_DIR}/bin" -mindepth 1 -maxdepth 1); do
-    dst="$HOME/.local/bin/$(basename ${src})"
-    link_file "$src" "$dst"
-  done
+  link_files_in_dir "${DOTFILES_DIR}/bashrc.d" "$HOME/.bashrc.d"
+  link_files_in_dir "${DOTFILES_DIR}/zshrc.d" "$HOME/.zshrc.d"
+  link_files_in_dir "${DOTFILES_DIR}/config" "$HOME/.config"
+  link_files_in_dir "${DOTFILES_DIR}/bin" "$HOME/.local/bin"
 }
 
 setup_apt_packages() {
@@ -334,18 +336,18 @@ setup_apt_packages() {
 
 setup_dnf_packages() {
   local packages=(
-    bat
+    # bat
     ccache
     clang
     clang-tools-extra
     cmake
     # eza
-    fd-find
-    fzf
+    # fd-find
+    # fzf
     gcc
     gcc-c++
     gdb
-    jq
+    # jq
     # automake
     # autoconf
     # libtool
@@ -356,10 +358,10 @@ setup_dnf_packages() {
     # rpm
     # zip
     # unzip
-    ripgrep
+    # ripgrep
     tmux
     vim
-    zoxide
+    # zoxide
   )
 
   info "Installing dnf packages"
