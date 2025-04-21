@@ -10,6 +10,21 @@ These are my personal dotfiles.
 
 Ensure you are using bash or zsh shell.
 
+### Using install script
+
+An install script is provided and can be downloaded and run using curl or wget command:
+
+```bash
+curl -o- https://raw.githubusercontent.com/bdsilver89/dotfiles/master/install.sh | bash
+```
+
+```bash
+wget -qO- https://raw.githubusercontent.com/bdsilver89/dotfiles/master/install.sh | bash
+```
+
+
+### Using Git
+
 1. `git clone http://github.com/bdsilver89/dotfiles.git $HOME/dotfiles`
 2. `cd $HOME/dotfiles && ./bootstrap.sh`
 
