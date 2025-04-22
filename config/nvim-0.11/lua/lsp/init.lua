@@ -4,7 +4,6 @@ for _, v in ipairs(vim.api.nvim_get_runtime_file("lsp/*", true)) do
   local name = vim.fn.fnamemodify(v, ":t:r")
   configs[#configs + 1] = name
 end
-
 vim.lsp.enable(configs)
 
 local methods = vim.lsp.protocol.Methods
@@ -29,6 +28,17 @@ vim.api.nvim_create_autocmd("LspAttach", {
     map("gri", vim.lsp.buf.implementation, "vim.lsp.buf.implementation")
     map("grs", vim.lsp.buf.document_symbol, "vim.lsp.buf.document_symbol")
     map("grw", vim.lsp.buf.workspace_symbol, "vim.lsp.buf.workspace_symbol")
+
+    local words = require("lsp.words")
+    words.enable()
+    if words.is_enabled then
+      map("]]", function()
+        words.jump(vim.v.count1)
+      end, "Next reference")
+      map("[[", function()
+        words.jump(-vim.v.count1)
+      end, "Prev reference")
+    end
 
     if client:supports_method(methods.textDocument_definition) then
       map("gd", vim.lsp.buf.definition, "vim.lsp.buf.definition")
@@ -103,22 +113,22 @@ vim.api.nvim_create_autocmd("LspAttach", {
     end
 
     -- cursorword higlights
-    if client:supports_method(methods.textDocument_documentHighlight) then
-      local under_cursor_highlights_group =
-        vim.api.nvim_create_augroup("bdsilver89/cursor_highlights", { clear = false })
-      vim.api.nvim_create_autocmd({ "CursorHold", "InsertLeave" }, {
-        group = under_cursor_highlights_group,
-        desc = "Highlight references under the cursor",
-        buffer = args.buf,
-        callback = vim.lsp.buf.document_highlight,
-      })
-      vim.api.nvim_create_autocmd({ "CursorMoved", "InsertEnter", "BufLeave" }, {
-        group = under_cursor_highlights_group,
-        desc = "Clear highlight references",
-        buffer = args.buf,
-        callback = vim.lsp.buf.clear_references,
-      })
-    end
+    -- if client:supports_method(methods.textDocument_documentHighlight) then
+    --   local under_cursor_highlights_group =
+    --     vim.api.nvim_create_augroup("bdsilver89/cursor_highlights", { clear = false })
+    --   vim.api.nvim_create_autocmd({ "CursorHold", "InsertLeave" }, {
+    --     group = under_cursor_highlights_group,
+    --     desc = "Highlight references under the cursor",
+    --     buffer = args.buf,
+    --     callback = vim.lsp.buf.document_highlight,
+    --   })
+    --   vim.api.nvim_create_autocmd({ "CursorMoved", "InsertEnter", "BufLeave" }, {
+    --     group = under_cursor_highlights_group,
+    --     desc = "Clear highlight references",
+    --     buffer = args.buf,
+    --     callback = vim.lsp.buf.clear_references,
+    --   })
+    -- end
 
     -- inlay hints
     if client:supports_method(methods.textDocument_inlayHint) and vim.g.inlay_hints then
