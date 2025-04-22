@@ -336,6 +336,8 @@ setup_apt_packages() {
 
 setup_dnf_packages() {
   local packages=(
+    autoconf
+    automake
     # bat
     ccache
     clang
@@ -348,12 +350,12 @@ setup_dnf_packages() {
     gcc-c++
     gdb
     # jq
-    # automake
-    # autoconf
     # libtool
     make
     neovim
     ninja-build
+    python3
+    python3-pip
     # pkg-config
     # rpm
     # zip
