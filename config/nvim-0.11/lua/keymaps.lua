@@ -80,7 +80,7 @@ local keymaps = {
     desc = "Toggle floating terminal"
   },
   {
-    "<c-/>",
+    "<c-_>",
     function()
       require("term").float_term(vim.o.shell, { cwd = vim.fn.expand("%:p:h")})
     end,
