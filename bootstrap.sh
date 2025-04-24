@@ -350,7 +350,7 @@ setup_dnf_packages() {
     gcc-c++
     gdb
     # jq
-    # libtool
+    libtool
     make
     neovim
     ninja-build
