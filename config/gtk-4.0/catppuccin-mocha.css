@@ -1,0 +1,83 @@
+@define-color catppuccin_mocha_rosewater #f5e0dc;
+@define-color catppuccin_mocha_flamingo #f2cdcd;
+@define-color catppuccin_mocha_pink #f5c2e7;
+@define-color catppuccin_mocha_mauve #cba6f7;
+@define-color catppuccin_mocha_red #f38ba8;
+@define-color catppuccin_mocha_maroon #eba0ac;
+@define-color catppuccin_mocha_peach #fab387;
+@define-color catppuccin_mocha_yellow #f9e2af;
+@define-color catppuccin_mocha_green #a6e3a1;
+@define-color catppuccin_mocha_teal #94e2d5;
+@define-color catppuccin_mocha_sky #89dceb;
+@define-color catppuccin_mocha_sapphire #74c7ec;
+@define-color catppuccin_mocha_blue #89bafa;
+@define-color catppuccin_mocha_lavender #b3befe;
+@define-color catppuccin_mocha_text #cdd6f4;
+@define-color catppuccin_mocha_subtext1 #bac2de;
+@define-color catppuccin_mocha_subtext0 #a6adc8;
+@define-color catppuccin_mocha_overlay2 #9399b2;
+@define-color catppuccin_mocha_overlay1 #7f849c;
+@define-color catppuccin_mocha_overlay0 #6c7086;
+@define-color catppuccin_mocha_surface2 #585b70;
+@define-color catppuccin_mocha_surface1 #45475a;
+@define-color catppuccin_mocha_surface0 #313244;
+@define-color catppuccin_mocha_base #1e1e2e;
+@define-color catppuccin_mocha_mantle #181825;
+@define-color catppuccin_mocha_crust #11111b;
+
+@define-color accent_bg_color @catppuccin_mocha_blue;
+@define-color accent_fg_color @catppuccin_mocha_base;
+@define-color accent_color @catppuccin_mocha_blue;
+
+@define-color destructive_bg_color @catppuccin_mocha_red;
+@define-color destructive_fg_color @catppuccin_mocha_base;
+@define-color destructive_color @catppuccin_mocha_red;
+
+@define-color success_bg_color @catppuccin_mocha_green;
+@define-color success_fg_color @catppuccin_mocha_text;
+@define-color success_color @catppuccin_mocha_green;
+
+@define-color warning_bg_color @catppuccin_mocha_peach;
+@define-color warning_fg_color @catppuccin_mocha_text;
+@define-color warning_color @catppuccin_mocha_peach;
+
+@define-color error_bg_color @catppuccin_mocha_red;
+@define-color error_fg_color @catppuccin_mocha_text;
+@define-color error_color @catppuccin_mocha_red;
+
+@define-color window_bg_color @catppuccin_mocha_base;
+@define-color window_fg_color @catppuccin_mocha_text;
+
+@define-color view_bg_color @catppuccin_mocha_overlay0;
+@define-color view_fg_color @catppuccin_mocha_text;
+
+@define-color headerbar_bg_color @catppuccin_mocha_base;
+@define-color headerbar_fg_color @catppuccin_mocha_text;
+@define-color headerbar_backdrop_color @window_bg_color;
+@define-color headerbar_shade_color @catppuccin_mocha_base;
+
+@define-color card_bg_color @catppuccin_mocha_surface0;
+@define-color card_fg_color @catppuccin_mocha_text;
+@define-color card_shade_color @catppuccin_mocha_surface0;
+
+@define-color popover_bg_color @catppuccin_mocha_overlay0;
+@define-color popover_fg_color @catppuccin_mocha_text;
+
+@define-color sidebar_backdrop_color @catppuccin_mocha_overlay0;
+@define-color sidebar_bg_color @catppuccin_mocha_surface0;
+@define-color sidebar_fg_color @catppuccin_mocha_text;
+
+/* Target the specific row in the sidebar that's selected */
+.navigation-sidebar row:selected {
+  background-color: @catppuccin_mocha_blue;
+  color: @catppuccin_mocha_base;
+}
+
+/* Target the label in the selected row */
+.navigation-sidebar row:selected .sidebar-label {
+  color: @catppuccin_mocha_base;
+
+/* Hover effect for non-selected rows */
+.navigation-sidebar row:hover:not(:selected) {
+  background-color: @catppuccin_mocha_sky;
+}
