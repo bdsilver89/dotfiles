@@ -17,7 +17,7 @@ alias pg="ps aux | grep -v grep | grep -i -e VSZ -e"
 # eza/exa/ls
 if [ -x "$(command -v eza)" ]; then
   alias ls="eza --color=always --icons=always --git"
-  alias lt="exa --color=always --tree --level=2 --icons=always --long --git"
+  alias lt="eza --color=always --tree --level=2 --icons=always --long --git"
 elif [ -x "$(command -v exa)" ]; then
   alias ls="exa --color=always"
   alias lt="exa --color=always --tree --level=2 --long"
