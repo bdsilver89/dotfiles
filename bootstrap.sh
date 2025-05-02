@@ -303,6 +303,25 @@ setup_symlinks() {
   link_files_in_dir "${DOTFILES_DIR}/bin" "$HOME/.local/bin"
 }
 
+install_packages() {
+  local p="$@"
+  info "Installing: $p"
+  if is_debian || is_ubuntu; then
+    sudo apt install -y $p || log_and_die "Failed to install packages"
+      success "Installed apt packages"
+  elif is_rhel; then
+    if [ -x "$(command -v dnf)" ]; then
+      sudo dnf install -y $p || log_and_die "Failed to install packages"
+      success "Installed dnf packages"
+    else
+      sudo yum install -y $p || log_and_die "Failed to install packages"
+      success "Installed yum packages"
+    fi
+  else
+    log_warn "Could not figure out which package manager to use for platform: $(platform)"
+  fi
+}
+
 setup_apt_packages() {
   local packages=(
     bat
@@ -330,8 +349,7 @@ setup_apt_packages() {
     # eza is not available on ubuntu
   )
 
-  info "Installing apt packages"
-  sudo apt install -y ${packages[@]} || log_and_die "Failed to install packages"
+  install_packages ${packages[@]}
 }
 
 setup_dnf_packages() {
@@ -366,8 +384,7 @@ setup_dnf_packages() {
     # zoxide
   )
 
-  info "Installing dnf packages"
-  sudo dnf install -y ${packages[@]} || log_and_die "Failed to install packages"
+  install_packages ${packages[@]}
 }
 
 setup_homebrew() {
@@ -463,11 +480,26 @@ setup_asdf() {
   setup_asdf_tool zoxide latest
 }
 
+setup_hyprland() {
+  # don't want to default install these for linux setup process
+  # linux setup may be on a container, WSL, server, etc. which does not have a
+  # desktop environment.
+  # symlinking the config files is ok elsewhere but leave program installation here
+  if is_linux; then
+    title "Setting up hyprland"
+
+    install_packages hyprland waybar rofi
+  fi
+}
+
 main() {
   while [[ $# -gt 0 ]]; do
     case "$1" in
     --update)
       update
+      ;;
+    --hyprland)
+      setup_hyprland
       ;;
     --git)
       setup_git
@@ -509,6 +541,7 @@ main() {
 Usage: $(basename "$0")
 
 --all       Perform all of the configuration steps
+--hyprland  Installs and configures hyprland desktop environment
 --git       Configures global git setup
 --mac       Install brew and brew utilities
 --linux     Installs utilities using system package manager (only apt for now)
