@@ -488,7 +488,7 @@ setup_hyprland() {
   if is_linux; then
     title "Setting up hyprland"
 
-    install_packages hyprland waybar rofi
+    install_packages hyprland waybar
   fi
 }
 
