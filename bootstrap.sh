@@ -488,7 +488,7 @@ setup_hyprland() {
   if is_linux; then
     title "Setting up hyprland"
 
-    install_packages hyprland waybar
+    install_packages hyprland waybar swaync wlogout pamixer pavucontrol blueman nmtui
   fi
 }
 

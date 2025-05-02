@@ -1,0 +1,37 @@
+@import "themes/mocha/blue.css";
+
+#lock {
+  margin: 10px;
+  border-radius: 20px;
+  background-image: image(url("icons/mocha/blue/lock.svg"));
+}
+
+#logout {
+  margin: 10px;
+  border-radius: 20px;
+  background-image: image(url("icons/mocha/blue/logout.svg"));
+}
+
+#suspend {
+  margin: 10px;
+  border-radius: 20px;
+  background-image: image(url("icons/mocha/blue/suspend.svg"));
+}
+
+#hibernate {
+  margin: 10px;
+  border-radius: 20px;
+  background-image: image(url("icons/mocha/blue/hibernate.svg"));
+}
+
+#shutdown {
+  margin: 10px;
+  border-radius: 20px;
+  background-image: image(url("icons/mocha/blue/shutdown.svg"));
+}
+
+#reboot {
+  margin: 10px;
+  border-radius: 20px;
+  background-image: image(url("icons/mocha/blue/reboot.svg"));
+}

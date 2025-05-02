@@ -1,0 +1,39 @@
+{
+  "include": [
+    "~/.config/waybar/modules.json"
+  ],
+  "layer": "top",
+  "position": "top",
+  "exclusive": true,
+  "margin-left": 0,
+  "margin-right": 0,
+  "margin-top": 14,
+  "margin-bottom": 0,
+  "spacing": 0,
+
+  "modules-left": [
+    "custom/appmenu",
+    "hyprland/workspaces",
+    //"group/quicklinks",
+  ],
+
+  "modules-center": [
+    "hyprland/window",
+  ],
+
+  "modules-right": [
+    //"custom/updates",
+    "pulseaudio",
+    "bluetooth",
+    "network",
+    "battery",
+    "power-profiles-daemon",
+    "group/hardware",
+    "group/tools",
+    "tray",
+    "custom/notification",
+    "custom/exit",
+    // "custom/welcome",
+    "clock"
+  ]
+}
