@@ -83,5 +83,14 @@ return {
         require("mini." .. k).setup(v)
       end
     end
+
+    vim.keymap.set("n", "<leader>xp", function()
+      local state = not vim.g.minipairs_disable
+      vim.g.minipairs_disable = state
+      vim.notify(
+        string.format("***%s autopairs***", state and "Disabled" or "Enabled"),
+        state and vim.log.levels.WARN or vim.log.levels.INFO
+      )
+    end, { desc = "Toggle autopairs" })
   end,
 }
