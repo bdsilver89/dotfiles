@@ -1,1 +1,1 @@
-kitty --class dotfiles-floating -e htop
+alacritty --class dotfiles-floating -e htop

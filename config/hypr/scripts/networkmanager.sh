@@ -1,1 +1,1 @@
-kitty --class dotfiles-floating -e nmtui
+alacritty --class dotfiles-floating -e nmtui
