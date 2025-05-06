@@ -149,7 +149,6 @@ is_darwin() {
   [ $(os) = darwin ]
 }
 
-
 # -----------------------------------------------------------------------------
 # date/time utils
 # -----------------------------------------------------------------------------
@@ -488,7 +487,14 @@ setup_hyprland() {
   if is_linux; then
     title "Setting up hyprland"
 
-    install_packages hyprland waybar swaync wlogout pamixer pavucontrol blueman nmtui
+    # fedora 42 does not yet have hyprpaper, hyprlock or hypridle
+    # need to add this copr repo to get things working
+    if [ "$(platform)" = "fedora42" ]; then
+      info "Adding Fedora42 copr repository"
+      sudo dnf copr enable -y "solopasha/hyprland" || log_and_die "Failed to setup hyprland copr"
+    fi
+
+    install_packages hyprland hypridle hyprlock waybar swaync wlogout pamixer pavucontrol blueman nmtui Thunar
   fi
 }
 
