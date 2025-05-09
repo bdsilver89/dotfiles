@@ -498,11 +498,28 @@ setup_hyprland() {
   fi
 }
 
+setup_fonts() {
+  if is_linux; then
+    title "Setting up fonts"
+
+    local url="https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.tar.xz"
+    curl -o /tmp/JetBrainsMono.tar.xz -OL "$url"
+
+    mkdir -p $HOME/.local/share/fonts/JetBrainsMonoNerd
+    tar -xJkf /tmp/JetBrainsMono.tar.xz -C $HOME/.local/share/fonts/JetBrainsMonoNerd
+
+    fc-cache
+  fi
+}
+
 main() {
   while [[ $# -gt 0 ]]; do
     case "$1" in
     --update)
       update
+      ;;
+    --fonts)
+      setup_fonts
       ;;
     --hyprland)
       setup_hyprland
@@ -547,6 +564,7 @@ main() {
 Usage: $(basename "$0")
 
 --all       Perform all of the configuration steps
+--fonts     Install fonts
 --hyprland  Installs and configures hyprland desktop environment
 --git       Configures global git setup
 --mac       Install brew and brew utilities
