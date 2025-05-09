@@ -15,6 +15,11 @@ return {
       version = not blink_main and "*",
     },
   },
+  opts_extend = {
+    "sources.completion.enabled_providers",
+    "sources.compat",
+    "sources.default",
+  },
   opts = {
     snippets = {
       expand = function(snippet, _)
