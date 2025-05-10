@@ -15,6 +15,10 @@ return {
   keys = function()
     -- stylua: ignore
     local keymaps = {
+      -- bufdelete
+      { "<leader>bd", function() Snacks.bufdelete() end, desc = "Delete Buffer" },
+      { "<leader>bo", function() Snacks.bufdelete.other() end, desc = "Delete Other Buffers" },
+
       -- notifier
       { "<leader>n", function() Snacks.picker.notifications() end, desc = "Notification History" },
       { "<leader>un", function() Snacks.notifier.hide() end, desc = "Dismiss All Notifications" },

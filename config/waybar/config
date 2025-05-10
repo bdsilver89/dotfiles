@@ -1,6 +1,7 @@
 {
   "include": [
-    "~/.config/waybar/modules.json"
+    "~/.config/waybar/modules.json",
+    "~/.config/waybar/quicklinks.json"
   ],
   "layer": "top",
   "position": "top",
@@ -13,15 +14,16 @@
 
   "modules-left": [
     "custom/appmenu",
-    "hyprland/workspaces",
+    "group/quicklinks",
+    "hyprland/window"
   ],
 
   "modules-center": [
-    "hyprland/window",
+    "hyprland/workspaces",
   ],
 
   "modules-right": [
-    //"custom/updates",
+    "custom/updates",
     "pulseaudio",
     "bluetooth",
     "network",
@@ -32,7 +34,6 @@
     "tray",
     "custom/notification",
     "custom/exit",
-    // "custom/welcome",
     "clock"
   ]
 }

@@ -1,10 +1,10 @@
 @import "mocha.css";
 
-/* * { */
-/*   font-family: FantasqueSansMono Nerd Font; */
-/*   font-size: 17px; */
-/*   min-height: 0; */
-/* } */
+* {
+  font-family: JetbrainsMono Nerd Font;
+  font-size: 17px;
+  min-height: 0;
+}
 
 * {
   border: none;
@@ -252,6 +252,16 @@ window#waybar.empty #window {
  * Custom Appmenu
  * ----------------------------------------------------- */
 
+#custom-quicklink1,
+#custom-quicklink2,
+#custom-quicklink3,
+#custom-quicklink4,
+#custom-quicklink5,
+#custom-quicklink6,
+#custom-quicklink7,
+#custom-quicklink8,
+#custom-quicklink9,
+#custom-quicklink10,
 #custom-appmenu {
   background-color: @surface0;
   font-size: 16px;
@@ -285,6 +295,34 @@ window#waybar.empty #window {
   font-size:20px;
   color: @subtext1;
   opacity: 0.8;
+}
+
+/* -----------------------------------------------------
+ * Custom Updates
+ * ----------------------------------------------------- */
+
+#custom-updates {
+    background-color: @surface0;
+    font-size: 16px;
+    color: @subtext2;
+    border-radius: 5px 5px 5px 5px;
+    padding: 2px 10px 0px 10px;
+    margin: 3px 15px 3px 0px;
+    opacity:0.8;
+}
+
+#custom-updates.green {
+    background-color: @backgroundlight;
+}
+
+#custom-updates.yellow {
+    background-color: @maroon;
+    color: @text;
+}
+
+#custom-updates.red {
+    background-color: @red;
+    color: @text;
 }
 
 /* -----------------------------------------------------

@@ -21,9 +21,24 @@
   },
 
   "clock": {
-    "format": "{:%H:%M %a}",
+    "format": " {:%I:%M %p}",
+    "format-alt": " {:%I:%M %p  %Y, %d %B, %A}",
+    "tooltip-format": "<tt><small>{calendar}</small></tt>",
     "timezone": "",
-    "tooltip": false
+    "tooltip": false,
+    "calendar": {
+      "mode": "year",
+      "mode-mon-col": 3,
+      "weeks-pos": "right",
+      "on-scroll": 1,
+      "format": {
+        "months": "<span color='#ffead3'><b>{}</b></span>",
+        "days": "<span color='#ecc6d9'><b>{}</b></span>",
+        "weeks": "<span color='#99ffdd'><b>W{}</b></span>",
+        "weekdays": "<span color='#ffcc66'><b>{}</b></span>",
+        "today": "<span color='#ff6699'><b><u>{}</u></b></span>"
+      }
+    }
   },
 
   "cpu": {
@@ -166,8 +181,14 @@
     "tooltip": false
   },
 
-  "custom/updates": {},
-  "custom/welcome": {},
+  "custom/updates": {
+    "format": "  {}",
+    "escape": true,
+    "return-type": "json",
+    "exec": "~/.config/hypr/scripts/updates.sh",
+    "on-click": "alacritty --class dotfiles-floating -e ~/.config/hypr/scripts/installupdates.sh",
+    "interval": 1800
+  },
 
   "group/hardware": {
     "orientation": "inherit",
@@ -180,6 +201,8 @@
   },
 
   "group/links": {},
+
   "group/quicklinks": {},
+
   "group/tools": {}
 }
