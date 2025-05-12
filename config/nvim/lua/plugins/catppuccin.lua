@@ -48,6 +48,8 @@ return {
   },
   config = function(_, opts)
     require("catppuccin").setup(opts)
-    vim.cmd.colorscheme("catppuccin")
+    if not vim.g.vscode then
+      vim.cmd.colorscheme("catppuccin")
+    end
   end,
 }

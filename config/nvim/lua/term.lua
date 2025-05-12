@@ -7,6 +7,11 @@ local terminal = nil
 ---@param cmd? string|string[]
 ---@param opts? LazyCmdOptions
 function M.float_term(cmd, opts)
+  if vim.g.vscode then
+    require("vscode").action("workbench.action.terminal.toggleTerminal")
+    return
+  end
+
   opts = vim.tbl_deep_extend("force", {
     ft = "lazyterm",
     size = { width = 0.7, height = 0.7 },
