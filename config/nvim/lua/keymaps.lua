@@ -56,20 +56,6 @@ local keymaps = {
     desc = "Toggle diagnostics",
   },
 
-  -- formatting
-  {
-    "<leader>uf",
-    function()
-      local state = not vim.g.autoformat
-      vim.g.autoformat = state
-      vim.notify(
-        string.format("***%s autoformatting***", state and "Enabled" or "Disabled"),
-        state and vim.log.levels.INFO or vim.log.levels.WARN
-      )
-    end,
-    desc = "Toggle autoformat",
-  },
-
   -- terminal
   {
     "<c-/>",
