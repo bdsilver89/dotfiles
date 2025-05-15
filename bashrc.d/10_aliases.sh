@@ -42,6 +42,10 @@ fi
 # git
 alias g="git"
 
+if [ -x "$(command -v lazygit)" ]; then
+  alias gg="lazygit"
+fi
+
 alias ga='git add'
 alias gbl='git blame -w'
 alias gb='git branch'
