@@ -14,9 +14,9 @@ return {
         spacing = 4,
         source = "if_many",
       },
-      virtual_lines = {
-        current_line = true,
-      },
+      -- virtual_lines = {
+      --   current_line = true,
+      -- },
       signs = {
         text = {
           [vim.diagnostic.severity.ERROR] = require("icons").diagnostics.ERROR,
@@ -30,7 +30,7 @@ return {
       enabled = true,
     },
     codelens = {
-      enabled = true,
+      enabled = false,
     },
     servers = {},
     setup = {},

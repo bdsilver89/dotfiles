@@ -39,64 +39,11 @@ require("utils").lazy_keymap({
   { "grq", vim.diagnostic.setqflist, desc = "vim.diagnostic.setqflist()" },
   { "grl", vim.diagnostic.setloclist, desc = "vim.diagnostic.setloclist()" },
 
-  -- -- terminal
-  -- {
-  --   "<c-/>",
-  --   function()
-  --     require("term").float_term(vim.o.shell, { cwd = vim.fn.expand("%:p:h")})
-  --   end,
-  --   mode = { "n", "t" },
-  --   desc = "Toggle floating terminal"
-  -- },
-  -- {
-  --   "<c-_>",
-  --   function()
-  --     require("term").float_term(vim.o.shell, { cwd = vim.fn.expand("%:p:h")})
-  --   end,
-  --   mode = { "n", "t" },
-  --   desc = "which_key_ignore"
-  -- },
-  -- { "<leader>gg", function() require("term").lazygit() end, mode = { "n", "t" }, desc = "Lazygit" },
-  -- { "<leader>gl", function() require("term").lazygit({ "log" }) end, mode = { "n", "t" }, desc = "Lazygit log" },
-  -- {
-  --   "<leader>gf",
-  --   function()
-  --     local file = vim.trim(vim.api.nvim_buf_get_name(0))
-  --     require("term").lazygit({ "-f", file }) end,
-  --   mode = { "n", "t" },
-  --   desc = "Lazygit file log"
-  -- },
+  -- terminal
+  { "<c-/>", "<cmd>close<cr>", mode = "t", desc = "Hide Terminal" },
+  { "<c-_>", "<cmd>close<cr>", mode = "t", desc = "which_key_ignore" },
 
   { "<esc>", "<cmd>nohlsearch<cr>" },
   { "<leader>l", "<cmd>Lazy<cr>", desc = "Lazy" },
   { "<leader>qq", "<cmd>qa<cr>", desc = "Quit all" },
-
-  {
-    "]e",
-    function()
-      vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR })
-    end,
-    desc = "Next Error",
-  },
-  {
-    "[e",
-    function()
-      vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR })
-    end,
-    desc = "Prev Error",
-  },
-  {
-    "]w",
-    function()
-      vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.WARN })
-    end,
-    desc = "Next Warning",
-  },
-  {
-    "[w",
-    function()
-      vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.WARN })
-    end,
-    desc = "Prev Warning",
-  },
 })

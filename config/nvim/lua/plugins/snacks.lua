@@ -28,6 +28,10 @@ return {
       { "<leader>/", function() Snacks.picker.grep() end, desc = "Grep" },
       { "<leader>:", function() Snacks.picker.command_history() end, desc = "Command History" },
       { "<leader><space>", function() Snacks.picker.files() end, desc = "Files" },
+
+      { "<leader>ft", function() Snacks.terminal() end,  desc = "Terminal" },
+      { "<c-/>", function() Snacks.terminal(nil) end, desc = "Terminal" },
+      { "<c-_>", function() Snacks.terminal(nil) end, desc = "which_key_ignore" },
     }
 
     if vim.fn.executable("lazygit") == 1 then
@@ -83,6 +87,9 @@ return {
     Snacks.toggle.animate():map("<leader>ua")
     Snacks.toggle.indent():map("<leader>ug")
     Snacks.toggle.scroll():map("<leader>uS")
+
+    Snacks.toggle.zoom():map("<leader>wm"):map("<leader>uZ")
+    Snacks.toggle.zen():map("<leader>uz")
 
     if vim.lsp.inlay_hint then
       Snacks.toggle.inlay_hints():map("<leader>uh")
