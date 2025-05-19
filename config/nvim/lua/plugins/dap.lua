@@ -43,14 +43,14 @@ return {
       { "<leader>dw", function() require("dap.ui.widgets").hover() end, desc = "Widgets" },
     },
     config = function()
-      -- vim.api.nvim_set_hl(0, "DapStoppedLine", { default = true, link = "Visual" })
-      -- for name, sign in pairs(require("config.icons").dap) do
-      --   sign = type(sign) == "table" and sign or { sign }
-      --   vim.fn.sign_define(
-      --     "Dap" .. name,
-      --     { text = sign[1], texthl = sign[2] or "DiagnosticInfo", linehl = sign[3], numhl = sign[3] }
-      --   )
-      -- end
+      vim.api.nvim_set_hl(0, "DapStoppedLine", { default = true, link = "Visual" })
+      for name, sign in pairs(require("config.icons").dap) do
+        sign = type(sign) == "table" and sign or { sign }
+        vim.fn.sign_define(
+          "Dap" .. name,
+          { text = sign[1], texthl = sign[2] or "DiagnosticInfo", linehl = sign[3], numhl = sign[3] }
+        )
+      end
 
       local vscode = require("dap.ext.vscode")
       local json = require("plenary.json")

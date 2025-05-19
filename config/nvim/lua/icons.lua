@@ -7,6 +7,14 @@ M.diagnostics = {
   INFO = "",
 }
 
+M.dap = {
+  Stopped = { "󰁕 ", "DiagnosticWarn", "DapStoppedLine" },
+  Breakpoint = " ",
+  BreakpointCondition = " ",
+  BreakpointRejected = { " ", "DiagnosticError" },
+  LogPoint = ".>",
+}
+
 M.misc = {
   bug = "",
   ellipsis = "…",

@@ -1,3 +1,7 @@
+if vim.fn.executable("cmake") == 0 and vim.fn.executable("cmake3") == 0 then
+  return {}
+end
+
 return {
   {
     "nvim-treesitter",
