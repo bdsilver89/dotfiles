@@ -13,49 +13,10 @@ return {
     local mason_path = table.concat({ vim.fn.stdpath("data"), "mason", "bin" }, sep)
     vim.env.PATH = mason_path .. delim .. vim.env.PATH
   end,
+  opts_extend = { "ensure_installed" },
   opts = {
-    ensure_installed = {
-      -- bash
-      "bash-language-server",
-      "shfmt",
-
-      -- c/cpp
-      "codelldb",
-
-      -- cmake
-      "cmakelang",
-      "cmakelint",
-      "neocmakelsp",
-
-      -- go
-      "goimports",
-      "gofumpt",
-      "gopls",
-
-      -- json
-      "json-lsp",
-
-      -- lua
-      "lua-language-server",
-      "stylua",
-
-      -- python
-      "ruff",
-      "pyright",
-      "black",
-      -- "debugpy",
-
-      -- typescript
-      -- "js-debug-adpater",
-      "prettier",
-      "vtsls",
-
-      -- yaml
-      "yaml-language-server",
-    },
-    ui = {
-      border = "rounded",
-    },
+    ensure_installed = { },
+    ui = { border = "rounded" },
   },
   config = function(_, opts)
     require("mason").setup(opts)

@@ -24,7 +24,6 @@ return {
       {
         mode = { "n", "v" },
         { "<leader><tab>", group = "tabs" },
-        { "<leader>b", group = "buffer" },
         { "<leader>c", group = "code" },
         { "<leader>d", group = "debug" },
         { "<leader>f", group = "file/find" },

@@ -1,6 +1,7 @@
 return {
   "stevearc/conform.nvim",
   event = "BufWritePre",
+  cmd = { "ConformInfo" },
   dependencies = {
     "mason.nvim",
   },
@@ -48,18 +49,12 @@ return {
     end, { range = true })
   end,
   opts = {
-    formatters_by_ft = {
-      c = { name = "clangd", lsp_format = "prefer" },
-      cpp = { name = "clangd", lsp_format = "prefer" },
-      lua = { "stylua" },
-      rust = { name = "rust_analyzer", lsp_format = "prefer" },
-      sh = { "shfmt" },
-    },
+    formatters_by_ft = {},
+    formatters = {},
     format_on_save = function()
       if not vim.g.autoformat then
         return nil
       end
-
       return {}
     end,
   },

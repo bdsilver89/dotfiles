@@ -37,23 +37,23 @@ return {
           ["?"] = ai.gen_spec.treesitter({ a = "@conditional.outer", i = "@conditional.inner" }),
         },
       },
-      hipatterns = {
-        highlighters = {
-          fixme = { pattern = "FIXME", group = "MiniHipatternsFixme" },
-          hack = { pattern = "HACK", group = "MiniHipatternsHack" },
-          todo = { pattern = "TODO", group = "MiniHipatternsTodo" },
-          note = { pattern = "NOTE", group = "MiniHipatternsNote" },
-          hex_color = hipatterns.gen_highlighter.hex_color(),
-        },
-      },
+      -- hipatterns = {
+      --   highlighters = {
+      --     fixme = { pattern = "FIXME", group = "MiniHipatternsFixme" },
+      --     hack = { pattern = "HACK", group = "MiniHipatternsHack" },
+      --     todo = { pattern = "TODO", group = "MiniHipatternsTodo" },
+      --     note = { pattern = "NOTE", group = "MiniHipatternsNote" },
+      --     hex_color = hipatterns.gen_highlighter.hex_color(),
+      --   },
+      -- },
 
       icons = {},
 
-      indentscope = {
-        draw = {
-          animation = require("mini.indentscope").gen_animation.none(),
-        },
-      },
+      -- indentscope = {
+      --   draw = {
+      --     animation = require("mini.indentscope").gen_animation.none(),
+      --   },
+      -- },
 
       pairs = {
         opts = {

@@ -9,7 +9,7 @@ vim.g.loaded_node_provider = 0
 vim.g.loaded_ruby_provider = 0
 
 if vim.fn.has("win32") == 1 then
-  require("utils").powershell_setup()
+  require("utils").terminal.setup()
 end
 
 vim.o.autowrite = true -- enable auto write

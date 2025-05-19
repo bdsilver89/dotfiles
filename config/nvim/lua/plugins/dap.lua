@@ -21,9 +21,6 @@ return {
     "mfussenegger/nvim-dap",
     dependencies = {
       "rcarriga/nvim-dap-ui",
-      -- { "theHamsta/nvim-dap-virtual-text", opts = {} },
-      -- TODO: mfussenegger/nvim-dap-python -> requires setup
-      -- TODO: leoluz/nvim-dap-go
     },
     -- stylua: ignore
     keys = {
@@ -59,41 +56,6 @@ return {
       local json = require("plenary.json")
       vscode.json_decode = function(str)
         return vim.json.decode(json.json_strip_comments(str))
-      end
-
-      local dap = require("dap")
-
-      -- codelldb adapter
-      require("dap").adapters["codelldb"] = {
-        type = "server",
-        host = "localhost",
-        port = "${port}",
-        executable = {
-          command = "codelldb",
-          args = { "--port", "${port}" },
-        },
-      }
-
-      -- c/cpp configurations
-      for _, lang in ipairs({ "c", "cpp" }) do
-        dap.configurations[lang] = {
-          {
-            type = "codelldb",
-            request = "launch",
-            name = "Launch file",
-            program = function()
-              return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
-            end,
-            cwd = "${workspaceFolder}",
-          },
-          {
-            type = "codelldb",
-            request = "attach",
-            name = "Attach to process",
-            pid = require("dap.utils").pick_process,
-            cwd = "${workspaceFolder}",
-          },
-        }
       end
     end,
   },

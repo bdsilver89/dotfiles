@@ -80,14 +80,3 @@ vim.api.nvim_create_autocmd("BufWritePre", {
     vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
   end,
 })
-
-vim.api.nvim_create_autocmd("FileType", {
-  desc = "Disable features in big files",
-  pattern = "bigfile",
-  group = vim.api.nvim_create_augroup("bdsilver89/bigfile", { clear = true }),
-  callback = function(args)
-    vim.schedule(function()
-      vim.bo[args.buf].syntax = vim.filetype.match({ buf = args.buf }) or ""
-    end)
-  end,
-})

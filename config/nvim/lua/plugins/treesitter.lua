@@ -4,63 +4,16 @@ return {
   version = false,
   build = ":TSUpdate",
   dependencies = {
-    {
-      "nvim-treesitter/nvim-treesitter-context",
-      opts = {
-        max_lines = 3,
-        multiline_threshold = 1,
-        min_window_height = 20,
-      },
-    },
     "nvim-treesitter/nvim-treesitter-textobjects",
   },
+  opts_extend = { "ensure_installed" },
   opts = {
     ensure_installed = {
-      "bash",
-      "c",
-      "cmake",
-      "cpp",
       "diff",
-      "dockerfile",
-      "git_config",
-      "gitcommit",
-      "git_rebase",
-      "gitignore",
-      "gitattributes",
-      "go",
-      "gomod",
-      "gowork",
-      "gosum",
-      "http",
-      "ini",
-      "java",
-      "javascript",
-      "json",
-      -- "jsonc", -- this one causes issues for some reason
-      "json5",
-      "lua",
-      "luadoc",
-      "luap",
-      "make",
-      "markdown",
-      "markdown_inline",
-      "meson",
-      "ninja",
-      "printf",
-      "python",
       "query",
       "regex",
-      "ron",
-      "rst",
-      "rust",
-      "sql",
-      "tsx",
-      "typescript",
       "vim",
       "vimdoc",
-      "xml",
-      "yaml",
-      "zig",
     },
     highlight = { enable = true },
     indent = { enable = true },
@@ -100,6 +53,17 @@ return {
     },
   },
   config = function(_, opts)
+    if type(opts.ensure_installed == "table") then
+      local ret = {}
+      local seen = {}
+      for _, v in ipairs(opts.ensure_installed) do
+        if not seen[v] then
+          table.insert(ret, v)
+          seen[v] = true
+        end
+      end
+      opts.ensure_installed = ret
+    end
     require("nvim-treesitter.configs").setup(opts)
   end,
 }
