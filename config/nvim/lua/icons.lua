@@ -1,27 +1,53 @@
-local M = {}
+vim.g.has_nerd_icons = true
 
-M.diagnostics = {
-  ERROR = "",
-  WARN = "",
-  HINT = "",
-  INFO = "",
-}
+if vim.g.has_nerd_icons then
+  return {
+    diagnostics = {
+      ERROR = "",
+      WARN = "",
+      HINT = "",
+      INFO = "",
+    },
+    dap = {
+      Stopped = { "󰁕 ", "DiagnosticWarn", "DapStoppedLine" },
+      Breakpoint = " ",
+      BreakpointCondition = " ",
+      BreakpointRejected = { " ", "DiagnosticError" },
+      LogPoint = ".>",
+    },
 
-M.dap = {
-  Stopped = { "󰁕 ", "DiagnosticWarn", "DapStoppedLine" },
-  Breakpoint = " ",
-  BreakpointCondition = " ",
-  BreakpointRejected = { " ", "DiagnosticError" },
-  LogPoint = ".>",
-}
+    misc = {
+      bug = "",
+      ellipsis = "…",
+      git = " ",
+      search = "",
+      vertical_bar = "│",
+      dashed_bar = "┊",
+    },
+  }
+else
+  return {
+    diagnostics = {
+      ERROR = "E",
+      WARN = "W",
+      HINT = "H",
+      INFO = "I",
+    },
+    dap = {
+      Stopped = { "-> ", "DiagnosticWarn", "DapStoppedLine" },
+      Breakpoint = "B ",
+      BreakpointCondition = "B? ",
+      BreakpointRejected = { "B! ", "DiagnosticError" },
+      LogPoint = ".>",
+    },
 
-M.misc = {
-  bug = "",
-  ellipsis = "…",
-  git = " ",
-  search = "",
-  vertical_bar = "│",
-  dashed_bar = "┊",
-}
-
-return M
+    misc = {
+      bug = "",
+      ellipsis = "...",
+      git = "",
+      search = "",
+      vertical_bar = "|",
+      dashed_bar = "|",
+    },
+  }
+end

@@ -23,6 +23,11 @@ return {
       { "<leader>fe", function() Snacks.explorer() end, desc = "Explorer (Snacks)" },
       { "<leader>e", "<leader>fe", remap = true ,desc = "Explorer (Snacks)" },
 
+      -- git
+      { "<leader>gf", function() Snacks.picker.git_log_file() end, desc = "Git File History" },
+      { "<leader>gl", function() Snacks.picker.git_log() end, desc = "Git Log" },
+      { "<leader>gb", function() Snacks.picker.git_log_line() end, desc = "Git Line" },
+
       -- picker
       { "<leader>,", function() Snacks.picker.buffers() end, desc = "Buffer" },
       { "<leader>/", function() Snacks.picker.grep() end, desc = "Grep" },
@@ -62,8 +67,6 @@ return {
       -- stylua: ignore
       vim.list_extend(keys, {
         { "<leader>gg", function() Snacks.lazygit() end, desc = "Lazygit" },
-        { "<leader>gf", function() Snacks.picker.git_log_file() end, desc = "Git File History" },
-        { "<leader>gl", function() Snacks.picker.git_log() end, desc = "Git Log" },
       })
     end
 

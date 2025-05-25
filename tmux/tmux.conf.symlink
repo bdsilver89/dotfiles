@@ -47,6 +47,7 @@ bind C-a send-prefix
 set -g prefix C-a
 set -g mouse on
 set -g base-index 1           # start indexing windows at 1 instead of 0
+set -g pane-base-index 1      # start indexing panes at 1 instead of 0
 set -g detach-on-destroy off  # don't exit tmux when closing a session
 set -g escape-time 0          # zero-out escape time delay
 set -g history-limit 1000000  # increase history size (from 2,000)
@@ -56,12 +57,14 @@ set -g status-position top    # macOS/darwin style status bar on top
 set -g default-terminal "${TERM}"
 setw -g mode-keys vi
 
+set -g status-left "[#{session_name}] "
+
 wg_prfx="#{?client_prefix,<Prefix>,}"
 wg_date=" #[fg=color4,bold,italics,bg=default]%d-%b-%Y#[none]"
 wg_time=" #[fg=color11,bold,bg=default]%H:%M"
 set -g status-right "${wg_prfx}${wg_date}${wg_time}"
 
-set -g status-style fg=color7,bg=color0
+set -g status-style fg=color7,bg=color234
 
 
 # nvim-tmux-navigation
