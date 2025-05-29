@@ -3,10 +3,10 @@ vim.g.has_nerd_icons = true
 if vim.g.has_nerd_icons then
   return {
     diagnostics = {
-      ERROR = "",
-      WARN = "",
-      HINT = "",
-      INFO = "",
+      ERROR = " ",
+      WARN = " ",
+      HINT = " ",
+      INFO = " ",
     },
     dap = {
       Stopped = { "󰁕 ", "DiagnosticWarn", "DapStoppedLine" },
@@ -15,7 +15,11 @@ if vim.g.has_nerd_icons then
       BreakpointRejected = { " ", "DiagnosticError" },
       LogPoint = ".>",
     },
-
+    git = {
+      added = " ",
+      modified = " ",
+      removed = " ",
+    },
     misc = {
       bug = "",
       ellipsis = "…",
@@ -40,7 +44,11 @@ else
       BreakpointRejected = { "B! ", "DiagnosticError" },
       LogPoint = ".>",
     },
-
+    git = {
+      added = "+ ",
+      modified = "~ ",
+      removed = "- ",
+    },
     misc = {
       bug = "",
       ellipsis = "...",

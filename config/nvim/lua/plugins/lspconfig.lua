@@ -1,6 +1,6 @@
-local og_virt_text = nil
-local og_virt_line = nil
-
+-- local og_virt_text = nil
+-- local og_virt_line = nil
+--
 return {
   "neovim/nvim-lspconfig",
   event = { "BufReadPost", "BufNewFile" },
@@ -17,9 +17,9 @@ return {
         spacing = 4,
         source = "if_many",
       },
-      virtual_lines = {
-        current_line = true,
-      },
+      -- virtual_lines = {
+      --   current_line = true,
+      -- },
       float = {
         border = "rounded",
         source = "if_many",
@@ -85,45 +85,45 @@ return {
     end)
 
     vim.diagnostic.config(opts.diagnostics or {})
-    vim.api.nvim_create_autocmd({ "CursorMoved", "DiagnosticChanged" }, {
-      callback = function()
-        if not vim.api.nvim_buf_is_valid(0) then
-          return
-        end
-
-        if og_virt_line == nil then
-          og_virt_line = vim.diagnostic.config().virtual_lines
-        end
-
-        if not (og_virt_line and og_virt_line.current_line) then
-          if og_virt_text then
-            vim.diagnostic.config({ virtual_text = og_virt_text })
-            og_virt_text = nil
-          end
-          return
-        end
-
-        if og_virt_text == nil then
-          og_virt_text = vim.diagnostic.config().virtual_text
-        end
-
-        local lnum = vim.api.nvim_win_get_cursor(0)[1] - 1
-
-        if vim.tbl_isempty(vim.diagnostic.get(0, { lnum = lnum })) then
-          vim.diagnostic.config({ virtual_text = og_virt_text })
-        else
-          vim.diagnostic.config({ virtual_text = false })
-        end
-      end,
-    })
-
-    vim.api.nvim_create_autocmd("ModeChanged", {
-      callback = function()
-        if vim.api.nvim_buf_is_valid(0) then
-          pcall(vim.diagnostic.show)
-        end
-      end,
-    })
+    -- vim.api.nvim_create_autocmd({ "CursorMoved", "DiagnosticChanged" }, {
+    --   callback = function()
+    --     if not vim.api.nvim_buf_is_valid(0) then
+    --       return
+    --     end
+    --
+    --     if og_virt_line == nil then
+    --       og_virt_line = vim.diagnostic.config().virtual_lines
+    --     end
+    --
+    --     if not (og_virt_line and og_virt_line.current_line) then
+    --       if og_virt_text then
+    --         vim.diagnostic.config({ virtual_text = og_virt_text })
+    --         og_virt_text = nil
+    --       end
+    --       return
+    --     end
+    --
+    --     if og_virt_text == nil then
+    --       og_virt_text = vim.diagnostic.config().virtual_text
+    --     end
+    --
+    --     local lnum = vim.api.nvim_win_get_cursor(0)[1] - 1
+    --
+    --     if vim.tbl_isempty(vim.diagnostic.get(0, { lnum = lnum })) then
+    --       vim.diagnostic.config({ virtual_text = og_virt_text })
+    --     else
+    --       vim.diagnostic.config({ virtual_text = false })
+    --     end
+    --   end,
+    -- })
+    --
+    -- vim.api.nvim_create_autocmd("ModeChanged", {
+    --   callback = function()
+    --     if vim.api.nvim_buf_is_valid(0) then
+    --       pcall(vim.diagnostic.show)
+    --     end
+    --   end,
+    -- })
 
     local all_mlsp_servers = vim.tbl_keys(require("mason-lspconfig.mappings").get_mason_map().lspconfig_to_package)
     local ensure_installed = {}

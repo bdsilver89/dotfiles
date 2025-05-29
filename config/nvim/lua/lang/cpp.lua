@@ -44,7 +44,8 @@ return {
     },
     opts = {
       formatters_by_ft = {
-        lua = { "stylua" },
+        c = { "clang-format", lsp_format = "fallback" },
+        cpp = { "clang-format", lsp_format = "fallback" },
       },
     },
   },
