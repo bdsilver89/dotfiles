@@ -58,7 +58,7 @@ vim.o.smartindent = true -- insert indents automatically
 vim.o.splitbelow = true -- split new windows below
 vim.o.splitkeep = "screen"
 vim.o.splitright = true -- split new windows to the right
-vim.o.statuscolumn = "%=%l %s"
+-- vim.o.statuscolumn = "%=%l %s"
 vim.o.tabstop = 2
 vim.o.timeoutlen = vim.g.vscode and 1000 or 300 -- lower the default to quickly trigger which-key
 vim.o.undofile = true

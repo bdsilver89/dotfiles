@@ -1,4 +1,19 @@
-if vim.fn.executable("cmake") == 0 and vim.fn.executable("cmake3") == 0 then
+local cmake_command
+local ctest_command
+
+if vim.fn.executable("cmake3") == 1 then
+  cmake_command = "cmake3"
+elseif vim.fn.executable("cmake") == 1 then
+  cmake_command = "cmake"
+else
+  return {}
+end
+
+if vim.fn.executable("ctest3") == 1 then
+  cmake_command = "ctest3"
+elseif vim.fn.executable("ctest") == 1 then
+  cmake_command = "ctest"
+else
   return {}
 end
 
@@ -64,6 +79,9 @@ return {
         end,
       })
     end,
-    opts = {},
+    opts = {
+      cmake_command = cmake_command,
+      ctest_command = ctest_command,
+    },
   },
 }

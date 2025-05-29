@@ -1,6 +1,11 @@
 return {
   "nvim-treesitter/nvim-treesitter",
   event = "VeryLazy",
+  cmd = { "TSUpdateSync", "TSUpdate", "TSInstall" },
+  keys = {
+    { "<c-space>", desc = "Increment Selection" },
+    { "<bs>", desc = "Decrement Selection" },
+  },
   version = false,
   build = ":TSUpdate",
   dependencies = {
@@ -20,8 +25,8 @@ return {
     incremental_selection = {
       enable = true,
       keymaps = {
-        init_selection = "<cr>",
-        node_incremental = "<cr>",
+        init_selection = "<c-space>",
+        node_incremental = "<c-space>",
         scope_incremental = false,
         node_decremental = "<bs>",
       },

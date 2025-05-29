@@ -1,6 +1,7 @@
 -- local og_virt_text = nil
 -- local og_virt_line = nil
 --
+
 return {
   "neovim/nvim-lspconfig",
   event = { "BufReadPost", "BufNewFile" },

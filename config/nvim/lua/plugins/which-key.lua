@@ -28,7 +28,7 @@ return {
         { "<leader>d", group = "debug" },
         { "<leader>f", group = "file/find" },
         { "<leader>g", group = "git" },
-        { "<leader>h", group = "git hunk" },
+        { "<leader>gh", group = "git hunk" },
         { "<leader>o", group = "overseer" },
         { "<leader>s", group = "search" },
         { "<leader>t", group = "terminal/test" },
