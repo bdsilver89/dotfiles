@@ -5,38 +5,6 @@ return {
   },
 
   {
-    "nvim-lspconfig",
-    opts = {
-      servers = {
-        clangd = {
-          -- NOTE: use system-installed clangd binary to match compiler version
-          mason = false,
-          keys = {
-            { "<leader>ch", "<cmd>ClangdSwitchSourceHeader<cr>", desc = "Switch Source/Header (C/C++)" },
-          },
-          capabilities = {
-            offsetEncoding = { "utf-16" },
-          },
-          cmd = {
-            "clangd",
-            "--background-index",
-            "--clang-tidy",
-            "--header-insertion=iwyu",
-            "--completion-style=detailed",
-            "--function-arg-placeholders",
-            "--fallback-style=llvm",
-          },
-          init_options = {
-            usePlaceholders = true,
-            completeUnimported = true,
-            clangdFileStatus = true,
-          },
-        },
-      },
-    },
-  },
-
-  {
     "conform.nvim",
     dependencies = {
       "mason.nvim",

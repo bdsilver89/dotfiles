@@ -9,12 +9,8 @@ return {
   },
 
   {
-    "nvim-lspconfig",
-    opts = {
-      servers = {
-        bashls = {},
-      },
-    },
+    "mason.nvim",
+    opts = { ensure_installed = { "bash-language-server" } },
   },
 
   {

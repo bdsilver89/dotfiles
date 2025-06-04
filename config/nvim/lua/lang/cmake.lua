@@ -24,12 +24,8 @@ return {
   },
 
   {
-    "nvim-lspconfig",
-    opts = {
-      servers = {
-        neocmake = {},
-      },
-    },
+    "mason.nvim",
+    opts = { ensure_installed = { "neocmakelsp" } },
   },
 
   {

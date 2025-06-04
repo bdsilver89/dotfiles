@@ -5,26 +5,8 @@ return {
   },
 
   {
-    "nvim-lspconfig",
-    opts = {
-      servers = {
-        ruff = {
-          cmd_env = { RUFF_TRACE = "messages" },
-          init_options = {
-            settings = {
-              logLevel = "error",
-            },
-          },
-          keys = {
-            {
-              "<leader>co",
-              require("utils").lsp.action["source.organizeImports"],
-              desc = "Organize Imports",
-            },
-          },
-        },
-      },
-    },
+    "mason.nvim",
+    opts = { ensure_installed = { "ruff", "pyright" } },
   },
 
   {

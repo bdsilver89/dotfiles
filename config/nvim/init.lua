@@ -23,3 +23,4 @@ vim.api.nvim_create_autocmd("User", {
 })
 
 require("lazy_load")
+require("lsp")

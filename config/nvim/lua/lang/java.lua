@@ -9,12 +9,8 @@ return {
   },
 
   {
-    "nvim-lspconfig",
-    opts = {
-      servers = {
-        jdtls = {},
-      },
-    },
+    "mason.nvim",
+    opts = { ensure_installed = { "jdtls" } },
   },
 
   {
