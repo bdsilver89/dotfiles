@@ -20,6 +20,8 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
     -- stylua: ignore
     local keymaps = {
+      { "<leader>cl", "<cmd>LspInfo<cr>", desc = "Lsp Info" },
+      { "<leader>cr", "<cmd>LspRestart<cr>", desc = "Lsp Restart" },
       { "gd", function() Snacks.picker.lsp_definitions() end, desc = "Goto Definition" },
       { "grr", function() Snacks.picker.lsp_references() end, nowait = true, desc = "References" },
       { "gI", function() Snacks.picker.lsp_implementations() end, desc = "Goto Implementation" },
@@ -40,13 +42,13 @@ vim.api.nvim_create_autocmd("LspAttach", {
       end
     end
 
-    -- if client:supports_method("textDocument/codeLens") then
-    --   vim.lsp.codelens.refresh()
-    --   vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
-    --     buffer = buffer,
-    --     callback = vim.lsp.codelens.refresh,
-    --   })
-    -- end
+    if client:supports_method("textDocument/codeLens") then
+      vim.lsp.codelens.refresh()
+      vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
+        buffer = buffer,
+        callback = vim.lsp.codelens.refresh,
+      })
+    end
 
     Utils.lazy_keymap(keymaps, buffer)
 

@@ -23,27 +23,27 @@ return {
       { "<leader>fe", function() Snacks.explorer() end, desc = "Explorer (Snacks)" },
       { "<leader>e", "<leader>fe", remap = true ,desc = "Explorer (Snacks)" },
 
-      -- git
+      -- git browse
+      { "<leader>go", function() Snacks.gitbrowse() end, mode = { "x", "n" }, desc = "Git Browse" },
+
+      -- picker
+      { "<leader><space>", function() Snacks.picker.smart() end, desc = "Smart" },
+      { "<leader>,", function() Snacks.picker.buffers() end, desc = "Buffer" },
+      { "<leader>/", function() Snacks.picker.grep() end, desc = "Grep" },
+      { "<leader>:", function() Snacks.picker.command_history() end, desc = "Command History" },
+      { "<leader>n", function() Snacks.picker.notifications() end, desc = "Notifications" },
+      { "<leader>fb", function() Snacks.picker.buffers() end, desc = "Buffer" },
+      { "<leader>fB", function() Snacks.picker.buffers({ hidden = true, nofile = true }) end, desc = "Buffer (All)" },
+      { "<leader>ff", function() Snacks.picker.files() end, desc = "Files" },
+      { "<leader>fr", function() Snacks.picker.recent() end, desc = "Recent" },
       { "<leader>gb", function() Snacks.picker.git_log_line() end, desc = "Git Line" },
       { "<leader>gl", function() Snacks.picker.git_log() end, desc = "Git Log" },
       { "<leader>gL", function() Snacks.picker.git_log_file() end, desc = "Git Log File" },
       { "<leader>gt", function() Snacks.picker.git_status() end, desc = "Git Status" },
       { "<leader>gT", function() Snacks.picker.git_stash() end, desc = "Git Stash" },
-      { "<leader>go", function() Snacks.gitbrowse() end, mode = { "x", "n" }, desc = "Git Browse" },
-
-      -- picker
-      { "<leader>,", function() Snacks.picker.buffers() end, desc = "Buffer" },
-      { "<leader>/", function() Snacks.picker.grep() end, desc = "Grep" },
-      { "<leader>:", function() Snacks.picker.command_history() end, desc = "Command History" },
-      { "<leader><space>", function() Snacks.picker.files() end, desc = "Files" },
-      { "<leader>fb", function() Snacks.picker.buffers() end, desc = "Buffer" },
-      { "<leader>fB", function() Snacks.picker.buffers({ hidden = true, nofile = true }) end, desc = "Buffer (All)" },
-      { "<leader>ff", function() Snacks.picker.files() end, desc = "Files" },
-      { "<leader>fr", function() Snacks.picker.recent() end, desc = "Recent" },
       { "<leader>sb", function() Snacks.picker.lines() end, desc = "Buffer Lines" },
       { "<leader>sB", function() Snacks.picker.grep_buffers() end, desc = "Grep Open Buffers" },
       { "<leader>sw", function() Snacks.picker.grep_word() end, desc = "Visual selection or word (Root Dir)", mode = { "n", "x" } },
-
       { '<leader>s"', function() Snacks.picker.registers() end, desc = "Registers" },
       { "<leader>sa", function() Snacks.picker.autocmds() end, desc = "Autocmds" },
       { "<leader>sc", function() Snacks.picker.commands() end, desc = "Commands" },

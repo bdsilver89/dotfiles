@@ -1,3 +1,7 @@
+if vim.loader and vim.loader.enable then
+  vim.loader.enable()
+end
+
 require("options")
 
 local lazy_autocmds = vim.fn.argc(-1) == 0
