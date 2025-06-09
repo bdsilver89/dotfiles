@@ -25,7 +25,7 @@ return {
 
   {
     "mason.nvim",
-    opts = { ensure_installed = { "neocmakelsp" } },
+    opts = { ensure_installed = { "neocmakelsp", "cmakelint" } },
   },
 
   {
@@ -43,10 +43,6 @@ return {
 
   {
     "nvim-lint",
-    dependencies = {
-      "mason.nvim",
-      opts = { ensure_installed = { "cmakelint" } },
-    },
     opts = {
       formatters_by_ft = {
         cmake = { "cmakelint" },
