@@ -1,6 +1,6 @@
 return {
   "mason-org/mason.nvim",
-  cmd = "Mason",
+  cmd = { "Mason", "MasonInstall", "MasonUninstall", "MasonUninstallAll", "MasonUpdate" },
   build = ":MasonUpdate",
   keys = {
     { "<leader>cm", "<cmd>Mason<cr>", desc = "Mason" },
@@ -15,7 +15,7 @@ return {
   end,
   opts_extend = { "ensure_installed" },
   opts = {
-    ensure_installed = { },
+    ensure_installed = {},
     ui = { border = "rounded" },
   },
   config = function(_, opts)
