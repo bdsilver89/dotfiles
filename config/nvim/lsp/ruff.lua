@@ -8,11 +8,4 @@ return {
       logLevel = "error",
     },
   },
-  keys = {
-    {
-      "<leader>co",
-      require("utils").lsp.action["source.organizeImports"],
-      desc = "Organize Imports",
-    },
-  },
 }

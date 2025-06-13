@@ -55,15 +55,9 @@ vim.api.nvim_create_autocmd("LspAttach", {
     vim.diagnostic.config({
       underline = true,
       update_in_insert = false,
-      severity_sport = true,
-      virtual_text = {
-        spacing = 4,
-        source = "if_many",
-      },
-      float = {
-        border = "rounded",
-        source = "if_many",
-      },
+      severity_sort = true,
+      virtual_text = true,
+      -- virtual_lines = { current_line = true },
       signs = {
         text = {
           [vim.diagnostic.severity.ERROR] = Icons.diagnostics.ERROR,
