@@ -38,6 +38,26 @@ require("utils").lazy_keymap({
   { "grd", vim.diagnostic.open_float, desc = "vim.diagnostic.open_float()" },
   { "grq", vim.diagnostic.setqflist, desc = "vim.diagnostic.setqflist()" },
   { "grl", vim.diagnostic.setloclist, desc = "vim.diagnostic.setloclist()" },
+  {
+    "<leader>xl",
+    function()
+      local ok, err = pcall(vim.fn.getloclist(0, { winid = 0 }).winid ~= 0 and vim.cmd.lclose or vim.cmd.lopen)
+      if not ok and err then
+        vim.notify(err, vim.log.levels.ERROR)
+      end
+    end,
+    desc = "Location List",
+  },
+  {
+    "<leader>xq",
+    function()
+      local ok, err = pcall(vim.fn.getqflist({ winid = 0 }).winid ~= 0 and vim.cmd.cclose or vim.cmd.copen)
+      if not ok and err then
+        vim.notify(err, vim.log.levels.ERROR)
+      end
+    end,
+    desc = "Quickfix List",
+  },
 
   -- terminal
   { "<c-/>", "<cmd>close<cr>", mode = "t", desc = "Hide Terminal" },
