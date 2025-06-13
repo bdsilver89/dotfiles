@@ -62,6 +62,11 @@ return {
             require("overseer").open()
           end,
         },
+        {
+          ft = "copilot-chat",
+          title = "Copilot Chat",
+          size = { width = 50 },
+        },
       },
       keys = {
         ["<c-right>"] = function(win)
