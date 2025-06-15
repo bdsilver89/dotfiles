@@ -6,10 +6,6 @@ return {
 
   {
     "conform.nvim",
-    dependencies = {
-      "mason.nvim",
-      opts = { ensure_installed = { "stylua" } },
-    },
     opts = {
       formatters_by_ft = {
         c = { "clang-format", lsp_format = "fallback" },
