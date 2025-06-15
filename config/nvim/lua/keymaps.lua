@@ -28,6 +28,11 @@ require("utils").lazy_keymap({
   { "<leader>|", "<c-w>v", desc = "Split window right", remap = true },
   { "<leader>wd", "<c-w>c", desc = "Close window", remap = true },
 
+  { "<C-Up>", "<cmd>resize +2<cr>", desc = "Increase Window Height" },
+  { "<C-Down>", "<cmd>resize -2<cr>", desc = "Decrease Window Height" },
+  { "<C-Left>", "<cmd>vertical resize -2<cr>", desc = "Decrease Window Width" },
+  { "<C-Right>", "<cmd>vertical resize +2<cr>", desc = "Increase Window Width" },
+
   -- tabs
   { "<leader><tab><tab>", "<cmd>tabnew<cr>", desc = "New tab" },
   { "<leader><tab>d", "<cmd>tabclose<cr>", desc = "Close tab" },
