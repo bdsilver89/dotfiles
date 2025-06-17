@@ -39,6 +39,7 @@ vim.api.nvim_create_autocmd("FileType", {
   desc = "Close with <q>",
   group = vim.api.nvim_create_augroup("bdsilver89/close_with_q", { clear = true }),
   pattern = {
+    "Avante",
     "checkhealth",
     "gitsigns-blame",
     "grug-far",

@@ -4,8 +4,8 @@ return {
     opts = { ensure_installed = { "toml" } },
   },
 
-  -- {
-  --   "mason.nvim",
-  --   opts = { ensure_installed = { "taplo" } },
-  -- },
+  {
+    "mason.nvim",
+    opts = { ensure_installed = { "taplo" } },
+  },
 }

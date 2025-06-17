@@ -28,10 +28,6 @@ return {
 
   {
     "conform.nvim",
-    dependencies = {
-      "mason.nvim",
-      opts = { ensure_installed = { "stylua" } },
-    },
     opts = {
       formatters_by_ft = {
         rust = { "rustfmt", lsp_format = "fallback" },
