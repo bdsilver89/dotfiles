@@ -8,15 +8,15 @@ return {
     "MeanderingProgrammer/render-markdown.nvim",
     ft = { "markdown", "norg", "rmd", "org", "avante", "codecompanion" },
     opts = {
-      --   code = {
-      --     sign = true,
-      --     width = "block",
-      --     right_pad = 1,
-      --   },
-      --   heading = {
-      --     sign = true,
-      --     icons = {},
-      --   },
+      code = {
+        sign = false,
+        width = "block",
+        right_pad = 1,
+      },
+      heading = {
+        sign = true,
+        icons = {},
+      },
     },
   },
 }

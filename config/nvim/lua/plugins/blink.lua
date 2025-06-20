@@ -2,7 +2,6 @@ return {
   "saghen/blink.cmp",
   dependencies = {
     "rafamadriz/friendly-snippets",
-    "Kaiser-Yang/blink-cmp-avante",
   },
   event = "InsertEnter",
   version = "1.*",
@@ -16,14 +15,7 @@ return {
     },
     completion = { documentation = { auto_show = true } },
     sources = {
-      default = { "avante", "lsp", "path", "snippets", "buffer" },
-      providers = {
-        avante = {
-          module = "blink-cmp-avante",
-          name = "Avante",
-          opts = {},
-        },
-      },
+      default = { "lsp", "path", "snippets", "buffer" },
     },
     fuzzy = { implementation = "prefer_rust" },
   },
