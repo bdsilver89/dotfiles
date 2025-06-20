@@ -1,7 +1,6 @@
 return {
   {
     "olimorris/codecompanion.nvim",
-    enabled = false,
     cmd = {
       "CodeCompanion",
       "CodeCompanionChat",
@@ -13,35 +12,68 @@ return {
       "nvim-treesitter/nvim-treesitter",
     },
     keys = {
-      { "<leader>at", "<cmd>CodeCompanionChat Toggle<cr>", desc = "Toggle CodeCompanion Chat" },
-      { "<leader>aa", "<cmd>CodeCompanionChat Add<cr>", mode = "x", desc = "Add to CodeCompanion Chat" },
+      { "<leader>at", "<cmd>CodeCompanionChat Toggle<cr>", desc = "Toggle" },
+      { "<leader>aa", "<cmd>CodeCompanionActions<cr>", desc = "Actions" },
     },
-    opts = function()
-      local config = require("codecompanion.config").config
-
-      local diff_opts = config.display.diff.opts
-      table.insert(diff_opts, "context:99") -- Setting the context to a very large number disables folding.
-
-      return {
-        strategies = {
-          inline = {
-            keymaps = {
-              accept_change = {
-                modes = { n = "<leader>ay" },
-                description = "Accept the suggested change",
+    init = function()
+      vim.cmd([[cab cc CodeCompanion]])
+    end,
+    opts = {
+      strategies = {
+        chat = {
+          adapter = "copilot",
+          slash_commands = {
+            ["buffer"] = {
+              opts = {
+                provider = "snacks",
               },
-              reject_change = {
-                modes = { n = "<leader>an" },
-                description = "Reject the suggested change",
+            },
+            ["fetch"] = {
+              opts = {
+                provider = "snacks",
+              },
+            },
+            ["file"] = {
+              opts = {
+                provider = "snacks",
+              },
+            },
+            ["help"] = {
+              opts = {
+                provider = "snacks",
+              },
+            },
+            ["image"] = {
+              opts = {
+                provider = "snacks",
+              },
+            },
+            ["symbols"] = {
+              opts = {
+                provider = "snacks",
               },
             },
           },
+          opts = {
+            completion_provider = "blink",
+          },
         },
-        display = {
-          diff = { opts = diff_opts },
+        cmd = {
+          adapter = "copilot",
         },
-      }
-    end,
+        inline = {
+          adapter = "copilot",
+        },
+      },
+      display = {
+        action_palette = {
+          provider = "snacks",
+        },
+        diff = {
+          provider = "default",
+        },
+      },
+    },
   },
 
   {
