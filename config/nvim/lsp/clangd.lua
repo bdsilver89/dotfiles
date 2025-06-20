@@ -77,9 +77,6 @@ return {
     },
     offsetEncoding = { "utf-8", "utf-16" },
   },
-  keys = {
-    { "<leader>ch", "<cmd>LspClangdSwitchSourceHeader<cr>", desc = "Switch Source/Header (C/C++)" },
-  },
   on_attach = function()
     vim.api.nvim_buf_create_user_command(0, "LspClangdSwitchSourceHeader", function()
       switch_source_header(0)
@@ -88,5 +85,7 @@ return {
     vim.api.nvim_buf_create_user_command(0, "LspClangdShowSymbolInfo", function()
       symbol_info()
     end, { desc = "Show symbol info" })
+
+    vim.keymap.set("n", "<leader>ch", "<cmd>LspClangdSwitchSourceHeader<cr>", { desc = "Switch Source/Header (C/C++)" })
   end,
 }

@@ -1,6 +1,7 @@
 return {
   {
     "olimorris/codecompanion.nvim",
+    enabled = false,
     cmd = {
       "CodeCompanion",
       "CodeCompanionChat",
@@ -74,11 +75,5 @@ return {
         },
       },
     },
-  },
-
-  {
-    "MeanderingProgrammer/render-markdown.nvim",
-    optional = true,
-    ft = { "codecompanion" },
   },
 }

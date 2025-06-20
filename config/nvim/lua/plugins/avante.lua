@@ -1,7 +1,6 @@
 return {
   {
     "yetone/avante.nvim",
-    enabled = false,
     build = vim.fn.has("win32") == 1 and "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false"
       or "make",
     cmd = {
@@ -25,17 +24,22 @@ return {
       "MunifTanjim/nui.nvim",
       "zbirenbaum/copilot.lua",
     },
-    -- keys = {
-    --   { "<leader>aa", "<cmd>AvanteToggle<cr>", desc = "Avante Toggle" },
-    --   { "<leader>ac", "<cmd>AvanteChat<cr>", desc = "Avante Chat" },
-    --   { "<leader>aC", "<cmd>AvanteClear<cr>", desc = "Avante Clear" },
-    --   { "<leader>am", "<cmd>AvanteModels<cr>", desc = "Avante Models" },
-    --   { "<leader>ar", "<cmd>AvanteRefresh<cr>", desc = "Avante Refresh" },
-    --   { "<leader>ax", "<cmd>AvanteStop<cr>", desc = "Avante Stop" },
-    -- },
+    keys = {
+      { "<leader>aa", "<cmd>AvanteAsk<cr>", desc = "Avante Ask" },
+      { "<leader>ac", "<cmd>AvanteChat<cr>", desc = "Avante Chat" },
+      { "<leader>aC", "<cmd>AvanteClear<cr>", desc = "Avante Clear" },
+      { "<leader>am", "<cmd>AvanteModels<cr>", desc = "Avante Models" },
+      { "<leader>ar", "<cmd>AvanteRefresh<cr>", desc = "Avante Refresh" },
+      { "<leader>ax", "<cmd>AvanteStop<cr>", desc = "Avante Stop" },
+    },
     opts = {
       auto_suggestions_provider = "copilot",
       provider = "copilot",
+      providers = {
+        copilot = {
+          model = "claude-3.7-sonnet",
+        },
+      },
       input = {
         provider = "snacks",
         provider_opts = {
@@ -51,6 +55,7 @@ return {
 
   {
     "blink.cmp",
+    optional = true,
     dependencies = {
       "Kaiser-Yang/blink-cmp-avante",
     },
@@ -66,11 +71,5 @@ return {
         },
       },
     },
-  },
-
-  {
-    "MeanderingProgrammer/render-markdown.nvim",
-    optional = true,
-    ft = { "avante" },
   },
 }
