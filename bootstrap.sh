@@ -10,15 +10,14 @@ LOG_DATE=${LOG_DATE:-true}
 LOG_CONSOLE=${LOG_CONSOLE:-false}
 LOG_FORCE_COLORS=${LOG_FORCE_COLORS:-false}
 
-LOG_BG=${1:-1}
 LOG_COLOR_DEFAULT="\e[0;39m"
-LOG_COLOR_GREY="\e[$BG;30m"
-LOG_COLOR_RED="\e[$BG;31m"
-LOG_COLOR_GREEN="\e[$BG;32m"
-LOG_COLOR_YELLOW="\e[$BG;33m"
-LOG_COLOR_BLUE="\e[$BG;34m"
-LOG_COLOR_PURPLE="\e[$BG;35m"
-LOG_COLOR_CYAN="\e[$BG;36m"
+LOG_COLOR_GREY="\e[1;30m"
+LOG_COLOR_RED="\e[1;31m"
+LOG_COLOR_GREEN="\e[1;32m"
+LOG_COLOR_YELLOW="\e[1;33m"
+LOG_COLOR_BLUE="\e[1;34m"
+LOG_COLOR_PURPLE="\e[1;35m"
+LOG_COLOR_CYAN="\e[1;36m"
 
 log() {
   if [ -t 1 ]; then
@@ -28,7 +27,7 @@ log() {
 }
 
 log_err() {
-  log "${LOG_COLOR_RED}$*${LOG_COLORDEFAULT}"
+  log "${LOG_COLOR_RED}$*${LOG_COLOR_DEFAULT}"
 }
 
 log_warn() {
@@ -65,7 +64,7 @@ log_and_die() {
 
 title() {
   log "\n${LOG_COLOR_PURPLE}$*${LOG_COLOR_DEFAULT}"
-  log "${LOG_COLOR_GRAY}==============================${LOG_COLOR_DEFAULT}\n"
+  log "${LOG_COLOR_GREY}==============================${LOG_COLOR_DEFAULT}\n"
 }
 
 error() {

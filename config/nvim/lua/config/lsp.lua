@@ -1,4 +1,4 @@
-local Icons = require("icons")
+local Icons = require("config.icons")
 local Utils = require("utils")
 
 -- automatically enable LSPs found in rtp
@@ -66,6 +66,14 @@ vim.api.nvim_create_autocmd("LspAttach", {
           [vim.diagnostic.severity.INFO] = Icons.diagnostics.INFO,
         },
       },
+      float = {
+        focused = false,
+        style = "minimal",
+        source = true,
+        header = "",
+        prefix = "",
+      },
+      jump = { float = true },
     })
   end,
 })

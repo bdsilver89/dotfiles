@@ -38,6 +38,7 @@ return {
       desc = "Next Trouble/Quickfix Item",
     },
   },
+  init = function() end,
   opts = {
     modes = {
       lsp = {

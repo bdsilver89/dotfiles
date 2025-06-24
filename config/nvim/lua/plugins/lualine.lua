@@ -18,7 +18,7 @@ return {
 
     vim.o.laststatus = vim.g.lualine_laststatus
 
-    local icons = require("icons")
+    local icons = require("config.icons")
 
     local opts = {
       options = {

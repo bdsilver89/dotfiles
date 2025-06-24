@@ -1,14 +1,19 @@
-vim.api.nvim_create_autocmd("TextYankPost", {
+local autocmd = vim.api.nvim_create_autocmd
+local augroup = function(name)
+  return vim.api.nvim_create_augroup("bdsilver89/" .. name, { clear = true })
+end
+
+autocmd("TextYankPost", {
   desc = "Highlight on yank",
-  group = vim.api.nvim_create_augroup("bdsilver89/yank_highlight", { clear = true }),
+  group = augroup("yank_highlight"),
   callback = function()
     vim.hl.on_yank()
   end,
 })
 
-vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
+autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
   desc = "Check for file reload",
-  group = vim.api.nvim_create_augroup("bdsilver89/checktime", { clear = true }),
+  group = augroup("checktime"),
   callback = function()
     if vim.o.buftype ~= "nofile" then
       vim.cmd("checktime")
@@ -16,9 +21,9 @@ vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
   end,
 })
 
-vim.api.nvim_create_autocmd("VimResized", {
+autocmd("VimResized", {
   desc = "Resize splits",
-  group = vim.api.nvim_create_augroup("bdsilver89/resize_splits", { clear = true }),
+  group = augroup("resize_splits"),
   callback = function()
     local current_tab = vim.fn.tabpagenr()
     vim.cmd("tabdo wincmd=")
@@ -26,20 +31,21 @@ vim.api.nvim_create_autocmd("VimResized", {
   end,
 })
 
-vim.api.nvim_create_autocmd("TermOpen", {
+autocmd("TermOpen", {
   desc = "Terminal settings",
-  group = vim.api.nvim_create_augroup("bdsilver89/terminal_settings", { clear = true }),
+  group = augroup("terminal_settings"),
   callback = function()
     vim.opt_local.number = false
     vim.opt_local.relativenumber = false
   end,
 })
 
-vim.api.nvim_create_autocmd("FileType", {
+autocmd("FileType", {
   desc = "Close with <q>",
-  group = vim.api.nvim_create_augroup("bdsilver89/close_with_q", { clear = true }),
+  group = augroup("close_with_q"),
   pattern = {
     "Avante",
+    "codecompanion",
     "checkhealth",
     "gitsigns-blame",
     "grug-far",
@@ -49,13 +55,17 @@ vim.api.nvim_create_autocmd("FileType", {
     "query",
   },
   callback = function(args)
-    vim.keymap.set("n", "q", "<cmd>quit<cr>", { buffer = args.buffer })
+    vim.bo[args.buf].buflisted = false
+    vim.keymap.set("n", "q", function()
+      vim.cmd("close")
+      pcall(vim.api.nvim_buf_delete, args.buf, { force = true })
+    end, { buffer = args.buf, silent = true, desc = "Quit Buffer" })
   end,
 })
 
-vim.api.nvim_create_autocmd("FileType", {
+autocmd("FileType", {
   desc = "Wrap and spellcheck filetypes",
-  group = vim.api.nvim_create_augroup("bdsilver89/wrap_spell", { clear = true }),
+  group = augroup("wrap_spell"),
   pattern = { "text", "plaintex", "typst", "gitcommit", "markdown" },
   callback = function()
     vim.opt_local.wrap = true
@@ -64,22 +74,28 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 -- Fix conceallevel for json files
-vim.api.nvim_create_autocmd({ "FileType" }, {
-  group = vim.api.nvim_create_augroup("bdsilver89/json_conceal", { clear = true }),
+autocmd({ "FileType" }, {
+  group = augroup("json_conceal"),
   pattern = { "json", "jsonc", "json5" },
   callback = function()
     vim.opt_local.conceallevel = 0
   end,
 })
 
-vim.api.nvim_create_autocmd("BufWritePre", {
+autocmd("BufWritePre", {
   desc = "Auto create dirs when saving file",
-  group = vim.api.nvim_create_augroup("bdsilver89/auto_create_dirs", { clear = true }),
+  group = augroup("auto_create_dirs"),
   callback = function(event)
     if event.match:match("^%w%w+:[\\/][\\/]") then
       return
     end
     local file = vim.uv.fs_realpath(event.match) or event.match
     vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
+  end,
+})
+
+autocmd("QuickFixCmdPost", {
+  callback = function()
+    vim.cmd([[Trouble qflist open]])
   end,
 })
