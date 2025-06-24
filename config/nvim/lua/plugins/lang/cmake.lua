@@ -54,7 +54,7 @@ return {
     end,
     opts = {
       cmake_executor = {
-        name = "overseer",
+        name = "quickfix",
       },
     },
   },

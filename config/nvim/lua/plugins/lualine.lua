@@ -20,12 +20,41 @@ return {
 
     local icons = require("config.icons")
 
+    local trouble = require("trouble")
+    local symbols = trouble.statusline({
+      mode = "lsp_document_symbols",
+      groups = {},
+      title = false,
+      filter = { range = true },
+      format = "{kind_icon}{symbol.name:Normal}",
+      hl_group = "lualine_c_normal",
+    })
+
     local opts = {
       options = {
         theme = "auto",
         globalstatus = vim.o.laststatus == 3,
         component_separators = "",
         section_separators = "",
+        disabled_filetypes = {
+          statusline = {
+            "snacks_dashboard",
+          },
+          winbar = {
+            "Avante",
+            "codecompanion",
+            "checkhealth",
+            "gitsigns-blame",
+            "grug-far",
+            "help",
+            "man",
+            "OverseerList",
+            "qf",
+            "query",
+            "snacks_terminal",
+            "trouble",
+          },
+        },
       },
       sections = {
         lualine_a = { "mode" },
@@ -90,6 +119,14 @@ return {
         },
         lualine_y = { "encoding", "fileformat", "filetype" },
         lualine_z = { "progress", "location" },
+      },
+      winbar = {
+        lualine_c = {
+          {
+            symbols and symbols.get,
+            cond = symbols.has,
+          },
+        },
       },
       extensions = { "lazy" },
     }

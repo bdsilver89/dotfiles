@@ -27,7 +27,18 @@ return {
     { "<leader>oa", "<cmd>OverseerTaskAction<cr>", desc = "Overseer Action" },
     { "<leader>ok", "<cmd>OverseerInfo<cr>", desc = "Overseer Info" },
   },
-  opts = {},
+  opts = {
+    component_aliases = {
+      default = {
+        { "display_duration" },
+        { "on_output_summarize" },
+        "on_exit_set_status",
+        "on_complete_notify",
+        "on_complete_dispose",
+        { "on_output_quickfix" },
+      },
+    },
+  },
   config = function(_, opts)
     local overseer = require("overseer")
     overseer.setup(opts)
