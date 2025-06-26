@@ -40,20 +40,6 @@ return {
           statusline = {
             "snacks_dashboard",
           },
-          winbar = {
-            "Avante",
-            "codecompanion",
-            "checkhealth",
-            "gitsigns-blame",
-            "grug-far",
-            "help",
-            "man",
-            "OverseerList",
-            "qf",
-            "query",
-            "snacks_terminal",
-            "trouble",
-          },
         },
       },
       sections = {
@@ -90,8 +76,13 @@ return {
               hint = icons.diagnostics.HINT,
             },
           },
+          {
+            symbols and symbols.get,
+            cond = symbols.has,
+          },
         },
         lualine_x = {
+          "overseer",
           -- stylua: ignore
           {
             function() return require("noice").api.status.command.get() end,
@@ -119,14 +110,6 @@ return {
         },
         lualine_y = { "encoding", "fileformat", "filetype" },
         lualine_z = { "progress", "location" },
-      },
-      winbar = {
-        lualine_c = {
-          {
-            symbols and symbols.get,
-            cond = symbols.has,
-          },
-        },
       },
       extensions = { "lazy" },
     }

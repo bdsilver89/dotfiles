@@ -51,6 +51,9 @@ autocmd("FileType", {
     "grug-far",
     "help",
     "man",
+    "neotest-output",
+    "neotest-output-panel",
+    "neotest-summary",
     "qf",
     "query",
   },
@@ -94,8 +97,8 @@ autocmd("BufWritePre", {
   end,
 })
 
-autocmd("QuickFixCmdPost", {
-  callback = function()
-    vim.cmd([[Trouble qflist open]])
-  end,
-})
+-- autocmd("QuickFixCmdPost", {
+--   callback = function()
+--     vim.cmd([[Trouble qflist open]])
+--   end,
+-- })

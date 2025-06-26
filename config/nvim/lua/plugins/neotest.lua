@@ -2,17 +2,52 @@ return {
   {
     "nvim-neotest/neotest",
     dependencies = { "nvim-neotest/nvim-nio" },
-    opts = {
-      adapters = {},
-      status = { virtual_text = true },
-      output = { open_on_run = true },
-      quickfix = {
-        open = function()
-          require("trouble").open({ mode = "quickfix", focus = false })
-          -- vim.cmd("copen")
-        end,
-      },
-    },
+    cmd = { "Neotest" },
+    opts = function()
+      return {
+        adapters = {},
+        consumers = {
+          overseer = require("neotest.consumers.overseer"),
+          trouble = function(client)
+            client.listeners.results = function(adapter_id, results, partial)
+              if partial then
+                return
+              end
+              local tree = assert(client:get_position(nil, { adapter = adapter_id }))
+
+              local failed = 0
+              for pos_id, result in pairs(results) do
+                if result.status == "failed" and tree:get_key(pos_id) then
+                  failed = failed + 1
+                end
+              end
+              vim.schedule(function()
+                local trouble = require("trouble")
+                if trouble.is_open() then
+                  trouble.refresh()
+                  if failed == 0 then
+                    trouble.close()
+                  end
+                end
+              end)
+              return {}
+            end
+          end,
+        },
+        output = { open_on_run = true },
+        overseer = {
+          enabled = true,
+          force_default = true,
+        },
+        quickfix = {
+          open = function()
+            require("trouble").open({ mode = "quickfix", focus = false })
+            -- vim.cmd("copen")
+          end,
+        },
+        status = { virtual_text = true },
+      }
+    end,
     config = function(_, opts)
       local neotest_ns = vim.api.nvim_create_namespace("neotest")
       vim.diagnostic.config({
@@ -25,35 +60,8 @@ return {
         },
       }, neotest_ns)
 
-      opts.consumers = opts.consumers or {}
       -- Refresh and auto close trouble after running tests
       ---@type neotest.Consumer
-      opts.consumers.trouble = function(client)
-        client.listeners.results = function(adapter_id, results, partial)
-          if partial then
-            return
-          end
-          local tree = assert(client:get_position(nil, { adapter = adapter_id }))
-
-          local failed = 0
-          for pos_id, result in pairs(results) do
-            if result.status == "failed" and tree:get_key(pos_id) then
-              failed = failed + 1
-            end
-          end
-          vim.schedule(function()
-            local trouble = require("trouble")
-            if trouble.is_open() then
-              trouble.refresh()
-              if failed == 0 then
-                trouble.close()
-              end
-            end
-          end)
-          return {}
-        end
-      end
-
       if opts.adapters then
         local adapters = {}
         for name, config in pairs(opts.adapters or {}) do
