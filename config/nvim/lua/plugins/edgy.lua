@@ -69,7 +69,11 @@ return {
         document_symbols = "bottom",
         diagnostics = "bottom",
       }
-      local sources = { "filesystem", "buffers", "git_status" }
+      local sources = require("lazy.core.plugin").values(
+        require("lazy.core.config").spec.plugins["neo-tree"],
+        "opts",
+        false
+      ).sources or {}
       for i, v in ipairs(sources) do
         table.insert(opts.left, i, {
           title = "Neo-Tree " .. v:gsub("_", " "):gsub("^%l", string.upper),
