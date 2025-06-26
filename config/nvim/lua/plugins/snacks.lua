@@ -20,8 +20,8 @@ return {
       { "<leader>bo", function() Snacks.bufdelete.other() end, desc = "Delete Other Buffers" },
 
       -- explorer
-      { "<leader>fe", function() Snacks.explorer() end, desc = "Explorer (Snacks)" },
-      { "<leader>e", "<leader>fe", remap = true ,desc = "Explorer (Snacks)" },
+      -- { "<leader>fe", function() Snacks.explorer() end, desc = "Explorer (Snacks)" },
+      -- { "<leader>e", "<leader>fe", remap = true ,desc = "Explorer (Snacks)" },
 
       -- git browse
       { "<leader>go", function() Snacks.gitbrowse() end, mode = { "x", "n" }, desc = "Git Browse" },
