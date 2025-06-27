@@ -7,13 +7,12 @@ fi
 
 export EDITOR='nvim'
 export PATH="$HOME/.local/bin:$PATH"
-export DOTFILES_DIR=$HOME/dotfiles
 
 # Set the directory for zinit and plugins
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 
 if [ ! -d "$ZINIT_HOME" ]; then
-  mkdir -p "$(dirname $ZINIT_HOME)"
+  mkdir -p "$(dirname "$ZINIT_HOME")"
   git clone --depth 1 https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
 fi
 
@@ -78,12 +77,14 @@ zstyle ":fzf-tab:complete:__zoxide_z:*" fzf-preview "ls --color $realpath"
 # aliases
 alias c="clear"
 alias pg="ps -ef | grep"
-alias f='$EDITOR "$(fzf)"'
 alias g="git"
 
 if [ -x "$(command -v eza)" ]; then
   alias ls="eza --color=always --icons=always --git"
   alias lt="eza --color=always --tree --level=2 --icons=always --long --git"
+elif [ -x "$(command -v exa)" ]; then
+  alias ls="exa --color=always"
+  alias lt="exa --color=awlays --tree --level=2 --long"
 else
   alias ls="ls --color"
   if [ -x "$(command -v tree)" ]; then
@@ -92,17 +93,25 @@ else
 fi
 alias l="ls -lah"
 
-if [ -x "$(command -v bat)" ]; then
-  alias cat="bat"
+if [ -x "$(command -v batcat)" ]; then
+  alias bat="batcat"
 fi
 
 # shell integrations
 if [ -x "$(command -v fzf)" ]; then
+  alias f='$EDITOR "$(fzf)"'
   source <(fzf --zsh)
 fi
 
 if [ -x "$(command -v zoxide)" ]; then
   eval "$(zoxide init zsh)"
+
+  if [ -x "$(command -v bat)" ]; then
+    export FZF_DEFAULT_OPTS="--preview 'bat {}'"
+  else
+    export FZF_DEFAULT_OPTS="--preview 'cat {}'"
+  fi
+  export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS --border=rounded --info=default"
 fi
 
 if [ -x "$(command -v gh)" ]; then
@@ -110,6 +119,9 @@ if [ -x "$(command -v gh)" ]; then
 fi
 if [ -x "$(command -v glab)" ]; then
   eval "$(glab completion -s zsh)"
+fi
+if [ -x "$(command -v lazygit)" ]; then
+  alias gg="lazygit"
 fi
 
 
@@ -120,7 +132,7 @@ export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || pr
 
 # pyenv
 export PYENV_ROOT="$HOME/.pyenv"
-if [ -d $PYENV_ROOT ]; then
+if [ -d "$PYENV_ROOT" ]; then
   export PATH="$PYENV_ROOT/bin:$PATH"
   if command -v pyenv 1>/dev/null 2>&1; then
     eval "$(pyenv init --path)"
@@ -132,18 +144,16 @@ fi
 
 # cmake
 export CMAKE_COLOR_DIAGNOSTICS="ON"
+
 if [ -x "$(command -v ninja)" ]; then
   export CMAKE_GENERATOR="Ninja"
   export CONAN_CMAKE_GENERATOR="Ninja"
+  export NINJA_STATUS=$(echo -e "[%f/%t %p %e]")
 fi
-
-# ninja
-# export NINJA_STATUS=$(echo -e "\e[1;30m[\e[1;32m%f/%t \e[1;34m%p \e[1;36m%e\e[1;30m] \e[;0m")
-export NINJA_STATUS=$(echo -e "[%f/%t %p %e]")
 
 # vcpkg
 export VCPKG_ROOT="$HOME/vcpkg"
-if [ -d $VCPKG_ROOT ]; then
+if [ -d "$VCPKG_ROOT" ]; then
   export PATH="$VCPKG_ROOT:$PATH"
 fi
 

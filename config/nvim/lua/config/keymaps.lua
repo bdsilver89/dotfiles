@@ -67,6 +67,7 @@ require("utils").lazy_keymap({
   -- terminal
   { "<c-/>", "<cmd>close<cr>", mode = "t", desc = "Hide Terminal" },
   { "<c-_>", "<cmd>close<cr>", mode = "t", desc = "which_key_ignore" },
+  { "<esc><esc>", "<c-\\><c-n>", mode = "t", desc = "Exit Terminal Mode" },
 
   { "<esc>", "<cmd>nohlsearch<cr>" },
   { "<leader>l", "<cmd>Lazy<cr>", desc = "Lazy" },

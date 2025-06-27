@@ -7,6 +7,8 @@
   editor = nvim
   autocrlf = input
   ignorecase = false
+[pull]
+  rebase = true
 [push]
   default = simple
 [submodule]

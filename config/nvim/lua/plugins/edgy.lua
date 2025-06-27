@@ -40,6 +40,13 @@ return {
         right = {
           { title = "Grug Far", ft = "grug-far", size = { width = 0.4 } },
           { title = "Code Companion", ft = "codecompanion", size = { width = 50 } },
+          {
+            title = "Overseer",
+            ft = "OverseerList",
+            open = function()
+              require("overseer").open()
+            end,
+          },
         },
         keys = {
           -- increase width
