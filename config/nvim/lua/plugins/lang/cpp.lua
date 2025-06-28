@@ -58,20 +58,4 @@ return {
       end
     end,
   },
-
-  {
-    "nvim-neotest/neotest",
-    optional = true,
-    dependencies = {
-      {
-        name = "neotest-cpp",
-        dir = "~/dev/projects/neovim-plugins/neotest-cpp",
-      },
-    },
-    opts = {
-      adapters = {
-        ["neotest-cpp"] = {},
-      },
-    },
-  },
 }
