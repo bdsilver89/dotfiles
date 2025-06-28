@@ -1,3 +1,5 @@
+local has_schemastore, schemastore = pcall(require, "schemastore")
+
 return {
   cmd = { "yaml-language-server", "--stdio" },
   filetypes = { "yaml", "yaml.docker-compose", "yaml.gitlab", "yaml.helm-values" },
@@ -17,7 +19,7 @@ return {
       format = {
         enable = true,
       },
-      schemas = require("schemastore").yaml.schemas(),
+      schemas = has_schemastore and schemastore.yaml.schemas(),
       schemaStore = {
         enable = false,
         url = "",

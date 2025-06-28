@@ -27,6 +27,7 @@ require("lazy").setup({
   spec = {
     { import = "plugins" },
     { import = "plugins.lang" },
+    { import = "plugins.ai" },
   },
   defaults = {
     lazy = true,

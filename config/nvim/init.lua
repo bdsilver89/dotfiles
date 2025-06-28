@@ -3,7 +3,7 @@ if vim.loader and vim.loader.enable then
 end
 
 require("config.options")
-require("config.lazy_load")
+require("config.lazy")
 require("config.autocmds")
 require("config.keymaps")
 require("config.lsp")

@@ -1,3 +1,5 @@
+local has_schemastore, schemastore = pcall(require, "schemastore")
+
 return {
   cmd = { "vscode-json-language-server", "--stdio" },
   filetypes = { "json", "jsonc" },
@@ -9,7 +11,7 @@ return {
       format = {
         enable = true,
       },
-      schemas = require("schemastore").json.schemas(),
+      schemas = has_schemastore and schemastore.json.schemas(),
       validate = { enable = true },
     },
   },
