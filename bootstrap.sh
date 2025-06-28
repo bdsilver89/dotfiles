@@ -121,31 +121,31 @@ platform() {
 }
 
 is_windows() {
-  [ ${$(platform):0:3} = win ]
+  [[ "$(platform)" == win* ]]
 }
 
 is_wsl() {
-  [[ -n $WSL_DISTO_NAME ]]
+  [[ -n "${WSL_DISTRO_NAME:-}" ]] || [[ -n "${WSL_INTEROP:-}" ]]
 }
 
 is_linux() {
-  [ $(os) = Linux ]
+  [[ "$(uname -s)" == "Linux" ]]
 }
 
 is_debian() {
-  [ $(platform) = debian ]
+  [[ "$(platform)" == "debian" ]]
 }
 
 is_ubuntu() {
-  [ -f /etc/lsb-release -o -d /etc/lsb-release.d ]
+  [[ -f /etc/lsb-release ]] || [[ -d /etc/lsb-release.d ]]
 }
 
 is_rhel() {
-  [ -f /etc/redhat-release ]
+  [[ -f /etc/redhat-release ]]
 }
 
 is_darwin() {
-  [ $(os) = darwin ]
+  [[ "$(uname -s)" == "Darwin" ]]
 }
 
 # -----------------------------------------------------------------------------
@@ -245,7 +245,11 @@ git_clone() {
   local dir="$2"
 
   if [ ! -d "$dir" ]; then
-    git clone "$repo" "$dir"
+    info "Cloning $repo to $dir"
+    git clone "$repo" "$dir" || log_and_die "Failed to clone $repo"
+    success "Cloned $repo"
+  else
+    info "Directory $dir already exists, skipping clone"
   fi
 }
 
@@ -302,87 +306,130 @@ setup_symlinks() {
 }
 
 install_packages() {
-  local p="$@"
-  info "Installing: $p"
+  local packages=("$@")
+  
+  if [ ${#packages[@]} -eq 0 ]; then
+    warning "No packages specified for installation"
+    return 0
+  fi
+  
+  info "Installing: ${packages[*]}"
+  
   if is_debian || is_ubuntu; then
-    sudo apt install -y $p || log_and_die "Failed to install packages"
-      success "Installed apt packages"
+    # Update package cache first
+    sudo apt update || log_and_die "Failed to update package cache"
+    sudo apt install -y "${packages[@]}" || log_and_die "Failed to install packages: ${packages[*]}"
+    success "Installed apt packages: ${packages[*]}"
   elif is_rhel; then
     if [ -x "$(command -v dnf)" ]; then
-      sudo dnf install -y $p || log_and_die "Failed to install packages"
-      success "Installed dnf packages"
+      sudo dnf install -y "${packages[@]}" || log_and_die "Failed to install packages: ${packages[*]}"
+      success "Installed dnf packages: ${packages[*]}"
     else
-      sudo yum install -y $p || log_and_die "Failed to install packages"
-      success "Installed yum packages"
+      sudo yum install -y "${packages[@]}" || log_and_die "Failed to install packages: ${packages[*]}"
+      success "Installed yum packages: ${packages[*]}"
     fi
   else
     log_warn "Could not figure out which package manager to use for platform: $(platform)"
+    return 1
   fi
+}
+
+# Check if packages are available before attempting installation
+check_package_availability() {
+  local packages=("$@")
+  local available_packages=()
+  local unavailable_packages=()
+  
+  if is_debian || is_ubuntu; then
+    for package in "${packages[@]}"; do
+      if apt-cache show "$package" >/dev/null 2>&1; then
+        available_packages+=("$package")
+      else
+        unavailable_packages+=("$package")
+      fi
+    done
+  elif is_rhel; then
+    for package in "${packages[@]}"; do
+      if dnf info "$package" >/dev/null 2>&1 || yum info "$package" >/dev/null 2>&1; then
+        available_packages+=("$package")
+      else
+        unavailable_packages+=("$package")
+      fi
+    done
+  else
+    # For other systems, assume all packages are available
+    available_packages=("${packages[@]}")
+  fi
+  
+  if [ ${#unavailable_packages[@]} -gt 0 ]; then
+    warning "Unavailable packages (will be skipped): ${unavailable_packages[*]}"
+  fi
+  
+  echo "${available_packages[@]}"
 }
 
 setup_apt_packages() {
   local packages=(
+    autoconf
+    automake
     bat
-    cmake
-    gcc
     build-essential
+    ccache
     clang
     clang-format
-    ninja-build
-    ccache
-    automake
-    autoconf
+    cmake
+    gcc
+    gdb
     libtool
+    ninja-build
     pkg-config
     rpm
-    zip
-    unzip
-    gdb
-    # jq
     tmux
-    # zoxide
-    # fzf
-    # ripgrep
-    # fd-find
-    # eza is not available on ubuntu
+    unzip
+    zip
   )
 
-  install_packages ${packages[@]}
+  # Check availability and install only available packages
+  local available_packages
+  available_packages=($(check_package_availability "${packages[@]}"))
+  
+  if [ ${#available_packages[@]} -gt 0 ]; then
+    install_packages "${available_packages[@]}"
+  else
+    warning "No packages available for installation"
+  fi
 }
 
 setup_dnf_packages() {
   local packages=(
     autoconf
     automake
-    # bat
     ccache
     clang
     clang-tools-extra
     cmake
-    # eza
-    # fd-find
-    # fzf
     gcc
     gcc-c++
     gdb
-    # jq
     libtool
     make
     neovim
     ninja-build
     python3
     python3-pip
-    # pkg-config
-    # rpm
-    # zip
-    # unzip
-    # ripgrep
     tmux
     vim
-    # zoxide
   )
 
-  install_packages ${packages[@]}
+  # Check availability and install only available packages
+  local available_packages
+  available_packages=($(check_package_availability "${packages[@]}"))
+  
+  if [ ${#available_packages[@]} -gt 0 ]; then
+    install_packages "${available_packages[@]}"
+  else
+    warning "No packages available for installation"
+  fi
 }
 
 setup_homebrew() {
@@ -438,44 +485,63 @@ setup_tmux() {
 
   local tpm="${HOME}/.tmux/plugins/tpm"
   if [ ! -d "$tpm" ]; then
+    info "Installing tmux plugin manager (tpm)"
     git clone --depth 1 "https://github.com/tmux-plugins/tpm" "$tpm"
+    success "Installed tpm"
+  else
+    info "tmux plugin manager already installed, skipping"
   fi
+}
+
+setup_asdf_tool() {
+  local name="$1"
+  local version="$2"
+
+  if test ! "$(command -v asdf)"; then
+    error "asdf command not found"
+    return 1
+  fi
+
+  info "Adding $name (version $version) with asdf"
+  asdf plugin add $name 2>/dev/null || true  # plugin might already exist
+  asdf install $name $version
+  asdf global $name $version  # use 'global' instead of 'set -u'
 }
 
 setup_asdf() {
   title "Setting up asdf"
 
-  local suffix=""
-  if is_linux; then
-    suffix="-linux-amd64"
-  elif is_darwin; then
-    suffix="-darwin-arm64"
-  fi
-  github_download_release "asdf-vm" "asdf" "v0.16.7" "$suffix" "${HOME}/.local/bin"
-
-  setup_asdf_tool() {
-    local name="$1"
-    local version="$2"
-
-    if test ! "$(command -v asdf)"; then
-      error "asdf command not found"
-      return 1
+  # Check if asdf is already installed
+  if command -v asdf >/dev/null 2>&1; then
+    info "asdf already installed, skipping download"
+  else
+    local suffix=""
+    if is_linux; then
+      suffix="-linux-amd64"
+    elif is_darwin; then
+      suffix="-darwin-arm64"
     fi
+    github_download_release "asdf-vm" "asdf" "v0.16.7" "$suffix" "${HOME}/.local/bin"
+    
+    # Source asdf for current session
+    export PATH="${HOME}/.local/bin:$PATH"
+  fi
 
-    info "Adding $name (version $version) with asdf"
-    asdf plugin add $name
-    asdf install $name $version
-    asdf set -u $name $version
-  }
-
-  setup_asdf_tool bat latest
-  setup_asdf_tool eza latest
-  setup_asdf_tool fd latest
-  setup_asdf_tool fzf latest
-  setup_asdf_tool jq latest
-  setup_asdf_tool lazygit latest
-  setup_asdf_tool ripgrep latest
-  setup_asdf_tool zoxide latest
+  # Install tools
+  local tools=(
+    "bat latest"
+    "eza latest"
+    "fd latest"
+    "fzf latest"
+    "jq latest"
+    "lazygit latest"
+    "ripgrep latest"
+    "zoxide latest"
+  )
+  
+  for tool in "${tools[@]}"; do
+    setup_asdf_tool $tool
+  done
 }
 
 setup_hyprland() {
@@ -511,79 +577,133 @@ setup_fonts() {
   fi
 }
 
+# Dry run mode
+DRY_RUN=${DRY_RUN:-false}
+
+dry_run_execute() {
+  if [ "$DRY_RUN" = "true" ]; then
+    log_info "[DRY RUN] Would execute: $*"
+  else
+    "$@"
+  fi
+}
+
+# Progress tracking
+TOTAL_STEPS=0
+CURRENT_STEP=0
+
+progress() {
+  CURRENT_STEP=$((CURRENT_STEP + 1))
+  log_info "[$CURRENT_STEP/$TOTAL_STEPS] $*"
+}
+
+set_total_steps() {
+  TOTAL_STEPS="$1"
+}
+
 main() {
+  local run_all=false
+  local steps_to_run=()
+  
   while [[ $# -gt 0 ]]; do
     case "$1" in
+    --dry-run)
+      DRY_RUN=true
+      info "Running in dry-run mode"
+      ;;
     --update)
-      update
+      steps_to_run+=("update")
       ;;
     --fonts)
-      setup_fonts
+      steps_to_run+=("setup_fonts")
       ;;
     --hyprland)
-      setup_hyprland
+      steps_to_run+=("setup_hyprland")
       ;;
     --git)
-      setup_git
+      steps_to_run+=("setup_git")
       ;;
     --mac)
-      setup_homebrew
+      steps_to_run+=("setup_homebrew")
       ;;
     --linux)
-      setup_linux
+      steps_to_run+=("setup_linux")
       ;;
     --symlinks)
-      setup_symlinks
+      steps_to_run+=("setup_symlinks")
       ;;
     --asdf)
-      setup_asdf
+      steps_to_run+=("setup_asdf")
       ;;
     --zsh-omz)
-      setup_zsh_omz
+      steps_to_run+=("setup_zsh_omz")
       ;;
     --zsh-zinit)
-      setup_zsh_zinit
+      steps_to_run+=("setup_zsh_zinit")
       ;;
     --tmux)
-      setup_tmux
+      steps_to_run+=("setup_tmux")
       ;;
     --all)
-      setup_git
-      update
-      setup_symlinks
-      setup_homebrew
-      setup_linux
-      setup_tmux
-      setup_asdf
-      # setup_zsh_omz
-      setup_zsh_zinit
+      run_all=true
+      steps_to_run=(
+        "setup_git"
+        "update" 
+        "setup_symlinks"
+        "setup_homebrew"
+        "setup_linux"
+        "setup_tmux"
+        "setup_asdf"
+        "setup_zsh_zinit"
+      )
       ;;
     --help)
       echo "
-Usage: $(basename "$0")
+Usage: $(basename "$0") [OPTIONS]
 
+OPTIONS:
 --all       Perform all of the configuration steps
+--dry-run   Show what would be done without making changes
 --fonts     Install fonts
---hyprland  Installs and configures hyprland desktop environment
---git       Configures global git setup
+--hyprland  Install and configure hyprland desktop environment
+--git       Configure global git setup
 --mac       Install brew and brew utilities
---linux     Installs utilities using system package manager (only apt for now)
---symlinks  Configures dotfiles from this repo in system locations
---tmux      Installs and configures tmux with tpm plugins
---asdf      Installs and configures asdf package manager
---zsh-omz   Installs zsh and plugins using oh-my-zsh
---zsh-zinit Installs zsh and plugins using zinit
+--linux     Install utilities using system package manager
+--symlinks  Configure dotfiles from this repo in system locations
+--tmux      Install and configure tmux with tpm plugins
+--asdf      Install and configure asdf package manager
+--zsh-omz   Install zsh and plugins using oh-my-zsh
+--zsh-zinit Install zsh and plugins using zinit
 --update    Update local dotfile repository
+--help      Show this help message
 "
       exit 0
       ;;
     *)
-      error "Unknown option '$1'"
+      error "Unknown option '$1'. Use --help for usage information."
       exit 1
       ;;
     esac
     shift
   done
+
+  # Set total steps for progress tracking
+  set_total_steps ${#steps_to_run[@]}
+  
+  # Execute requested steps
+  for step in "${steps_to_run[@]}"; do
+    if [ "$DRY_RUN" = "true" ]; then
+      progress "Would run: $step"
+    else
+      progress "Running: $step"
+      dry_run_execute "$step"
+    fi
+  done
+
+  if [ ${#steps_to_run[@]} -eq 0 ]; then
+    warning "No operations specified. Use --help for usage information."
+    exit 1
+  fi
 
   echo -e
   success "Done"
