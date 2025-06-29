@@ -9,16 +9,17 @@ return {
   },
 
   {
-    "mason.nvim",
-    opts = { ensure_installed = { "jdtls" } },
+    "nvim-lspconfig",
+    opts = { servers = { jdtls = {}} },
+  },
+
+  {
+    "mason-tool-installer.nvim",
+    opts = { ensure_installed = { "java-debug-adapter", "java-test" } },
   },
 
   {
     "nvim-dap",
-    dependencies = {
-      "mason.nvim",
-      opts = { ensure_installed = { "java-debug-adapter", "java-test" } },
-    },
     opts = function()
       local dap = require("dap")
       dap.configurations.java = {

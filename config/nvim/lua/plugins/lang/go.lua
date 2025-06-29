@@ -9,16 +9,17 @@ return {
   },
 
   {
-    "mason.nvim",
-    opts = { ensure_installed = { "gopls" } },
+    "nvim-lspconfig",
+    opts = { servers = { gopls = {} } },
+  },
+
+  {
+    "mason-tool-installer.nvim",
+    opts = { ensure_installed = { "goimports", "gofumpt", "delve" } },
   },
 
   {
     "conform.nvim",
-    dependencies = {
-      "mason.nvim",
-      opts = { ensure_installed = { "goimports", "gofumpt" } },
-    },
     opts = {
       formatters_by_ft = {
         go = { "goimports", "gofumpt" },
@@ -29,10 +30,6 @@ return {
   {
     "nvim-dap",
     dependencies = {
-      {
-        "mason.nvim",
-        opts = { ensure_installed = { "delve" } },
-      },
       {
         "leoluz/nvim-dap-go",
         opts = {},

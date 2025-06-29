@@ -5,13 +5,19 @@ return {
   },
 
   {
-    "b0o/SchemaStore.nvim",
-    lazy = true,
-    version = false, -- last release is way too old
-  },
-
-  {
-    "mason.nvim",
-    opts = { ensure_installed = { "json-lsp" } }, --jsonc
+    "nvim-lspconfig",
+    dependencies = {
+      "b0o/SchemaStore.nvim",
+    },
+    opts = function(_, opts)
+      opts.servers.jsonls = {
+        settings = {
+          json = {
+            schemas = require("schemastore").json.schemas(),
+            validate = { enable = true },
+          },
+        },
+      }
+    end,
   },
 }

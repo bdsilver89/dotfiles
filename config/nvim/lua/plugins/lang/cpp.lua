@@ -3,6 +3,22 @@ return {
     "nvim-treesitter",
     opts = { ensure_installed = { "c", "cpp", "printf" } },
   },
+  
+  {
+    "mason-tool-installer.nvim",
+    opts = { ensure_installed = { "codelldb" } },
+  },
+  
+  {
+    "nvim-lspconfig",
+    opts = {
+      servers = {
+        clangd = {
+          mason = false,
+        },
+      },
+    },
+  },
 
   {
     "conform.nvim",
@@ -16,10 +32,6 @@ return {
 
   {
     "nvim-dap",
-    dependencies = {
-      "mason.nvim",
-      opts = { ensure_installed = { "codelldb" } },
-    },
     opts = function()
       local dap = require("dap")
       if not dap.adapters["codelldb"] then

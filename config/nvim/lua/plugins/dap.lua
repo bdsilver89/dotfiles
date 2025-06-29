@@ -21,6 +21,7 @@ return {
     "mfussenegger/nvim-dap",
     dependencies = {
       "rcarriga/nvim-dap-ui",
+      "mason.nvim",
     },
     -- stylua: ignore
     keys = {
@@ -84,4 +85,11 @@ return {
       end
     end,
   },
+  
+  {
+    "jay-babu/mason-nvim-dap.nvim",
+    dependencies = "mason.nvim",
+    cmd = { "DapInstall", "DapUninstall" },
+    opts = {}
+  }
 }

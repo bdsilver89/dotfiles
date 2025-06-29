@@ -5,19 +5,15 @@ return {
   },
 
   {
-    "mason.nvim",
-    opts = { ensure_installed = { "neocmakelsp", "cmakelint" } },
+    "mason-tool-installer.nvim",
+    opts = { ensure_installed = { "cmakelint" } },
   },
-
+  
   {
-    "conform.nvim",
-    dependencies = {
-      "mason.nvim",
-      opts = { ensure_installed = { "stylua" } },
-    },
+    "nvim-lspconfig",
     opts = {
-      formatters_by_ft = {
-        lua = { "stylua" },
+      servers = {
+        neocmake = {},
       },
     },
   },

@@ -9,8 +9,17 @@ return {
   },
 
   {
-    "mason.nvim",
-    opts = { ensure_installed = { "bash-language-server", "shfmt", "shellcheck" } },
+    "mason-tool-installer.nvim",
+    opts = { ensure_installed = { "shfmt", "shellcheck" } },
+  },
+
+  {
+    "nvim-lspconfig",
+    opts = {
+      servers = {
+        bashls = {},
+      },
+    },
   },
 
   {

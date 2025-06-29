@@ -5,13 +5,19 @@ return {
   },
 
   {
-    "b0o/SchemaStore.nvim",
-    lazy = true,
-    version = false, -- last release is way too old
-  },
-
-  {
-    "mason.nvim",
-    opts = { ensure_installed = { "yaml-language-server" } },
+    "nvim-lspconfig",
+    dependencies = {
+      "b0o/SchemaStore.nvim",
+    },
+    opts = function(_, opts)
+      opts.servers.yamlls = {
+        settings = {
+          yaml = {
+            schemas = require("schemastore").yaml.schemas(),
+            validate = true,
+          },
+        },
+      }
+    end,
   },
 }

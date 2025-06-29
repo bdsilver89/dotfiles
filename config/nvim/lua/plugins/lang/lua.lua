@@ -5,15 +5,34 @@ return {
   },
 
   {
-    "mason.nvim",
-    opts = { ensure_installed = { "lua-language-server" } },
+    "mason-tool-installer.nvim",
+    opts = { ensure_installed = { "stylua" } },
   },
 
   {
+    "nvim-lspconfig",
+    opts = { 
+      servers = {
+        lua_ls = {
+          settings = {
+            Lua = {
+              diagnostics = {
+                globals = { "vim" },
+              },
+              workspace = {
+                checkThirdParty = false,
+              },
+            },
+          },
+        },
+      }
+    },
+  },
+
+ 
+  {
     "conform.nvim",
     dependencies = {
-      "mason.nvim",
-      opts = { ensure_installed = { "stylua" } },
     },
     opts = {
       formatters_by_ft = {

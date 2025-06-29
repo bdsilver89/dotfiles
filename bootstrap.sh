@@ -281,10 +281,6 @@ update() {
   git pull origin main
 }
 
-setup_git() {
-  title "Setting up Git"
-}
-
 setup_symlinks() {
   title "Setting up symlinks"
 
@@ -620,9 +616,6 @@ main() {
     --hyprland)
       steps_to_run+=("setup_hyprland")
       ;;
-    --git)
-      steps_to_run+=("setup_git")
-      ;;
     --mac)
       steps_to_run+=("setup_homebrew")
       ;;
@@ -647,7 +640,6 @@ main() {
     --all)
       run_all=true
       steps_to_run=(
-        "setup_git"
         "update" 
         "setup_symlinks"
         "setup_homebrew"
@@ -666,7 +658,6 @@ OPTIONS:
 --dry-run   Show what would be done without making changes
 --fonts     Install fonts
 --hyprland  Install and configure hyprland desktop environment
---git       Configure global git setup
 --mac       Install brew and brew utilities
 --linux     Install utilities using system package manager
 --symlinks  Configure dotfiles from this repo in system locations

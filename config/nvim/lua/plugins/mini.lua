@@ -2,6 +2,7 @@ return {
   {
     "echasnovski/mini.icons",
     lazy = true,
+    enabled = vim.g.has_nerd_font,
     init = function()
       package.preload["nvim-web-devicons"] = function()
         require("mini.icons").mock_nvim_web_devicons()

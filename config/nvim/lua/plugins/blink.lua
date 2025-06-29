@@ -36,7 +36,7 @@ return {
       default = { "lsp", "path", "snippets", "buffer" },
       providers = {},
     },
-    fuzzy = { implementation = "prefer_rust" },
+    fuzzy = { implementation = "lua" },
   },
   opts_extend = { "sources.default" },
 }

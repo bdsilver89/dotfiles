@@ -8,6 +8,8 @@ vim.g.loaded_perl_provider = 0
 vim.g.loaded_node_provider = 0
 vim.g.loaded_ruby_provider = 0
 
+vim.g.has_nerd_font = false
+
 if vim.fn.has("win32") == 1 then
   require("utils").terminal.setup()
 end

@@ -5,7 +5,7 @@ return {
   },
 
   {
-    "mason.nvim",
-    opts = { ensure_installed = { "vtsls" } },
+    "nvim-lspconfig",
+    opts = { servers = { vtsls = {} } },
   },
 }

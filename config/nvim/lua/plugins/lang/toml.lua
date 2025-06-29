@@ -5,7 +5,7 @@ return {
   },
 
   {
-    "mason.nvim",
-    opts = { ensure_installed = { "taplo" } },
+    "nvim-lspconfig",
+    opts = { servers = { taplo = {} } },
   },
 }

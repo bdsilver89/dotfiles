@@ -5,8 +5,8 @@ return {
   },
 
   {
-    "mason.nvim",
-    opts = { ensure_installed = { "ruff", "pyright" } },
+    "nvim-lspconfig",
+    opts = { serves = { ruff = {}, pyright = {}, } },
   },
 
   {
