@@ -40,7 +40,7 @@ require("utils").lazy_keymap({
   { "]<tab>", "<cmd>tabnext<cr>", desc = "Next tab" },
 
   -- diagnostics
-  { "grd", vim.diagnostic.open_float, desc = "vim.diagnostic.open_float()" },
+  { "grf", vim.diagnostic.open_float, desc = "vim.diagnostic.open_float()" },
   { "grq", vim.diagnostic.setqflist, desc = "vim.diagnostic.setqflist()" },
   { "grl", vim.diagnostic.setloclist, desc = "vim.diagnostic.setloclist()" },
   {

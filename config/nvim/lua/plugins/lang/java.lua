@@ -10,7 +10,7 @@ return {
 
   {
     "nvim-lspconfig",
-    opts = { servers = { jdtls = {}} },
+    opts = { servers = { jdtls = {} } },
   },
 
   {

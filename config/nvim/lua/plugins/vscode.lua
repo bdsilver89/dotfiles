@@ -4,9 +4,12 @@ end
 
 local enabled = {
   "lazy.nvim",
-  "mini.nvim",
+  "mini.ai",
+  "mini.pairs",
+  "mini.surround",
   "nvim-treesitter",
   "nvim-treesitter-textobjects",
+  "snacks.nvim",
 }
 
 local Config = require("lazy.core.config")

@@ -8,7 +8,7 @@ return {
     "mason-tool-installer.nvim",
     opts = { ensure_installed = { "cmakelint" } },
   },
-  
+
   {
     "nvim-lspconfig",
     opts = {

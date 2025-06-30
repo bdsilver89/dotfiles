@@ -3,12 +3,12 @@ return {
     "nvim-treesitter",
     opts = { ensure_installed = { "c", "cpp", "printf" } },
   },
-  
+
   {
     "mason-tool-installer.nvim",
     opts = { ensure_installed = { "codelldb" } },
   },
-  
+
   {
     "nvim-lspconfig",
     opts = {

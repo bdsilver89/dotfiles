@@ -9,3 +9,4 @@ return {
     opts = { servers = { vtsls = {} } },
   },
 }
+

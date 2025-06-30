@@ -6,7 +6,7 @@ return {
 
   {
     "nvim-lspconfig",
-    opts = { serves = { ruff = {}, pyright = {}, } },
+    opts = { serves = { ruff = {}, pyright = {} } },
   },
 
   {
