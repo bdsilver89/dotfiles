@@ -53,12 +53,12 @@ log_failure() {
 log_and_die() {
   local rc=$?
   local msg=${*:-"unknown error"}
-  if [ $rc -ne 0 ]; then
+  if [ "$rc" -ne 0 ]; then
     log_err "Aborting - command failed with rc=$rc - $msg"
-    exit $rc
+    exit "$rc"
   else
     log_err "Aborting - $msg"
-    exit $rc
+    exit "$rc"
   fi
 }
 
@@ -100,7 +100,7 @@ os() {
   elif [[ $name =~ Darwin ]]; then
     echo darwin
   else
-    echo $name
+    echo "$name"
   fi
 }
 
@@ -110,11 +110,11 @@ platform() {
   elif [ -f /etc/os-release ]; then
     local id=$(grep -E ^ID= /etc/os-release | sed 's/.*=//; s/"//g')
     local version=$(grep -E ^VERSION_ID= /etc/os-release | sed 's/.*=//; s/"//g' | cut -d. -f1)
-    echo $id$version
+    echo "$id""$version"
   elif [[ $(os) == "darwin" ]]; then
     local id="macos"
     local version=$(sw_vers | grep -E ^ProductVersion | sed 's/.*://; s/ //g' | cut -d. -f1)
-    echo $id$version
+    echo "$id""$version"
   else
     echo win64
   fi
@@ -176,7 +176,7 @@ link_file() {
 
     if [ "$overwrite_all" == "false" ] && [ "$backup_all" == "false" ] && [ "$skip_all" == "false" ]; then
 
-      local current_src="$(readlink $dst)"
+      local current_src="$(readlink "$dst")"
       if [ "$current_src" == "$src" ]; then
         skip=true
 
@@ -231,10 +231,10 @@ link_files_in_dir() {
   if [ ! -d "${output}" ]; then
     mkdir -p "${output}"
   fi
-  for src in $(find ${input} -mindepth $mindepth -maxdepth $maxdepth); do
-    basename="$(basename ${src})"
-    if [ ${basename} != ".DS_Store" ]; then
-      dst="${output}/$(basename ${src})"
+  for src in $(find "${input}" -mindepth "$mindepth" -maxdepth "$maxdepth"); do
+    basename="$(basename "${src}")"
+    if [ "${basename}" != ".DS_Store" ]; then
+      dst="${output}/$(basename "${src}")"
       link_file "$src" "$dst"
     fi
   done
@@ -269,11 +269,11 @@ github_download_release() {
 
   info "Downloading $tarfile from $baseurl"
 
-  pushd $dir >  /dev/null
-  curl -sL "${baseurl}/releases/download/${branch}/${tarfile}" > "${tarfile}"
-  tar -xzf ./${tarfile}
-  rm ./${tarfile}
-  popd > /dev/null
+  pushd "$dir" >/dev/null || exit
+  curl -sL "${baseurl}/releases/download/${branch}/${tarfile}" >"${tarfile}"
+  tar -xzf ./"${tarfile}"
+  rm ./"${tarfile}"
+  popd >/dev/null || exit
 }
 
 update() {
@@ -303,14 +303,14 @@ setup_symlinks() {
 
 install_packages() {
   local packages=("$@")
-  
+
   if [ ${#packages[@]} -eq 0 ]; then
     warning "No packages specified for installation"
     return 0
   fi
-  
+
   info "Installing: ${packages[*]}"
-  
+
   if is_debian || is_ubuntu; then
     # Update package cache first
     sudo apt update || log_and_die "Failed to update package cache"
@@ -335,7 +335,7 @@ check_package_availability() {
   local packages=("$@")
   local available_packages=()
   local unavailable_packages=()
-  
+
   if is_debian || is_ubuntu; then
     for package in "${packages[@]}"; do
       if apt-cache show "$package" >/dev/null 2>&1; then
@@ -356,11 +356,11 @@ check_package_availability() {
     # For other systems, assume all packages are available
     available_packages=("${packages[@]}")
   fi
-  
+
   if [ ${#unavailable_packages[@]} -gt 0 ]; then
     warning "Unavailable packages (will be skipped): ${unavailable_packages[*]}"
   fi
-  
+
   echo "${available_packages[@]}"
 }
 
@@ -388,7 +388,7 @@ setup_apt_packages() {
   # Check availability and install only available packages
   local available_packages
   available_packages=($(check_package_availability "${packages[@]}"))
-  
+
   if [ ${#available_packages[@]} -gt 0 ]; then
     install_packages "${available_packages[@]}"
   else
@@ -420,7 +420,7 @@ setup_dnf_packages() {
   # Check availability and install only available packages
   local available_packages
   available_packages=($(check_package_availability "${packages[@]}"))
-  
+
   if [ ${#available_packages[@]} -gt 0 ]; then
     install_packages "${available_packages[@]}"
   else
@@ -499,26 +499,46 @@ setup_asdf_tool() {
   fi
 
   info "Adding $name (version $version) with asdf"
-  asdf plugin add $name 2>/dev/null || true  # plugin might already exist
-  asdf install $name $version
-  asdf global $name $version  # use 'global' instead of 'set -u'
+  asdf plugin add "$name" 2>/dev/null || true # plugin might already exist
+  asdf install "$name" "$version"
+  asdf set -u "$name" "$version"
 }
 
 setup_asdf() {
   title "Setting up asdf"
 
-  # Check if asdf is already installed
+  local target_version="v0.18.0"
+  
+  # Check if asdf is already installed and get version
   if command -v asdf >/dev/null 2>&1; then
-    info "asdf already installed, skipping download"
+    local current_version=$(asdf version 2>/dev/null | awk '{print $1}' | sed 's/^v//')
+    local target_version_clean=$(echo "$target_version" | sed 's/^v//')
+    
+    info "asdf currently installed: v$current_version"
+    info "Target version: $target_version"
+    
+    if [ "$current_version" = "$target_version_clean" ]; then
+      info "asdf is already up to date, skipping download"
+      # Skip to tool installation
+    else
+      info "asdf version mismatch, updating to $target_version"
+      # Remove old version and install new one
+      rm -rf "${HOME}/.local/bin/asdf"
+    fi
   else
+    info "asdf not found, installing $target_version"
+  fi
+  
+  # Install asdf if not present or version mismatch
+  if ! command -v asdf >/dev/null 2>&1 || [ ! -f "${HOME}/.local/bin/asdf" ]; then
     local suffix=""
     if is_linux; then
       suffix="-linux-amd64"
     elif is_darwin; then
       suffix="-darwin-arm64"
     fi
-    github_download_release "asdf-vm" "asdf" "v0.16.7" "$suffix" "${HOME}/.local/bin"
-    
+    github_download_release "asdf-vm" "asdf" "$target_version" "$suffix" "${HOME}/.local/bin"
+
     # Source asdf for current session
     export PATH="${HOME}/.local/bin:$PATH"
   fi
@@ -534,9 +554,11 @@ setup_asdf() {
     "ripgrep latest"
     "zoxide latest"
   )
-  
+
   for tool in "${tools[@]}"; do
-    setup_asdf_tool $tool
+    local name=$(echo "$tool" | cut -d' ' -f1)
+    local version=$(echo "$tool" | cut -d' ' -f2)
+    setup_asdf_tool "$name" "$version"
   done
 }
 
@@ -566,8 +588,8 @@ setup_fonts() {
     local url="https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.tar.xz"
     curl -o /tmp/JetBrainsMono.tar.xz -OL "$url"
 
-    mkdir -p $HOME/.local/share/fonts/JetBrainsMonoNerd
-    tar -xJkf /tmp/JetBrainsMono.tar.xz -C $HOME/.local/share/fonts/JetBrainsMonoNerd
+    mkdir -p "$HOME"/.local/share/fonts/JetBrainsMonoNerd
+    tar -xJkf /tmp/JetBrainsMono.tar.xz -C "$HOME"/.local/share/fonts/JetBrainsMonoNerd
 
     fc-cache
   fi
@@ -600,7 +622,7 @@ set_total_steps() {
 main() {
   local run_all=false
   local steps_to_run=()
-  
+
   while [[ $# -gt 0 ]]; do
     case "$1" in
     --dry-run)
@@ -640,7 +662,7 @@ main() {
     --all)
       run_all=true
       steps_to_run=(
-        "update" 
+        "update"
         "setup_symlinks"
         "setup_homebrew"
         "setup_linux"
@@ -680,7 +702,7 @@ OPTIONS:
 
   # Set total steps for progress tracking
   set_total_steps ${#steps_to_run[@]}
-  
+
   # Execute requested steps
   for step in "${steps_to_run[@]}"; do
     if [ "$DRY_RUN" = "true" ]; then
