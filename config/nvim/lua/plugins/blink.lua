@@ -22,6 +22,7 @@ return {
       menu = {
         draw = {
           treesitter = { "lsp" },
+          columns = { { "label", "label_description", gap = 1 }, { "source_name" } },
         },
       },
       documentation = {
