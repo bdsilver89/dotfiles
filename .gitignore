@@ -2,3 +2,4 @@
 .netrwhist
 .git
 Brewfile.lock.json
+lazy-lock.json
