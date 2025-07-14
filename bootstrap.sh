@@ -296,7 +296,6 @@ setup_symlinks() {
   done
 
   link_files_in_dir "${DOTFILES_DIR}/bashrc.d" "$HOME/.bashrc.d"
-  link_files_in_dir "${DOTFILES_DIR}/zshrc.d" "$HOME/.zshrc.d"
   link_files_in_dir "${DOTFILES_DIR}/config" "$HOME/.config"
   link_files_in_dir "${DOTFILES_DIR}/bin" "$HOME/.local/bin"
 }
@@ -489,6 +488,21 @@ setup_tmux() {
   fi
 }
 
+setup_neovim() {
+  title "Setting up Neovim"
+
+  if [ -d /tmp/neovim ]; then
+    rm -rf /tmp/neovim
+  fi
+
+  git clone "https://github.com/neovim/neovim" "/tmp/neovim"
+  cd /tmp/neovim || exit
+  git checkout stable
+
+  make CMAKE_BUILD_TYPE=Release -j
+  sudo make CMAKE_BUILD_TYPE=Release install
+}
+
 setup_asdf_tool() {
   local name="$1"
   local version="$2"
@@ -508,15 +522,15 @@ setup_asdf() {
   title "Setting up asdf"
 
   local target_version="v0.18.0"
-  
+
   # Check if asdf is already installed and get version
   if command -v asdf >/dev/null 2>&1; then
     local current_version=$(asdf version 2>/dev/null | awk '{print $1}' | sed 's/^v//')
     local target_version_clean=$(echo "$target_version" | sed 's/^v//')
-    
+
     info "asdf currently installed: v$current_version"
     info "Target version: $target_version"
-    
+
     if [ "$current_version" = "$target_version_clean" ]; then
       info "asdf is already up to date, skipping download"
       # Skip to tool installation
@@ -528,7 +542,7 @@ setup_asdf() {
   else
     info "asdf not found, installing $target_version"
   fi
-  
+
   # Install asdf if not present or version mismatch
   if ! command -v asdf >/dev/null 2>&1 || [ ! -f "${HOME}/.local/bin/asdf" ]; then
     local suffix=""
@@ -647,6 +661,9 @@ main() {
     --symlinks)
       steps_to_run+=("setup_symlinks")
       ;;
+    --neovim)
+      steps_to_run+=("setup_neovim")
+      ;;
     --asdf)
       steps_to_run+=("setup_asdf")
       ;;
@@ -684,6 +701,7 @@ OPTIONS:
 --linux     Install utilities using system package manager
 --symlinks  Configure dotfiles from this repo in system locations
 --tmux      Install and configure tmux with tpm plugins
+--neovim    Install and configure neovim
 --asdf      Install and configure asdf package manager
 --zsh-omz   Install zsh and plugins using oh-my-zsh
 --zsh-zinit Install zsh and plugins using zinit

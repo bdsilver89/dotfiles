@@ -128,7 +128,8 @@ return {
     local all_mlsp_servers = vim.tbl_keys(require("mason-lspconfig.mappings").get_all().lspconfig_to_package)
     for server, server_opts in pairs(servers) do
       if server.enabled ~= false then
-        if server_opts.mason ~= false and vim.tbl_contains(all_mlsp_servers, server) then
+        local shoud_install = server_opts.mason ~= false and vim.tbl_contains(all_mlsp_servers, server)
+        if shoud_install then
           ensure_installed[#ensure_installed + 1] = server
         end
 
@@ -136,6 +137,12 @@ return {
           capabilities = vim.deepcopy(capabilities),
         }, servers[server] or {})
         vim.lsp.config(server, server_opts)
+
+        if not shoud_install then
+          -- mason lspconfig usually handles this for us, but if we are bypassing mason,
+          -- then we have to handle this ourselves
+          vim.lsp.enable(server)
+        end
       end
     end
 
