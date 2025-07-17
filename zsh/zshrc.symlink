@@ -1,12 +1,13 @@
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
-# if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-#   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-# fi
-
-export EDITOR='nvim'
-export PATH="$HOME/.local/bin:$PATH"
+# Load universal profile configurations first
+if [ -d ~/.profile.d ]; then
+    for dir in ~/.profile.d/*/; do
+        if [ -d "$dir" ]; then
+            for config in "$dir"*.sh; do
+                [[ -r "$config" ]] && source "$config"
+            done
+        fi
+    done
+fi
 
 # Set the directory for zinit and plugins
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
@@ -17,9 +18,6 @@ if [ ! -d "$ZINIT_HOME" ]; then
 fi
 
 source "${ZINIT_HOME}/zinit.zsh"
-
-# add powerlevel10k
-# zinit ice depth=1; zinit light romkatv/powerlevel10k
 
 # add zsh plugins
 zinit light zsh-users/zsh-syntax-highlighting
@@ -32,40 +30,10 @@ zinit light Aloxaf/fzf-tab
 zinit snippet OMZP::git
 zinit snippet OMZP::command-not-found
 
-# asdf
-if [ -x "$(command -v asdf)" ]; then
-  export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
-  mkdir -p "${ASDF_DATA_DIR:-$HOME/.asdf}/completions"
-  asdf completion zsh > "${ASDF_DATA_DIR:-$HOME/.asdf}/completions/_asdf"
-
-  fpath=(${ASDF_DATA_DIR:-$HOME/.asdf}/completions $fpath)
-fi
-
 # load completion
 autoload -Uz compinit && compinit
 
 zinit cdreplay -q
-
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-# [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
-# keybindings
-bindkey -v
-bindkey "^p" history-search-backward
-bindkey "^n" history-search-forward
-bindkey "^r" history-incremental-search-backward
-
-# history
-HISTSIZE=5000
-HISTFILE=~/.zsh_history
-HISTDUP=erase
-setopt appendhistory
-setopt sharehistory
-setopt hist_ignore_space
-setopt hist_ignore_all_dups
-setopt hist_save_no_dups
-setopt hist_ignore_dups
-setopt hist_find_no_dups
 
 # completion styling
 zstyle ":completion:*" matcher-list "m:{a-z}={A-Za-z}"
@@ -74,106 +42,5 @@ zstyle ":completion:*" menu no
 zstyle ":fzf-tab:complete:cd:*" fzf-preview "ls --color $realpath"
 zstyle ":fzf-tab:complete:__zoxide_z:*" fzf-preview "ls --color $realpath"
 
-# aliases
-alias c="clear"
-alias pg="ps -ef | grep"
-alias g="git"
-
-alias ..="cd .."
-alias ...="cd ../.."
-alias .3="cd ../../.."
-alias .4="cd ../../../.."
-alias .5="cd ../../../../.."
-
-if [ -x "$(command -v eza)" ]; then
-  alias ls="eza --color=always --icons=always --git"
-  alias lt="eza --color=always --tree --level=2 --icons=always --long --git"
-elif [ -x "$(command -v exa)" ]; then
-  alias ls="exa --color=always"
-  alias lt="exa --color=awlays --tree --level=2 --long"
-else
-  alias ls="ls --color"
-  if [ -x "$(command -v tree)" ]; then
-    alias lt="tree"
-  fi
-fi
-alias l="ls -lah"
-
-if [ -x "$(command -v batcat)" ]; then
-  alias bat="batcat"
-fi
-
-# shell integrations
-if [ -x "$(command -v fzf)" ]; then
-  alias f='$EDITOR "$(fzf)"'
-  source <(fzf --zsh)
-fi
-
-if [ -x "$(command -v zoxide)" ]; then
-  eval "$(zoxide init zsh)"
-
-  if [ -x "$(command -v bat)" ]; then
-    export FZF_DEFAULT_OPTS="--preview 'bat {}'"
-  else
-    export FZF_DEFAULT_OPTS="--preview 'cat {}'"
-  fi
-  export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS --border=rounded --info=default"
-fi
-
-if [ -x "$(command -v gh)" ]; then
-  eval "$(gh completion -s zsh)"
-fi
-if [ -x "$(command -v glab)" ]; then
-  eval "$(glab completion -s zsh)"
-fi
-if [ -x "$(command -v lazygit)" ]; then
-  alias gg="lazygit"
-fi
-
-
-# nvm
-export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
-
-# pyenv
-export PYENV_ROOT="$HOME/.pyenv"
-if [ -d "$PYENV_ROOT" ]; then
-  export PATH="$PYENV_ROOT/bin:$PATH"
-  if command -v pyenv 1>/dev/null 2>&1; then
-    eval "$(pyenv init --path)"
-    eval "$(pyenv init -)"
-  fi
-fi
-
-# rust
-if [ -d "/opt/homebrew/opt/rustup" ]; then
-  export PATH="$(brew --prefix rustup)/bin:$PATH"
-fi
-[ -f "$HOME/.cargo/env" ] && source "$HOME/.cargo/env"
-
-# cmake
-export CMAKE_COLOR_DIAGNOSTICS="ON"
-
-if [ -x "$(command -v ninja)" ]; then
-  export CMAKE_GENERATOR="Ninja"
-  export CONAN_CMAKE_GENERATOR="Ninja"
-  export NINJA_STATUS=$(echo -e "[%f/%t %p %e]")
-fi
-
-# vcpkg
-export VCPKG_ROOT="$HOME/vcpkg"
-if [ -d "$VCPKG_ROOT" ]; then
-  export PATH="$VCPKG_ROOT:$PATH"
-fi
-
-# starship prompt
-if [ -x "$(command -v starship)" ]; then
-  eval "$(starship init zsh)"
-fi
-
-# zig
-export ZIG_ROOT="$HOME/zig-linux-x86_64-0.13.0"
-if [ -d "$ZIG_ROOT" ]; then
-  export PATH="$ZIG_ROOT:$PATH"
-fi
+# opencode
+export PATH=/Users/briansilver/.opencode/bin:$PATH

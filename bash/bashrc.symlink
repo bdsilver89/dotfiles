@@ -1,4 +1,17 @@
-# User specific aliases and functions
+# Load universal profile configurations first
+if [ -d ~/.profile.d ]; then
+    for dir in ~/.profile.d/*/; do
+        if [ -d "$dir" ]; then
+            for config in "$dir"*.sh; do
+                if [ -f "$config" ] && [ -r "$config" ]; then
+                    source "$config"
+                fi
+            done
+        fi
+    done
+fi
+
+# Load bash-specific configurations
 if [ -d ~/.bashrc.d ]; then
     for rc in ~/.bashrc.d/*; do
         if [ -f "$rc" ] && [ -r "$rc" ]; then
@@ -6,4 +19,4 @@ if [ -d ~/.bashrc.d ]; then
         fi
     done
 fi
-unset rc
+unset config rc

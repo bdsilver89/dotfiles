@@ -296,6 +296,7 @@ setup_symlinks() {
   done
 
   link_files_in_dir "${DOTFILES_DIR}/bashrc.d" "$HOME/.bashrc.d"
+  link_files_in_dir "${DOTFILES_DIR}/profile.d" "$HOME/.profile.d"
   link_files_in_dir "${DOTFILES_DIR}/config" "$HOME/.config"
   link_files_in_dir "${DOTFILES_DIR}/bin" "$HOME/.local/bin"
 }
