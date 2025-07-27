@@ -1,14 +1,3 @@
-# Load universal profile configurations first
-if [ -d ~/.profile.d ]; then
-    for dir in ~/.profile.d/*/; do
-        if [ -d "$dir" ]; then
-            for config in "$dir"*.sh; do
-                [[ -r "$config" ]] && source "$config"
-            done
-        fi
-    done
-fi
-
 # Set the directory for zinit and plugins
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 
@@ -44,3 +33,6 @@ zstyle ":fzf-tab:complete:__zoxide_z:*" fzf-preview "ls --color $realpath"
 
 # opencode
 export PATH=/Users/briansilver/.opencode/bin:$PATH
+
+# Load universal profile configurations
+source "$HOME/.profile.d/00_core/00_loader.sh"

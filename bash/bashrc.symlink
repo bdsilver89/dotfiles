@@ -1,22 +1,2 @@
-# Load universal profile configurations first
-if [ -d ~/.profile.d ]; then
-    for dir in ~/.profile.d/*/; do
-        if [ -d "$dir" ]; then
-            for config in "$dir"*.sh; do
-                if [ -f "$config" ] && [ -r "$config" ]; then
-                    source "$config"
-                fi
-            done
-        fi
-    done
-fi
-
-# Load bash-specific configurations
-if [ -d ~/.bashrc.d ]; then
-    for rc in ~/.bashrc.d/*; do
-        if [ -f "$rc" ] && [ -r "$rc" ]; then
-            source "$rc"
-        fi
-    done
-fi
-unset config rc
+# Load universal profile configurations
+source "$HOME/.profile.d/00_core/00_loader.sh"
