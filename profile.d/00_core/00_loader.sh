@@ -1,19 +1,30 @@
 # Universal shell profile loader
 # This file provides functions for loading profile.d configurations
 
-if [ -n "$PROFILE_D_SOURCED" ]; then
-    return
+# Prevent multiple sourcing in the same shell session
+# Check if we've already loaded for this specific shell PID
+_profile_d_var="PROFILE_D_SOURCED_$$"
+if [ -n "${!_profile_d_var}" ]; then
+    return 0 2>/dev/null || exit 0
 fi
+eval "export $_profile_d_var=1"
+# Keep old variable for compatibility
 export PROFILE_D_SOURCED=1
 
 # Function to detect current shell
 detect_shell() {
-    if [[ -n "$ZSH_VERSION" ]]; then
-        echo "zsh"
-    elif [[ -n "$BASH_VERSION" ]]; then
-        echo "bash"
-    else
-        echo "unknown"
+    # First try to use $SHELL if it's set
+    if [[ -n "$SHELL" ]]; then
+        case "$SHELL" in
+            */zsh)
+                echo "zsh"
+                return
+                ;;
+            */bash)
+                echo "bash"
+                return
+                ;;
+        esac
     fi
 }
 
