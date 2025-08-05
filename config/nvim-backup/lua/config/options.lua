@@ -10,23 +10,8 @@ vim.g.loaded_ruby_provider = 0
 
 vim.g.has_nerd_font = true
 
--- Windows default to powershell instead of cmd
 if vim.fn.has("win32") == 1 then
-  local shell = (vim.fn.executable("pwsh") == 1) and "pwsh"
-    or (vim.fn.executable("powershell") == 1) and "powershell"
-    or ""
-
-  if shell ~= "" then
-    vim.o.shell = shell
-    vim.o.shellcmdflag =
-      "-NoLogo -NonInteractive -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.UTF8Encoding]::new();$PSDefaultParameterValues['Out-File:Encoding']='utf8';$PSStyle.OutputRendering='plaintext';Remove-Alias -Force -ErrorAction SilentlyContinue tee;"
-    vim.o.shellredir = '2>&1 | %%{ "$_" } | Out-File %s; exit $LastExitCode'
-    vim.o.shellpipe = '2>&1 | %%{ "$_" } | tee %s; exit $LastExitCode'
-    vim.o.shellquote = ""
-    vim.o.shellxquote = ""
-  else
-    vim.notify("No powershell executable found", vim.log.levels.WARN)
-  end
+  require("utils").terminal.setup()
 end
 
 vim.o.autowrite = true -- enable auto write

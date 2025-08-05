@@ -1,6 +1,6 @@
 -- Uses lazy.nvim's keys handler to make things simpler here
 -- stylua: ignore
-local keymaps = {
+require("utils").lazy_keymap({
   -- remap for dealing with word wrap and adding jumps to jumplist
   { "j", [[(v:count > 1 ? 'm`' . v:count : 'g') . 'j']], expr = true },
   { "k", [[(v:count > 1 ? 'm`' . v:count : 'g') . 'k']], expr = true },
@@ -72,11 +72,4 @@ local keymaps = {
   { "<esc>", "<cmd>nohlsearch<cr>" },
   { "<leader>l", "<cmd>Lazy<cr>", desc = "Lazy" },
   { "<leader>qq", "<cmd>qa<cr>", desc = "Quit all" },
-}
-
-local Keys = require("lazy.core.handler.keys")
-for _, keys in pairs(Keys.resolve(keymaps)) do
-  local opts = Keys.opts(keys)
-  opts.silent = opts.silent ~= false
-  vim.keymap.set(keys.mode or "n", keys.lhs, keys.rhs, opts)
-end
+})
