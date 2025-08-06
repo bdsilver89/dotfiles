@@ -1,46 +1,47 @@
-return {
-  "Saghen/blink.cmp",
-  event = "InsertEnter",
-  version = "1.*",
-  dependencies = {
-    {
-      "L3MON4D3/LuaSnip",
-      build = vim.fn.executable("make") == 1 and "make install_jsregexp" or nil,
-      dependencies = {
-        {
-          "rafamadriz/friendly-snippets",
-          config = function()
-            require("luasnip.loaders.from_vscode").lazy_load()
-          end,
-        },
+local add = MiniDeps.add
+
+add("tpope/vim-sleuth")
+add("L3MON4D3/LuaSnip")
+add("Saghen/blink.cmp")
+add("giuxtaposition/blink-cmp-copilot")
+
+require("blink.cmp").setup({
+  snippets = { preset = "luasnip" },
+  keymap = {
+    preset = "default",
+    ["<cr>"] = { "accept",  "fallback" },
+  },
+  appearance = {
+    nerd_font_variant = "mono",
+  },
+  signature = { enabled = true },
+  completion = {
+    documentation = {
+      auto_show = true,
+      auto_show_delay_ms = 500,
+    },
+    menu = {
+      draw = {
+        treesitter = { "lsp" },
+        columns = { { "kind_icon", "label", "label_description", gap = 1 }, { "kind" } },
+      },
+    },
+    ghost_text = { enabled = true },
+  },
+  sources = {
+    default = { "lsp", "path", "snippets", "buffer", "copilot" },
+    per_filetype = {
+      codecompanion = { "codecompanion", "buffer" },
+    },
+    providers = {
+      copilot = {
+        name = "copilot",
+        module = "blink-cmp-copilot",
+        score_offset = 100,
+        async = true,
       },
     },
   },
-  opts = {
-    keymap = {
-      preset = "enter",
-    },
-    signature = { enabled = true },
-    appearance = {
-      nerd_font_variant = "mono",
-    },
-    completion = {
-      documentation = {
-        auto_show = true,
-        auto_show_delay_ms = 500,
-      },
-      menu = {
-        auto_show = true,
-        draw = {
-          treesitter = { "lsp" },
-          columns = { { "kind_icon", "label", "label_description", gap = 1 }, { "kind" } },
-        },
-      },
-      sources = {
-        default = { "lsp", "path", "snippets", "buffer" },
-      },
-      ghost_text = { enabled = true },
-    },
-    fuzzy = { implementation = "lua" },
-  },
-}
+  fuzzy = { implementation = "lua" },
+})
+

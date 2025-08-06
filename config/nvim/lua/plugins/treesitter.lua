@@ -1,61 +1,40 @@
-return {
-  {
-    "nvim-treesitter/nvim-treesitter",
-    branch = "main",
-    event = "VeryLazy",
-    build = ":TSUpdate",
-    config = function()
-      require("nvim-treesitter").install({
-        "bash",
-        "c",
-        "cmake",
-        "cpp",
-        "css",
-        "diff",
-        "java",
-        "javascript",
-        "html",
-        "lua",
-        "luap",
-        "luadoc",
-        "markdown",
-        "markdown_inline",
-        "python",
-        "query",
-        "regex",
-        "typescript",
-        "vim",
-        "vimdoc",
-        "xml",
-        "yaml",
-      })
+local add = MiniDeps.add
+
+add({
+  source = "nvim-treesitter/nvim-treesitter",
+  checkout = "master",
+  hooks = {
+    post_checkout = function()
+      vim.cmd("TSUpdate")
     end,
   },
-  {
-    "nvim-treesitter/nvim-treesitter-textobjects",
-    branch = "main",
-    lazy = false,
-    config = function(_, opts)
-      local tsobj = require("nvim-treesitter-textobjects")
-      tsobj.setup(opts)
+})
 
-      local tsobj_select = require("nvim-treesitter-textobjects.select")
-      local assign = function(key, type)
-        vim.keymap.set({ "x", "o" }, "a" .. key, function()
-          tsobj_select.select_textobject("@" .. type .. ".outer", "textobjects")
-        end)
-        vim.keymap.set({ "x", "o" }, "i" .. key, function()
-          tsobj_select.select_textobject("@" .. type .. ".inner", "textobjects")
-        end)
-      end
+add({
+  source = "nvim-treesitter/nvim-treesitter-textobjects",
+  checkout = "master",
+})
 
-      assign("f", "function")
-      assign("c", "class")
-    end,
+add({
+  source = "nvim-treesitter/nvim-treesitter-context",
+  checkout = "master",
+})
+
+require("nvim-treesitter.configs").setup({
+  ensure_installed = {
+    "bash",
+    "c",
   },
-  {
-    "nvim-treesitter/nvim-treesitter-context",
-    lazy = false,
-    opts = {},
+  highlight = { enable = true },
+  indent = { enable = true },
+  textobjects = {
+    move = {
+      enable = true,
+    },
+    select = {
+      enable = true,
+    },
   },
-}
+})
+
+require("treesitter-context").setup()
