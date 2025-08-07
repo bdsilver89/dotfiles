@@ -64,3 +64,13 @@ vim.diagnostic.config({
   underline = true,
   virtual_text = true,
 })
+
+vim.keymap.set("n", "<leader>ud", function()
+  local state = vim.diagnostic.is_enabled()
+  vim.diagnostic.enable(not state)
+  if vim.diagnostic.is_enabled() then
+    vim.notify("***Enabled diagnostics***", vim.log.levels.INFO)
+  else
+    vim.notify("***Disabled diagnostics***", vim.log.levels.WARN)
+  end
+end, { desc = "Toggle diagnostics" })

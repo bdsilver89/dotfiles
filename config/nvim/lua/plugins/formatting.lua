@@ -7,10 +7,11 @@ vim.g.autoformat = true
 local function toggle_autoformat()
   local state = vim.g.autoformat
   vim.g.autoformat = not state
-  vim.notify(
-    string.format("***%s autoformating***", vim.g.autoformat and "Enabled" or "Disabled"),
-    vim.g.autoformat and vim.log.levels.INFO or vim.log.levels.WARN
-  )
+  if vim.g.autoformat then
+    vim.notify("***Enabled autoformating***", vim.log.levels.INFO)
+  else
+    vim.notify("***Disabled autoformating***", vim.log.levels.WARN)
+  end
 end
 
 vim.keymap.set("n", "<leader>uf", toggle_autoformat, { desc = "Toggle autoformat" })

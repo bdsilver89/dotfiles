@@ -2,8 +2,12 @@
 require("mini.extra").setup()
 
 -- mini.bufremove
-vim.keymap.set("n", "<leader>bd", function() require("mini.bufremove").delete(0) end, { desc = "Buffer remove" })
-vim.keymap.set("n", "<leader>bD", function() require("mini.bufremove").delete(0, true) end, { desc = "Buffer remove (force)" })
+vim.keymap.set("n", "<leader>bd", function()
+  require("mini.bufremove").delete(0)
+end, { desc = "Buffer remove" })
+vim.keymap.set("n", "<leader>bD", function()
+  require("mini.bufremove").delete(0, true)
+end, { desc = "Buffer remove (force)" })
 
 -- mini.icons
 local icons = require("mini.icons")
@@ -11,9 +15,9 @@ icons.setup()
 icons.mock_nvim_web_devicons()
 
 -- mini.notify
-local notify = require("mini.notify")
-notify.setup()
-vim.notify = notify.make_notify()
+-- local notify = require("mini.notify")
+-- notify.setup()
+-- vim.notify = notify.make_notify()
 
 -- mini.hipatterns
 local hipatterns = require("mini.hipatterns")
@@ -56,6 +60,15 @@ clue.setup({
 
 -- mini.pairs
 require("mini.pairs").setup()
+vim.keymap.set("n", "<leader>up", function()
+  local state = vim.g.minipairs_disable
+  vim.g.minipairs_disable = not state
+  if vim.g.minipairs_disable then
+    vim.notify("***Disabled autopairs***", vim.log.levels.WARN)
+  else
+    vim.notify("***Enabled autopairs***", vim.log.levels.INFO)
+  end
+end, { desc = "Toggle autopairs" })
 
 -- mini.surround
 require("mini.surround").setup()
@@ -83,7 +96,7 @@ indentscope.setup({
 
 -- mini.pick
 require("mini.pick").setup()
-vim.ui.select = MiniPick.select
+vim.ui.select = MiniPick.ui_select
 
 vim.keymap.set("n", "<leader><space>", "<cmd>Pick files<cr>", { desc = "Pick files" })
 vim.keymap.set("n", "<leader>,", "<cmd>Pick buffers<cr>", { desc = "Pick buffers" })
