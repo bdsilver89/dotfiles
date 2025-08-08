@@ -4,7 +4,7 @@
 # Prevent multiple sourcing in the same shell session
 # Check if we've already loaded for this specific shell PID
 _profile_d_var="PROFILE_D_SOURCED_$$"
-if [ -n "${!_profile_d_var}" ]; then
+if eval "[ -n \"\$$_profile_d_var\" ]"; then
     return 0 2>/dev/null || exit 0
 fi
 eval "export $_profile_d_var=1"
