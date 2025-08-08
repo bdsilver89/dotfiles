@@ -184,3 +184,83 @@ end, {
   nargs = "*",
   bang = true,
 })
+
+-- CMake user commands
+vim.api.nvim_create_user_command("CMakeConfigure", function(params)
+  local build_dir = get_cmake_build_dir()
+  local cmd = "cmake -S . -B " .. build_dir
+  if params.args ~= "" then
+    cmd = cmd .. " " .. params.args
+  end
+  local task = require("overseer").new_task({
+    cmd = cmd,
+    components = {
+      { "on_output_quickfix", open = false },
+      "on_result_diagnostics",
+      "default",
+    },
+  })
+  task:start()
+end, {
+  desc = "Configure CMake project with optional args",
+  nargs = "*",
+})
+
+vim.api.nvim_create_user_command("CMakeBuild", function(params)
+  local build_dir = get_cmake_build_dir()
+  local cmd = "cmake --build " .. build_dir
+  if params.args ~= "" then
+    cmd = cmd .. " " .. params.args
+  end
+  local task = require("overseer").new_task({
+    cmd = cmd,
+    components = {
+      { "on_output_quickfix", open = not params.bang, open_height = 8 },
+      "on_result_diagnostics",
+      "default",
+    },
+  })
+  task:start()
+end, {
+  desc = "Build CMake project with optional args (e.g., --target test --parallel)",
+  nargs = "*",
+  bang = true,
+})
+
+vim.api.nvim_create_user_command("CMakeTest", function(params)
+  local build_dir = get_cmake_build_dir()
+  local cmd = "ctest --test-dir " .. build_dir .. " --output-on-failure"
+  if params.args ~= "" then
+    cmd = cmd .. " " .. params.args
+  end
+  local task = require("overseer").new_task({
+    cmd = cmd,
+    components = {
+      { "on_output_quickfix", open = not params.bang, open_height = 8 },
+      "default",
+    },
+  })
+  task:start()
+end, {
+  desc = "Run CMake tests with optional args",
+  nargs = "*",
+  bang = true,
+})
+
+vim.api.nvim_create_user_command("CMakeClean", function(params)
+  local build_dir = get_cmake_build_dir()
+  local cmd = "cmake --build " .. build_dir .. " --target clean"
+  if params.args ~= "" then
+    cmd = cmd .. " " .. params.args
+  end
+  local task = require("overseer").new_task({
+    cmd = cmd,
+    components = {
+      "default",
+    },
+  })
+  task:start()
+end, {
+  desc = "Clean CMake build with optional args",
+  nargs = "*",
+})
