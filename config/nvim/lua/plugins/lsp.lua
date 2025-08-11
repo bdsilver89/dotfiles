@@ -61,8 +61,11 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
 vim.diagnostic.config({
   severity_sort = true,
+  signs = true,
   underline = true,
-  virtual_text = true,
+  update_in_insert = false,
+  virtual_lines = { current_line = true },
+  virtual_text = false,
 })
 
 vim.keymap.set("n", "<leader>ud", function()
