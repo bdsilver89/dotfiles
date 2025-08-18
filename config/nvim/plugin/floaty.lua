@@ -4,8 +4,8 @@ local function create_float()
   local max_height = vim.api.nvim_win_get_height(0)
   local max_width = vim.api.nvim_win_get_width(0)
 
-  local height = math.floor(max_height * 0.8)
-  local width = math.floor(max_width * 0.8)
+  local height = math.floor(max_height * 0.9)
+  local width = math.floor(max_width * 0.9)
 
   local buf = vim.api.nvim_create_buf(false, true)
   local win = vim.api.nvim_open_win(buf, true, {

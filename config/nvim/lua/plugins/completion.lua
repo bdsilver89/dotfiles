@@ -1,9 +1,8 @@
 local add = MiniDeps.add
 
-add("tpope/vim-sleuth")
 add("L3MON4D3/LuaSnip")
 add("Saghen/blink.cmp")
-add("giuxtaposition/blink-cmp-copilot")
+-- add("giuxtaposition/blink-cmp-copilot")
 
 require("blink.cmp").setup({
   snippets = { preset = "luasnip" },
@@ -29,18 +28,19 @@ require("blink.cmp").setup({
     ghost_text = { enabled = true },
   },
   sources = {
-    default = { "lsp", "path", "snippets", "buffer", "copilot" },
+    default = { "lsp", "path", "snippets", "buffer" },
+    -- default = { "lsp", "path", "snippets", "buffer", "copilot" },
     per_filetype = {
       codecompanion = { "codecompanion", "buffer" },
     },
-    providers = {
-      copilot = {
-        name = "copilot",
-        module = "blink-cmp-copilot",
-        score_offset = 100,
-        async = true,
-      },
-    },
+    -- providers = {
+    --   copilot = {
+    --     name = "copilot",
+    --     module = "blink-cmp-copilot",
+    --     score_offset = 100,
+    --     async = true,
+    --   },
+    -- },
   },
   fuzzy = { implementation = "lua" },
 })

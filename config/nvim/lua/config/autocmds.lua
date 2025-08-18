@@ -96,3 +96,44 @@ autocmd("BufWritePre", {
     vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
   end,
 })
+
+autocmd("LspAttach", {
+  desc = "LSP settings",
+  group = augroup("lspattach"),
+  callback = function(ev)
+    local client = vim.lsp.get_client_by_id(ev.data.client_id)
+    if not client then
+      return
+    end
+
+    local map = function(lhs, rhs, desc)
+      vim.keymap.set("n", lhs, rhs, { desc = desc, buffer = ev.buf })
+    end
+
+    map("gd", vim.lsp.buf.definition, "vim.lsp.buf.definition")
+    map("gD", vim.lsp.buf.declaration, "vim.lsp.buf.declaration")
+    map("gW", vim.lsp.buf.workspace_symbol, "vim.lsp.buf.workspace_symbol")
+
+    if client:supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight, ev.buf) then
+      local hl_augroup = augroup("lsphighlight")
+
+      autocmd({ "CursorHold", "CursorHoldI" }, {
+        buffer = ev.buf,
+        group = hl_augroup,
+        callback = vim.lsp.buf.document_highlight,
+      })
+      autocmd({ "CursorMoved", "CursorMovedI" }, {
+        buffer = ev.buf,
+        group = hl_augroup,
+        callback = vim.lsp.buf.clear_references,
+      })
+      autocmd("LspDetach", {
+        group = augroup("lsphighlightdetach"),
+        callback = function(ev2)
+          vim.lsp.buf.clear_references()
+          vim.api.nvim_clear_autocmds({ group = "bdsilver89/lsphighlight", buffer = ev2.buf })
+        end,
+      })
+    end
+  end,
+})

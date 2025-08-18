@@ -23,11 +23,11 @@ end
 require("mini.deps").setup({ path = { package = path_package } })
 
 require("config.options")
-require("config.autocmds")
 require("config.keymaps")
+require("config.autocmds")
+require("config.lsp")
 
 require("plugins.utils")
-require("plugins.lsp")
 require("plugins.completion")
 require("plugins.colorscheme")
 require("plugins.navigation")
