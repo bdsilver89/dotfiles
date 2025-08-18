@@ -15,9 +15,9 @@ icons.setup()
 icons.mock_nvim_web_devicons()
 
 -- mini.notify
--- local notify = require("mini.notify")
--- notify.setup()
--- vim.notify = notify.make_notify()
+local notify = require("mini.notify")
+notify.setup()
+vim.notify = notify.make_notify()
 
 -- mini.hipatterns
 local hipatterns = require("mini.hipatterns")
@@ -70,14 +70,29 @@ vim.keymap.set("n", "<leader>up", function()
   end
 end, { desc = "Toggle autopairs" })
 
+-- mini.ai
+local ai = require("mini.ai")
+ai.setup({
+  custom_textobjects = {
+    o = ai.gen_spec.treesitter({
+      a = { "@block.outer", "@conditional.outer", "@loop.outer" },
+      i = { "@block.inner", "@conditional.inner", "@loop.inner" },
+    }),
+    f = ai.gen_spec.treesitter({ a = "@function.outer", i = "@function.inner" }),
+    c = ai.gen_spec.treesitter({ a = "@class.outer", i = "@class.inner" }),
+    u = ai.gen_spec.function_call(),
+    U = ai.gen_spec.function_call({ name_pattern = "[%w_]" }),
+  },
+})
+
 -- mini.surround
 require("mini.surround").setup()
 
 -- mini.diff
--- require("mini.diff").setup()
+require("mini.diff").setup()
 
 -- mini.git
--- require("mini.git").setup()
+require("mini.git").setup()
 
 -- mini.statusline
 local statusline = require("mini.statusline")
@@ -85,6 +100,9 @@ statusline.setup()
 statusline.section_location = function()
   return "%2l:%-2v"
 end
+
+-- mini.tabline
+require("mini.tabline").setup()
 
 -- mini.indentscope
 local indentscope = require("mini.indentscope")
@@ -94,10 +112,14 @@ indentscope.setup({
   },
 })
 
+-- mini.files
+require("mini.files").setup()
+vim.keymap.set("n", "<leader>e", MiniFiles.open)
+
 -- mini.pick
 require("mini.pick").setup()
 vim.ui.select = MiniPick.ui_select
 
 vim.keymap.set("n", "<leader><space>", "<cmd>Pick files<cr>", { desc = "Pick files" })
 vim.keymap.set("n", "<leader>,", "<cmd>Pick buffers<cr>", { desc = "Pick buffers" })
-vim.keymap.set("n", "<leader>/", "<cmd>Pick grep_live<cr>", { desc = "Pick live grep" })
+-- vim.keymap.set("n", "<leader>/", "<cmd>Pick grep_live<cr>", { desc = "Pick live grep" })

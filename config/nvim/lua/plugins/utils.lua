@@ -1,12 +1,8 @@
 local add = MiniDeps.add
 
 add("tpope/vim-sleuth")
-add("tpope/vim-dispatch")
-add("nvim-lua/plenary.nvim")
 add("mason-org/mason.nvim")
 add("MeanderingProgrammer/render-markdown.nvim")
-add("MunifTanjim/nui.nvim")
-add("j-hui/fidget.nvim")
 
 require("render-markdown").setup({
   code = {
@@ -19,8 +15,6 @@ require("render-markdown").setup({
     icons = {},
   },
 })
-
-require("fidget").setup()
 
 local ensure_installed = {
   "stylua",

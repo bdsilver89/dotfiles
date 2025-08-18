@@ -10,16 +10,6 @@ add({
   },
 })
 
-add({
-  source = "nvim-treesitter/nvim-treesitter-textobjects",
-  checkout = "master",
-})
-
-add({
-  source = "nvim-treesitter/nvim-treesitter-context",
-  checkout = "master",
-})
-
 require("nvim-treesitter.configs").setup({
   ensure_installed = {
     "bash",
@@ -52,14 +42,4 @@ require("nvim-treesitter.configs").setup({
   },
   highlight = { enable = true },
   indent = { enable = true },
-  textobjects = {
-    move = {
-      enable = true,
-    },
-    select = {
-      enable = true,
-    },
-  },
 })
-
-require("treesitter-context").setup()
