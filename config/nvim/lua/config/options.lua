@@ -30,6 +30,7 @@ if vim.fn.has("win32") == 1 then
 end
 
 vim.o.autowrite = true -- enable auto write
+vim.o.breakindent = true
 vim.schedule(function()
   vim.o.clipboard = "unnamedplus"
 end)

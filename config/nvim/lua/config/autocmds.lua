@@ -1,9 +1,8 @@
-local autocmd = vim.api.nvim_create_autocmd
 local augroup = function(name)
   return vim.api.nvim_create_augroup("bdsilver89/" .. name, { clear = true })
 end
 
-autocmd("TextYankPost", {
+vim.api.nvim_create_autocmd("TextYankPost", {
   desc = "Highlight on yank",
   group = augroup("yank_highlight"),
   callback = function()
@@ -11,7 +10,7 @@ autocmd("TextYankPost", {
   end,
 })
 
-autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
+vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
   desc = "Check for file reload",
   group = augroup("checktime"),
   callback = function()
@@ -21,7 +20,7 @@ autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
   end,
 })
 
-autocmd("VimResized", {
+vim.api.nvim_create_autocmd("VimResized", {
   desc = "Resize splits",
   group = augroup("resize_splits"),
   callback = function()
@@ -31,7 +30,7 @@ autocmd("VimResized", {
   end,
 })
 
-autocmd("TermOpen", {
+vim.api.nvim_create_autocmd("TermOpen", {
   desc = "Terminal settings",
   group = augroup("terminal_settings"),
   callback = function()
@@ -40,7 +39,7 @@ autocmd("TermOpen", {
   end,
 })
 
-autocmd("FileType", {
+vim.api.nvim_create_autocmd("FileType", {
   desc = "Close with <q>",
   group = augroup("close_with_q"),
   pattern = {
@@ -66,7 +65,7 @@ autocmd("FileType", {
   end,
 })
 
-autocmd("FileType", {
+vim.api.nvim_create_autocmd("FileType", {
   desc = "Wrap and spellcheck filetypes",
   group = augroup("wrap_spell"),
   pattern = { "text", "plaintex", "typst", "gitcommit", "markdown" },
@@ -77,7 +76,7 @@ autocmd("FileType", {
 })
 
 -- Fix conceallevel for json files
-autocmd({ "FileType" }, {
+vim.api.nvim_create_autocmd({ "FileType" }, {
   group = augroup("json_conceal"),
   pattern = { "json", "jsonc", "json5" },
   callback = function()
@@ -85,7 +84,7 @@ autocmd({ "FileType" }, {
   end,
 })
 
-autocmd("BufWritePre", {
+vim.api.nvim_create_autocmd("BufWritePre", {
   desc = "Auto create dirs when saving file",
   group = augroup("auto_create_dirs"),
   callback = function(event)
@@ -97,7 +96,7 @@ autocmd("BufWritePre", {
   end,
 })
 
-autocmd("LspAttach", {
+vim.api.nvim_create_autocmd("LspAttach", {
   desc = "LSP settings",
   group = augroup("lspattach"),
   callback = function(ev)
@@ -105,6 +104,10 @@ autocmd("LspAttach", {
     if not client then
       return
     end
+
+    -- if client:supports_method(vim.lsp.protocol.Methods.textDocument_completion) then
+    --   vim.lsp.completion.enable(true, client.id, ev.buf, { autotrigger = true })
+    -- end
 
     local map = function(lhs, rhs, desc)
       vim.keymap.set("n", lhs, rhs, { desc = desc, buffer = ev.buf })
@@ -117,17 +120,17 @@ autocmd("LspAttach", {
     if client:supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight, ev.buf) then
       local hl_augroup = augroup("lsphighlight")
 
-      autocmd({ "CursorHold", "CursorHoldI" }, {
+      vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
         buffer = ev.buf,
         group = hl_augroup,
         callback = vim.lsp.buf.document_highlight,
       })
-      autocmd({ "CursorMoved", "CursorMovedI" }, {
+      vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
         buffer = ev.buf,
         group = hl_augroup,
         callback = vim.lsp.buf.clear_references,
       })
-      autocmd("LspDetach", {
+      vim.api.nvim_create_autocmd("LspDetach", {
         group = augroup("lsphighlightdetach"),
         callback = function(ev2)
           vim.lsp.buf.clear_references()
