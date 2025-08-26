@@ -1,39 +1,33 @@
-if vim.loader and vim.loader.enable then
-  vim.loader.enable()
+-- Bootstrap lazy.nvim
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not (vim.uv or vim.loop).fs_stat(lazypath) then
+  local lazyrepo = "https://github.com/folke/lazy.nvim.git"
+  local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
+  if vim.v.shell_error ~= 0 then
+    vim.api.nvim_echo({
+      { "Failed to clone lazy.nvim:\n", "ErrorMsg" },
+      { out,                            "WarningMsg" },
+      { "\nPress any key to exit..." },
+    }, true, {})
+    vim.fn.getchar()
+    os.exit(1)
+  end
 end
+vim.opt.rtp:prepend(lazypath)
 
--- Clone 'mini.nvim' manually in a way that it gets managed by 'mini.deps'
-local path_package = vim.fn.stdpath("data") .. "/site/"
-local mini_path = path_package .. "pack/deps/start/mini.nvim"
-if not vim.loop.fs_stat(mini_path) then
-  vim.cmd('echo "Installing `mini.nvim`" | redraw')
-  local clone_cmd = {
-    "git",
-    "clone",
-    "--filter=blob:none",
-    "https://github.com/echasnovski/mini.nvim",
-    mini_path,
-  }
-  vim.fn.system(clone_cmd)
-  vim.cmd("packadd mini.nvim | helptags ALL")
-  vim.cmd('echo "Installed `mini.nvim`" | redraw')
-end
-
--- Set up 'mini.deps' (customize to your liking)
-require("mini.deps").setup({ path = { package = path_package } })
-
+-- Setup local config
 require("config.options")
 require("config.keymaps")
 require("config.autocmds")
-require("config.lsp")
 
-require("plugins.utils")
-require("plugins.completion")
-require("plugins.colorscheme")
-require("plugins.navigation")
-require("plugins.mini")
-require("plugins.formatting")
-require("plugins.treesitter")
--- require("plugins.git")
--- require("plugins.tasks")
--- require("plugins.ai")
+-- Setup lazy.nvim
+require("lazy").setup({
+  spec = {
+    { import = "plugins" },
+  },
+  install = { colorscheme = { "catppuccin", "habamax" } },
+  checker = { enabled = true },
+})
+
+vim.cmd.colorscheme(vim.g.default_colorscheme)
+require("config.lsp")

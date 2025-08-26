@@ -1,7 +1,3 @@
-local add = MiniDeps.add
-
-add("stevearc/conform.nvim")
-
 vim.g.autoformat = true
 
 local function toggle_autoformat()
@@ -29,14 +25,18 @@ vim.api.nvim_create_user_command("Format", function(args)
   require("conform").format({ async = true, lsp_format = "fallback", range = range })
 end, { range = true })
 
-require("conform").setup({
-  format_on_save = function()
-    if not vim.g.autoformat then
-      return nil
-    end
-    return { timeout_ms = 1000, lsp_format = "fallback" }
-  end,
-  formatters_by_ft = {
-    lua = { "stylua" },
+return {
+  "stevearc/conform.nvim",
+  event = { "BufWritePre" },
+  opts = {
+    format_on_save = function()
+      if not vim.g.autoformat then
+        return nil
+      end
+      return { timeout_ms = 1000, lsp_format = "fallback" }
+    end,
+    formatters_by_ft = {
+      lua = { "stylua" },
+    },
   },
-})
+}

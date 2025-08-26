@@ -1,7 +1,10 @@
-local add = MiniDeps.add
+vim.g.default_colorscheme = "catppuccin"
 
-add({ source = "catppuccin/nvim", name = "catppuccin" })
-
-require("catppuccin").setup()
-
-vim.cmd.colorscheme("catppuccin")
+return {
+  {
+    "catppuccin/nvim",
+    name = "catppuccin",
+    priority = 1000,
+    opts = {},
+  },
+}
