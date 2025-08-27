@@ -88,10 +88,58 @@ return {
 
     -- mini.statusline
     local statusline = require("mini.statusline")
-    statusline.setup()
-    statusline.section_location = function()
-      return "%2l:%-2v"
-    end
+
+    local lsp_msg = ""
+    local spinners = { "", "󰪞", "󰪟", "󰪠", "󰪡", "󰪢", "󰪣", "󰪤", "󰪥", "" }
+    vim.api.nvim_create_autocmd("LspProgress", {
+      pattern = { "begin", "report", "end" },
+      callback = function(ev)
+        if not ev.data or not ev.data.params then
+          return
+        end
+
+        local data = ev.data.params.value
+        local progress = ""
+
+        if data.percentage then
+          local idx = math.max(1, math.floor(data.percentage / 10))
+          local icon = spinners[idx]
+          progress = icon .. " " .. data.percentage .. "%% "
+        end
+
+        local loaded_count = data.message and string.match(data.message, "^(%d+/%d+)") or ""
+        local str = progress .. (data.title or "") .. " " .. (loaded_count or "")
+        lsp_msg = data.kind == "end" and "" or str
+        vim.cmd.redrawstatus()
+      end,
+    })
+
+    statusline.setup({
+      content = {
+        active = function()
+          local mode, mode_hl = statusline.section_mode({ trunc_width = 120 })
+          local git           = statusline.section_git({ trunc_width = 40 })
+          local diff          = statusline.section_diff({ trunc_width = 75 })
+          local diagnostics   = statusline.section_diagnostics({ trunc_width = 75 })
+          local lsp           = statusline.section_lsp({ trunc_width = 75 })
+          local filename      = statusline.section_filename({ trunc_width = 140 })
+          local fileinfo      = statusline.section_fileinfo({ trunc_width = 120 })
+          local location      = statusline.section_location({ trunc_width = 75 })
+          local search        = statusline.section_searchcount({ trunc_width = 75 })
+
+          return statusline.combine_groups({
+            { hl = mode_hl,                 strings = { mode } },
+            { hl = 'MiniStatuslineDevinfo', strings = { git, diff, diagnostics, lsp } },
+            '%<', -- Mark general truncate point
+            { hl = 'MiniStatuslineFilename', strings = { filename } },
+            '%=', -- End left alignment
+            { hl = 'MiniStatuslineFilename', strings = { lsp_msg } },
+            { hl = 'MiniStatuslineFileinfo', strings = { fileinfo } },
+            { hl = mode_hl,                  strings = { search, location } },
+          })
+        end,
+      }
+    })
 
     -- mini.tabline
     require("mini.tabline").setup()

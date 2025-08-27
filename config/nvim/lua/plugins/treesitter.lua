@@ -49,6 +49,8 @@ return {
       pattern = ensure_installed,
       callback = function(ev)
         vim.treesitter.start(ev.buf)
+        vim.wo.foldlevel = 99
+        vim.wo.foldmethod = "expr"
         vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
         vim.bo.indentexpr = "v:lua.require('nvim-treesitter').indentexpr()"
       end,
