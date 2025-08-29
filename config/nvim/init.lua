@@ -29,5 +29,4 @@ require("lazy").setup({
   checker = { enabled = true },
 })
 
-vim.cmd.colorscheme(vim.g.default_colorscheme)
 require("config.lsp")
