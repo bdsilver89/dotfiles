@@ -43,16 +43,21 @@ vim.schedule(function()
   vim.o.clipboard = "unnamedplus"
 end)
 
+if vim.fn.has("nvim-0.12") == 1 then
+  vim.o.cmdheight = 0
+  require("vim._extui").enable({})
+end
+
 -- Windows default to powershell instead of cmd
 if vim.fn.has("win32") == 1 then
   local shell = (vim.fn.executable("pwsh") == 1) and "pwsh"
-      or (vim.fn.executable("powershell") == 1) and "powershell"
-      or ""
+    or (vim.fn.executable("powershell") == 1) and "powershell"
+    or ""
 
   if shell ~= "" then
     vim.o.shell = shell
     vim.o.shellcmdflag =
-    "-NoLogo -NonInteractive -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.UTF8Encoding]::new();$PSDefaultParameterValues['Out-File:Encoding']='utf8';$PSStyle.OutputRendering='plaintext';Remove-Alias -Force -ErrorAction SilentlyContinue tee;"
+      "-NoLogo -NonInteractive -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.UTF8Encoding]::new();$PSDefaultParameterValues['Out-File:Encoding']='utf8';$PSStyle.OutputRendering='plaintext';Remove-Alias -Force -ErrorAction SilentlyContinue tee;"
     vim.o.shellredir = '2>&1 | %%{ "$_" } | Out-File %s; exit $LastExitCode'
     vim.o.shellpipe = '2>&1 | %%{ "$_" } | tee %s; exit $LastExitCode'
     vim.o.shellquote = ""
