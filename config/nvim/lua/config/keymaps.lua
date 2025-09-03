@@ -53,3 +53,13 @@ vim.keymap.set("n", "<leader>w", "<cmd>w<cr>", { desc = "Write" })
 vim.keymap.set("n", "<leader>q", "<cmd>q<cr>", { desc = "Quit window" })
 
 vim.keymap.set("n", "<leader>l", "<cmd>Lazy<cr>", { desc = "Lazy" })
+
+vim.keymap.set("n", "<leader>ud", function()
+  local state = vim.diagnostic.is_enabled()
+  vim.diagnostic.enable(not state)
+  if vim.diagnostic.is_enabled() then
+    vim.notify("***Enabled diagnostics***", vim.log.levels.INFO)
+  else
+    vim.notify("***Disabled diagnostics***", vim.log.levels.WARN)
+  end
+end, { desc = "Toggle diagnostics" })

@@ -2,8 +2,9 @@ return {
   "mason-org/mason.nvim",
   opts = {
     ensure_installed = {
-      "stylua",
       "lua-language-server",
+      "neocmakelsp",
+      "stylua",
     },
   },
   config = function(_, opts)
