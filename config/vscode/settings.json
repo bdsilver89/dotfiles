@@ -1,0 +1,12 @@
+{
+    "editor.fontLigatures": true,
+    "editor.lineNumbers": "relative",
+    "editor.minimap.enabled": false,
+    "workbench.settings.editor": "json",
+    "extensions.experimental.affinity": {
+        "asvetliakov.vscode-neovim": 1
+    },
+    "vscode-neovim.useWSL": true,
+    "github.copilot.nextEditSuggestions.enabled": true,
+    "workbench.colorTheme": "Retrobox Dark"
+}
