@@ -2,6 +2,7 @@ vim.lsp.enable({
   "clangd",
   "lua_ls",
   "neocmake",
+  "rust_analyzer",
 })
 
 vim.diagnostic.config({
