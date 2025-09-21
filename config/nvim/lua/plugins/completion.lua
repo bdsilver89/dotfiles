@@ -1,7 +1,7 @@
 return {
   "Saghen/blink.cmp",
   version = "^1",
-  event = "InsertEnter",
+  event = { "InsertEnter", "CmdlineEnter" },
   dependencies = {
     "L3MON4D3/LuaSnip",
   },
@@ -9,7 +9,7 @@ return {
     snippets = { preset = "luasnip" },
     keymap = {
       preset = "default",
-      ["<cr>"] = { "accept",  "fallback" },
+      ["<cr>"] = { "accept", "fallback" },
     },
     appearance = {
       nerd_font_variant = "mono",
@@ -43,6 +43,19 @@ return {
       --   },
       -- },
     },
+    cmdline = {
+      enabled = true,
+      keymap = { preset = "cmdline" },
+      completion = {
+        list = { selection = { preselect = false } },
+        menu = {
+          auto_show = function(ctx)
+            return vim.fn.getcmdtype() == ":"
+          end,
+        },
+        ghost_text = { enabled = true },
+      },
+    },
     fuzzy = { implementation = "lua" },
-  }
+  },
 }

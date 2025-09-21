@@ -85,6 +85,9 @@ return {
         callback = function(ev)
           if have(ev.match) then
             pcall(vim.treesitter.start)
+
+            vim.opt_local.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+            vim.opt_local.indentexpr = "v:lua.require('nvim-treesitter').indentexpr()"
           end
         end,
       })
