@@ -1,11 +1,5 @@
-import = ["~/AppData/Roaming/alacritty/catppuccin-mocha.toml"]
-
-[font]
-size = 12
-
-[font.normal]
-family = "JetbrainsMono Nerd Font"
-
-[window.padding]
-x = 0
-y = 0
+[general]
+import = [
+  "C:\\Users\\brian\\AppData\\Roaming\\alacritty\\alacritty-common.toml",
+  "C:\\Users\\brian\\AppData\\Roaming\\alacritty\\themes\\tokyonight_moon.toml",
+]
