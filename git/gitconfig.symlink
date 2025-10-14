@@ -28,7 +28,7 @@
 [diff]
   tool = nvimdiff
 [difftool "nvimdiff"]
-  cmd = nvim -d \"$LOCAL\" \"$REMOTE\" -c \"wincmd w\" -c \"wincmd L\"
+  cmd = nvim -c \"packadd nvim.difftool\" -c \"DiffTool $LOCAL $REMOTE\"
 [merge]
   tool = nvimdiff
   prompt = false
