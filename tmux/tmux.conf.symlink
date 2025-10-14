@@ -63,23 +63,45 @@ bind-key -r S display-popup -E "\
 
 bind C-a send-prefix
 
-# Theme border
+# Pane border
 set -g pane-border-lines single
 set -g pane-border-style fg=black,bright
 set -g pane-active-border-style fg=blue
 
-# Theme status
-set -g status-position top
-set -g status-style bg=default,fg=black,bright
-set -g status-left ""
-set -g status-right "#[fg=black,bright]#S"
+# Status bar
+set -g status "on"
+set -g status-position "top"
+set -g status-justify "left"
+set -g status-style "fg=blue,bg=black,bright"
+set -g status-left-length "100"
+set -g status-right-length "100"
+set -g status-left-style NONE
+set -g status-right-style NONE
+set -g status-left "#[fg=black,bg=blue,bold] #S #[fg=blue,bg=black,bright,nobold,nounderscore,noitalics]"
+set -g status-right "#[fg=black,bright,bg=black,bright,nobold,nounderscore,noitalics]#[fg=blue,bg=black,bright] #{prefix_highlight} #[fg=#3b4261,bg=black,bright,nobold,nounderscore,noitalics]#[fg=blue,bg=#3b4261] %Y-%m-%d  %I:%M %p #[fg=blue,bg=#3b4261,nobold,nounderscore,noitalics]#[fg=black,bg=blue,bold] #h "
+if-shell '[ "$(tmux show-option -gqv "clock-mode-style")" == "24" ]' {
+  set -g status-right "#[fg=black,bright,bg=black,bright,nobold,nounderscore,noitalics]#[fg=blue,bg=black,bright] #{prefix_highlight} #[fg=#3b4261,bg=black,bright,nobold,nounderscore,noitalics]#[fg=blue,bg=#3b4261] %Y-%m-%d  %H:%M #[fg=blue,bg=#3b4261,nobold,nounderscore,noitalics]#[fg=black,bg=blue,bold] #h "
+}
 
-# Theme status windows
-# set -g window-status-format "●"
-# set -g window-status-current-format "●"
-set -g window-status-current-style \
-    "#{?window_zoomed_flag,fg=yellow,fg=blue,nobold}"
-set -g window-status-bell-style "fg=red,nobold"
+# Window status
+setw -g window-status-activity-style "underscore,fg=#828bb8,bg=black,bright"
+setw -g window-status-separator ""
+setw -g window-status-style "NONE,fg=#828bb8,bg=black,bright"
+setw -g window-status-format "#[fg=black,bright,bg=black,bright,nobold,nounderscore,noitalics]#[default] #I  #W #F #[fg=black,bright,bg=black,bright,nobold,nounderscore,noitalics]"
+setw -g window-status-current-format "#[fg=black,bright,bg=#3b4261,nobold,nounderscore,noitalics]#[fg=blue,bg=#3b4261,bold] #I  #W #F #[fg=#3b4261,bg=black,bright,nobold,nounderscore,noitalics]"
+
+
+# # set -g status-position top
+# set -g status-style bg=default,fg=black,bright
+# set -g status-left ""
+# set -g status-right "#[fg=black,bright]#S"
+#
+# # Theme status windows
+# # set -g window-status-format "●"
+# # set -g window-status-current-format "●"
+# set -g window-status-current-style \
+#     "#{?window_zoomed_flag,fg=yellow,fg=blue,nobold}"
+# set -g window-status-bell-style "fg=red,nobold"
 
 # nvim-tmux-navigation
 is_vim="ps -o state= -o comm= -t '#{pane_tty}' \
