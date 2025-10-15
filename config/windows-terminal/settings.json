@@ -50,7 +50,7 @@
     ],
     "profiles": {
         "defaults": {
-            "colorScheme": "GruvboxDarkHard",
+            "colorScheme": "Catppuccin Mocha",
             "experimental.retroTerminalEffect": false,
             "font": {
                 "face": "JetBrainsMono Nerd Font Mono"

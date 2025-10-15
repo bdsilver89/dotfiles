@@ -1,5 +1,5 @@
 [general]
 import = [
   "C:\\Users\\brian\\AppData\\Roaming\\alacritty\\alacritty-common.toml",
-  "C:\\Users\\brian\\AppData\\Roaming\\alacritty\\themes\\tokyonight_moon.toml",
+  "C:\\Users\\brian\\AppData\\Roaming\\alacritty\\themes\\catppuccin-mocha.toml",
 ]

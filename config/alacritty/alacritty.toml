@@ -1,5 +1,5 @@
 [general]
 import = [
   "~/.config/alacritty/alacritty-common.toml",
-  "~/.config/alacritty/themese/tokyonight_moon.toml",
+  "~/.config/alacritty/themes/catppuccin-mocha.toml",
 ]
