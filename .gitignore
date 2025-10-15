@@ -3,3 +3,8 @@
 .git
 Brewfile.lock.json
 lazy-lock.json
+
+# the way we handle zed, we need to ignore the generated stuff
+config/zed/conversations
+config/zed/prompts
+config/zed/themes
