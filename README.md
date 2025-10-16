@@ -29,12 +29,17 @@ wget -qO- https://raw.githubusercontent.com/bdsilver89/dotfiles/main/install.sh 
 
 ### Windows
 
-Powershell is the only supported shell for Windows.
+PowerShell is the only supported shell for Windows.
 
 1. `git clone https://github.com/bdsilver89/dotfiles.git $HOME/dotfiles`
-2. `cd $HOME/dotfiles && ./bootstrap.ps1`
+2. `cd $HOME/dotfiles`
+3. `.\bootstrap.ps1 -All`
+
+Note: By default, files are copied to their destinations. Use `-UseSymlinks` flag if you have administrator privileges and prefer symbolic links.
 
 ## Bootstrap Options
+
+### Unix-like Systems (bootstrap.sh)
 
 The `bootstrap.sh` script supports granular installation with the following options:
 
@@ -54,7 +59,7 @@ The `bootstrap.sh` script supports granular installation with the following opti
 | `--fonts` | Install JetBrains Mono Nerd Font |
 | `--hyprland` | Install Hyprland desktop environment (Linux only) |
 
-### Example Usage
+#### Example Usage
 
 ```bash
 # First time setup (macOS)
@@ -65,6 +70,46 @@ The `bootstrap.sh` script supports granular installation with the following opti
 
 # Dry run to see what would change
 ./bootstrap.sh --dry-run --all
+```
+
+### Windows (bootstrap.ps1)
+
+The `bootstrap.ps1` script supports the following options:
+
+| Option | Description |
+|--------|-------------|
+| `-All` | Deploy all application configurations (recommended for first-time setup) |
+| `-DryRun` | Show what would be done without making changes |
+| `-Update` | Update the local dotfiles repository |
+| `-Winget` | Install applications via winget (Alacritty, Starship, zoxide, eza, bat, ripgrep, VSCode, Neovim, Zed) |
+| `-UseSymlinks` | Use symlinks instead of copying files (requires administrator privileges) |
+| `-Apps <app1,app2>` | Deploy specific applications (vscode, zed, neovim, wezterm, alacritty, terminal, powershell, starship) |
+| `-Help` | Show help message |
+
+**Supported Applications:**
+- VSCode
+- Zed
+- Neovim
+- Wezterm
+- Alacritty
+- Windows Terminal
+- PowerShell
+- Starship
+
+#### Example Usage
+
+```powershell
+# First time setup (install apps + deploy all configs)
+.\bootstrap.ps1 -Winget -All
+
+# Deploy specific apps only
+.\bootstrap.ps1 -Apps vscode,zed,neovim
+
+# Update and deploy with symlinks (requires admin)
+.\bootstrap.ps1 -Update -UseSymlinks -All
+
+# Dry run to see what would change
+.\bootstrap.ps1 -DryRun -All
 ```
 
 ## Personal Development Environment (PDE) Overview
