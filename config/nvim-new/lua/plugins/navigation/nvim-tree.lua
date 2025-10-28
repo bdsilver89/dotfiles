@@ -38,6 +38,7 @@ return {
     },
     renderer = {
       highlight_git = false,
+      indent_markers = { enable = true },
       root_folder_label = ":~s?$?",
       icons = {
         show = {

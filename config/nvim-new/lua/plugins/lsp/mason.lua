@@ -34,12 +34,20 @@ return {
   config = function(_, opts)
     local mlsp = require("mason-lspconfig")
 
-    for _, server in ipairs(mlsp.get_installed_servers()) do
+    local setup_server = function(server)
       local ok, settings = pcall(require, "plugins.lsp.settings." .. server)
       if ok then
         vim.lsp.config(server, settings)
       end
+      vim.lsp.enable(server)
     end
+
+    for _, server in ipairs(mlsp.get_installed_servers()) do
+      setup_server(server)
+    end
+
+    -- LSPs installed on system and available in PATH
+    setup_server("clangd")
 
     mlsp.setup(opts)
   end,

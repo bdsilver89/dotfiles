@@ -26,20 +26,26 @@ return {
         },
       },
       menu = {
+        scrollbar = false,
         draw = {
           treesitter = { "lsp" },
         },
       },
       documentation = {
         auto_show = true,
-        auto_show_delay = 200,
+        auto_show_delay_ms = 200,
       },
       ghost_text = {
         enabled = true,
       },
     },
     keymap = {
-      preset = "enter",
+      preset = "default",
+      ["<cr>"] = { "accept", "fallback" },
+      ["<c-b>"] = { "scroll_documentation_up", "fallback" },
+      ["<c-f>"] = { "scroll_documentation_down", "fallback" },
+      ["<tab>"] = { "select_next", "snippet_forward", "fallback" },
+      ["<s-tab>"] = { "select_prev", "snippet_backward", "fallback" },
     },
     sources = {
       default = { "lsp", "path", "snippets", "buffer" },

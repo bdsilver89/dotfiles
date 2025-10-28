@@ -3,6 +3,7 @@ local os = sysname:match("Windows") and "Windows" or sysname:match("Linux") and 
 local is_windows = os == "Windows"
 
 local globals = {
+  colorscheme = "onedark",
   disable_autoformat = false,
   mapleader = " ",
   maplocalleader = "\\",

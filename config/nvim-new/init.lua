@@ -19,7 +19,7 @@ else
       { import = "plugins" },
     },
     defaults = { lazy = true },
-    -- install = { colorscheme = "catppuccin" },
+    install = { colorscheme = { vim.g.colorscheme } },
     performance = {
       rtp = {
         disabled_plugins = {
@@ -32,4 +32,15 @@ else
   require("autocmds")
   require("commands")
   require("keymaps")
+
+  vim.api.nvim_create_autocmd("User", {
+    pattern = "VeryLazy",
+    callback = function()
+      require("utils.statuscolumn").setup()
+      require("utils.statusline").setup()
+      require("utils.colorify").setup()
+    end,
+  })
+
+  vim.cmd.colorscheme(vim.g.colorscheme)
 end

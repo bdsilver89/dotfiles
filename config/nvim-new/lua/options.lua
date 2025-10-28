@@ -1,17 +1,19 @@
 local options = {
+  cmdheight = 0,
+  cursorline = true,
+  hlsearch = true,
+  ignorecase = true,
   laststatus = 3,
   mouse = "a",
-  splitbelow = true,
-  splitright = true,
-  ruler = false,
-  cmdheight = 0,
   number = true,
   relativenumber = true,
-  cursorline = true,
+  ruler = false,
   signcolumn = "yes",
-  wrap = false,
   smartcase = true,
+  splitbelow = true,
+  splitright = true,
   undofile = true,
+  wrap = false,
 }
 
 vim.schedule(function()

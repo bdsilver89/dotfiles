@@ -4,7 +4,7 @@ return {
     local signs = { Error = "", Warn = "", Hint = "󰌵", Info = "" }
 
     local config = {
-      virtual_text = true,
+      virtual_text = { prefix = "" },
       update_in_insert = false,
       underline = true,
       severity_sort = true,
@@ -32,10 +32,16 @@ return {
           [vim.diagnostic.severity.WARN] = "DiagnosticSignWarn",
           [vim.diagnostic.severity.HINT] = "DiagnosticSignHint",
           [vim.diagnostic.severity.INFO] = "DiagnosticSignInfo",
-        },
+         },
       }
     }
 
     vim.diagnostic.config(config)
+
+    vim.api.nvim_create_autocmd("LspAttach", {
+      callback = function()
+        vim.keymap.set("n", "grn", require("utils.lsp.renamer"), { desc = "LSP: Rename" })
+      end,
+    })
   end,
 }
