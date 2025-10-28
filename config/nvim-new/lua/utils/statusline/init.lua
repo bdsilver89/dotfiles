@@ -12,12 +12,12 @@ function M.render()
     "%=",
     "lsp_msg",
     "%=",
-    "diagnostics",
     -- "python_venv",
-    -- "diagnostics",
+    "diagnostics",
     -- "command",
-    -- "clients",
+    "clients",
     "cwd",
+    "cursor",
     -- "total_lines",
   })
 end

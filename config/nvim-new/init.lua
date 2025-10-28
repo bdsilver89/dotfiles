@@ -33,14 +33,5 @@ else
   require("commands")
   require("keymaps")
 
-  vim.api.nvim_create_autocmd("User", {
-    pattern = "VeryLazy",
-    callback = function()
-      require("utils.statuscolumn").setup()
-      require("utils.statusline").setup()
-      require("utils.colorify").setup()
-    end,
-  })
-
   vim.cmd.colorscheme(vim.g.colorscheme)
 end

@@ -29,6 +29,7 @@ return {
     ensure_installed = {
       "stylua",
       "lua_ls",
+      "jdtls",
     },
   },
   config = function(_, opts)

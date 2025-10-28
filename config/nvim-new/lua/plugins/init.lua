@@ -6,6 +6,8 @@ return {
   { import = "plugins.completion" },
   { import = "plugins.folding" },
   { import = "plugins.lsp" },
+  { import = "plugins.lang" },
   { import = "plugins.vcs" },
   { import = "plugins.terminal" },
+  { import = "plugins.dap" },
 }

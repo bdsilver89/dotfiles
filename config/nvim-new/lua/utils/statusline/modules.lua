@@ -81,6 +81,37 @@ function M.diagnostics()
   return " " .. err .. warn .. hints .. info
 end
 
+function M.clients()
+  local clients = {}
+
+  for _, client in pairs(vim.lsp.get_clients({ bufnr = utils.stbufnr() })) do
+    table.insert(clients, client.name)
+  end
+
+  -- local lint_ok, lint = pcall(require, "lint")
+  -- if lint_ok then
+  -- end
+
+  local conform_ok, conform = pcall(require, "conform")
+  if conform_ok then
+    for _, formatter in pairs(conform.list_formatters(utils.stbufnr())) do
+      if not vim.tbl_contains(clients, formatter.name) then
+        table.insert(clients.formatter.name)
+      end
+    end
+  end
+
+  if #clients == 0 then
+    return ""
+  else
+    return (vim.o.columns > 100 and (" %#St_gitIcons#" .. table.concat(clients, ", ") .. " ")) or "  LSP "
+  end
+end
+
+function M.cursor()
+  return "%#St_pos_sep#" .. sep_l .. "%#St_pos_icon# %#St_pos_text# %l:%v %p %%"
+end
+
 function M.cwd()
   local icon = "%#St_cwd_icon#" .. "󰉋 "
   local name = vim.uv.cwd()

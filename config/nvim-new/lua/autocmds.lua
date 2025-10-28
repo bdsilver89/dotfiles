@@ -38,3 +38,13 @@ autocmd("BufWritePre", {
     vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
   end,
 })
+
+autocmd("User", {
+  pattern = "VeryLazy",
+  group = general,
+  callback = function()
+    require("utils.statuscolumn").setup()
+    require("utils.statusline").setup()
+    require("utils.colorify").setup()
+  end,
+})
