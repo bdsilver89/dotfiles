@@ -202,7 +202,7 @@ function M.render()
   end
 
   local ret = table.concat(components, "")
-  return "%@v:lua.require'utils.statuscolumn'.click_fold@" .. ret .. "%T"
+  return "%@v:lua.require'ui.statuscolumn'.click_fold@" .. ret .. "%T"
 end
 
 function M.get()
@@ -221,7 +221,7 @@ function M.get()
 end
 
 function M.setup()
-  vim.o.statuscolumn = "%!v:lua.require('utils.statuscolumn').get()"
+  vim.o.statuscolumn = "%!v:lua.require('ui.statuscolumn').get()"
 
   local timer = vim.uv.new_timer()
   if timer then

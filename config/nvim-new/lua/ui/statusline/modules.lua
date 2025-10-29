@@ -1,6 +1,6 @@
 local M = {}
 
-local utils = require("utils.statusline.utils")
+local utils = require("ui.statusline.utils")
 
 local sep_style = "none"
 local sep_icons = utils.separators

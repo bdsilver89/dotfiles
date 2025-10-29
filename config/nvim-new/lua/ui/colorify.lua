@@ -207,7 +207,7 @@ function M.setup()
   }, {
     callback = function(event)
       if vim.bo[event.buf].bl then
-        require("utils.colorify").attach(event.buf, event.event)
+        require("ui.colorify").attach(event.buf, event.event)
       end
     end,
   })

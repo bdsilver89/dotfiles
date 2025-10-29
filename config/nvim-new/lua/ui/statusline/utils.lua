@@ -8,18 +8,6 @@ function M.is_activewin()
   return vim.api.nvim_get_current_win() == vim.g.statusline_winid
 end
 
-function M.generate(modules, order)
-  local result = {}
-
-  for _, v in ipairs(order) do
-    local module = modules[v]
-    module = type(module) == "string" and module or module()
-    table.insert(result, module)
-  end
-
-  return table.concat(result)
-end
-
 M.separators = {
   default = { left = "", right = "" },
   round = { left = "", right = "" },
