@@ -46,41 +46,34 @@ function M.tree_offset()
 end
 
 function M.buffers()
+  local buffers = {}
 
-	local buffers = {}
+  local has_current = false
 
-	local has_current = false
+  vim.t.bufs = vim.tbl_filter(vim.api.nvim_buf_is_valid, vim.t.bufs)
 
+  for i, buf in ipairs(vim.t.bufs) do
+    if ((#buffers + 1) * bufwidth) > available_space() then
+      if has_current then
+        break
+      end
 
-	vim.t.bufs = vim.tbl_filter(vim.api.nvim_buf_is_valid, vim.t.bufs)
+      table.remove(buffers, 1)
+    end
 
+    has_current = vim.api.nvim_get_current_buf() == buf or has_current
+    table.insert(buffers, utils.style_buf(buf, i, bufwidth))
+  end
 
-	for i, buf in ipairs(vim.t.bufs) do
-  		if ((#buffers + 1) * bufwidth) > available_space() then
-    		if has_current then
-      		break
-    		end
-
-    		table.remove(buffers, 1)
-  		end
-
-  		has_current = vim.api.nvim_get_current_buf() == buf or has_current
-  		table.insert(buffers, utils.style_buf(buf, i, bufwidth))
-
-	end
-
-
-	return table.concat(buffers) .. utils.txt("%=", "Fill")
+  return table.concat(buffers) .. utils.txt("%=", "Fill")
 end
 
 function M.tabs()
-
-	return ""
+  return ""
 end
 
 function M.buttons()
-
-	return ""
+  return ""
 end
 
 return M

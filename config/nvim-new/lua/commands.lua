@@ -54,3 +54,11 @@ command("FormatToggle", function(args)
     end
   end
 end, { desc = "Toggle Autoformat", bang = true })
+
+command("KeysToggle", function()
+  require("ui.keys").toggle()
+end, { desc = "Toggle Keys" })
+
+command("TimerToggle", function()
+  require("ui.timer").toggle()
+end, { desc = "Toggle Timer" })
