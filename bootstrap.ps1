@@ -276,6 +276,15 @@ function Setup-VSCode {
   } else {
     Warning "VSCode settings not found at $vscodeSettings"
   }
+
+  $vscodeExtensions = Join-Path $DotfilesDir "config/vscode/extensions.txt"
+  if (Test-Path $vscodeSettings) {
+    Get-Content -Path $vscodeExtensions | ForEach-Object {
+      code --install-extension "$_"
+    }
+  } else {
+    Warning "VSCode extensions not found at $vscodeExtensions"
+  }
 }
 
 function Setup-Zed {
