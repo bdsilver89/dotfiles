@@ -300,6 +300,27 @@ setup_symlinks() {
   link_files_in_dir "${DOTFILES_DIR}/bin" "$HOME/.local/bin"
 }
 
+setup_vscode() {
+  title "Setting up vscode"
+
+  if is_windows; then
+    log_and_die "windows not supported"
+  fi
+
+  local dest=""
+  if is_darwin; then
+    dest="$HOME/Library/Application Support/Code/User"
+  elif is_linux; then
+    dest="$HOME/.config/vscode"
+  fi
+
+  link_files_in_dir "${DOTFILES_DIR}/config/vscode" "$dest"
+
+  if is_darwin || is_linux; then
+    cat ${DOTFILES_DIR}/config/vscode/extensions.txt | xargs -n 1 code --install-extension
+  fi
+}
+
 install_packages() {
   local packages=("$@")
 
@@ -673,6 +694,9 @@ main() {
     --zsh-zinit)
       steps_to_run+=("setup_zsh_zinit")
       ;;
+    --vscode)
+      steps_to_run+=("setup_vscode")
+      ;;
     --tmux)
       steps_to_run+=("setup_tmux")
       ;;
@@ -705,6 +729,7 @@ OPTIONS:
 --asdf      Install and configure asdf package manager
 --zsh-omz   Install zsh and plugins using oh-my-zsh
 --zsh-zinit Install zsh and plugins using zinit
+--vscode    Configure vscode
 --update    Update local dotfile repository
 --help      Show this help message
 "

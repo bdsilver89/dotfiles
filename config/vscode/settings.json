@@ -6,7 +6,10 @@
     "extensions.experimental.affinity": {
         "asvetliakov.vscode-neovim": 1
     },
-    "vscode-neovim.useWSL": true,
-    "github.copilot.nextEditSuggestions.enabled": true,
-    "workbench.colorTheme": "Retrobox Dark"
+    "workbench.iconTheme": "vscode-icons",
+    "editor.wordWrap": "wordWrapColumn",
+    "editor.fontSize": 12,
+    "editor.mouseWheelZoom": true,
+    "explorer.confirmDragAndDrop": false,
+    "window.zoomLevel": 0
 }
