@@ -1,3 +1,4 @@
+anthropic.claude-code
 asvetliakov.vscode-neovim
 catppuccin.catppuccin-vsc
 catppuccin.catppuccin-vsc-icons

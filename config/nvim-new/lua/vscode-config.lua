@@ -5,3 +5,6 @@ local function map(mode, lhs, cmd)
 end
 
 map("n", "<leader>e", "workbench.action.toggleSidebarVisibility")
+
+map("n", "<leader><space>", "workbench.action.quickOpen")
+map("n", "<leader>/", "workbench.action.findInFiles")
