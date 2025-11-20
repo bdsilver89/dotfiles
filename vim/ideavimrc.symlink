@@ -1,0 +1,46 @@
+let mapleader = " "
+
+set breakindent
+set gdefault
+set ignorecase
+set jumptions+=stack
+set smartcase
+set splitbelow
+set splitright
+set switchbuf=uselast
+set number
+set relativenumber
+set clipboard=unnamed
+set incsearch
+set hlsearch
+set scrolloff=8
+set surround
+
+sethandler <C-v> a:vim
+sethandler H a:vim
+sethandler L a:vim
+sethandler <C-w> a:vim
+
+nmap <C-h> <C-w>h
+nmap <C-j> <C-w>j
+nmap <C-k> <C-w>k
+nmap <C-l> <C-w>l
+
+nmap <leader>| <Action>(SplitVertically)
+nmap <leader>- <Action>(SplitHorizontally)
+
+nmap [b <Action>(PreviousTab)
+nmap ]b <Action>(NextTab)
+
+nmap K <Action>(QuickJavaDoc)
+nmap gcc <Action>(CommentByLineComment)
+vmap gc <Action>(CommentByLineComment)
+nmap grn <Action>(RenameElement)
+nmap gd <Action>(GotoDeclaration)
+nmap gy <Action>(GotoTypeDeclaration)
+nmap gi <Action>(GotoImplementation)
+nmap grr <Action>(ShowUsages)
+nmap gra <Action>(ShowIntentionActions)
+nmap <leader><space>(GotoFile)
+nmap <leader>/ <Action>(SearchEverywhere)
+
