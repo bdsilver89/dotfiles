@@ -14,8 +14,6 @@ ms-vscode.cpptools-themes
 ms-vscode.remote-explorer
 ms-vscode.remote-server
 redhat.java
-visualstudioexptteam.intellicode-api-usage-examples
-visualstudioexptteam.vscodeintellicode
 vscjava.vscode-gradle
 vscjava.vscode-java-debug
 vscjava.vscode-java-dependency
