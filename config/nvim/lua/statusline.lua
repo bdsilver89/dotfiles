@@ -11,6 +11,50 @@ local config = {
     branch_hidden = "",
   },
   placeholder_hl = "StatusLineDim", -- a dim highlight group we define below
+  modes = {
+    ["n"] = { "NORMAL", "Normal" },
+    ["no"] = { "NORMAL (no)", "Normal" },
+    ["nov"] = { "NORMAL (nov)", "Normal" },
+    ["noV"] = { "NORMAL (noV)", "Normal" },
+    ["noCTRL-V"] = { "NORMAL", "Normal" },
+    ["niI"] = { "NORMAL i", "Normal" },
+    ["niR"] = { "NORMAL r", "Normal" },
+    ["niV"] = { "NORMAL v", "Normal" },
+    ["nt"] = { "NTERMINAL", "NTerminal" },
+    ["ntT"] = { "NTERMINAL (ntT)", "NTerminal" },
+
+    ["v"] = { "VISUAL", "Visual" },
+    ["vs"] = { "V-CHAR (Ctrl O)", "Visual" },
+    ["V"] = { "V-LINE", "Visual" },
+    ["Vs"] = { "V-LINE", "Visual" },
+    [""] = { "V-BLOCK", "Visual" },
+
+    ["i"] = { "INSERT", "Insert" },
+    ["ic"] = { "INSERT", "Insert" },
+    ["ix"] = { "INSERT", "Insert" },
+
+    ["t"] = { "TERMINAL", "Terminal" },
+
+    ["R"] = { "REPLACE", "Replace" },
+    ["Rc"] = { "REPLACE (Rc)", "Replace" },
+    ["Rx"] = { "REPLACEa (Rx)", "Replace" },
+    ["Rv"] = { "V-REPLACE", "Replace" },
+    ["Rvc"] = { "V-REPLACE (Rvc)", "Replace" },
+    ["Rvx"] = { "V-REPLACE (Rvx)", "Replace" },
+
+    ["s"] = { "SELECT", "Select" },
+    ["S"] = { "S-LINE", "Select" },
+    [""] = { "S-BLOCK", "Select" },
+    ["c"] = { "COMMAND", "Command" },
+    ["cv"] = { "COMMAND", "Command" },
+    ["ce"] = { "COMMAND", "Command" },
+    ["cr"] = { "COMMAND", "Command" },
+    ["r"] = { "PROMPT", "Confirm" },
+    ["rm"] = { "MORE", "Confirm" },
+    ["r?"] = { "CONFIRM", "Confirm" },
+    ["x"] = { "CONFIRM", "Confirm" },
+    ["!"] = { "SHELL", "Terminal" },
+  },
 }
 
 -- helper to wrap text in a statusline highlight group
@@ -22,6 +66,11 @@ end
 vim.api.nvim_set_hl(0, config.placeholder_hl, {}) -- create if missing
 -- Link to Comment to keep it dim; adjust as you like
 vim.api.nvim_set_hl(0, config.placeholder_hl, { link = "Comment" })
+
+local function mode()
+  local m = vim.api.nvim_get_mode().mode
+  return "[" .. config.modes[m][1] .. "]"
+end
 
 local function filepath()
   local fpath = vim.fn.fnamemodify(vim.fn.expand "%", ":~:.:h")
@@ -100,6 +149,8 @@ Statusline = {}
 
 function Statusline.active()
   return table.concat {
+    mode(),
+    " ",
     "[", filepath(), "%t] ",
     git(),
     " ",

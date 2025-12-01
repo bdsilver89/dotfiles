@@ -43,6 +43,7 @@ end, { desc = "Quickfix list" })
 
 map("n", "<esc>", "<cmd>nohlsearch<cr><esc>", { desc= "Clear hlsearch" })
 map("n", "<leader>qq", "<cmd>qa<cr>", { desc = "Quit all" })
+map("t", "<esc><esc>", "<c-\\><c-n>")
 
 map("n", "-", "<cmd>Oil<cr>", { desc = "File explorer (oil)" })
 

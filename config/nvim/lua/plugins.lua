@@ -17,6 +17,14 @@ vim.cmd.colorscheme("catppuccin")
 local mason_ensure_installed = {
   "lua-language-server",
   "stylua",
+
+  "pyright",
+  "ruff",
+
+  "json-lsp",
+  "yaml-language-server",
+
+  "neocmakelsp",
 }
 require("mason").setup({})
 local mr = require("mason-registry")
@@ -61,20 +69,49 @@ require("blink.cmp").setup({
 
 require("oil").setup({})
 
-
-
 local ts_ensure_installed = {
   "bash",
   "c",
   "cmake",
   "cpp",
   "diff",
+  "git_config",
+  "gitcommit",
+  "git_rebase",
+  "gitignore",
+  "gitattributes",
+  -- "go",
+  -- "gomod",
+  -- "gosum",
+  -- "gowork",
+  "html",
+  "http",
   "java",
+  "javascript",
+  "jsdoc",
+  "json",
+  "json5",
+  "jsonc",
   "lua",
+  "luadoc",
+  "luap",
   "make",
+  "markdown",
+  "markdown_inline",
+  "ninja",
+  "printf",
   "python",
+  "query",
+  "regex",
   "rust",
+  "sql",
+  "toml",
+  "tsx",
+  "typescript",
   "vim",
+  "vimdoc",
+  "xml",
+  "yaml",
 }
 
 local ts = require("nvim-treesitter")

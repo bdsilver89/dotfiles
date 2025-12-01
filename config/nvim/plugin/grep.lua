@@ -58,7 +58,7 @@ vim.keymap.set("ca", "grep", function()
   return "grep"
 end, { expr = true, silent = false })
 
-vim.keymap.set("n", "<Space>/", ":Grep ", { silent = false })
-vim.keymap.set("x", "<Space>/", 'y:<C-U>Grep <C-R>"', { silent = false })
-vim.keymap.set("n", "<Space>*", ':Grep <C-R><C-W><CR>')
-vim.keymap.set("x", "<Space>*", 'y:<C-U>Grep <C-R>"<CR>')
+vim.keymap.set("n", "<leader>/", ":Grep ", { silent = false })
+vim.keymap.set("x", "<leader>/", 'y:<C-U>Grep <C-R>"', { silent = false })
+vim.keymap.set("n", "<leader>*", ":Grep <C-R><C-W><CR>")
+vim.keymap.set("x", "<leader>*", 'y:<C-U>Grep <C-R>"<CR>')

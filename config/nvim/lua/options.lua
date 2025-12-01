@@ -18,7 +18,7 @@ local opts = {
   splitright = true,
   termguicolors = true,
   undofile = true,
-  -- winborder = "rounded",
+  winborder = "rounded",
   wrap = false,
 }
 

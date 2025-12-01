@@ -87,8 +87,5 @@ vim.api.nvim_create_autocmd("QuickFixCmdPost", {
   end,
 })
 
-vim.keymap.set("n", "m?", function()
-  print(vim.o.makeprg)
-end)
-vim.keymap.set("n", "m<Space>", ":<C-U>Make ", { silent = false })
-vim.keymap.set("n", "m<CR>", "<Cmd>Make<CR>")
+vim.keymap.set("n", "<leader>m", ":<C-U>Make ", { silent = false })
+vim.keymap.set("n", "<leader>M", "<Cmd>Make<CR>")
