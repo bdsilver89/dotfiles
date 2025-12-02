@@ -19,6 +19,8 @@ local mason_ensure_installed = {
   "lua-language-server",
   "stylua",
 
+  "jdtls",
+
   "pyright",
   "ruff",
 
@@ -45,6 +47,15 @@ require("blink.cmp").setup({
   signature = { enabled = true },
   snippets = {
     preset = "default",
+    expand = function(snippet)
+      vim.snippet.expand(snippet)
+    end,
+    active = function(snippet)
+      return vim.snippet.active(snippet)
+    end,
+    jump = function(direction)
+      vim.snippet.jump(direction)
+    end,
   },
   keymap = {
     preset = "default",

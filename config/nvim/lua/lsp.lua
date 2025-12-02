@@ -60,6 +60,11 @@ vim.api.nvim_create_autocmd("LspAttach", {
     map("n", "grd", vim.lsp.buf.definition, { desc = "vim.lsp.buf.definition()" })
     map("n", "grD", vim.lsp.buf.declaration, { desc = "vim.lsp.buf.declaration()" })
     map("n", "grf", vim.lsp.buf.format, { desc = "vim.lsp.buf.format()" })
+    map("n", "grs", vim.lsp.buf.signature_help, { desc = "vim.lsp.buf.signature_help" })
+    map("n", "<leader>cd", vim.diagnostic.open_float, { desc = "vim.diagnostic.open_float" })
+    map("n", "<leader>cq", vim.diagnostic.setqflist, { desc = "vim.diagnostic.setqflist" })
+    map("n", "<leader>cl", vim.diagnostic.setloclist, { desc = "vim.diagnostic.setloclist" })
+
 
     vim.diagnostic.config({
       severity_sort = true,

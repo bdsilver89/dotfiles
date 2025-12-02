@@ -4,7 +4,7 @@ local build_systems = {
   },
   cpp = "c",
   java = {
-    { marker = "pom.xml", compiler = "maven", makeprg = "mvn $*" },
+    { marker = "pom.xml", compiler = "maven", makeprg = "mvn --batch-mode $*" },
   }
 }
 

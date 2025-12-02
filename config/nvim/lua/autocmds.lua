@@ -35,3 +35,22 @@ vim.api.nvim_create_autocmd("BufWritePre", {
     vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
   end,
 })
+
+vim.api.nvim_create_autocmd("FileType", {
+  group = group,
+  pattern = {
+    "checkhealth",
+    "gitsigns-blame",
+    "help",
+    "qf",
+  },
+  callback = function(ev)
+    vim.b[ev.buf].buflisted = false
+    vim.schedule(function()
+      vim.keymap.set("n", "q", function()
+        vim.cmd("close")
+        pcall(vim.api.nvim_buf_delete, ev.buf, { force = true })
+      end, { desc = "Quit buffer", silent = true, buffer = ev.buf })
+    end)
+  end,
+})

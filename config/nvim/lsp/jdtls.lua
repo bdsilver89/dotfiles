@@ -47,10 +47,36 @@ return {
     "gradlew",
     "settings.gradle",
     "settings.gradle.kts",
-    ".git",
     "build.xml",
     "pom.xml",
     "build.gradle",
     "build.gradle.kts",
+    ".git",
+  },
+  init_options = {
+    extendedClientCapabilities = {
+      classFileContentsSupport = true,
+      generateToStringPromptSupport = true,
+      hashCodeEqualsPromptSupport = true,
+      advancedExtractRefactoringSupport = true,
+      advancedOrganizeImportsSupport = true,
+      generateConstructorsPromptSupport = true,
+      generateDelegateMethodsPromptSupport = true,
+      moveRefactoringSupport = true,
+      overrideClientCommandSupport = true,
+      inferSelectionSupport = {
+        "extractMethod",
+        "extractVariable",
+        "extractConstant",
+        "extractVariableAllOccurrence",
+      },
+    },
+  },
+  settings = {
+    java = {
+      configurations = {},
+      signatureHelp = { enabled = true },
+      contentPRovider = { preferred = "fernflower" },
+    }
   },
 }
