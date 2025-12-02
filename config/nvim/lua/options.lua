@@ -19,6 +19,8 @@ local opts = {
   termguicolors = true,
   undofile = true,
   winborder = "rounded",
+  updatetime = 200,
+  timeoutlen = vim.g.vscode and 1000 or 300,
   wrap = false,
 }
 

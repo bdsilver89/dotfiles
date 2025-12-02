@@ -9,6 +9,7 @@ vim.pack.add({
   { src = "https://github.com/lewis6991/gitsigns.nvim" },
   { src = "https://github.com/stevearc/oil.nvim" },
   { src = "https://github.com/saghen/blink.cmp" },
+  { src = "https://github.com/nvim-mini/mini.nvim" },
 })
 
 require("catppuccin").setup({})
@@ -138,3 +139,6 @@ require("nvim-treesitter-textobjects").setup({
     enable = true,
   }
 })
+
+require("mini.pick").setup({})
+require("mini.extra").setup({})

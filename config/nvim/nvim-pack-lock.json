@@ -12,6 +12,10 @@
       "rev": "57e5a8a",
       "src": "https://github.com/mason-org/mason.nvim"
     },
+    "mini.nvim": {
+      "rev": "dca9884",
+      "src": "https://github.com/nvim-mini/mini.nvim"
+    },
     "nvim": {
       "rev": "ce4a8e0",
       "src": "https://github.com/catppuccin/nvim"

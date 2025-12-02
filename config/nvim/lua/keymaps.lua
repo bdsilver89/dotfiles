@@ -47,72 +47,77 @@ map("t", "<esc><esc>", "<c-\\><c-n>")
 
 map("n", "-", "<cmd>Oil<cr>", { desc = "File explorer (oil)" })
 
--- local textobjects = {
---   select = {
---     select_textobject = {
---       ["ak"] = "@block.outer",
---       ["ik"] = "@block.inner",
---       ["ac"] = "@class.outer",
---       ["ic"] = "@class.inner",
---       ["a?"] = "@conditional.outer",
---       ["i?"] = "@conditional.inner",
---       ["al"] = "@loop.outer",
---       ["il"] = "@loop.inner",
---       ["af"] = "@function.outer",
---       ["if"] = "@function.inner",
---       ["aa"] = "@parameter.outer",
---       ["ia"] = "@parameter.inner",
---     },
---   },
---   move = {
---     goto_next_start = {
---       ["]f"] = "@function.outer",
---       ["]c"] = "@class.outer",
---       ["]a"] = "@parameter.outer",
---     },
---     goto_next_end = {
---       ["]F"] = "@function.outer",
---       ["]C"] = "@class.outer",
---       ["]A"] = "@parameter.outer",
---     },
---     goto_previous_start = {
---       ["[f"] = "@function.outer",
---       ["[c"] = "@class.outer",
---       ["[a"] = "@parameter.outer",
---     },
---     goto_previous_end = {
---       ["[F"] = "@function.outer",
---       ["[C"] = "@class.outer",
---       ["[A"] = "@parameter.outer",
---     },
---   },
---   swap = {
---     swap_next = {
---       [">K"] = "@block.outer",
---       [">F"] = "@function.outer",
---       [">A"] = "@parameter.inner",
---     },
---     swap_previous = {
---       ["<K"] = "@block.outer",
---       ["<F"] = "@function.outer",
---       ["<A"] = "@parameter.inner",
---     },
---   },
--- }
---
--- for type, keys in pairs(textobjects) do
---   for method, keymaps in pairs(keys) do
---     for key, query in pairs(keymaps) do
---       local desc = query:gsub("@", ""):gsub("%..*", "")
---       desc = desc:sub(1, 1):upper() .. desc:sub(2)
---       desc = (key:sub(1, 1) == "[" and "Prev" or "Next") .. " " .. desc
---       desc = desc .. " " .. (key:sub(2, 2) == key:sub(2, 2):upper() and "end" or "start")
---
---       if not (vim.wo.diff and key:find("[cC]")) then
---         map({ "n", "x", "o" }, key, function()
---           require("nvim-treesitter-textobjects." .. type)[method](query, "textobjects")
---         end, { desc = desc })
---       end
---     end
---   end
--- end
+map("n", "<leader><space>", "<cmd>Pick files<cr>",  { desc = "Files" })
+map("n", "<leader>/", "<cmd>Pick grep_live<cr>",  { desc = "Grep" })
+map("n", "<leader>,", "<cmd>Pick buffers<cr>",  { desc = "Buffers" })
+map("n", "<leader>.", "<cmd>Pick commands<cr>",  { desc = "Commands" })
+
+local textobjects = {
+  select = {
+    select_textobject = {
+      ["ak"] = "@block.outer",
+      ["ik"] = "@block.inner",
+      ["ac"] = "@class.outer",
+      ["ic"] = "@class.inner",
+      ["a?"] = "@conditional.outer",
+      ["i?"] = "@conditional.inner",
+      ["al"] = "@loop.outer",
+      ["il"] = "@loop.inner",
+      ["af"] = "@function.outer",
+      ["if"] = "@function.inner",
+      ["aa"] = "@parameter.outer",
+      ["ia"] = "@parameter.inner",
+    },
+  },
+  move = {
+    goto_next_start = {
+      ["]f"] = "@function.outer",
+      ["]c"] = "@class.outer",
+      ["]a"] = "@parameter.outer",
+    },
+    goto_next_end = {
+      ["]F"] = "@function.outer",
+      ["]C"] = "@class.outer",
+      ["]A"] = "@parameter.outer",
+    },
+    goto_previous_start = {
+      ["[f"] = "@function.outer",
+      ["[c"] = "@class.outer",
+      ["[a"] = "@parameter.outer",
+    },
+    goto_previous_end = {
+      ["[F"] = "@function.outer",
+      ["[C"] = "@class.outer",
+      ["[A"] = "@parameter.outer",
+    },
+  },
+  swap = {
+    swap_next = {
+      [">K"] = "@block.outer",
+      [">F"] = "@function.outer",
+      [">A"] = "@parameter.inner",
+    },
+    swap_previous = {
+      ["<K"] = "@block.outer",
+      ["<F"] = "@function.outer",
+      ["<A"] = "@parameter.inner",
+    },
+  },
+}
+
+for type, keys in pairs(textobjects) do
+  for method, keymaps in pairs(keys) do
+    for key, query in pairs(keymaps) do
+      local desc = query:gsub("@", ""):gsub("%..*", "")
+      desc = desc:sub(1, 1):upper() .. desc:sub(2)
+      desc = (key:sub(1, 1) == "[" and "Prev" or "Next") .. " " .. desc
+      desc = desc .. " " .. (key:sub(2, 2) == key:sub(2, 2):upper() and "end" or "start")
+
+      if not (vim.wo.diff and key:find("[cC]")) then
+        map({ "n", "x", "o" }, key, function()
+          require("nvim-treesitter-textobjects." .. type)[method](query, "textobjects")
+        end, { desc = desc })
+      end
+    end
+  end
+end
