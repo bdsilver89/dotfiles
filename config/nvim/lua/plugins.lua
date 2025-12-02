@@ -140,5 +140,6 @@ require("nvim-treesitter-textobjects").setup({
   }
 })
 
-require("mini.pick").setup({})
 require("mini.extra").setup({})
+require("mini.bufremove").setup({})
+require("mini.pick").setup({})

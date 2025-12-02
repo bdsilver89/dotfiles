@@ -47,6 +47,8 @@ map("t", "<esc><esc>", "<c-\\><c-n>")
 
 map("n", "-", "<cmd>Oil<cr>", { desc = "File explorer (oil)" })
 
+map("n", "<leader>bd", function() MiniBufremove.delete(0) end,  { desc = "Delete buffer" })
+map("n", "<leader>bD", function() MiniBufremove.delete(0, true) end,  { desc = "Force delete buffer" })
 map("n", "<leader><space>", "<cmd>Pick files<cr>",  { desc = "Files" })
 map("n", "<leader>/", "<cmd>Pick grep_live<cr>",  { desc = "Grep" })
 map("n", "<leader>,", "<cmd>Pick buffers<cr>",  { desc = "Buffers" })
