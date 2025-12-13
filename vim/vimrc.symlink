@@ -1,16 +1,29 @@
 let mapleader = " "
 
-set hidden
+let g:netrw_winsize = 30
+let g:netrw_banner = 0
+let g:netrw_localcopydircmd = "cp -r"
+
 set cursorline
-set ttimeout
-set ttimeoutlen=100
+set hidden
+set hlsearch
+set incsearch
+set laststatus=2
+set nowrap
 set number
 set relativenumber
-set wildmenu
+set splitright
+set splitbelow
+set smartcase
 set smarttab
-set incsearch
-set hlsearch
-set laststatus=2
+set timeout
+set timeoutlen=100
+set termguicolors
+set wildmenu
+
+colorscheme habamax
+
+syntax enable
 
 nmap <leader>e :Ex<cr>
 
@@ -62,3 +75,40 @@ nmap <leader>` :e #<cr>
 nmap [q :cprev<cr>
 nmap ]q :cnext<cr>
 
+nmap <leader>e :Lexplore<cr>
+
+function! NetrwRemoveRecursive()
+  if &filetype ==# "netrw"
+    cnoremap <buffer> <cr> rm -r<cr>
+    normal mu
+    normal mf
+    try
+      normal mx
+    catch
+      echo "Canceled"
+    endtry
+    cunmap <buffer> <cr>
+  endif
+endfunction!
+
+function! NetrwMapping()
+  nmap <buffer> L<cr>:Lexplore<cr>
+  nmap <buffer> H u
+  nmap <buffer> h -^
+  nmap <buffer> l <cr>
+  nmap <buffer> <tab> mf
+  nmap <buffer> <s-tab> mF
+  nmap <buffer> ff %
+  nmap <buffer> fc mc
+  nmap <buffer> fx mm
+  nmap <buffer> f; mx
+  nmap <buffer> fl :echo join(netrw#Expose("netrwmarfilelist"), "\n")<cr>
+  nmap <buffer> fg mtfq
+  nmap <buffer> FF :call NetrwRemoveRecursive()<cr>
+  nmap <buffer> P <c-w>z
+endfunction
+
+augroup netrw_mapping
+  autocmd!
+  autocmd filetype netrw call NetrwMapping()
+augroup END
