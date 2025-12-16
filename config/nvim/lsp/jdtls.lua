@@ -9,7 +9,7 @@ end
 local function get_jdtls_jvm_args()
   local env = os.getenv("JDTLS_JVM_ARGS")
   local args = {}
-  for a in string.gmatch((env or "") "%S+") do
+  for a in string.gmatch((env or "")("%S+")) do
     local arg = string.format("--jvm-args=%s", a)
     table.insert(args, arg)
   end
@@ -25,10 +25,10 @@ return {
     local data_dir = workspace_dir
 
     if config.root_dir then
-      data_dir = data_dir .. '/' .. vim.fn.fnamemodify(config.root_dir, ':p:h:t')
+      data_dir = data_dir .. "/" .. vim.fn.fnamemodify(config.root_dir, ":p:h:t")
     end
 
-    local config_cmd =  {
+    local config_cmd = {
       "jdtls",
       "-data",
       data_dir,
@@ -77,6 +77,6 @@ return {
       configurations = {},
       signatureHelp = { enabled = true },
       contentPRovider = { preferred = "fernflower" },
-    }
+    },
   },
 }

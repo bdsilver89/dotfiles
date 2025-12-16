@@ -52,7 +52,15 @@ end
 
 local navigate = vim.env.TMUX ~= nil and tmux_navigate or vim_navigate
 
-vim.keymap.set("n", "<c-h>", function() navigate("h") end)
-vim.keymap.set("n", "<c-j>", function() navigate("j") end)
-vim.keymap.set("n", "<c-k>", function() navigate("k") end)
-vim.keymap.set("n", "<c-l>", function() navigate("l") end)
+vim.keymap.set("n", "<c-h>", function()
+  navigate("h")
+end)
+vim.keymap.set("n", "<c-j>", function()
+  navigate("j")
+end)
+vim.keymap.set("n", "<c-k>", function()
+  navigate("k")
+end)
+vim.keymap.set("n", "<c-l>", function()
+  navigate("l")
+end)
