@@ -23,12 +23,12 @@
       "ctrl-j": "workspace::ActivatePaneDown"
     }
   },
-  {
-    "context": "GitPanel",
-    "bindings": {
-      "q": "git_panel::Close"
-    }
-  },
+  // {
+    // "context": "GitPanel",
+    // "bindings": {
+      // "q": "git_panel::Close"
+    // }
+  // },
   {
     "context": "AgentPanel",
     "bindings": {

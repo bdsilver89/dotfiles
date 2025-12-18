@@ -16,7 +16,7 @@
   "buffer_font_size": 15,
   // Vim mode
   "vim_mode": true,
-  "relative_line_numbers": true,
+  "relative_line_numbers": "enabled",
   "cursor_blink": false,
   // Scrolling behavior (vim scrolloff equivalent)
   "vertical_scroll_margin": 8,
