@@ -16,20 +16,22 @@ alias df="df -h"
 # Process grep
 alias pg="ps aux | grep -v grep | grep -i -e VSZ -e"
 
-# eza/exa/ls
+# eza/exa/ls improvments
 if command -v eza >/dev/null 2>&1; then
-    alias ls="eza --color=always --icons=always --git"
+    alias l="eza --color=always --icons=always --git"
+    alias ll="eza --color=always --icons=always --git -lah"
     alias lt="eza --color=always --tree --level=2 --icons=always --long --git"
 elif command -v exa >/dev/null 2>&1; then
-    alias ls="exa --color=always"
+    alias l="exa --color=always"
+    alias ll="exa --color=always -lah"
     alias lt="exa --color=always --tree --level=2 --long"
 else
-    alias ls="ls --color=auto"
+    alias l = "ls --color=auto"
+    alias ll = "ls -lah --color=auto"
     if command -v tree >/dev/null 2>&1; then
         alias lt="tree"
     fi
 fi
-alias l="ls -lah"
 
 # bat is sometimes installed as batcat
 if command -v batcat >/dev/null 2>&1; then
