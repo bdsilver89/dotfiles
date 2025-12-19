@@ -8,6 +8,13 @@ return {
   },
 
   {
+    "snacks.nvim",
+    opts = {
+      scroll = { enabled = false },
+    },
+  },
+
+  {
     "NMAC427/guess-indent.nvim",
     event = "LazyFile",
     cmd = "GuessIndent",
