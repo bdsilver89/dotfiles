@@ -6,9 +6,7 @@
     "extensions.experimental.affinity": {
         "asvetliakov.vscode-neovim": 1
     },
-    "workbench.iconTheme": "catppuccin-mocha",
-    "workbench.colorTheme": "Catppuccin Mocha",
-    "editor.wordWrap": "wordWrapColumn",
+    "workbench.colorTheme": "Rosé Pine",
     "editor.fontSize": 12,
     "editor.mouseWheelZoom": true,
     "explorer.confirmDragAndDrop": false,

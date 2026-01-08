@@ -1,5 +1,14 @@
 return {
   {
+    "nvim-lspconfig",
+    opts = {
+      codelens = {
+        enabled = true,
+      },
+    },
+  },
+
+  {
     "stevearc/oil.nvim",
     keys = {
       { "-", "<cmd>Oil<cr>", desc = "Oil file explorer" },

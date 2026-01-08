@@ -27,11 +27,11 @@
     "selected_symbol": true
   },
   // Theme
-  "icon_theme": "Catppuccin Mocha",
+  "icon_theme": "Zed (Default)",
   "theme": {
     "mode": "system",
     "light": "Catppuccin Latte",
-    "dark": "Catppuccin Mocha"
+    "dark": "Rosé Pine"
   },
   // Tab bar
   "tab_bar": {
