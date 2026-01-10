@@ -50,7 +50,7 @@
   ],
   "profiles": {
     "defaults": {
-      "colorScheme": "rose-pine",
+      "colorScheme": "Catppuccin Mocha",
       "experimental.retroTerminalEffect": false,
       "font": {
         "face": "JetBrainsMono Nerd Font Mono"
@@ -385,7 +385,7 @@
       "brightYellow": "#ea9d34"
     }
   ],
-  "theme": "rose-pine",
+  "theme": "Catppuccin Mocha",
   "themes": [
     {
       "name": "Catppuccin Frappe",

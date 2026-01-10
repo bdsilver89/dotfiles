@@ -17,17 +17,17 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
   spec = {
     -- add LazyVim and import its plugins
-    {
-      "rose-pine/neovim",
-      name = "rose-pine",
-      lazy = true,
-      opts = {},
-    },
+    -- {
+    --   "rose-pine/neovim",
+    --   name = "rose-pine",
+    --   lazy = true,
+    --   opts = {},
+    -- },
     {
       "LazyVim/LazyVim",
       import = "lazyvim.plugins",
       opts = {
-        colorscheme = "rose-pine",
+        colorscheme = "catppuccin-mocha",
       },
     },
     -- import/override with your plugins

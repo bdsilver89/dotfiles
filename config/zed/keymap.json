@@ -10,33 +10,11 @@
   {
     "context": "Workspace",
     "bindings": {
-      "ctrl-/": "workspace::ToggleBottomDock"
-    }
+      "ctrl-/": "workspace::ToggleBottomDock",
+    },
   },
-  // Window's navigation
-  {
-    "context": "Dock || Terminal || Editor",
-    "bindings": {
-      "ctrl-h": "workspace::ActivatePaneLeft",
-      "ctrl-l": "workspace::ActivatePaneRight",
-      "ctrl-k": "workspace::ActivatePaneUp",
-      "ctrl-j": "workspace::ActivatePaneDown"
-    }
-  },
-  // {
-    // "context": "GitPanel",
-    // "bindings": {
-      // "q": "git_panel::Close"
-    // }
-  // },
-  {
-    "context": "AgentPanel",
-    "bindings": {
-      "ctrl-\\": "workspace::ToggleRightDock",
-      "cmd-k": "workspace::ToggleRightDock"
-    }
-  },
-  // File panel (netrw)
+
+  // Project panel
   {
     "context": "ProjectPanel && not_editing",
     "bindings": {
@@ -47,169 +25,212 @@
       "x": "project_panel::Cut",
       "c": "project_panel::Copy",
       "p": "project_panel::Paste",
-      "q": "workspace::ToggleLeftDock",
-      "space e": "workspace::ToggleLeftDock",
-      ":": "command_palette::Toggle",
-      "%": "project_panel::NewFile",
-      "/": "project_panel::NewSearchInDirectory",
-      "enter": "project_panel::OpenPermanent",
-      "escape": "project_panel::ToggleFocus",
-      "h": "project_panel::CollapseSelectedEntry",
-      "j": "menu::SelectNext",
-      "k": "menu::SelectPrevious",
-      "l": "project_panel::ExpandSelectedEntry",
-      "o": "project_panel::OpenPermanent",
-      "shift-d": "project_panel::Delete",
-      "shift-r": "project_panel::Rename",
-      "t": "project_panel::OpenPermanent",
-      "v": "project_panel::OpenPermanent",
-      "shift-g": "menu::SelectLast",
-      "g g": "menu::SelectFirst",
-      "-": "project_panel::SelectParent",
-      "ctrl-6": "pane::AlternateFile"
-    }
+    },
   },
-  // Empty pane
-  {
-    "context": "EmptyPane || SharedScreen",
-    "bindings": {
-      "space space": "file_finder::Toggle",
-      "space f n": "workspace::NewFile",
-      "space f p": "projects::OpenRecent",
-      "space s g": "workspace::NewSearch",
-      "space q q": "zed::Quit"
-    }
-  },
+
   // Main editor bindings
   {
     "context": "Editor && VimControl && !VimWaiting && !menu",
     "bindings": {
-      // Essential vim binding - hover docs (built-in as K, but shift-k is more reliable)
-      "shift-k": "editor::Hover",
-      // LSP & Code actions
       "space c a": "editor::ToggleCodeActions",
-      "space c r": "editor::Rename",
-      "space c d": "editor::GoToDiagnostic",
       "space c f": "editor::Format",
-      "space s d": "diagnostics::Deploy",
       "space s s": "outline::Toggle",
-      // AI Assistant
-      "space a a": "agent::ToggleFocus",
-      "space a e": "assistant::InlineAssist",
-      "space a t": "workspace::ToggleRightDock",
-      "ctrl-\\": "workspace::ToggleRightDock",
-      "cmd-k": "workspace::ToggleRightDock",
-      "cmd-l": "assistant::InlineAssist",
-      // Git
       "space g g": [
         "task::Spawn",
         {
           "task_name": "lazygit",
-          "reveal_target": "center"
-        }
+          "reveal_target": "center",
+        },
       ],
       "space g b": "git::Blame",
       "space g h d": "editor::ExpandAllDiffHunks",
       "space g h D": "git::Diff",
       "space g h r": "git::Restore",
       "space g h R": "git::RestoreFile",
-      // Note: ]c and [c for git hunk navigation are built-in
-      // UI toggles
       "space u i": "editor::ToggleInlayHints",
       "space u w": "editor::ToggleSoftWrap",
-      // Markdown
-      "space m p": "markdown::OpenPreview",
-      "space m P": "markdown::OpenPreviewToTheSide",
-      // File operations
-      "space f f": "file_finder::Toggle",
-      "space f n": "workspace::NewFile",
-      "space f p": "projects::OpenRecent",
-      "space f r": "projects::OpenRecent",
+      "space u d": "editor::ToggleDiagnostics",
       "space space": "file_finder::Toggle",
-      // Search
-      "space s b": "vim::Search",
-      "space s g": "workspace::NewSearch",
-      "space s w": "buffer_search::Deploy",
-      "space s W": "pane::DeploySearch",
       "space /": "workspace::NewSearch",
-      // Buffer management
-      "space b b": "pane::AlternateFile",
-      "space b d": "pane::CloseActiveItem",
-      "space b q": "pane::CloseOtherItems",
-      "space b n": "workspace::NewFile",
-      "] b": "pane::ActivateNextItem",
-      "[ b": "pane::ActivatePreviousItem",
-      // Buffer/tab switching (harpoon-like)
-      "space 1": ["pane::ActivateItem", 0],
-      "space 2": ["pane::ActivateItem", 1],
-      "space 3": ["pane::ActivateItem", 2],
-      "space 4": ["pane::ActivateItem", 3],
-      "space 5": ["pane::ActivateItem", 4],
-      "space 6": ["pane::ActivateItem", 5],
-      "space 7": ["pane::ActivateItem", 6],
-      "space 8": ["pane::ActivateItem", 7],
-      "space 9": ["pane::ActivateItem", 8],
-      "space 0": "pane::ActivateLastItem",
-      "space ,": "tab_switcher::Toggle",
-      // File explorer
-      "space e": "workspace::ToggleLeftDock",
-      // Terminal
-      "space t": "workspace::ToggleBottomDock",
-      // Window management
-      "space w s": "pane::SplitDown",
-      "space w v": "pane::SplitRight",
-      "space -": "pane::SplitDown",
-      "space |": "pane::SplitRight",
-      "space w c": "pane::CloseAllItems",
-      "space w d": "pane::CloseAllItems",
-      // Quit
-      "space q q": "zed::Quit",
-      // Quickfix/excerpts navigation
-      "] q": "editor::MoveToStartOfNextExcerpt",
-      "[ q": "editor::MoveToStartOfExcerpt"
-    }
+    },
   },
-  // Visual mode
-  {
-    "context": "Editor && vim_mode == visual && !VimWaiting && !VimObject",
-    "bindings": {
-      "shift-j": "editor::MoveLineDown",
-      "shift-k": "editor::MoveLineUp"
-    }
-  },
-  // Center cursor on scroll and search (vim-like zz behavior)
-  {
-    "context": "VimControl && !menu",
-    "bindings": {
-      "ctrl-d": ["workspace::SendKeystrokes", "ctrl-d z z"],
-      "ctrl-u": ["workspace::SendKeystrokes", "ctrl-u z z"],
-      "n": ["workspace::SendKeystrokes", "n z z z v"],
-      "shift-n": ["workspace::SendKeystrokes", "shift-n z z z v"],
-      "shift-g": ["workspace::SendKeystrokes", "shift-g z z"],
-      "g r": "editor::FindAllReferences"
-    }
-  },
-  // Git operations in delete operator context
-  {
-    "context": "vim_operator == d",
-    "bindings": {
-      "o": "editor::ExpandAllDiffHunks",
-      "r": "git::Restore"
-    }
-  },
-  // Sneak motion (vim-sneak plugin)
-  {
-    "context": "vim_mode == normal || vim_mode == visual",
-    "bindings": {
-      "s": "vim::PushSneak",
-      "S": "vim::PushSneakBackward"
-    }
-  },
-  // Text objects
-  {
-    "context": "vim_operator == a || vim_operator == i || vim_operator == cs",
-    "bindings": {
-      "b": "vim::AnyBrackets"
-    }
-  }
 ]
+
+// [
+//   // File panel (netrw)
+//   {
+//     "context": "ProjectPanel && not_editing",
+//     "bindings": {
+//       "a": "project_panel::NewFile",
+//       "A": "project_panel::NewDirectory",
+//       "r": "project_panel::Rename",
+//       "d": "project_panel::Delete",
+//       "x": "project_panel::Cut",
+//       "c": "project_panel::Copy",
+//       "p": "project_panel::Paste",
+//       "q": "workspace::ToggleLeftDock",
+//       "space e": "workspace::ToggleLeftDock",
+//       ":": "command_palette::Toggle",
+//       "%": "project_panel::NewFile",
+//       "/": "project_panel::NewSearchInDirectory",
+//       "enter": "project_panel::OpenPermanent",
+//       "escape": "project_panel::ToggleFocus",
+//       "h": "project_panel::CollapseSelectedEntry",
+//       "j": "menu::SelectNext",
+//       "k": "menu::SelectPrevious",
+//       "l": "project_panel::ExpandSelectedEntry",
+//       "o": "project_panel::OpenPermanent",
+//       "shift-d": "project_panel::Delete",
+//       "shift-r": "project_panel::Rename",
+//       "t": "project_panel::OpenPermanent",
+//       "v": "project_panel::OpenPermanent",
+//       "shift-g": "menu::SelectLast",
+//       "g g": "menu::SelectFirst",
+//       "-": "project_panel::SelectParent",
+//       "ctrl-6": "pane::AlternateFile"
+//     }
+//   },
+//   // Empty pane
+//   {
+//     "context": "EmptyPane || SharedScreen",
+//     "bindings": {
+//       "space space": "file_finder::Toggle",
+//       "space f n": "workspace::NewFile",
+//       "space f p": "projects::OpenRecent",
+//       "space s g": "workspace::NewSearch",
+//       "space q q": "zed::Quit"
+//     }
+//   },
+//   // Main editor bindings
+//   {
+//     "context": "Editor && VimControl && !VimWaiting && !menu",
+//     "bindings": {
+//       // Essential vim binding - hover docs (built-in as K, but shift-k is more reliable)
+//       "shift-k": "editor::Hover",
+//       // LSP & Code actions
+//       "space c a": "editor::ToggleCodeActions",
+//       "space c r": "editor::Rename",
+//       "space c d": "editor::GoToDiagnostic",
+//       "space c f": "editor::Format",
+//       "space s d": "diagnostics::Deploy",
+//       "space s s": "outline::Toggle",
+//       // AI Assistant
+//       "space a a": "agent::ToggleFocus",
+//       "space a e": "assistant::InlineAssist",
+//       "space a t": "workspace::ToggleRightDock",
+//       "ctrl-\\": "workspace::ToggleRightDock",
+//       "cmd-k": "workspace::ToggleRightDock",
+//       "cmd-l": "assistant::InlineAssist",
+//       // Git
+//       "space g g": [
+//         "task::Spawn",
+//         {
+//           "task_name": "lazygit",
+//           "reveal_target": "center"
+//         }
+//       ],
+//       "space g b": "git::Blame",
+//       "space g h d": "editor::ExpandAllDiffHunks",
+//       "space g h D": "git::Diff",
+//       "space g h r": "git::Restore",
+//       "space g h R": "git::RestoreFile",
+//       // Note: ]c and [c for git hunk navigation are built-in
+//       // UI toggles
+//       "space u i": "editor::ToggleInlayHints",
+//       "space u w": "editor::ToggleSoftWrap",
+//       // Markdown
+//       "space m p": "markdown::OpenPreview",
+//       "space m P": "markdown::OpenPreviewToTheSide",
+//       // File operations
+//       "space f f": "file_finder::Toggle",
+//       "space f n": "workspace::NewFile",
+//       "space f p": "projects::OpenRecent",
+//       "space f r": "projects::OpenRecent",
+//       "space space": "file_finder::Toggle",
+//       // Search
+//       "space s b": "vim::Search",
+//       "space s g": "workspace::NewSearch",
+//       "space s w": "buffer_search::Deploy",
+//       "space s W": "pane::DeploySearch",
+//       "space /": "workspace::NewSearch",
+//       // Buffer management
+//       "space b b": "pane::AlternateFile"
+//       "space b d": "pane::CloseActiveItem",
+//       "space b q": "pane::CloseOtherItems",
+//       "space b n": "workspace::NewFile",
+//       "] b": "pane::ActivateNextItem",
+//       "[ b": "pane::ActivatePreviousItem",
+//       // Buffer/tab switching (harpoon-like)
+//       "space 1": ["pane::ActivateItem", 0],
+//       "space 2": ["pane::ActivateItem", 1],
+//       "space 3": ["pane::ActivateItem", 2],
+//       "space 4": ["pane::ActivateItem", 3],
+//       "space 5": ["pane::ActivateItem", 4],
+//       "space 6": ["pane::ActivateItem", 5],
+//       "space 7": ["pane::ActivateItem", 6],
+//       "space 8": ["pane::ActivateItem", 7],
+//       "space 9": ["pane::ActivateItem", 8],
+//       "space 0": "pane::ActivateLastItem",
+//       "space ,": "tab_switcher::Toggle",
+//       // File explorer
+//       "space e": "workspace::ToggleLeftDock",
+//       // Terminal
+//       "space t": "workspace::ToggleBottomDock",
+//       // Window management
+//       "space w s": "pane::SplitDown",
+//       "space w v": "pane::SplitRight",
+//       "space -": "pane::SplitDown",
+//       "space |": "pane::SplitRight",
+//       "space w c": "pane::CloseAllItems",
+//       "space w d": "pane::CloseAllItems",
+//       // Quit
+//       "space q q": "zed::Quit",
+//       // Quickfix/excerpts navigation
+//       "] q": "editor::MoveToStartOfNextExcerpt",
+//       "[ q": "editor::MoveToStartOfExcerpt"
+//     }
+//   },
+//   // Visual mode
+//   {
+//     "context": "Editor && vim_mode == visual && !VimWaiting && !VimObject",
+//     "bindings": {
+//       "shift-j": "editor::MoveLineDown",
+//       "shift-k": "editor::MoveLineUp"
+//     }
+//   },
+//   // Center cursor on scroll and search (vim-like zz behavior)
+//   {
+//     "context": "VimControl && !menu",
+//     "bindings": {
+//       "ctrl-d": ["workspace::SendKeystrokes", "ctrl-d z z"],
+//       "ctrl-u": ["workspace::SendKeystrokes", "ctrl-u z z"],
+//       "n": ["workspace::SendKeystrokes", "n z z z v"],
+//       "shift-n": ["workspace::SendKeystrokes", "shift-n z z z v"],
+//       "shift-g": ["workspace::SendKeystrokes", "shift-g z z"],
+//       "g r": "editor::FindAllReferences"
+//     }
+//   },
+//   // Git operations in delete operator context
+//   {
+//     "context": "vim_operator == d",
+//     "bindings": {
+//       "o": "editor::ExpandAllDiffHunks",
+//       "r": "git::Restore"
+//     }
+//   },
+//   // Sneak motion (vim-sneak plugin)
+//   {
+//     "context": "vim_mode == normal || vim_mode == visual",
+//     "bindings": {
+//       "s": "vim::PushSneak",
+//       "S": "vim::PushSneakBackward"
+//     }
+//   },
+//   // Text objects
+//   {
+//     "context": "vim_operator == a || vim_operator == i || vim_operator == cs",
+//     "bindings": {
+//       "b": "vim::AnyBrackets"
+//     }
+//   }
+// ]
