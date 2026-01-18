@@ -5,7 +5,17 @@ return {
       codelens = {
         enabled = true,
       },
+      diagnostics = {
+        virtual_text = false,
+      },
     },
+  },
+
+  {
+    "rachartier/tiny-inline-diagnostic.nvim",
+    event = "VeryLazy",
+    priority = 1000,
+    opts = {},
   },
 
   {
@@ -46,19 +56,6 @@ return {
       { "<c-k>", "<cmd>TmuxNavigateUp<cr>", desc = "Go to upper pane" },
       { "<c-l>", "<cmd>TmuxNavigateRight<cr>", desc = "Go to right pane" },
       { "<c-\\>", "<cmd>TmuxNavigatePrevious<cr>", desc = "Go to previous pane" },
-    },
-  },
-
-  {
-    {
-      "rachartier/tiny-inline-diagnostic.nvim",
-      event = "VeryLazy",
-      priority = 1000,
-      opts = {},
-    },
-    {
-      "neovim/nvim-lspconfig",
-      opts = { diagnostics = { virtual_text = false } },
     },
   },
 }
