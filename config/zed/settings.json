@@ -24,6 +24,6 @@
   "indent_guides": {
     "coloring": "indent_aware",
   },
-  "show_whitespaces": "all",
+  "show_whitespaces": "trailing",
   "autosave": "on_focus_change",
 }
