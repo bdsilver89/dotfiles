@@ -7,7 +7,7 @@ export CMAKE_COLOR_DIAGNOSTICS="ON"
 ### Ninja ###
 if command -v ninja >/dev/null 2>&1; then
     # Support for ninja status
-    if [ "$(ninja --version | cut -d '.' -f 2)" -gt "10" ]; then
+    if [ "$(ninja --version | cut -d '.' -f 2)" -ge "10" ]; then
         export NINJA_STATUS=$(echo -e "[%f/%t %p %e] ")
     fi
 
@@ -21,3 +21,4 @@ export VCPKG_ROOT="$HOME/vcpkg"
 if [ -d "$VCPKG_ROOT" ]; then
     export PATH="$VCPKG_ROOT:$PATH"
 fi
+

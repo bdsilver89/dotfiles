@@ -7,3 +7,8 @@ if [ -d $PYENV_ROOT ]; then
     eval "$(pyenv init -)"
   fi
 fi
+
+# homebrew python
+if [ -d "/opt/homebrew/opt/python3/" ]; then
+  export PATH="/opt/homebrew/opt/python3/bin:$PATH"/
+fi

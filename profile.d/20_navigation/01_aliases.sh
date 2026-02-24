@@ -26,8 +26,8 @@ elif command -v exa >/dev/null 2>&1; then
     alias ll="exa --color=always -lah"
     alias lt="exa --color=always --tree --level=2 --long"
 else
-    alias l = "ls --color=auto"
-    alias ll = "ls -lah --color=auto"
+    alias l="ls --color=auto"
+    alias ll="ls -lah --color=auto"
     if command -v tree >/dev/null 2>&1; then
         alias lt="tree"
     fi
