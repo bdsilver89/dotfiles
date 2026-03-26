@@ -121,7 +121,7 @@ bind -r L resize-pane -R
 
 # Custom key bindings
 bind-key -r f run-shell "tmux neww ~/.local/bin/tmux-sessionizer"
-bind-key -r z run-shell "tmux neww ~/.local/bin/tmux-zoxide"
+bind-key -r Z run-shell "tmux neww ~/.local/bin/tmux-zoxide"
 
 # Fuzzy active session switcher in popup
 bind-key -r s display-popup -E "\
