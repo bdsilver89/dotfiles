@@ -12,14 +12,6 @@
       "rev": "50c205548d8b037b7ff6378fca6d21146f0b6161",
       "src": "https://github.com/lewis6991/gitsigns.nvim"
     },
-    "mason-lspconfig.nvim": {
-      "rev": "a979821a975897b88493843301950c456a725982",
-      "src": "https://github.com/mason-org/mason-lspconfig.nvim"
-    },
-    "mason-tool-installer.nvim": {
-      "rev": "443f1ef8b5e6bf47045cb2217b6f748a223cf7dc",
-      "src": "https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim"
-    },
     "mason.nvim": {
       "rev": "44d1e90e1f66e077268191e3ee9d2ac97cc18e65",
       "src": "https://github.com/mason-org/mason.nvim"

@@ -75,8 +75,6 @@ vim.pack.add({
   "https://github.com/neovim/nvim-lspconfig",
   "https://github.com/saghen/blink.cmp",
   "https://github.com/mason-org/mason.nvim",
-  "https://github.com/mason-org/mason-lspconfig.nvim",
-  "https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim",
   "https://github.com/nvim-telescope/telescope.nvim",
   "https://github.com/lewis6991/gitsigns.nvim",
   "https://github.com/folke/which-key.nvim",
@@ -148,21 +146,11 @@ require("blink.cmp").setup({
   },
 })
 
--- Mason + LSP
+-- Mason (tool installer only — not needed for LSP startup)
 require("mason").setup()
-require("mason-lspconfig").setup()
-require("mason-tool-installer").setup({
-  ensure_installed = {
-    "lua_ls",
-    "stylua",
 
-    "clangd",
-
-    "pyright",
-
-    "jdtls",
-  },
-})
+-- LSP
+vim.lsp.enable({ "lua_ls", "clangd", "pyright", "jdtls" })
 
 -- Telescope
 require("telescope").setup({
