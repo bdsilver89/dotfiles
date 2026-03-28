@@ -13,7 +13,9 @@ vim.g.maplocalleader = " "
 -- Options ====================================================================
 
 vim.opt.breakindent = true
-vim.opt.clipboard = vim.env.SSH_TTY and "" or "unnamedplus"
+vim.schedule(function()
+  vim.opt.clipboard = vim.env.SSH_TTY and "" or "unnamedplus"
+end)
 vim.opt.confirm = true
 vim.opt.cursorline = true
 vim.opt.diffopt:append("linematch:60")

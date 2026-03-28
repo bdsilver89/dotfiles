@@ -1,0 +1,129 @@
+local M = {}
+
+local kind_icons = {
+  File = " ",
+  Module = " ",
+  Namespace = " ",
+  Package = " ",
+  Class = " ",
+  Method = " ",
+  Property = " ",
+  Field = " ",
+  Constructor = " ",
+  Enum = " ",
+  Interface = " ",
+  Function = " ",
+  Variable = " ",
+  Constant = " ",
+  String = " ",
+  Number = " ",
+  Boolean = " ",
+  Array = " ",
+  Object = " ",
+  Key = " ",
+  Null = " ",
+  EnumMember = " ",
+  Struct = " ",
+  Event = " ",
+  Operator = " ",
+  TypeParameter = " ",
+}
+
+-- per-buffer symbol cache
+local cache = {}
+
+local function refresh_symbols(buf)
+  local clients = vim.lsp.get_clients({ bufnr = buf, method = "textDocument/documentSymbol" })
+  if #clients == 0 then return end
+
+  local params = { textDocument = vim.lsp.util.make_text_document_params(buf) }
+  clients[1]:request("textDocument/documentSymbol", params, function(err, result)
+    if err or not result then return end
+    cache[buf] = result
+    if vim.api.nvim_get_current_buf() == buf then
+      vim.cmd.redrawstatus()
+    end
+  end, buf)
+end
+
+local function in_range(symbol, line, col)
+  local range = symbol.range or symbol.location and symbol.location.range
+  if not range then return false end
+  local start, stop = range["start"], range["end"]
+  if line < start.line or line > stop.line then return false end
+  if line == start.line and col < start.character then return false end
+  if line == stop.line and col > stop.character then return false end
+  return true
+end
+
+local function get_breadcrumbs(symbols, line, col)
+  local crumbs = {}
+
+  local function walk(items)
+    for _, symbol in ipairs(items) do
+      if in_range(symbol, line, col) then
+        local kind = vim.lsp.protocol.SymbolKind[symbol.kind] or ""
+        local icon = kind_icons[kind] or ""
+        crumbs[#crumbs + 1] = "%#CmpItemKind" .. kind .. "#" .. icon .. "%#Winbar#" .. symbol.name
+        if symbol.children then
+          walk(symbol.children)
+        end
+        return
+      end
+    end
+  end
+
+  walk(symbols)
+  return crumbs
+end
+
+function M.render()
+  local buf = vim.api.nvim_get_current_buf()
+  local symbols = cache[buf]
+  if not symbols or #symbols == 0 then
+    return " %f"
+  end
+
+  local cursor = vim.api.nvim_win_get_cursor(0)
+  local crumbs = get_breadcrumbs(symbols, cursor[1] - 1, cursor[2])
+  if #crumbs == 0 then
+    return " %f"
+  end
+
+  return " %f  %#Comment#>%#Winbar# " .. table.concat(crumbs, " %#Comment#>%#Winbar# ")
+end
+
+_G.Winbar = M
+
+local group = vim.api.nvim_create_augroup("Winbar", { clear = true })
+
+-- refresh symbol cache on text changes and buffer enter
+vim.api.nvim_create_autocmd({ "BufEnter", "TextChanged", "InsertLeave", "LspAttach" }, {
+  group = group,
+  callback = function(ev)
+    local buf = ev.buf
+    if vim.bo[buf].buftype == "" then
+      refresh_symbols(buf)
+    end
+  end,
+})
+
+-- set winbar on cursor move (just a local lookup, no LSP call)
+vim.api.nvim_create_autocmd({ "CursorMoved", "BufEnter" }, {
+  group = group,
+  callback = function(ev)
+    if vim.bo[ev.buf].buftype == "" then
+      vim.wo.winbar = "%{%v:lua.Winbar.render()%}"
+    else
+      vim.wo.winbar = ""
+    end
+  end,
+})
+
+-- clean up cache when buffers are deleted
+vim.api.nvim_create_autocmd("BufDelete", {
+  group = group,
+  callback = function(ev)
+    cache[ev.buf] = nil
+  end,
+})

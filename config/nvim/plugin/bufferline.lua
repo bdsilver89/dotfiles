@@ -1,0 +1,23 @@
+local M = {}
+
+function M.render()
+  local bufs = {}
+  local current = vim.api.nvim_get_current_buf()
+
+  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+    if vim.bo[buf].buflisted and vim.bo[buf].buftype == "" then
+      local name = vim.api.nvim_buf_get_name(buf)
+      name = name ~= "" and vim.fn.fnamemodify(name, ":t") or "[No Name]"
+      local modified = vim.bo[buf].modified and " +" or ""
+      local hl = buf == current and "%#TabLineSel#" or "%#TabLine#"
+      bufs[#bufs + 1] = hl .. " " .. name .. modified .. " "
+    end
+  end
+
+  if #bufs == 0 then return "" end
+  return table.concat(bufs, "%#TabLineFill#|") .. "%#TabLineFill#%="
+end
+
+_G.Bufferline = M
+vim.opt.showtabline = 2
+vim.opt.tabline = "%!v:lua.Bufferline.render()"
