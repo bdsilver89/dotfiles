@@ -22,8 +22,10 @@ vim.opt.number = true
 vim.opt.pumblend = 10
 vim.opt.pumheight = 10
 vim.opt.relativenumber = true
+vim.opt.ruler = false
 vim.opt.scrolloff = 4
 vim.opt.shiftwidth = 2
+vim.opt.showmode = false
 vim.opt.sidescrolloff = 8
 vim.opt.signcolumn = "yes"
 vim.opt.smartcase = true
@@ -77,7 +79,6 @@ vim.pack.add({
   "https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim",
   "https://github.com/nvim-telescope/telescope.nvim",
   "https://github.com/lewis6991/gitsigns.nvim",
-  "https://github.com/nvim-lualine/lualine.nvim",
   "https://github.com/folke/which-key.nvim",
   "https://github.com/stevearc/oil.nvim",
 })
@@ -200,14 +201,6 @@ require("gitsigns").setup({
     map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", "Inside Hunk")
     -- stylua: ignore end
   end,
-})
-
--- Lualine
-require("lualine").setup({
-  options = {
-    section_separators = { left = "", right = "" },
-    component_separators = { left = "", right = "" },
-  },
 })
 
 -- Which-Key
