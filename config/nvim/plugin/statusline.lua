@@ -101,6 +101,33 @@ local function lsp_name()
   return "%#Comment# " .. clients[1].name .. " "
 end
 
+local lsp_progress = {}
+
+vim.api.nvim_create_autocmd("LspProgress", {
+  callback = function(ev)
+    local client = vim.lsp.get_client_by_id(ev.data.client_id)
+    if not client then return end
+    local val = ev.data.params.value
+    local key = client.id .. ":" .. tostring(ev.data.params.token)
+    if val.kind == "end" then
+      lsp_progress[key] = nil
+    else
+      local msg = client.name
+      if val.percentage then msg = msg .. " " .. val.percentage .. "%%" end
+      if val.title then msg = msg .. ": " .. val.title end
+      if val.message then msg = msg .. " " .. val.message end
+      lsp_progress[key] = msg
+    end
+    vim.cmd.redrawstatus()
+  end,
+})
+
+local function progress()
+  local key = next(lsp_progress)
+  if not key then return "" end
+  return "%#DiagnosticInfo# " .. lsp_progress[key] .. " "
+end
+
 local function filetype()
   local ft = vim.bo.filetype
   if ft == "" then return "" end
@@ -114,6 +141,7 @@ function M.render()
     git_diff(),
     "%#StatusLine# %f %m%r",
     "%=",
+    progress(),
     diagnostics(),
     lsp_name(),
     filetype(),

@@ -1,5 +1,12 @@
 -- Globals ====================================================================
 
+
+-- TODO:
+--   2. codelens
+--   3. lsp completion
+--   4. snippets
+
+
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
@@ -9,6 +16,7 @@ vim.opt.breakindent = true
 vim.opt.clipboard = vim.env.SSH_TTY and "" or "unnamedplus"
 vim.opt.confirm = true
 vim.opt.cursorline = true
+vim.opt.diffopt:append("linematch:60")
 vim.opt.expandtab = true
 vim.opt.foldlevel = 99
 vim.opt.foldmethod = "indent"
@@ -53,7 +61,10 @@ vim.diagnostic.config({
       [vim.diagnostic.severity.HINT] = " ",
     },
   },
-  virtual_text = true,
+  virtual_text = {
+    prefix = "●",
+    spacing = 4,
+  },
 })
 
 require("vim._core.ui2").enable({
@@ -64,6 +75,8 @@ require("vim._core.ui2").enable({
 })
 
 -- Plugins ====================================================================
+vim.cmd.packadd("nvim.difftool")
+vim.cmd.packadd("nvim.undotree")
 
 vim.pack.add({
   "https://github.com/tpope/vim-sleuth",
@@ -72,7 +85,6 @@ vim.pack.add({
   "https://github.com/nvim-tree/nvim-web-devicons",
   { src = "https://github.com/catppuccin/nvim", name = "catppuccin" },
   "https://github.com/nvim-treesitter/nvim-treesitter",
-  "https://github.com/neovim/nvim-lspconfig",
   "https://github.com/saghen/blink.cmp",
   "https://github.com/mason-org/mason.nvim",
   "https://github.com/nvim-telescope/telescope.nvim",
@@ -150,7 +162,7 @@ require("blink.cmp").setup({
 require("mason").setup()
 
 -- LSP
-vim.lsp.enable({ "lua_ls", "clangd", "pyright", "jdtls" })
+vim.lsp.enable({ "lua_ls", "clangd", })
 
 -- Telescope
 require("telescope").setup({
@@ -275,6 +287,16 @@ vim.api.nvim_create_autocmd("TextYankPost", {
   end,
 })
 
+vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
+  desc = "Check for file reload",
+  group =  group,
+  callback = function()
+    if vim.o.buftype ~= "nofile" then
+      vim.cmd("checktime")
+    end
+  end,
+})
+
 vim.api.nvim_create_autocmd("FileType", {
   desc = "Start treesitter",
   pattern = filetypes,
@@ -324,6 +346,10 @@ vim.api.nvim_create_autocmd("LspAttach", {
       })
     end
 
+    if client:supports_method(vim.lsp.protocol.Methods.textDocument_codeLens) then
+      vim.lsp.codelens.enable(true, { bufnr = ev.buf })
+    end
+
     if client:supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
       vim.lsp.inlay_hint.enable(true, { bufnr = ev.buf })
       vim.keymap.set("n", "<leader>uh", function()
@@ -331,42 +357,4 @@ vim.api.nvim_create_autocmd("LspAttach", {
       end, { desc = "Toggle Inlay Hints" })
     end
   end,
-})
-
-local progress_ids = {}
-vim.api.nvim_create_autocmd("LspProgress", {
-  group = group,
-  callback = function(ev)
-    local client = vim.lsp.get_client_by_id(ev.data.client_id)
-    if not client then
-      return
-    end
-
-    local val = ev.data.params.value
-    local msg = val.title or ""
-    if val.message then
-      msg = msg .. ": " .. val.message
-    end
-    if val.percentage then
-      msg = string.format("%d%%: %s", val.percentage, msg)
-    end
-    msg = client.name .. " " .. msg
-
-    local key = client.id .. ":" .. tostring(ev.data.params.token)
-    local echo_opts = {
-      kind = "progress",
-      status = val.kind == "end" and "success" or "running",
-      percent = val.percentage,
-    }
-    if progress_ids[key] then
-      echo_opts.id = progress_ids[key]
-    end
-
-    local id = vim.api.nvim_echo({{ msg }}, true, echo_opts)
-    if val.kind == "end" then
-      progress_ids[key] = nil
-    else
-      progress_ids[key] = id
-    end
-  end
 })
