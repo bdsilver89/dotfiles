@@ -100,16 +100,16 @@ local function diagnostics()
   local s = vim.diagnostic.severity
   local icons = vim.diagnostic.config().signs.text
   if (counts[s.ERROR] or 0) > 0 then
-    parts[#parts + 1] = "%#DiagnosticError#" .. icons[s.ERROR] .. counts[s.ERROR]
+    parts[#parts + 1] = "%#DiagnosticError# " .. icons[s.ERROR] .. counts[s.ERROR]
   end
   if (counts[s.WARN] or 0) > 0 then
-    parts[#parts + 1] = "%#DiagnosticWarn#" .. icons[s.WARN] .. counts[s.WARN]
+    parts[#parts + 1] = "%#DiagnosticWarn# " .. icons[s.WARN] .. counts[s.WARN]
   end
   if (counts[s.INFO] or 0) > 0 then
-    parts[#parts + 1] = "%#DiagnosticInfo#" .. icons[s.INFO] .. counts[s.INFO]
+    parts[#parts + 1] = "%#DiagnosticInfo# " .. icons[s.INFO] .. counts[s.INFO]
   end
   if (counts[s.HINT] or 0) > 0 then
-    parts[#parts + 1] = "%#DiagnosticHint#" .. icons[s.HINT] .. counts[s.HINT]
+    parts[#parts + 1] = "%#DiagnosticHint# " .. icons[s.HINT] .. counts[s.HINT]
   end
   if #parts == 0 then
     return ""
