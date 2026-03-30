@@ -107,7 +107,7 @@ end
 
 _G.Winbar = M
 
-local group = vim.api.nvim_create_augroup("Winbar", { clear = true })
+local group = vim.api.nvim_create_augroup("config_winbar", { clear = true })
 
 -- refresh symbol cache on text changes and buffer enter
 vim.api.nvim_create_autocmd({ "BufEnter", "TextChanged", "InsertLeave", "LspAttach" }, {

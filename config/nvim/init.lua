@@ -3,6 +3,9 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
+vim.g.netrw_banner = 0
+vim.g.netrw_liststyle = 0
+
 -- Options ====================================================================
 
 vim.opt.breakindent = true
@@ -67,7 +70,7 @@ vim.diagnostic.config({
 require("vim._core.ui2").enable({
   enable = true,
   msg = {
-    target = "msg",
+    target = "cmd",
   },
 })
 
@@ -78,15 +81,12 @@ vim.cmd.packadd("nvim.undotree")
 vim.pack.add({
   "https://github.com/tpope/vim-sleuth",
   "https://github.com/nvim-tree/nvim-web-devicons",
-  { src = "https://github.com/catppuccin/nvim", name = "catppuccin" },
   "https://github.com/nvim-treesitter/nvim-treesitter",
   "https://github.com/mason-org/mason.nvim",
   "https://github.com/ibhagwan/fzf-lua",
   "https://github.com/lewis6991/gitsigns.nvim",
-  "https://github.com/stevearc/oil.nvim",
 })
 
-require("catppuccin").setup({})
 vim.cmd.colorscheme("catppuccin")
 
 -- Treesitter
@@ -97,6 +97,8 @@ local languages = {
   "cpp",
   "diff",
   "dockerfile",
+  "html",
+  "html",
   "java",
   "javascript",
   "json",
@@ -104,8 +106,8 @@ local languages = {
   "luadoc",
   "luap",
   "make",
-  "markdown",
   "markdown_inline",
+  "markdown",
   "printf",
   "python",
   "query",
@@ -114,7 +116,6 @@ local languages = {
   "toml",
   "tsx",
   "typescript",
-  "html",
   "vim",
   "vimdoc",
   "xml",
@@ -130,9 +131,6 @@ require("nvim-treesitter").install(languages)
 
 -- Mason (tool installer only — not needed for LSP startup)
 require("mason").setup()
-
--- LSP
-vim.lsp.enable({ "lua_ls", "clangd", "jdtls", "pyright" })
 
 -- Fzf-lua
 require("fzf-lua").setup({
@@ -182,9 +180,6 @@ require("gitsigns").setup({
   end,
 })
 
--- Oil
-require("oil").setup({})
-
 -- Keymaps ====================================================================
 
 vim.keymap.set({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { desc = "Down", expr = true, silent = true })
@@ -222,7 +217,7 @@ vim.keymap.set("n", "<leader>xq", function()
   end
 end, { desc = "Quickfix List" })
 
-vim.keymap.set("n", "-", "<cmd>Oil<cr>", { desc = "File Explorer" })
+vim.keymap.set("n", "-", "<cmd>Ex %:h<cr>", { desc = "File Explorer" })
 
 -- stylua: ignore start
 local fzf = require("fzf-lua")
@@ -264,6 +259,28 @@ vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
 })
 
 vim.api.nvim_create_autocmd("FileType", {
+  desc = "Netrw keymaps",
+  pattern = "netrw",
+  group = group,
+  callback = function(ev)
+    local opts = { buffer = ev.buf, remap = true }
+    vim.keymap.set("n", "q", "<cmd>bd<cr>", opts)
+    vim.keymap.set("n", ".", function()
+      local dir = vim.b[ev.buf].netrw_curdir or ""
+      local file = vim.fn.expand("<cfile>")
+      return ":" .. vim.fn.fnameescape(dir .. "/" .. file) .. " "
+    end, vim.tbl_extend("force", opts, { expr = true }))
+    vim.keymap.set("n", "y.", function()
+      local dir = vim.b[ev.buf].netrw_curdir or ""
+      local file = vim.fn.expand("<cfile>")
+      local path = vim.fn.fnamemodify(dir .. "/" .. file, ":p")
+      vim.fn.setreg("+", path)
+      vim.notify(path)
+    end, opts)
+  end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
   desc = "Start treesitter",
   pattern = filetypes,
   group = group,
@@ -272,55 +289,5 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.wo.foldmethod = "expr"
     vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
     vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
-  end,
-})
-
-vim.api.nvim_create_autocmd("LspAttach", {
-  desc = "LSP setup",
-  group = group,
-  callback = function(ev)
-    local client = vim.lsp.get_client_by_id(ev.data.client_id)
-    if not client then
-      return
-    end
-
-    -- stylua: ignore start
-    vim.keymap.set("n", "grd", vim.lsp.buf.definition, { desc = "Definition", buffer = ev.buf })
-    vim.keymap.set("n", "grD", vim.lsp.buf.declaration, { desc = "Declaration", buffer = ev.buf })
-    vim.keymap.set("n", "grf", vim.lsp.buf.format, { desc = "Format", buffer = ev.buf })
-    -- stylua: ignore end
-
-    if client:supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
-      local hl_group_name = "config_lsp_highlight"
-      local hl_group = vim.api.nvim_create_augroup(hl_group_name, { clear = false })
-      vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
-        buffer = ev.buf,
-        group = hl_group,
-        callback = vim.lsp.buf.document_highlight,
-      })
-      vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
-        buffer = ev.buf,
-        group = hl_group,
-        callback = vim.lsp.buf.clear_references,
-      })
-      vim.api.nvim_create_autocmd("LspDetach", {
-        group = vim.api.nvim_create_augroup("config_lsp_detach", { clear = true }),
-        callback = function(ev2)
-          vim.lsp.buf.clear_references()
-          vim.api.nvim_clear_autocmds({ group = hl_group_name, buffer = ev2.buf })
-        end,
-      })
-    end
-
-    if client:supports_method(vim.lsp.protocol.Methods.textDocument_codeLens) then
-      vim.lsp.codelens.enable(true, { bufnr = ev.buf })
-    end
-
-    if client:supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
-      vim.lsp.inlay_hint.enable(true, { bufnr = ev.buf })
-      vim.keymap.set("n", "<leader>uh", function()
-        vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = ev.buf }))
-      end, { desc = "Toggle Inlay Hints" })
-    end
   end,
 })
