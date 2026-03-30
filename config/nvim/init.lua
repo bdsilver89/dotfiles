@@ -256,7 +256,11 @@ vim.api.nvim_create_autocmd("FileType", {
   group = group,
   callback = function(ev)
     local opts = { buffer = ev.buf, remap = true }
-    vim.keymap.set("n", "q", "<cmd>bd<cr>", opts)
+    vim.keymap.set("n", "q", function()
+      local buf = vim.api.nvim_get_current_buf()
+      vim.cmd("bprevious")
+      vim.api.nvim_buf_delete(buf, { force = true })
+    end, opts)
     vim.keymap.set("n", ".", function()
       local dir = vim.b[ev.buf].netrw_curdir or ""
       local file = vim.fn.expand("<cfile>")
