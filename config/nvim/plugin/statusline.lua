@@ -114,7 +114,7 @@ local function diagnostics()
   if #parts == 0 then
     return ""
   end
-  return " " .. table.concat(parts, " ") .. " "
+  return table.concat(parts, " ") .. " "
 end
 
 local function lsp_name()
