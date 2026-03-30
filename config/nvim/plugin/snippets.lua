@@ -94,6 +94,45 @@ local function get_snippets(ft)
   return items
 end
 
+-- Kind icons for completion menu
+local kind_icons = {
+  Text = "󰉿",
+  Method = "󰊕",
+  Function = "󰊕",
+  Constructor = "",
+  Field = "󰜢",
+  Variable = "󰀫",
+  Class = "󰠱",
+  Interface = "",
+  Module = "",
+  Property = "󰜢",
+  Unit = "󰑭",
+  Value = "󰎠",
+  Enum = "",
+  Keyword = "󰌋",
+  Snippet = "",
+  Color = "󰏘",
+  File = "󰈙",
+  Reference = "󰈇",
+  Folder = "󰉋",
+  EnumMember = "",
+  Constant = "󰏿",
+  Struct = "󰙅",
+  Event = "",
+  Operator = "󰆕",
+  TypeParameter = "",
+}
+
+local function apply_kind_icons(items)
+  for _, item in ipairs(items) do
+    local icon = kind_icons[item.kind]
+    if icon then
+      item.kind = icon .. " " .. item.kind
+    end
+  end
+  return items
+end
+
 -- Snippet completion items for a given prefix
 local function snippet_matches(ft, prefix)
   local items = {}
@@ -136,7 +175,7 @@ local function trigger_completion()
   local clients = vim.lsp.get_clients({ bufnr = bufnr, method = "textDocument/completion" })
   if #clients == 0 then
     if #snips > 0 then
-      vim.fn.complete(startcol, snips)
+      vim.fn.complete(startcol, apply_kind_icons(snips))
     end
     return
   end
@@ -168,7 +207,7 @@ local function trigger_completion()
       )
       vim.list_extend(lsp_items, snips)
       if #lsp_items > 0 then
-        vim.fn.complete(startcol, lsp_items)
+        vim.fn.complete(startcol, apply_kind_icons(lsp_items))
       end
     end)
   end, bufnr)
@@ -293,3 +332,39 @@ vim.keymap.set({ "i", "s" }, "<S-Tab>", function()
   end
   return "<S-Tab>"
 end, { expr = true, silent = true })
+
+-- Ghost text: show selected completion item as inline preview
+local ghost_ns = vim.api.nvim_create_namespace("completion_ghost")
+
+local function clear_ghost()
+  vim.api.nvim_buf_clear_namespace(0, ghost_ns, 0, -1)
+end
+
+vim.api.nvim_create_autocmd("CompleteChanged", {
+  callback = function()
+    clear_ghost()
+    local item = vim.v.event.completed_item
+    if not item or not item.word or item.word == "" then
+      return
+    end
+
+    local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+    local line = vim.api.nvim_get_current_line()
+    local before = line:sub(1, col)
+    local prefix = before:match("([%w_]*)$") or ""
+    local ghost = item.word:sub(#prefix + 1)
+    if ghost == "" then
+      return
+    end
+
+    vim.api.nvim_buf_set_extmark(0, ghost_ns, row - 1, col, {
+      virt_text = { { ghost, "Comment" } },
+      virt_text_pos = "overlay",
+      hl_mode = "combine",
+    })
+  end,
+})
+
+vim.api.nvim_create_autocmd({ "CompleteDone", "InsertLeave" }, {
+  callback = clear_ghost,
+})

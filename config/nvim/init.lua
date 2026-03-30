@@ -10,7 +10,7 @@ vim.schedule(function()
   vim.opt.clipboard = vim.env.SSH_TTY and "" or "unnamedplus"
 end)
 vim.opt.confirm = true
-vim.opt.completeopt = { "menuone", "noselect", "popup", "fuzzy" }
+vim.opt.completeopt = { "menuone", "noinsert", "popup", "fuzzy" }
 vim.opt.cursorline = true
 vim.opt.diffopt:append("linematch:60")
 vim.opt.expandtab = true
@@ -83,7 +83,6 @@ vim.pack.add({
   "https://github.com/mason-org/mason.nvim",
   "https://github.com/ibhagwan/fzf-lua",
   "https://github.com/lewis6991/gitsigns.nvim",
-  "https://github.com/folke/which-key.nvim",
   "https://github.com/stevearc/oil.nvim",
 })
 
@@ -133,7 +132,7 @@ require("nvim-treesitter").install(languages)
 require("mason").setup()
 
 -- LSP
-vim.lsp.enable({ "lua_ls", "clangd" })
+vim.lsp.enable({ "lua_ls", "clangd", "jdtls", "pyright" })
 
 -- Fzf-lua
 require("fzf-lua").setup({
@@ -181,18 +180,6 @@ require("gitsigns").setup({
     map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", "Inside Hunk")
     -- stylua: ignore end
   end,
-})
-
--- Which-Key
-require("which-key").setup({
-  spec = {
-    { "<leader>b", group = "Buffer" },
-    { "<leader>g", group = "Git" },
-    { "<leader>h", group = "Hunk" },
-    { "<leader>q", group = "Session/Quit" },
-    { "<leader>u", group = "UI" },
-    { "<leader>x", group = "Diagnostics" },
-  },
 })
 
 -- Oil

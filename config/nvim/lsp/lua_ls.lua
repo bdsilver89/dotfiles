@@ -1,3 +1,4 @@
+---@type vim.lsp.Config
 return {
   cmd = { "lua-language-server" },
   filetypes = { "lua" },
@@ -13,9 +14,9 @@ return {
         checkThirdParty = false,
         library = { vim.env.VIMRUNTIME },
       },
-      codeLens = {
-        enable = true,
-      },
+      -- codeLens = {
+      --   enable = true,
+      -- },
       telemetry = {
         enable = false,
       },
