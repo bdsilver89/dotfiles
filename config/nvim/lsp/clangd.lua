@@ -1,4 +1,3 @@
-
 local function jobs()
   local ok, result = pcall(function()
     local cpus = vim.uv.cpu_info()

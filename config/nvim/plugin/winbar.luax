@@ -34,11 +34,15 @@ local cache = {}
 
 local function refresh_symbols(buf)
   local clients = vim.lsp.get_clients({ bufnr = buf, method = "textDocument/documentSymbol" })
-  if #clients == 0 then return end
+  if #clients == 0 then
+    return
+  end
 
   local params = { textDocument = vim.lsp.util.make_text_document_params(buf) }
   clients[1]:request("textDocument/documentSymbol", params, function(err, result)
-    if err or not result then return end
+    if err or not result then
+      return
+    end
     cache[buf] = result
     if vim.api.nvim_get_current_buf() == buf then
       vim.cmd.redrawstatus()
@@ -48,11 +52,19 @@ end
 
 local function in_range(symbol, line, col)
   local range = symbol.range or symbol.location and symbol.location.range
-  if not range then return false end
+  if not range then
+    return false
+  end
   local start, stop = range["start"], range["end"]
-  if line < start.line or line > stop.line then return false end
-  if line == start.line and col < start.character then return false end
-  if line == stop.line and col > stop.character then return false end
+  if line < start.line or line > stop.line then
+    return false
+  end
+  if line == start.line and col < start.character then
+    return false
+  end
+  if line == stop.line and col > stop.character then
+    return false
+  end
   return true
 end
 

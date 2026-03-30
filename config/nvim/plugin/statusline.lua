@@ -63,18 +63,30 @@ end
 
 local function git_branch()
   local head = vim.b.gitsigns_head
-  if not head or head == "" then return "" end
+  if not head or head == "" then
+    return ""
+  end
   return "%#Keyword#  " .. head .. " "
 end
 
 local function git_diff()
   local status = vim.b.gitsigns_status_dict
-  if not status then return "" end
+  if not status then
+    return ""
+  end
   local parts = {}
-  if (status.added or 0) > 0 then parts[#parts + 1] = "%#GitSignsAdd#+" .. status.added end
-  if (status.changed or 0) > 0 then parts[#parts + 1] = "%#GitSignsChange#~" .. status.changed end
-  if (status.removed or 0) > 0 then parts[#parts + 1] = "%#GitSignsDelete#-" .. status.removed end
-  if #parts == 0 then return "" end
+  if (status.added or 0) > 0 then
+    parts[#parts + 1] = "%#GitSignsAdd#+" .. status.added
+  end
+  if (status.changed or 0) > 0 then
+    parts[#parts + 1] = "%#GitSignsChange#~" .. status.changed
+  end
+  if (status.removed or 0) > 0 then
+    parts[#parts + 1] = "%#GitSignsDelete#-" .. status.removed
+  end
+  if #parts == 0 then
+    return ""
+  end
   return " " .. table.concat(parts, " ") .. " "
 end
 
@@ -87,17 +99,29 @@ local function diagnostics()
   local parts = {}
   local s = vim.diagnostic.severity
   local icons = vim.diagnostic.config().signs.text
-  if (counts[s.ERROR] or 0) > 0 then parts[#parts + 1] = "%#DiagnosticError#" .. icons[s.ERROR] .. counts[s.ERROR] end
-  if (counts[s.WARN] or 0) > 0 then parts[#parts + 1] = "%#DiagnosticWarn#" .. icons[s.WARN] .. counts[s.WARN] end
-  if (counts[s.INFO] or 0) > 0 then parts[#parts + 1] = "%#DiagnosticInfo#" .. icons[s.INFO] .. counts[s.INFO] end
-  if (counts[s.HINT] or 0) > 0 then parts[#parts + 1] = "%#DiagnosticHint#" .. icons[s.HINT] .. counts[s.HINT] end
-  if #parts == 0 then return "" end
+  if (counts[s.ERROR] or 0) > 0 then
+    parts[#parts + 1] = "%#DiagnosticError#" .. icons[s.ERROR] .. counts[s.ERROR]
+  end
+  if (counts[s.WARN] or 0) > 0 then
+    parts[#parts + 1] = "%#DiagnosticWarn#" .. icons[s.WARN] .. counts[s.WARN]
+  end
+  if (counts[s.INFO] or 0) > 0 then
+    parts[#parts + 1] = "%#DiagnosticInfo#" .. icons[s.INFO] .. counts[s.INFO]
+  end
+  if (counts[s.HINT] or 0) > 0 then
+    parts[#parts + 1] = "%#DiagnosticHint#" .. icons[s.HINT] .. counts[s.HINT]
+  end
+  if #parts == 0 then
+    return ""
+  end
   return " " .. table.concat(parts, " ") .. " "
 end
 
 local function lsp_name()
   local clients = vim.lsp.get_clients({ bufnr = 0 })
-  if #clients == 0 then return "" end
+  if #clients == 0 then
+    return ""
+  end
   return "%#Comment# " .. clients[1].name .. " "
 end
 
@@ -106,16 +130,24 @@ local lsp_progress = {}
 vim.api.nvim_create_autocmd("LspProgress", {
   callback = function(ev)
     local client = vim.lsp.get_client_by_id(ev.data.client_id)
-    if not client then return end
+    if not client then
+      return
+    end
     local val = ev.data.params.value
     local key = client.id .. ":" .. tostring(ev.data.params.token)
     if val.kind == "end" then
       lsp_progress[key] = nil
     else
       local msg = client.name
-      if val.percentage then msg = msg .. " " .. val.percentage .. "%%" end
-      if val.title then msg = msg .. ": " .. val.title end
-      if val.message then msg = msg .. " " .. val.message end
+      if val.percentage then
+        msg = msg .. " " .. val.percentage .. "%%"
+      end
+      if val.title then
+        msg = msg .. ": " .. val.title
+      end
+      if val.message then
+        msg = msg .. " " .. val.message
+      end
       lsp_progress[key] = msg
     end
     vim.cmd.redrawstatus()
@@ -124,13 +156,17 @@ vim.api.nvim_create_autocmd("LspProgress", {
 
 local function progress()
   local key = next(lsp_progress)
-  if not key then return "" end
+  if not key then
+    return ""
+  end
   return "%#DiagnosticInfo# " .. lsp_progress[key] .. " "
 end
 
 local function filetype()
   local ft = vim.bo.filetype
-  if ft == "" then return "" end
+  if ft == "" then
+    return ""
+  end
   return "%#Type# " .. ft .. " "
 end
 

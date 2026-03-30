@@ -14,7 +14,9 @@ function M.render()
     end
   end
 
-  if #bufs == 0 then return "" end
+  if #bufs == 0 then
+    return ""
+  end
   return table.concat(bufs, "%#TabLineFill#|") .. "%#TabLineFill#%="
 end
 

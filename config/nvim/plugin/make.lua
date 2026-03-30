@@ -46,6 +46,7 @@ vim.api.nvim_create_user_command("Make", function(opts)
   end
 
   vim.api.nvim_exec_autocmds("QuickFixCmdPre", { pattern = "make", modeline = false })
-  state.handle = vim.system(vim.split(makeprg, "%s+", { trimempty = true }), { stdout = on_data, stderr = on_data }, on_exit)
+  state.handle =
+    vim.system(vim.split(makeprg, "%s+", { trimempty = true }), { stdout = on_data, stderr = on_data }, on_exit)
   state.start = vim.uv.hrtime()
 end, { nargs = "*" })

@@ -1,12 +1,5 @@
 -- Globals ====================================================================
 
-
--- TODO:
---   2. codelens
---   3. lsp completion
---   4. snippets
-
-
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
@@ -17,6 +10,7 @@ vim.schedule(function()
   vim.opt.clipboard = vim.env.SSH_TTY and "" or "unnamedplus"
 end)
 vim.opt.confirm = true
+vim.opt.completeopt = { "menuone", "noselect", "popup", "fuzzy" }
 vim.opt.cursorline = true
 vim.opt.diffopt:append("linematch:60")
 vim.opt.expandtab = true
@@ -25,8 +19,9 @@ vim.opt.foldmethod = "indent"
 vim.opt.ignorecase = true
 vim.opt.laststatus = 3
 vim.opt.linebreak = true
+vim.opt.shortmess:append("c")
 vim.opt.list = true
-vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣", }
+vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
 vim.opt.mouse = "a"
 vim.opt.number = true
 vim.opt.pumblend = 10
@@ -72,7 +67,7 @@ vim.diagnostic.config({
 require("vim._core.ui2").enable({
   enable = true,
   msg = {
-    target = "msg"
+    target = "msg",
   },
 })
 
@@ -82,21 +77,15 @@ vim.cmd.packadd("nvim.undotree")
 
 vim.pack.add({
   "https://github.com/tpope/vim-sleuth",
-  "https://github.com/christoomey/vim-tmux-navigator",
-  "https://github.com/nvim-lua/plenary.nvim",
   "https://github.com/nvim-tree/nvim-web-devicons",
   { src = "https://github.com/catppuccin/nvim", name = "catppuccin" },
   "https://github.com/nvim-treesitter/nvim-treesitter",
-  "https://github.com/saghen/blink.cmp",
   "https://github.com/mason-org/mason.nvim",
-  "https://github.com/nvim-telescope/telescope.nvim",
+  "https://github.com/ibhagwan/fzf-lua",
   "https://github.com/lewis6991/gitsigns.nvim",
   "https://github.com/folke/which-key.nvim",
   "https://github.com/stevearc/oil.nvim",
 })
-if vim.fn.executable("make") == 1 then
-  vim.pack.add({ "https://github.com/nvim-telescope/telescope-fzf-native.nvim" })
-end
 
 require("catppuccin").setup({})
 vim.cmd.colorscheme("catppuccin")
@@ -135,46 +124,35 @@ local languages = {
 local filetypes = {}
 for _, lang in ipairs(languages) do
   for _, ft in ipairs(vim.treesitter.language.get_filetypes(lang)) do
-    filetypes[#filetypes+1] = ft
+    filetypes[#filetypes + 1] = ft
   end
 end
 require("nvim-treesitter").install(languages)
-
--- Blink.cmp
-require("blink.cmp").setup({
-  completion = {
-    documentation = {
-      auto_show = true,
-    },
-    ghost_text = {
-      enabled = true,
-    },
-  },
-  fuzzy = { implementation = "lua" },
-  keymap = {
-    preset = "enter",
-    ["<C-y>"] = { "select_and_accept" },
-  },
-  sources = {
-    default = { "lsp", "path", "snippets", "buffer" },
-  },
-})
 
 -- Mason (tool installer only — not needed for LSP startup)
 require("mason").setup()
 
 -- LSP
-vim.lsp.enable({ "lua_ls", "clangd", })
+vim.lsp.enable({ "lua_ls", "clangd" })
 
--- Telescope
-require("telescope").setup({
-  extensions = {
-    fzf = {}
+-- Fzf-lua
+require("fzf-lua").setup({
+  "default-title",
+  keymap = {
+    fzf = {
+      ["ctrl-q"] = "select-all+accept",
+      ["ctrl-u"] = "half-page-up",
+      ["ctrl-d"] = "half-page-down",
+      ["ctrl-x"] = "jump",
+      ["ctrl-f"] = "preview-page-down",
+      ["ctrl-b"] = "preview-page-up",
+    },
+    builtin = {
+      ["<c-f>"] = "preview-page-down",
+      ["<c-b>"] = "preview-page-up",
+    },
   },
 })
-if pcall(require, "fzf_lib") then
-  require("telescope").load_extension("fzf")
-end
 
 -- Git
 require("gitsigns").setup({
@@ -227,7 +205,6 @@ vim.keymap.set({ "n", "x" }, "<Down>", "v:count == 0 ? 'gj' : 'j'", { desc = "Do
 vim.keymap.set({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { desc = "Up", expr = true, silent = true })
 vim.keymap.set({ "n", "x" }, "<Up>", "v:count == 0 ? 'gk' : 'k'", { desc = "Up", expr = true, silent = true })
 
-
 vim.keymap.set("x", "<", "<gv")
 vim.keymap.set("x", ">", ">gv")
 
@@ -261,20 +238,20 @@ end, { desc = "Quickfix List" })
 vim.keymap.set("n", "-", "<cmd>Oil<cr>", { desc = "File Explorer" })
 
 -- stylua: ignore start
-local pickers = require("telescope.builtin")
-vim.keymap.set("n", "<leader><space>", pickers.find_files, { desc = "Find Files" })
-vim.keymap.set("n", "<leader>/", pickers.live_grep, { desc = "Grep" })
-vim.keymap.set("n", "<leader>,", pickers.buffers, { desc = "Buffers" })
-vim.keymap.set("n", "<leader>:", pickers.command_history, { desc = "Command History" })
-vim.keymap.set("n", "<leader>\"", pickers.registers, { desc = "Registers" })
-vim.keymap.set("n", "<leader>s", pickers.resume, { desc = "Resume Last Picker" })
-vim.keymap.set("n", "<leader>?", pickers.help_tags, { desc = "Help Tags" })
-vim.keymap.set("n", "<leader>xd", pickers.diagnostics, { desc = "Diagnostics" })
-vim.keymap.set("n", "<leader>gc", pickers.git_commits, { desc = "Commits" })
-vim.keymap.set("n", "<leader>gC", pickers.git_bcommits, { desc = "Buffer Commits" })
-vim.keymap.set("n", "<leader>gb", pickers.git_branches, { desc = "Branches" })
-vim.keymap.set("n", "<leader>gs", pickers.git_status, { desc = "Status" })
-vim.keymap.set("n", "<leader>gS", pickers.git_stash, { desc = "Stash" })
+local fzf = require("fzf-lua")
+vim.keymap.set("n", "<leader><space>", fzf.files, { desc = "Find Files" })
+vim.keymap.set("n", "<leader>/", fzf.live_grep, { desc = "Grep" })
+vim.keymap.set("n", "<leader>,", fzf.buffers, { desc = "Buffers" })
+vim.keymap.set("n", "<leader>:", fzf.command_history, { desc = "Command History" })
+vim.keymap.set("n", "<leader>\"", fzf.registers, { desc = "Registers" })
+vim.keymap.set("n", "<leader>s", fzf.resume, { desc = "Resume Last Picker" })
+vim.keymap.set("n", "<leader>?", fzf.helptags, { desc = "Help Tags" })
+vim.keymap.set("n", "<leader>xd", fzf.diagnostics_workspace, { desc = "Diagnostics" })
+vim.keymap.set("n", "<leader>gc", fzf.git_commits, { desc = "Commits" })
+vim.keymap.set("n", "<leader>gC", fzf.git_bcommits, { desc = "Buffer Commits" })
+vim.keymap.set("n", "<leader>gb", fzf.git_branches, { desc = "Branches" })
+vim.keymap.set("n", "<leader>gs", fzf.git_status, { desc = "Status" })
+vim.keymap.set("n", "<leader>gS", fzf.git_stash, { desc = "Stash" })
 -- stylua: ignore end
 
 -- Autocmds ===================================================================
@@ -291,7 +268,7 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 
 vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
   desc = "Check for file reload",
-  group =  group,
+  group = group,
   callback = function()
     if vim.o.buftype ~= "nofile" then
       vim.cmd("checktime")
