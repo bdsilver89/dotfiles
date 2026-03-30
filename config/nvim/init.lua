@@ -13,7 +13,7 @@ vim.schedule(function()
   vim.opt.clipboard = vim.env.SSH_TTY and "" or "unnamedplus"
 end)
 vim.opt.confirm = true
-vim.opt.completeopt = { "menuone", "noinsert", "popup", "fuzzy" }
+vim.opt.completeopt = { "menuone", "noselect", "popup", "fuzzy" }
 vim.opt.cursorline = true
 vim.opt.diffopt:append("linematch:60")
 vim.opt.expandtab = true
