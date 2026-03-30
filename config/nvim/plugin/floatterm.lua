@@ -103,5 +103,15 @@ vim.api.nvim_create_user_command("FloatTerm", function(opts)
 end, { nargs = "?" })
 
 -- stylua: ignore start
-vim.keymap.set("n", "<leader>gg", function() open("lazygit") end, { desc = "Lazygit" })
+if vim.fn.executable("lazygit") == 1 then
+  vim.keymap.set("n", "<leader>gg", function() open("lazygit") end, { desc = "Lazygit" })
+end
+if vim.fn.executable("lazydocker") == 1 then
+  vim.keymap.set("n", "<leader>gd", function() open("lazydocker") end, { desc = "Lazydocker" })
+end
+if vim.fn.executable("lazysql") == 1 then
+  vim.keymap.set("n", "<leader>gs", function() open("lazysql") end, { desc = "Lazysql" })
+end
+vim.keymap.set("n", "<leader>ft", function() open(nil, "float") end, { desc = "Float Terminal" })
+vim.keymap.set("n", "<leader>fT", function() open(nil, "bottom") end, { desc = "Bottom Terminal" })
 -- stylua: ignore end

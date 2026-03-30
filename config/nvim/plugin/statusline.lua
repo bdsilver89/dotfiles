@@ -66,7 +66,7 @@ local function git_branch()
   if not head or head == "" then
     return ""
   end
-  return "%#Keyword#  " .. head .. " "
+  return "%#Keyword# " .. head .. " "
 end
 
 local function git_diff()

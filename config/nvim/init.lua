@@ -50,23 +50,6 @@ vim.opt.virtualedit = "block"
 vim.opt.wildmode = "longest:full,full"
 vim.opt.wrap = false
 
-vim.diagnostic.config({
-  update_in_insert = false,
-  severity_sort = true,
-  signs = {
-    text = {
-      [vim.diagnostic.severity.ERROR] = " ",
-      [vim.diagnostic.severity.WARN] = " ",
-      [vim.diagnostic.severity.INFO] = " ",
-      [vim.diagnostic.severity.HINT] = " ",
-    },
-  },
-  virtual_text = {
-    prefix = "●",
-    spacing = 4,
-  },
-})
-
 require("vim._core.ui2").enable({
   enable = true,
   msg = {

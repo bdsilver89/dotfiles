@@ -4,6 +4,23 @@ for _, path in ipairs(vim.api.nvim_get_runtime_file("lsp/*.lua", true)) do
 end
 vim.lsp.enable(servers)
 
+vim.diagnostic.config({
+  update_in_insert = false,
+  severity_sort = true,
+  signs = {
+    text = {
+      [vim.diagnostic.severity.ERROR] = " ",
+      [vim.diagnostic.severity.WARN] = " ",
+      [vim.diagnostic.severity.INFO] = " ",
+      [vim.diagnostic.severity.HINT] = " ",
+    },
+  },
+  virtual_text = {
+    prefix = "●",
+    spacing = 4,
+  },
+})
+
 vim.api.nvim_create_autocmd("LspAttach", {
   desc = "LSP setup",
   group = vim.api.nvim_create_augroup("config_lsp", { clear = true }),
