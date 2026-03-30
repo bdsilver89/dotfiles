@@ -15,10 +15,8 @@ vim.diagnostic.config({
       [vim.diagnostic.severity.HINT] = " ",
     },
   },
-  virtual_text = {
-    prefix = "●",
-    spacing = 4,
-  },
+  virtual_text = true,
+  virtual_lines = false,
 })
 
 vim.api.nvim_create_autocmd("LspAttach", {
@@ -29,6 +27,8 @@ vim.api.nvim_create_autocmd("LspAttach", {
     if not client then
       return
     end
+
+    vim.lsp.completion.enable(true, client.id, ev.buf, { autotrigger = true })
 
     -- stylua: ignore start
     vim.keymap.set("n", "grd", vim.lsp.buf.definition, { desc = "Definition", buffer = ev.buf })

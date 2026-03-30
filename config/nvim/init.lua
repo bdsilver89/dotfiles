@@ -63,7 +63,6 @@ vim.cmd.packadd("nvim.undotree")
 
 vim.pack.add({
   "https://github.com/tpope/vim-sleuth",
-  "https://github.com/nvim-tree/nvim-web-devicons",
   "https://github.com/nvim-treesitter/nvim-treesitter",
   "https://github.com/mason-org/mason.nvim",
   "https://github.com/ibhagwan/fzf-lua",
@@ -238,6 +237,16 @@ vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
     if vim.o.buftype ~= "nofile" then
       vim.cmd("checktime")
     end
+  end,
+})
+
+vim.api.nvim_create_autocmd("VimResized", {
+  desc = "Resize splits",
+  group = group,
+  callback = function()
+    local current_tab = vim.fn.tabpagenr()
+    vim.cmd("tabdo wincmd =")
+    vim.cmd("tabnext " .. current_tab)
   end,
 })
 
