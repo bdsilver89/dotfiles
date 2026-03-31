@@ -58,15 +58,18 @@ require("vim._core.ui2").enable({
 })
 
 -- Plugins ====================================================================
+
 vim.cmd.packadd("nvim.difftool")
 vim.cmd.packadd("nvim.undotree")
 
 vim.pack.add({
   "https://github.com/tpope/vim-sleuth",
   "https://github.com/nvim-treesitter/nvim-treesitter",
+  "https://github.com/nvim-treesitter/nvim-treesitter-textobjects",
+  "https://github.com/nvim-treesitter/nvim-treesitter-context",
+  "https://github.com/nvim-mini/mini.nvim",
   "https://github.com/mason-org/mason.nvim",
   "https://github.com/ibhagwan/fzf-lua",
-  "https://github.com/lewis6991/gitsigns.nvim",
 })
 
 vim.cmd.colorscheme("catppuccin")
@@ -79,7 +82,6 @@ local languages = {
   "cpp",
   "diff",
   "dockerfile",
-  "html",
   "html",
   "java",
   "javascript",
@@ -110,6 +112,103 @@ for _, lang in ipairs(languages) do
   end
 end
 require("nvim-treesitter").install(languages)
+require("treesitter-context").setup()
+require("nvim-treesitter-textobjects").setup({
+  select = {
+    lookahead = true,
+  },
+  move = {
+    enable = true,
+    set_jumps = true,
+  },
+})
+
+-- Mini
+require("mini.extra").setup()
+require("mini.surround").setup()
+-- require("mini.cmdline").setup()
+require("mini.diff").setup({ view = { style = "sign" } })
+require("mini.git").setup()
+require("mini.indentscope").setup()
+require("mini.bufremove").setup()
+require("mini.tabline").setup()
+
+local statusline = require("mini.statusline")
+statusline.setup()
+statusline.section_location = function() return "%2l:%-2v" end
+
+require("mini.completion").setup({
+  lsp_completion = {
+    source_func = "omnifunc",
+    auto_setup = false,
+    process_items = function(items, base)
+      return MiniCompletion.default_process_items(items, base, {
+        kind_priority = { Text = -1, Snippet = 99 }
+      })
+    end,
+  },
+})
+vim.lsp.config("*", { capabilities = MiniCompletion.get_lsp_capabilities() })
+
+local clue = require("mini.clue")
+clue.setup({
+  clues = {
+    { mode = "n", keys = "<leader>b", desc = "+Buffer" },
+    { mode = "n", keys = "<leader>e", desc = "+Explore/Edit" },
+    { mode = "n", keys = "<leader>f", desc = "+Find" },
+    { mode = "n", keys = "<leader>g", desc = "+Git" },
+    { mode = "n", keys = "<leader>h", desc = "+Hunk" },
+    { mode = "n", keys = "<leader>u", desc = "+UI" },
+    { mode = "n", keys = "<leader>q", desc = "+Session/Quit" },
+    { mode = "n", keys = "<leader>x", desc = "+Diagnostics" },
+    clue.gen_clues.builtin_completion(),
+    clue.gen_clues.g(),
+    clue.gen_clues.marks(),
+    clue.gen_clues.registers(),
+    clue.gen_clues.square_brackets(),
+    clue.gen_clues.windows({ submode_resize = true }),
+    clue.gen_clues.z(),
+  },
+  triggers = {
+    { mode = { "n", "x" }, keys = "<leader>" },
+    { mode = { "n", "x" }, keys = "[" },
+    { mode = { "n", "x" }, keys = "]" },
+    { mode = { "n", "x" }, keys = "g" },
+    { mode = { "n", "x" }, keys = "'" },
+    { mode = { "n", "x" }, keys = "`" },
+    { mode = { "n", "x" }, keys = '"' },
+    { mode = { "n", "x" }, keys = "s" },
+    { mode = { "n", "x" }, keys = "z" },
+    { mode = "i", keys = "<c-x>" },
+    { mode = "n", keys = "<c-w>" },
+  },
+})
+
+local hipatterns = require("mini.hipatterns")
+hipatterns.setup({
+  highlighters = {
+    fixme = MiniExtra.gen_highlighter.words({ "FIXME", "Fixme", "fixme" }, "MiniHipatternsFixme"),
+    hack = MiniExtra.gen_highlighter.words({ "HACK", "Hack", "hack" }, "MiniHipatternsHack"),
+    todo = MiniExtra.gen_highlighter.words({ "TODO", "Todo", "todo" }, "MiniHipatternsTodo"),
+    note = MiniExtra.gen_highlighter.words({ "NOTE", "Note", "note" }, "MiniHipatternsNote"),
+    hex_color = hipatterns.gen_highlighter.hex_color(),
+  },
+})
+
+local snippets = require("mini.snippets")
+snippets.setup({
+  snippets = {
+    snippets.gen_loader.from_file(vim.fn.stdpath("config") .. "/snippets/global.json"),
+    snippets.gen_loader.from_lang(),
+  },
+  mappings = {
+    expand = "",
+    jump_next = "",
+    jump_prev = "",
+    stop = "<C-c>",
+  },
+})
+MiniSnippets.start_lsp_server()
 
 -- Mason (tool installer only — not needed for LSP startup)
 require("mason").setup()
@@ -133,33 +232,27 @@ require("fzf-lua").setup({
   },
 })
 
--- Git
-require("gitsigns").setup({
-  current_line_blame = true,
-  on_attach = function(buf)
-    local gs = require("gitsigns")
-    local function map(mode, l, r, desc)
-      vim.keymap.set(mode, l, r, { buffer = buf, desc = desc })
-    end
+-- LSP ========================================================================
 
-    -- stylua: ignore start
-    map("n", "]h", function() gs.nav_hunk("next") end, "Next Hunk")
-    map("n", "[h", function() gs.nav_hunk("prev") end, "Prev Hunk")
-    map("n", "<leader>hs", gs.stage_hunk, "Stage Hunk")
-    map("n", "<leader>hr", gs.reset_hunk, "Reset Hunk")
-    map("x", "<leader>hs", function() gs.stage_hunk({ vim.fn.line("."), vim.fn.line("v") }) end, "Stage Hunk")
-    map("x", "<leader>hr", function() gs.reset_hunk({ vim.fn.line("."), vim.fn.line("v") }) end, "Reset Hunk")
-    map("n", "<leader>hS", gs.stage_buffer, "Stage Buffer")
-    map("n", "<leader>hu", gs.undo_stage_hunk, "Undo Stage Hunk")
-    map("n", "<leader>hR", gs.reset_buffer, "Reset Buffer")
-    map("n", "<leader>hp", gs.preview_hunk, "Preview Hunk")
-    map("n", "<leader>hi", gs.preview_hunk_inline, "Preview Hunk Inline")
-    map("n", "<leader>hb", function() gs.blame_line({ full = true }) end, "Blame Line")
-    map("n", "<leader>hd", gs.diffthis, "Diff This")
-    map("n", "<leader>hD", function() gs.diffthis("~") end, "Diff This ~")
-    map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", "Inside Hunk")
-    -- stylua: ignore end
-  end,
+local servers = {}
+for _, path in ipairs(vim.api.nvim_get_runtime_file("lsp/*.lua", true)) do
+  servers[#servers + 1] = vim.fn.fnamemodify(path, ":t:r")
+end
+vim.lsp.enable(servers)
+
+vim.diagnostic.config({
+  update_in_insert = false,
+  severity_sort = true,
+  signs = {
+    text = {
+      [vim.diagnostic.severity.ERROR] = " ",
+      [vim.diagnostic.severity.WARN] = " ",
+      [vim.diagnostic.severity.INFO] = " ",
+      [vim.diagnostic.severity.HINT] = " ",
+    },
+  },
+  virtual_text = true,
+  virtual_lines = false,
 })
 
 -- Keymaps ====================================================================
@@ -176,7 +269,13 @@ vim.keymap.set("i", ",", ",<c-g>u")
 vim.keymap.set("i", ".", ".<c-g>u")
 vim.keymap.set("i", ";", ";<c-g>u")
 
-vim.keymap.set("n", "<leader>bd", "<cmd>bd<cr>")
+local map_multistep = require("mini.keymap").map_multistep
+map_multistep("i", "<Tab>", { "minisnippets_next", "pmenu_next" })
+map_multistep("i", "<S-Tab>", { "minisnippets_prev", "pmenu_prev" })
+map_multistep("i", "<CR>", { "pmenu_accept", "minipairs_cr" })
+
+vim.keymap.set("n", "<leader>bd", "<cmd>lua MiniBufremove.delete()<cr>")
+vim.keymap.set("n", "<leader>bD", "<cmd>lua MiniBufremove.delete(0, true)<cr>")
 vim.keymap.set("n", "<leader>w", "<cmd>w<cr>")
 vim.keymap.set("n", "<leader>q", "<cmd>q<cr>")
 vim.keymap.set("n", "<leader>qq", "<cmd>qa<cr>")
@@ -202,6 +301,16 @@ end, { desc = "Quickfix List" })
 vim.keymap.set("n", "-", "<cmd>Ex %:h<cr>", { desc = "File Explorer" })
 
 -- stylua: ignore start
+vim.keymap.set("n", "<leader>ho", MiniDiff.toggle_overlay, { desc = "Toggle Overlay" })
+vim.keymap.set("n", "<leader>hr", function() MiniDiff.do_hunks(0, "reset") end, { desc = "Reset Hunk" })
+vim.keymap.set("x", "<leader>hr", function() MiniDiff.do_hunks(0, "reset") end, { desc = "Reset Hunk" })
+vim.keymap.set("n", "<leader>hR", function() MiniDiff.do_hunks(0, "reset", { all = true }) end, { desc = "Reset Buffer" })
+vim.keymap.set("n", "<leader>hb", MiniGit.show_at_cursor, { desc = "Blame" })
+vim.keymap.set("n", "<leader>hH", MiniGit.show_range_history, { desc = "Range History" })
+vim.keymap.set("x", "<leader>hH", MiniGit.show_range_history, { desc = "Range History" })
+-- stylua: ignore end
+
+-- stylua: ignore start
 local fzf = require("fzf-lua")
 vim.keymap.set("n", "<leader><space>", fzf.files, { desc = "Find Files" })
 vim.keymap.set("n", "<leader>/", fzf.live_grep, { desc = "Grep" })
@@ -217,6 +326,33 @@ vim.keymap.set("n", "<leader>gb", fzf.git_branches, { desc = "Branches" })
 vim.keymap.set("n", "<leader>gs", fzf.git_status, { desc = "Status" })
 vim.keymap.set("n", "<leader>gS", fzf.git_stash, { desc = "Stash" })
 -- stylua: ignore end
+
+for _, map in ipairs({
+  { { "x", "o" }, "af", "@function.outer" },
+  { { "x", "o" }, "if", "@function.inner" },
+  { { "x", "o" }, "ac", "@class.outer" },
+  { { "x", "o" }, "ic", "@class.inner" },
+  { { "x", "o" }, "aa", "@parameter.outer" },
+  { { "x", "o" }, "ia", "@parameter.inner" },
+}) do
+  vim.keymap.set(map[1], map[2], function()
+    require("nvim-treesitter-textobjects.select").select_textobject(map[3], "textobjects")
+  end, { desc = "Select " .. map[3] })
+end
+
+for _, map in ipairs({
+  { { "n", "x", "o" }, "]f", "goto_next_start", "@function.outer" },
+  { { "n", "x", "o" }, "[f", "goto_previous_start", "@function.outer" },
+  { { "n", "x", "o" }, "]c", "goto_next_start", "@class.outer" },
+  { { "n", "x", "o" }, "[c", "goto_previous_start", "@class.outer" },
+}) do
+	local modes, lhs, fn, query = map[1], map[2], map[3], map[4]
+	local qstr = (type(query) == "table") and table.concat(query, ",") or query
+  vim.keymap.set(modes, lhs, function()
+    require("nvim-treesitter-textobjects.move")[fn](query, "textobjects")
+  end, { desc = "Move to " .. qstr })
+end
+
 
 -- Autocmds ===================================================================
 
@@ -285,5 +421,57 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.wo.foldmethod = "expr"
     vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
     vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+  end,
+})
+
+vim.api.nvim_create_autocmd("LspAttach", {
+  desc = "LSP setup",
+  group = vim.api.nvim_create_augroup("config_lsp", { clear = true }),
+  callback = function(ev)
+    local client = vim.lsp.get_client_by_id(ev.data.client_id)
+    if not client then
+      return
+    end
+
+    vim.bo[ev.buf].omnifunc = "v:lua.MiniCompletion.completefunc_lsp"
+
+    -- stylua: ignore start
+    vim.keymap.set("n", "grd", vim.lsp.buf.definition, { desc = "Definition", buffer = ev.buf })
+    vim.keymap.set("n", "grD", vim.lsp.buf.declaration, { desc = "Declaration", buffer = ev.buf })
+    vim.keymap.set("n", "grf", vim.lsp.buf.format, { desc = "Format", buffer = ev.buf })
+    -- stylua: ignore end
+
+    if client:supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
+      local hl_group_name = "config_lsp_highlight"
+      local hl_group = vim.api.nvim_create_augroup(hl_group_name, { clear = false })
+      vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
+        buffer = ev.buf,
+        group = hl_group,
+        callback = vim.lsp.buf.document_highlight,
+      })
+      vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
+        buffer = ev.buf,
+        group = hl_group,
+        callback = vim.lsp.buf.clear_references,
+      })
+      vim.api.nvim_create_autocmd("LspDetach", {
+        group = vim.api.nvim_create_augroup("config_lsp_detach", { clear = true }),
+        callback = function(ev2)
+          vim.lsp.buf.clear_references()
+          vim.api.nvim_clear_autocmds({ group = hl_group_name, buffer = ev2.buf })
+        end,
+      })
+    end
+
+    if client:supports_method(vim.lsp.protocol.Methods.textDocument_codeLens) then
+      vim.lsp.codelens.enable(true, { bufnr = ev.buf })
+    end
+
+    if client:supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
+      vim.lsp.inlay_hint.enable(true, { bufnr = ev.buf })
+      vim.keymap.set("n", "<leader>uh", function()
+        vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = ev.buf }))
+      end, { desc = "Toggle Inlay Hints" })
+    end
   end,
 })
