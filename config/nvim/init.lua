@@ -61,6 +61,9 @@ vim.pack.add({
   "https://github.com/nvim-treesitter/nvim-treesitter",
   "https://github.com/nvim-treesitter/nvim-treesitter-textobjects",
   "https://github.com/mason-org/mason.nvim",
+  "https://github.com/tpope/vim-sleuth",
+  "https://github.com/tpope/vim-fugitive",
+  "https://github.com/lewis6991/gitsigns.nvim",
   "https://github.com/stevearc/oil.nvim",
   "https://github.com/ibhagwan/fzf-lua",
 })
@@ -77,6 +80,7 @@ require("nvim-treesitter-textobjects").setup({
 
 require("mason").setup()
 require("oil").setup()
+require("gitsigns").setup()
 
 require("fzf-lua").setup({
   "default-title",
