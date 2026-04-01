@@ -238,7 +238,7 @@ vim.api.nvim_create_autocmd("FileType", {
       return
     end
     local lang = vim.treesitter.language.get_lang(ev.match)
-    if lang then
+    if lang and require("nvim-treesitter.parsers")[lang] then
       pcall(require("nvim-treesitter").install, { lang })
     end
   end,
