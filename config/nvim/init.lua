@@ -34,8 +34,10 @@ vim.opt.splitbelow = true
 vim.opt.splitright = true
 vim.opt.tabstop = 2
 vim.opt.termguicolors = true
+vim.opt.timeoutlen = 300
 vim.opt.undofile = true
 vim.opt.undolevels = 10000
+vim.opt.updatetime = 250
 vim.opt.wildmode = "longest:full,full"
 vim.opt.wrap = false
 
@@ -119,6 +121,22 @@ vim.keymap.set("n", "<leader>|", "<c-w>v")
 
 vim.keymap.set("n", "-", "<cmd>Oil<cr>", { desc = "Oil" })
 
+vim.keymap.set({ "i", "s" }, "<tab>", function()
+  if vim.snippet.active({ direction = 1 }) then
+    return "<cmd>lua vim.snippet.jump(1)<cr>"
+  elseif not vim.lsp.inline_completion.get() then
+    return "<tab>"
+  end
+end, { desc = "Next Snippet", expr = true, silent = true })
+
+vim.keymap.set({ "i", "s" }, "<s-tab>", function()
+  if vim.snippet.active({ direction = -1 }) then
+    return "<cmd>lua vim.snippet.jump(-1)<cr>"
+  else
+    return "<s-tab>"
+  end
+end, { desc = "Prev Snippet", expr = true, silent = true })
+
 vim.keymap.set("n", "<leader>ud", function()
   vim.diagnostic.enable(not vim.diagnostic.is_enabled())
 end, { desc = "Toggle Diagnostics" })
@@ -173,7 +191,6 @@ for _, map in ipairs({
     require("nvim-treesitter-textobjects.move")[fn](query, "textobjects")
   end, { desc = "Move to " .. qstr })
 end
-
 
 -- stylua: ignore start
 vim.keymap.set("n", "<leader><leader>", "<cmd>FzfLua files<cr>", { desc = "Files" })
@@ -273,11 +290,32 @@ vim.api.nvim_create_autocmd("LspAttach", {
     if client:supports_method("textDocument/inlineCompletion") then
       vim.lsp.inline_completion.enable(true, { bufnr = buf })
     end
-    -- if client:supports_method("textDocument/documentColor") then
-    --   vim.lsp.completion.enable(true, { bufnr = buf }, { style = "virtual" })
-    -- end
-    -- if client:supports_method("textDocument/documentHighlight") then
-    -- end
+    if client:supports_method("textDocument/documentColor") then
+      vim.lsp.document_color.enable(true, { bufnr = buf })
+    end
+    if client:supports_method("textDocument/documentHighlight") then
+      local hl_group = vim.api.nvim_create_augroup("lsp_document_highlight_" .. buf, { clear = true })
+      vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
+        buffer = buf,
+        group = hl_group,
+        callback = vim.lsp.buf.document_highlight,
+      })
+      vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
+        buffer = buf,
+        group = hl_group,
+        callback = vim.lsp.buf.clear_references,
+      })
+      vim.api.nvim_create_autocmd("LspDetach", {
+        buffer = buf,
+        group = hl_group,
+        callback = function(detach_ev)
+          if detach_ev.data.client_id == client_id then
+            vim.lsp.buf.clear_references()
+            vim.api.nvim_del_augroup_by_id(hl_group)
+          end
+        end,
+      })
+    end
     if client:supports_method("textDocument/codeLens") then
       vim.lsp.codelens.enable(true, { bufnr = buf })
     end
