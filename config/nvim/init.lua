@@ -81,15 +81,12 @@ require("nvim-treesitter-textobjects").setup({
 require("mason").setup()
 require("oil").setup()
 require("gitsigns").setup()
+require("fzf-lua").setup()
 
-require("fzf-lua").setup({
-  "default-title",
-  defaults = { formatter = "path.filename_first" },
-})
 
 -- LSP ========================================================================
 
-vim.lsp.enable({ "clangd", "basedpyright", "jdtls", "lua_ls", "rust_analyzer" })
+vim.lsp.enable({ "basedpyright", "clangd", "copilot", "jdtls", "lua_ls", "rust_analyzer" })
 vim.diagnostic.config({
   update_in_insert = false,
   severity_sort = true,
@@ -120,11 +117,20 @@ vim.keymap.set("n", "<leader>qq", "<cmd>qa<cr>")
 vim.keymap.set("n", "<leader>-", "<c-w>s")
 vim.keymap.set("n", "<leader>|", "<c-w>v")
 
-vim.keymap.set("n", "-", "<cmd>Oil<cr>")
+vim.keymap.set("n", "-", "<cmd>Oil<cr>", { desc = "Oil" })
+
+vim.keymap.set("n", "<leader>ud", function()
+  vim.diagnostic.enable(not vim.diagnostic.is_enabled())
+end, { desc = "Toggle Diagnostics" })
+
+vim.keymap.set("n", "<leader>uw", function()
+  vim.o.wrap = not vim.o.wrap
+end, { desc = "Toggle Wrap" })
+
 vim.keymap.set("n", "<leader>ut", function()
   vim.cmd.packadd("nvim.undotree")
   require("undotree").open()
-end)
+end, { desc = "Undotree" })
 
 vim.keymap.set("n", "<esc>", "<cmd>nohlsearch<cr>")
 vim.keymap.set("t", "<esc><esc>", "<c-\\><c-n>")
@@ -264,9 +270,24 @@ vim.api.nvim_create_autocmd("LspAttach", {
     if client:supports_method("textDocument/completion") then
       vim.lsp.completion.enable(true, client_id, ev.buf, { autotrigger = true })
     end
+    if client:supports_method("textDocument/inlineCompletion") then
+      vim.lsp.inline_completion.enable(true, { bufnr = buf })
+    end
     -- if client:supports_method("textDocument/documentColor") then
     --   vim.lsp.completion.enable(true, { bufnr = buf }, { style = "virtual" })
     -- end
+    -- if client:supports_method("textDocument/documentHighlight") then
+    -- end
+    if client:supports_method("textDocument/codeLens") then
+      vim.lsp.codelens.enable(true, { bufnr = buf })
+    end
+    if client:supports_method("textDocument/inlayHint") then
+      vim.keymap.set("n", "<leader>uh", function()
+        vim.lsp.inlay_hint.enable(
+          not vim.lsp.inlay_hint.is_enabled({ bufnr = buf })
+        )
+      end, { desc = "Toggle Inlay Hints", buffer = buf })
+    end
   end,
 })
 
@@ -275,7 +296,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
 vim.api.nvim_create_user_command("Make", function(opts)
   local args = opts.args or ""
   local makeprg, n = vim.o.makeprg:gsub("%$%*", args)
-  if n == 0 then
+  if n == 0 and args ~= "" then
     makeprg = makeprg .. " " .. args
   end
 
@@ -284,6 +305,9 @@ vim.api.nvim_create_user_command("Make", function(opts)
 
   local function on_exit(result)
     vim.schedule(function()
+      if state.interrupted then
+        vim.fn.setqflist({}, "a", { id = state.qf, title = ("%s (Interrupted)"):format(makeprg) })
+      end
       vim.fn.setqflist({}, "a", { id = state.qf, context = { code = result.code } })
       vim.api.nvim_exec_autocmds("QuickFixCmdPost", { pattern = "make", modeline = false })
       local now = vim.uv.hrtime()
@@ -307,10 +331,8 @@ vim.api.nvim_create_user_command("Make", function(opts)
         local info = vim.fn.getqflist({ id = 0, qfbufnr = true })
         state.qf = info.id
         vim.keymap.set("n", "<c-c>", function()
-          local result = state.handle:wait(0)
-          if result.signal ~= 0 then
-            vim.fn.setqflist({}, "a", { title = ("%s (Interrupted)"):format(makeprg) })
-          end
+          state.interrupted = true
+          state.handle:kill("sigint")
         end, { buffer = info.qfbufnr })
       end
       vim.fn.setqflist({}, "a", { id = state.qf, lines = lines, efm = efm })
