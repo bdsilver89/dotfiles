@@ -3,6 +3,7 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
+vim.opt.autoread = true
 vim.opt.breakindent = true
 vim.opt.completeopt = { "menuone", "noselect", "popup", "fuzzy" }
 vim.opt.confirm = true
@@ -28,7 +29,6 @@ vim.opt.shortmess:append("c")
 vim.opt.sidescrolloff = 8
 vim.opt.signcolumn = "yes"
 vim.opt.smartcase = true
-vim.opt.smartcase = true
 vim.opt.smoothscroll = true
 vim.opt.splitbelow = true
 vim.opt.splitright = true
@@ -43,13 +43,24 @@ vim.opt.wrap = false
 
 vim.schedule(function()
   vim.opt.clipboard = vim.env.SSH_TTY and "" or "unnamedplus"
-end)
-
-vim.schedule(function()
   vim.cmd.colorscheme("catppuccin")
 end)
 
--- %<%f %h%w%m%r %{% v:lua.require('vim._core.util').term_exitcode() %}%=%{% luaeval('(package.loaded[''vim.ui''] and vim.api.nvim_get_current_win() == tonumber(vim.g.actual_curwin or -1) and vim.ui.progress_status()) or '''' ')%}%{% &showcmdloc == 'statusline' ? '%-10.S ' : '' %}%{% exists('b:keymap_name') ? '<'..b:keymap_name..'> ' : '' %}%{% &busy > 0 ? '◐ ' : '' %}%{% luaeval('(package.loaded[''vim.diagnostic''] and next(vim.diagnostic.count()) and vim.diagnostic.status() .. '' '') or '''' ') %}%{% &ruler ? ( &rulerformat == '' ? '%-14.(%l,%c%V%) %P' : &rulerformat ) : '' %}
+-- stylua: ignore start
+vim.opt.statusline = table.concat({
+  "%<%f %h%w%m%r",
+  " %{% v:lua.require('vim._core.util').term_exitcode() %}",
+  " %{% exists('b:gitsigns_head') ? ' '..b:gitsigns_head : '' %}",
+  "%{% exists('b:gitsigns_status') && b:gitsigns_status != '' ? ' '..b:gitsigns_status : '' %}",
+  "%=",
+  "%{% luaeval('(package.loaded[''vim.lsp''] and vim.lsp.status()) or '''' ')%} ",
+  "%{% &showcmdloc == 'statusline' ? '%-10.S ' : '' %}",
+  "%{% exists('b:keymap_name') ? '<'..b:keymap_name..'> ' : '' %}",
+  "%{% &busy > 0 ? '◐ ' : '' %}",
+  "%{% luaeval('(package.loaded[''vim.diagnostic''] and next(vim.diagnostic.count()) and vim.diagnostic.status() .. '' '') or '''' ') %}",
+  "%{% &ruler ? ( &rulerformat == '' ? '%-14.(%l,%c%V%) %P' : &rulerformat ) : '' %}",
+})
+-- stylua: ignore end
 
 -- Plugin =====================================================================
 
@@ -85,10 +96,42 @@ require("oil").setup()
 require("gitsigns").setup()
 require("fzf-lua").setup()
 
+-- Snippets ===================================================================
+do
+  local snip_dir = vim.fn.stdpath("config") .. "/snippets"
+  local cache = {}
+
+  local function get_snippets(ft)
+    if not cache[ft] then
+      local f = io.open(snip_dir .. "/" .. ft .. ".json", "r")
+      if not f then cache[ft] = {} return cache[ft] end
+      local snips = {}
+      for _, s in pairs(vim.json.decode(f:read("*a"))) do
+        local body = type(s.body) == "table" and table.concat(s.body, "\n") or s.body
+        snips[type(s.prefix) == "table" and s.prefix[1] or s.prefix] = body
+      end
+      f:close()
+      cache[ft] = snips
+    end
+    return cache[ft]
+  end
+
+  vim.keymap.set({ "i", "s" }, "<c-s>", function()
+    local col = vim.fn.col(".") - 1
+    local word = vim.fn.getline("."):sub(1, col):match("[%w_-]+$")
+    local body = word and get_snippets(vim.bo.filetype)[word]
+    if not body then return end
+    local line = vim.api.nvim_get_current_line()
+    vim.api.nvim_set_current_line(line:sub(1, col - #word) .. line:sub(col + 1))
+    vim.api.nvim_win_set_cursor(0, { vim.fn.line("."), col - #word })
+    vim.snippet.expand(body)
+  end, { desc = "Expand snippet" })
+end
 
 -- LSP ========================================================================
 
 vim.lsp.enable({ "basedpyright", "clangd", "copilot", "jdtls", "lua_ls", "rust_analyzer" })
+
 vim.diagnostic.config({
   update_in_insert = false,
   severity_sort = true,
@@ -154,16 +197,10 @@ vim.keymap.set("n", "<esc>", "<cmd>nohlsearch<cr>")
 vim.keymap.set("t", "<esc><esc>", "<c-\\><c-n>")
 
 vim.keymap.set("n", "<leader>xl", function()
-  local success, err = pcall(vim.fn.getloclist(0, { winid = 0 }).winid ~= 0 and vim.cmd.lclose or vim.cmd.lopen)
-  if not success and err then
-    vim.notify(err, vim.log.levels.ERROR)
-  end
+  if vim.fn.getloclist(0, { winid = 0 }).winid ~= 0 then vim.cmd.lclose() else vim.cmd.lopen() end
 end, { desc = "Location List" })
 vim.keymap.set("n", "<leader>xq", function()
-  local success, err = pcall(vim.fn.getqflist({ winid = 0 }).winid ~= 0 and vim.cmd.cclose or vim.cmd.copen)
-  if not success and err then
-    vim.notify(err, vim.log.levels.ERROR)
-  end
+  if vim.fn.getqflist({ winid = 0 }).winid ~= 0 then vim.cmd.cclose() else vim.cmd.copen() end
 end, { desc = "Quickfix List" })
 
 -- textobjects
@@ -230,16 +267,6 @@ vim.api.nvim_create_autocmd("VimResized", {
     local current_tab = vim.fn.tabpagenr()
     vim.cmd("tabdo wincmd =")
     vim.cmd("tabnext " .. current_tab)
-  end,
-})
-
-vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
-  desc = "Check for file reload",
-  group = group,
-  callback = function()
-    if vim.o.buftype ~= "nofile" then
-      vim.cmd("checktime")
-    end
   end,
 })
 
@@ -326,6 +353,13 @@ vim.api.nvim_create_autocmd("LspAttach", {
         )
       end, { desc = "Toggle Inlay Hints", buffer = buf })
     end
+  end,
+})
+
+vim.api.nvim_create_autocmd("LspProgress", {
+  desc = "Redraw statusline on LSP progress",
+  callback = function()
+    vim.cmd.redrawstatus()
   end,
 })
 
