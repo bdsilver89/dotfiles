@@ -52,7 +52,7 @@ return {
     local fname = vim.api.nvim_buf_get_name(bufnr)
     local reused_dir = is_library(fname)
     if reused_dir then
-      on_dir()
+      on_dir(reused_dir)
     end
 
     local cargo_crate_dir = vim.fs.root(fname, { "Cargo.toml" })

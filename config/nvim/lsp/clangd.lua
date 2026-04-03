@@ -17,19 +17,8 @@ local function switch_source_header(bufnr, client)
 end
 
 local function jobs()
-  local ok, result = pcall(function()
-    local cpus = vim.uv.cpu_info()
-    local count = #cpus
-    if count < 1 then
-      count = 1
-    end
-    return math.max(1, math.ceil(count / 2))
-  end)
-  if ok then
-    return result
-  else
-    return 2
-  end
+  local half = math.floor(#vim.uv.cpu_info() / 2)
+  return math.max(2, half - half % 2)
 end
 
 ---@type vim.lsp.Config
@@ -73,7 +62,7 @@ return {
   },
   on_attach = function(client, bufnr)
     vim.api.nvim_buf_create_user_command(bufnr, "LspClangdSwitchSourceHeader", function()
-      switch_source_header(client, bufnr)
+      switch_source_header(bufnr, client)
     end, { desc = "Switch between source/header" })
   end,
 }

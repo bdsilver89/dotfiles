@@ -13,9 +13,6 @@ return {
       runtime = {
         version = "LuaJIT",
       },
-      diagnostics = {
-        globals = { "vim", "require" },
-      },
       workspace = {
         checkThirdParty = false,
         library = { vim.env.VIMRUNTIME },

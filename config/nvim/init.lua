@@ -162,6 +162,11 @@ vim.keymap.set("n", "<leader>qq", "<cmd>qa<cr>")
 vim.keymap.set("n", "<leader>-", "<c-w>s")
 vim.keymap.set("n", "<leader>|", "<c-w>v")
 
+vim.keymap.set("n", "<leader><tab>n", "<cmd>tabnew<cr>", { desc = "New Tab" })
+vim.keymap.set("n", "<leader><tab>d", "<cmd>tabclose<cr>", { desc = "Close Tab" })
+vim.keymap.set("n", "]<tab>", "<cmd>tabnext<cr>", { desc = "Next Tab" })
+vim.keymap.set("n", "[<tab>", "<cmd>tabprev<cr>", { desc = "Prev Tab" })
+
 vim.keymap.set("n", "-", "<cmd>Oil<cr>", { desc = "Oil" })
 
 vim.keymap.set({ "i", "s" }, "<tab>", function()
