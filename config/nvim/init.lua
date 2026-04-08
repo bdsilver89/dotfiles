@@ -27,6 +27,7 @@ vim.o.relativenumber = true
 vim.o.scrolloff = 10
 vim.o.signcolumn = "yes"
 vim.o.smartcase = true
+vim.opt.shortmess:append("c")
 vim.o.splitbelow = true
 vim.o.splitright = true
 vim.o.timeoutlen = 300
@@ -139,6 +140,26 @@ vim.keymap.set({ "n", "t" }, "<c-j>", function() tmux_nav("j", "D") end)
 vim.keymap.set({ "n", "t" }, "<c-k>", function() tmux_nav("k", "U") end)
 vim.keymap.set({ "n", "t" }, "<c-l>", function() tmux_nav("l", "R") end)
 
+vim.keymap.set("i", "<Tab>", function()
+  if vim.fn.pumvisible() == 1 then
+    return "<C-n>"
+  elseif vim.snippet.active({ direction = 1 }) then
+    return "<cmd>lua vim.snippet.jump(1)<cr>"
+  else
+    return "<Tab>"
+  end
+end, { expr = true })
+
+vim.keymap.set("i", "<S-Tab>", function()
+  if vim.fn.pumvisible() == 1 then
+    return "<C-p>"
+  elseif vim.snippet.active({ direction = -1 }) then
+    return "<cmd>lua vim.snippet.jump(-1)<cr>"
+  else
+    return "<S-Tab>"
+  end
+end, { expr = true })
+
 vim.keymap.set("n", "-", "<cmd>Oil<cr>", { desc = "Oil" })
 
 -- stylua: ignore start
@@ -212,22 +233,22 @@ vim.api.nvim_create_autocmd("LspAttach", {
       vim.lsp.completion.enable(true, client_id, ev.buf, { autotrigger = true })
     end
     if client:supports_method("textDocument/inlineCompletion") then
-      vim.lsp.inline_completion.enable(true, { bufnr = buf })
+      vim.lsp.inline_completion.enable(true, { bufnr = ev.buf })
     end
     if client:supports_method("textDocument/documentHighlight") then
       local hl_group = vim.api.nvim_create_augroup("lsp_document_highlight_" .. ev.buf, { clear = true })
       vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
-        buffer = buf,
+        buffer = ev.buf,
         group = hl_group,
         callback = vim.lsp.buf.document_highlight,
       })
       vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI", "BufLeave" }, {
-        buffer = buf,
+        buffer = ev.buf,
         group = hl_group,
         callback = vim.lsp.buf.clear_references,
       })
       vim.api.nvim_create_autocmd("LspDetach", {
-        buffer = buf,
+        buffer = ev.buf,
         group = hl_group,
         callback = function(detach_ev)
           if detach_ev.data.client_id == client_id then
@@ -238,12 +259,12 @@ vim.api.nvim_create_autocmd("LspAttach", {
       })
     end
     if client:supports_method("textDocument/codeLens") then
-      vim.lsp.codelens.enable(true, { bufnr = buf })
+      vim.lsp.codelens.enable(true, { bufnr = ev.buf })
     end
     if client:supports_method("textDocument/inlayHint") then
       map("<leader>uh", function()
         vim.lsp.inlay_hint.enable(
-          not vim.lsp.inlay_hint.is_enabled({ bufnr = buf })
+          not vim.lsp.inlay_hint.is_enabled({ bufnr = ev.buf })
         )
       end, "Toggle Inlay Hints")
     end
