@@ -14,6 +14,7 @@ vim.g.mapleader = " "
 vim.o.autocomplete = true
 vim.o.autoread = true
 vim.o.breakindent = true
+vim.opt.completeopt = { "menu", "menuone", "noselect", "popup", "fuzzy" }
 vim.o.confirm = true
 vim.o.cursorline = true
 vim.o.foldexpr = "v:vim.treesitter.foldexpr()"
@@ -22,20 +23,20 @@ vim.o.foldmethod = "expr"
 vim.o.ignorecase = true
 vim.o.laststatus = 3
 vim.o.list = true
+vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 vim.o.number = true
 vim.o.relativenumber = true
 vim.o.scrolloff = 10
+vim.opt.shortmess:append("c")
 vim.o.signcolumn = "yes"
 vim.o.smartcase = true
-vim.opt.shortmess:append("c")
+vim.o.smartindent = true
 vim.o.splitbelow = true
 vim.o.splitright = true
 vim.o.timeoutlen = 300
 vim.o.undofile = true
 vim.o.updatetime = 250
 vim.o.wrap = false
-vim.opt.completeopt = { "menuone", "noselect", "popup", "fuzzy" }
-vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 
 vim.schedule(function() vim.o.clipboard = "unnamedplus" end)
 vim.cmd.colorscheme("catppuccin")
@@ -45,10 +46,10 @@ vim.diagnostic.config({
   underline = true,
   update_in_insert = false,
   virtual_lines = {
-    curent_line = true,
+    current_line = true,
   },
   virtual_text = {
-    curent_line = false,
+    current_line = false,
   },
 })
 
