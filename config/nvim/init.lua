@@ -1,12 +1,13 @@
+local gh = function(x) return "https://github.com/" .. x end
 vim.pack.add({
-  "https://github.com/tpope/vim-sleuth",
-  "https://github.com/nvim-treesitter/nvim-treesitter",
-  "https://github.com/neovim/nvim-lspconfig",
-  "https://github.com/mason-org/mason.nvim",
-  "https://github.com/mason-org/mason-lspconfig.nvim",
-  "https://github.com/stevearc/oil.nvim",
-  "https://github.com/ibhagwan/fzf-lua",
-  "https://github.com/lewis6991/gitsigns.nvim",
+  gh("tpope/vim-sleuth"),
+  gh("nvim-treesitter/nvim-treesitter"),
+  gh("neovim/nvim-lspconfig"),
+  gh("mason-org/mason.nvim"),
+  gh("mason-org/mason-lspconfig.nvim"),
+  gh("stevearc/oil.nvim"),
+  gh("ibhagwan/fzf-lua"),
+  gh("lewis6991/gitsigns.nvim"),
 })
 
 vim.g.mapleader = " "
@@ -67,7 +68,13 @@ local lsp_servers = {
 
 require("mason").setup()
 require("oil").setup()
-require("fzf-lua").setup()
+require("fzf-lua").setup({
+  keymap = {
+    fzf = {
+      ["ctrl-q"] = "select-all+accept",
+    },
+  },
+})
 
 local mlsp_servers = {}
 for server, opts in pairs(lsp_servers) do
@@ -129,17 +136,6 @@ vim.keymap.set("n", "<leader>xq", function()
   if vim.fn.getqflist({ winid = 0 }).winid ~= 0 then vim.cmd.cclose() else vim.cmd.copen() end
 end, { desc = "Quickfix List" })
 
-local function tmux_nav(vdir, tdir)
-  local win = vim.api.nvim_get_current_win()
-  vim.cmd.wincmd(vdir)
-  if (vim.env.TMUX ~= nil) and vim.api.nvim_get_current_win() == win then
-    vim.system({ "tmux", "select-pane", "-" .. tdir })
-  end
-end
-vim.keymap.set({ "n", "t" }, "<c-h>", function() tmux_nav("h", "L") end)
-vim.keymap.set({ "n", "t" }, "<c-j>", function() tmux_nav("j", "D") end)
-vim.keymap.set({ "n", "t" }, "<c-k>", function() tmux_nav("k", "U") end)
-vim.keymap.set({ "n", "t" }, "<c-l>", function() tmux_nav("l", "R") end)
 
 vim.keymap.set("i", "<Tab>", function()
   if vim.fn.pumvisible() == 1 then
