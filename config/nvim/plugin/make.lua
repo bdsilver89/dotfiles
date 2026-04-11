@@ -1,11 +1,14 @@
 vim.api.nvim_create_user_command("Make", function(opts)
   local args = opts.args or ""
-  local makeprg, n = vim.o.makeprg:gsub("%$%*", args)
+  local mp = vim.bo.makeprg
+  if mp == "" then mp = vim.go.makeprg end
+  local makeprg, n = mp:gsub("%$%*", args)
   if n == 0 and args ~= "" then
     makeprg = makeprg .. " " .. args
   end
 
-  local efm = vim.o.errorformat
+  local efm = vim.bo.errorformat
+  if efm == "" then efm = vim.go.errorformat end
   local state = {}
 
   local function on_exit(result)
