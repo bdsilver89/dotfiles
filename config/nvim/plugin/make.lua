@@ -17,7 +17,6 @@ vim.api.nvim_create_user_command("Make", function(opts)
         vim.fn.setqflist({}, "a", { id = state.qf, title = ("%s (Interrupted)"):format(makeprg) })
       end
       vim.fn.setqflist({}, "a", { id = state.qf, context = { code = result.code } })
-      vim.api.nvim_exec_autocmds("QuickFixCmdPost", { pattern = "make", modeline = false })
       local now = vim.uv.hrtime()
       local elapsed = (now - state.start) / 1e9
       local msg = ("Make: %s (%.2fs)"):format(makeprg, elapsed)
@@ -53,8 +52,7 @@ vim.api.nvim_create_user_command("Make", function(opts)
     end)
   end
 
-  vim.api.nvim_exec_autocmds("QuickFixCmdPre", { pattern = "make", modeline = false })
   vim.api.nvim_echo({{ "Make: " .. makeprg }}, false, { kind = "progress", source = "make", id = "make", status = "running" })
-  state.handle = vim.system(vim.split(makeprg, "%s+", { trimempty = true }), { stdout = on_data, stderr = on_data }, on_exit)
+  state.handle = vim.system({ "sh", "-c", makeprg }, { stdout = on_data, stderr = on_data }, on_exit)
   state.start = vim.uv.hrtime()
 end, { nargs = "*" })

@@ -18,6 +18,7 @@ vim.o.breakindent = true
 vim.opt.completeopt = { "menu", "menuone", "noselect", "popup", "fuzzy" }
 vim.o.confirm = true
 vim.o.cursorline = true
+vim.opt.fillchars = { eob = " " }
 vim.o.foldexpr = "v:vim.treesitter.foldexpr()"
 vim.o.foldlevel = 99
 vim.o.foldmethod = "expr"
