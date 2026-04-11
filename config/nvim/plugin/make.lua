@@ -17,8 +17,13 @@ vim.api.nvim_create_user_command("Make", function(opts)
       vim.api.nvim_exec_autocmds("QuickFixCmdPost", { pattern = "make", modeline = false })
       local now = vim.uv.hrtime()
       local elapsed = (now - state.start) / 1e9
-      if result.code ~= 0 then
-        vim.print(("Command %s exited after %.2f seconds with error code %d"):format(makeprg, elapsed, result.code))
+      local msg = ("Make: %s (%.2fs)"):format(makeprg, elapsed)
+      if state.interrupted then
+        vim.api.nvim_echo({{ msg }}, false, { kind = "progress", source = "make", id = "make", status = "cancel" })
+      elseif result.code ~= 0 then
+        vim.api.nvim_echo({{ msg .. " [exit " .. result.code .. "]" }}, false, { kind = "progress", source = "make", id = "make", status = "failed" })
+      else
+        vim.api.nvim_echo({{ msg }}, false, { kind = "progress", source = "make", id = "make", status = "success" })
       end
     end)
   end
@@ -46,6 +51,7 @@ vim.api.nvim_create_user_command("Make", function(opts)
   end
 
   vim.api.nvim_exec_autocmds("QuickFixCmdPre", { pattern = "make", modeline = false })
+  vim.api.nvim_echo({{ "Make: " .. makeprg }}, false, { kind = "progress", source = "make", id = "make", status = "running" })
   state.handle = vim.system(vim.split(makeprg, "%s+", { trimempty = true }), { stdout = on_data, stderr = on_data }, on_exit)
   state.start = vim.uv.hrtime()
 end, { nargs = "*" })

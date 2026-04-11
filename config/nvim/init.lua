@@ -27,6 +27,7 @@ vim.o.list = true
 vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 vim.o.number = true
 vim.o.relativenumber = true
+vim.o.rulerformat = "%l:%c%V %P"
 vim.o.scrolloff = 10
 vim.opt.shortmess:append("c")
 vim.o.signcolumn = "yes"
@@ -49,12 +50,22 @@ vim.o.statusline = table.concat({
   " %{% exists('b:gitsigns_head') ? ' '..b:gitsigns_head : '' %}",
   " %{% exists('b:gitsigns_status') && b:gitsigns_status != '' ? ' '..b:gitsigns_status : '' %}",
   "%=",
-  " %{% luaeval('(package.loaded[''vim.lsp''] and vim.lsp.status()) or '''' ') %}",
   " %{% &showcmdloc == 'statusline' ? '%-10.S ' : '' %}",
   " %{% exists('b:keymap_name') ? '<'..b:keymap_name..'> ' : '' %}",
   " %{% &busy > 0 ? '◐ ' : '' %}",
   " %{% luaeval('(package.loaded[''vim.diagnostic''] and next(vim.diagnostic.count()) and vim.diagnostic.status() .. '' '') or '''' ') %}",
-  " %{% &ruler ? ( &rulerformat == '' ? '%-14.(%l,%c%V%) %P' : &rulerformat ) : '' %}",
+  " %{% luaeval('vim.iter(vim.lsp.get_clients({bufnr=0})):map(function(c) return c.name end):join(\",\")') %}",
+  " %{% &filetype != '' ? &filetype..' ' : '' %}",
+  " %{% &fileencoding != '' ? &fileencoding : &encoding %}",
+  " %{% &fileformat != 'unix' ? ' '..&fileformat : '' %}",
+  " %{% &ruler ? ( &rulerformat == '' ? ' %-14.(%l,%c%V%) %P' : &rulerformat ) : '' %}",
+})
+
+require("vim._core.ui2").enable({
+  enable = true,
+  msg = {
+    targets = "msg",
+  },
 })
 
 vim.diagnostic.config({
@@ -194,6 +205,7 @@ vim.keymap.set("n", "<leader>|", "<c-w>v")
 vim.keymap.set("n", "<leader>ud", function()
   vim.diagnostic.enable(not vim.diagnostic.is_enabled())
 end, { desc = "Toggle Diagnostics" })
+
 vim.keymap.set("n", "<leader>uw", function()
   vim.o.wrap = not vim.o.wrap
 end, { desc = "Toggle Wrap" })
@@ -365,8 +377,19 @@ vim.api.nvim_create_autocmd("LspAttach", {
 })
 
 vim.api.nvim_create_autocmd("LspProgress", {
-  desc = "Redraw statusline on LSP progress",
-  callback = function()
-    vim.cmd.redrawstatus()
+  desc = "Echo LSP progress",
+  callback = function(ev)
+    local data = ev.data.params.value
+    local client = vim.lsp.get_client_by_id(ev.data.client_id)
+    local name = client and client.name or ""
+    local msg = name .. ": " .. (data.title or "") .. (data.message and " " .. data.message or "")
+    local status = data.kind == "end" and "success" or "running"
+    vim.api.nvim_echo({{ msg }}, false, {
+      kind = "progress",
+      source = name,
+      id = "lsp_progress_" .. ev.data.client_id,
+      status = status,
+      percent = data.percentage,
+    })
   end,
 })
