@@ -46,7 +46,7 @@ return {
       "gradlew",
       "settings.gradle",
       "settings.gradle.kts",
-      ".git"
+      ".git",
     },
     {
       "build.xml",

@@ -4,13 +4,16 @@ vim.pack.add({
 
 local mason_tools = {
   -- language serers
-  "bash-language-server",
   "basedpyright",
+  "bash-language-server",
   "jdtls",
+  "json-lsp",
   "lua-language-server",
   "neocmakelsp",
+  "yaml-language-server",
 
   -- formatters
+  "shfmt",
   "stylua",
 
   -- linters

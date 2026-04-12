@@ -64,15 +64,3 @@ vim.o.statusline = table.concat({
 })
 
 require("vim._core.ui2").enable({ msg = { targets = "msg" } })
-
-vim.diagnostic.config({
-  severity_sort = true,
-  underline = true,
-  update_in_insert = false,
-  virtual_lines = {
-    current_line = true,
-  },
-  virtual_text = {
-    current_line = false,
-  },
-})

@@ -1,14 +1,18 @@
 vim.api.nvim_create_user_command("Make", function(opts)
   local args = opts.args or ""
   local mp = vim.bo.makeprg
-  if mp == "" then mp = vim.go.makeprg end
+  if mp == "" then
+    mp = vim.go.makeprg
+  end
   local makeprg, n = mp:gsub("%$%*", args)
   if n == 0 and args ~= "" then
     makeprg = makeprg .. " " .. args
   end
 
   local efm = vim.bo.errorformat
-  if efm == "" then efm = vim.go.errorformat end
+  if efm == "" then
+    efm = vim.go.errorformat
+  end
   local state = {}
 
   local function on_exit(result)
@@ -21,11 +25,15 @@ vim.api.nvim_create_user_command("Make", function(opts)
       local elapsed = (now - state.start) / 1e9
       local msg = ("Make: %s (%.2fs)"):format(makeprg, elapsed)
       if state.interrupted then
-        vim.api.nvim_echo({{ msg }}, false, { kind = "progress", source = "make", id = "make", status = "cancel" })
+        vim.api.nvim_echo({ { msg } }, false, { kind = "progress", source = "make", id = "make", status = "cancel" })
       elseif result.code ~= 0 then
-        vim.api.nvim_echo({{ msg .. " [exit " .. result.code .. "]" }}, false, { kind = "progress", source = "make", id = "make", status = "failed" })
+        vim.api.nvim_echo(
+          { { msg .. " [exit " .. result.code .. "]" } },
+          false,
+          { kind = "progress", source = "make", id = "make", status = "failed" }
+        )
       else
-        vim.api.nvim_echo({{ msg }}, false, { kind = "progress", source = "make", id = "make", status = "success" })
+        vim.api.nvim_echo({ { msg } }, false, { kind = "progress", source = "make", id = "make", status = "success" })
       end
     end)
   end
@@ -52,7 +60,11 @@ vim.api.nvim_create_user_command("Make", function(opts)
     end)
   end
 
-  vim.api.nvim_echo({{ "Make: " .. makeprg }}, false, { kind = "progress", source = "make", id = "make", status = "running" })
+  vim.api.nvim_echo(
+    { { "Make: " .. makeprg } },
+    false,
+    { kind = "progress", source = "make", id = "make", status = "running" }
+  )
   state.handle = vim.system({ "sh", "-c", makeprg }, { stdout = on_data, stderr = on_data }, on_exit)
   state.start = vim.uv.hrtime()
 end, { nargs = "*" })

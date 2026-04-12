@@ -47,7 +47,6 @@ for _, map in ipairs({
   end, { desc = "Move to " .. map[3] })
 end
 
-
 vim.api.nvim_create_autocmd("FileType", {
   group = vim.api.nvim_create_augroup("config_ts", { clear = true }),
   callback = function(ev)
