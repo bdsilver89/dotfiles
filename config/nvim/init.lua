@@ -1,14 +1,20 @@
+-- Pack =======================================================================
 vim.pack.add({
   "https://github.com/tpope/vim-sleuth",
   "https://github.com/nvim-treesitter/nvim-treesitter",
   "https://github.com/nvim-treesitter/nvim-treesitter-textobjects",
   "https://github.com/neovim/nvim-lspconfig",
   "https://github.com/mason-org/mason.nvim",
-  "https://github.com/mason-org/mason-lspconfig.nvim",
   "https://github.com/stevearc/oil.nvim",
   "https://github.com/ibhagwan/fzf-lua",
   "https://github.com/lewis6991/gitsigns.nvim",
+  -- "https://github.com/stevearc/conform.nvim",
+  -- "https://github.com/mfussenegger/nvim-lint",
+  -- "https://github.com/mfussenegger/nvim-dap",
+  -- "https://github.com/igorlfs/nvim-dap-view",
 })
+
+-- Options ====================================================================
 
 vim.g.mapleader = " "
 
@@ -17,6 +23,7 @@ vim.o.autoread = true
 vim.o.breakindent = true
 vim.opt.completeopt = { "menu", "menuone", "noselect", "popup", "fuzzy" }
 vim.o.confirm = true
+vim.o.colorcolumn = "+1"
 vim.o.cursorline = true
 vim.opt.fillchars = { eob = " " }
 vim.o.foldexpr = "v:vim.treesitter.foldexpr()"
@@ -25,7 +32,7 @@ vim.o.foldmethod = "expr"
 vim.o.ignorecase = true
 vim.o.laststatus = 3
 vim.o.list = true
-vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
+vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
 vim.o.number = true
 vim.o.relativenumber = true
 vim.o.rulerformat = "%l:%c%V %P"
@@ -42,8 +49,10 @@ vim.o.undofile = true
 vim.o.updatetime = 250
 vim.o.wrap = false
 
-vim.schedule(function() vim.o.clipboard = "unnamedplus" end)
 vim.cmd.colorscheme("catppuccin")
+vim.schedule(function()
+  vim.o.clipboard = "unnamedplus"
+end)
 
 vim.o.statusline = table.concat({
   "%<%f %h%w%m%r",
@@ -62,12 +71,7 @@ vim.o.statusline = table.concat({
   " %{% &ruler ? ( &rulerformat == '' ? ' %-14.(%l,%c%V%) %P' : &rulerformat ) : '' %}",
 })
 
-require("vim._core.ui2").enable({
-  enable = true,
-  msg = {
-    targets = "msg",
-  },
-})
+require("vim._core.ui2").enable({ msg = { targets = "msg" } })
 
 vim.diagnostic.config({
   severity_sort = true,
@@ -81,16 +85,20 @@ vim.diagnostic.config({
   },
 })
 
+-- Plugins ====================================================================
+
 local lsp_servers = {
-  basedpyright = {},
-  clangd = { mason = false },
-  jdtls = {},
+  basedpyright = { mason = "basedpyright" },
+  clangd = {},
+  jdtls = { mason = "jdtls" },
   lua_ls = {
+    mason = "lua-language-server",
     settings = {
       Lua = { workspace = { library = vim.api.nvim_get_runtime_file("lua", true) } },
     },
   },
-  rust_analyzer = { mason = false },
+  neocmake = { mason = "neocmakelsp" },
+  rust_analyzer = {},
 }
 
 require("nvim-treesitter-textobjects").setup({
@@ -103,7 +111,34 @@ require("nvim-treesitter-textobjects").setup({
   },
 })
 
+local mason_tools = {
+  -- formatters
+  "stylua",
+  -- linters
+  -- debuggers
+}
+
 require("mason").setup()
+local mason_registry = require("mason-registry")
+local function mason_ensure(pkg)
+  if not mason_registry.is_installed(pkg) then
+    mason_registry.get_package(pkg):install()
+  end
+end
+
+for server, opts in pairs(lsp_servers) do
+  local pkg = opts.mason
+  opts.mason = nil
+  vim.lsp.config(server, opts)
+  vim.lsp.enable(server)
+  if pkg then
+    mason_ensure(pkg)
+  end
+end
+
+for _, pkg in ipairs(mason_tools) do
+  mason_ensure(pkg)
+end
 
 require("oil").setup({
   keymaps = {
@@ -117,20 +152,6 @@ require("fzf-lua").setup({
       ["ctrl-q"] = "select-all+accept",
     },
   },
-})
-
-local mlsp_servers = {}
-for server, opts in pairs(lsp_servers) do
-  local use_mason = opts and opts.mason ~= false
-  opts.mason = nil
-  vim.lsp.config(server, opts)
-  vim.lsp.enable(server)
-  if use_mason then
-    mlsp_servers[#mlsp_servers + 1] = server
-  end
-end
-require("mason-lspconfig").setup({
-  ensure_installed = mlsp_servers,
 })
 
 require("gitsigns").setup({
@@ -179,6 +200,8 @@ require("gitsigns").setup({
   end,
 })
 
+-- Keymaps ====================================================================
+
 -- stylua: ignore start
 vim.keymap.set({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { desc = "Down", expr = true, silent = true })
 vim.keymap.set({ "n", "x" }, "<down>", "v:count == 0 ? 'gj' : 'j'", { desc = "Down", expr = true, silent = true })
@@ -203,6 +226,8 @@ vim.keymap.set("n", "<leader>qq", "<cmd>qa<cr>")
 vim.keymap.set("n", "<leader>-", "<c-w>s")
 vim.keymap.set("n", "<leader>|", "<c-w>v")
 
+vim.keymap.set("n", "<leader>pu", vim.pack.update, { desc = "Pack Update" })
+
 vim.keymap.set("n", "<leader>ud", function()
   vim.diagnostic.enable(not vim.diagnostic.is_enabled())
 end, { desc = "Toggle Diagnostics" })
@@ -217,11 +242,19 @@ vim.keymap.set("n", "<leader>ut", function()
 end, { desc = "Undotree" })
 
 vim.keymap.set("n", "<leader>xl", function()
-  if vim.fn.getloclist(0, { winid = 0 }).winid ~= 0 then vim.cmd.lclose() else vim.cmd.lopen() end
+  if vim.fn.getloclist(0, { winid = 0 }).winid ~= 0 then
+    vim.cmd.lclose()
+  else
+    vim.cmd.lopen()
+  end
 end, { desc = "Location List" })
 
 vim.keymap.set("n", "<leader>xq", function()
-  if vim.fn.getqflist({ winid = 0 }).winid ~= 0 then vim.cmd.cclose() else vim.cmd.copen() end
+  if vim.fn.getqflist({ winid = 0 }).winid ~= 0 then
+    vim.cmd.cclose()
+  else
+    vim.cmd.copen()
+  end
 end, { desc = "Quickfix List" })
 
 vim.keymap.set("i", "<Tab>", function()
@@ -262,7 +295,9 @@ for _, map in ipairs({
   { { "x", "o" }, "aa", "@parameter.outer" },
   { { "x", "o" }, "ia", "@parameter.inner" },
 }) do
-  vim.keymap.set(map[1], map[2], function() tsto_select.select_texobject(map[3], "textobjects") end, { desc = "Select " .. map[3] })
+  vim.keymap.set(map[1], map[2], function()
+    tsto_select.select_texobject(map[3], "textobjects")
+  end, { desc = "Select " .. map[3] })
 end
 for _, map in ipairs({
   { { "n", "x", "o" }, "]f", "goto_next_start", "@function.outer" },
@@ -270,8 +305,12 @@ for _, map in ipairs({
   { { "n", "x", "o" }, "]c", "goto_next_start", "@class.outer" },
   { { "n", "x", "o" }, "[c", "goto_previous_start", "@class.outer" },
 }) do
-  vim.keymap.set(map[1], map[2], function() tsto_move[map[3]](map[4], "textobjects") end, { desc = "Move to " .. map[3] })
+  vim.keymap.set(map[1], map[2], function()
+    tsto_move[map[3]](map[4], "textobjects")
+  end, { desc = "Move to " .. map[3] })
 end
+
+-- Autocmds ===================================================================
 
 local group = vim.api.nvim_create_augroup("config", { clear = true })
 
@@ -294,7 +333,7 @@ vim.api.nvim_create_autocmd("VimResized", {
 
 vim.api.nvim_create_autocmd("FileType", {
   desc = "Close with <q>",
-  pattern = { "nvim-undotree", "git", "help", "man", "qf" },
+  pattern = { "nvim-undotree", "git", "help", "man", "qf", "nvim-pack" },
   group = group,
   callback = function(ev)
     if ev.match ~= "help" or not vim.bo[ev.buf].modifiable then
@@ -369,9 +408,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
     end
     if client:supports_method("textDocument/inlayHint") then
       map("<leader>uh", function()
-        vim.lsp.inlay_hint.enable(
-          not vim.lsp.inlay_hint.is_enabled({ bufnr = ev.buf })
-        )
+        vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = ev.buf }))
       end, "Toggle Inlay Hints")
     end
   end,
@@ -385,7 +422,7 @@ vim.api.nvim_create_autocmd("LspProgress", {
     local name = client and client.name or ""
     local msg = name .. ": " .. (data.title or "") .. (data.message and " " .. data.message or "")
     local status = data.kind == "end" and "success" or "running"
-    vim.api.nvim_echo({{ msg }}, false, {
+    vim.api.nvim_echo({ { msg } }, false, {
       kind = "progress",
       source = name,
       id = "lsp_progress_" .. ev.data.client_id,
