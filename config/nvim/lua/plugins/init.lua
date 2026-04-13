@@ -1,7 +1,0 @@
-require("plugins.utils")
-require("plugins.treesitter")
-require("plugins.explorer")
-require("plugins.git")
-require("plugins.mason")
-require("plugins.formatting")
-require("plugins.debugging")
