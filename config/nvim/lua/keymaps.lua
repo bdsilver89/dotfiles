@@ -3,6 +3,11 @@ vim.keymap.set({ "n", "x" }, "<down>", "v:count == 0 ? 'gj' : 'j'", { desc = "Do
 vim.keymap.set({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { desc = "Up", expr = true, silent = true })
 vim.keymap.set({ "n", "x" }, "<up>", "v:count == 0 ? 'gk' : 'k'", { desc = "Up", expr = true, silent = true })
 
+vim.keymap.set("n", "<c-d>", "<c-d>zz", { desc = "Scroll Down" })
+vim.keymap.set("n", "<c-u>", "<c-u>zz", { desc = "Scroll Up" })
+vim.keymap.set("n", "n", "nzzzv", { desc = "Next Result" })
+vim.keymap.set("n", "N", "Nzzzv", { desc = "Prev Result" })
+
 vim.keymap.set("n", "<esc>", "<cmd>nohlsearch<cr>")
 vim.keymap.set("t", "<esc><esc>", "<c-\\><c-n>")
 

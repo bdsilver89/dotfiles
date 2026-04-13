@@ -20,6 +20,8 @@ local mason_tools = {
 
   -- debuggers
   "codelldb",
+  "debugpy",
+  "java-debug-adapter",
 }
 
 require("mason").setup()

@@ -17,6 +17,7 @@ vim.o.foldlevel = 99
 vim.o.foldmethod = "expr"
 vim.o.ignorecase = true
 vim.o.laststatus = 3
+vim.o.linebreak = true
 vim.o.list = true
 vim.o.number = true
 vim.o.pumheight = 10

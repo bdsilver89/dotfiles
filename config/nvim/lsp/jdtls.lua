@@ -6,6 +6,11 @@ local function get_jdtls_workspace_dir()
   return get_jdtls_cache_dir() .. "/workspace"
 end
 
+local function get_java_debug_bundles()
+  local pattern = vim.fn.expand("$MASON/packages/java-debug-adapter/extension/server/com.microsoft.java.debug.plugin-*.jar")
+  return vim.split(vim.fn.glob(pattern), "\n", { trimempty = true })
+end
+
 local function get_jdtls_jvm_args()
   local env = os.getenv("JDTLS_JVM_ARGS")
   local args = {}
@@ -55,5 +60,7 @@ return {
       "build.gradle.kts",
     },
   },
-  init_options = {},
+  init_options = {
+    bundles = get_java_debug_bundles(),
+  },
 }
