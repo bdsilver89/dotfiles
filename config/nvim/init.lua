@@ -256,7 +256,7 @@ vim.keymap.set("n", "<leader>|", "<c-w>v")
 vim.keymap.set("n", "<leader>pu", vim.pack.update, { desc = "Pack Update" })
 
 -- stylua: ignore start
-vim.keymap.set("n", "<leader>ud", toggle("diagnostics", vim.diagnostic.enable, vim.diagnostic.is_enabled), { desc = "Toggle Diagnostics" })
+vim.keymap.set("n", "<leader>ud", toggle("diagnostics", vim.diagnostic.is_enabled, vim.diagnostic.enable), { desc = "Toggle Diagnostics" })
 vim.keymap.set("n", "<leader>uw", toggle("wrap", function() return vim.o.wrap end, function(v) vim.o.wrap = v end), { desc = "Toggle Wrap" })
 vim.keymap.set("n", "<leader>uf", toggle("autoformat", function() return vim.g.autoformat end, function(v) vim.g.autoformat = v end), { desc = "Toggle Autoformatting" })
 -- stylua: ignore end
