@@ -91,6 +91,8 @@ vim.pack.add({
   "https://github.com/lewis6991/gitsigns.nvim",
   "https://github.com/mfussenegger/nvim-dap",
   "https://github.com/igorlfs/nvim-dap-view",
+  "https://github.com/tpope/vim-dadbod",
+  "https://github.com/kristijanhusak/vim-dadbod-completion",
 })
 
 require("mason").setup()
