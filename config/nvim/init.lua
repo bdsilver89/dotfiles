@@ -86,6 +86,7 @@ vim.pack.add({
   "https://github.com/nvim-treesitter/nvim-treesitter-textobjects",
   "https://github.com/stevearc/oil.nvim",
   "https://github.com/ibhagwan/fzf-lua",
+  "https://github.com/folke/which-key.nvim",
   "https://github.com/stevearc/conform.nvim",
   "https://github.com/lewis6991/gitsigns.nvim",
   "https://github.com/mfussenegger/nvim-dap",
@@ -132,6 +133,18 @@ require("nvim-treesitter-textobjects").setup({
 require("oil").setup({ keymaps = { ["<C-h>"] = false } })
 
 require("fzf-lua").setup({ keymap = { fzf = { ["ctrl-q"] = "select-all+accept" } } })
+
+require("which-key").setup()
+require("which-key").add({
+  { "<leader>b", group = "buffer" },
+  { "<leader>d", group = "debug" },
+  { "<leader>g", group = "git" },
+  { "<leader>h", group = "hunk" },
+  { "<leader>p", group = "pack" },
+  { "<leader>t", group = "terminal" },
+  { "<leader>u", group = "toggle" },
+  { "<leader>x", group = "quickfix" },
+})
 
 require("conform").setup({
   formatters_by_ft = {
@@ -181,6 +194,7 @@ require("gitsigns").setup({
     map("n", "<leader>hp", gs.preview_hunk, "Preview Hunk")
     map("n", "<leader>hi", gs.preview_hunk_inline, "Preview Hunk Inline")
     map("n", "<leader>hb", function() gs.blame_line({ full = true }) end, "Blame Line")
+    map("n", "<leader>hB", function() gs.blame() end, "Blame Buffer")
     map("n", "<leader>hd", gs.diffthis, "Diff Against Index")
     map("n", "<leader>hD", function() gs.diffthis("@") end, "Diff Against HEAD")
     map("n", "<leader>ub", gs.toggle_current_line_blame, "Toggle Line Blame")
@@ -358,17 +372,21 @@ vim.keymap.set("n", "-", "<cmd>Oil<cr>", { desc = "Oil" })
 vim.keymap.set("n", "<leader><leader>", "<cmd>FzfLua files<cr>", { desc = "Files" })
 vim.keymap.set("n", "<leader>,", "<cmd>FzfLua buffers<cr>", { desc = "Buffers" })
 vim.keymap.set("n", "<leader>/", "<cmd>FzfLua live_grep<cr>", { desc = "Grep" })
+vim.keymap.set("n", "<leader>gs", "<cmd>FzfLua git_status<cr>", { desc = "Git Status" })
+vim.keymap.set("n", "<leader>gc", "<cmd>FzfLua git_commits<cr>", { desc = "Git Commits" })
+vim.keymap.set("n", "<leader>gC", "<cmd>FzfLua git_bcommits<cr>", { desc = "Git Buffer Commits" })
+vim.keymap.set("n", "<leader>gb", "<cmd>FzfLua git_branches<cr>", { desc = "Git Branches" })
 
 -- stylua: ignore start
-vim.keymap.set("n", "<leader>dc", dap.continue, { desc = "DAP Continue" })
-vim.keymap.set("n", "<leader>dn", dap.step_over, { desc = "DAP Step Over (next)" })
-vim.keymap.set("n", "<leader>di", dap.step_into, { desc = "DAP Step Into" })
-vim.keymap.set("n", "<leader>do", dap.step_out, { desc = "DAP Step Out" })
-vim.keymap.set("n", "<leader>db", dap.toggle_breakpoint, { desc = "DAP Toggle Breakpoint" })
-vim.keymap.set("n", "<leader>dB", function() dap.set_breakpoint(vim.fn.input("Breakpoint condition: ")) end, { desc = "DAP Conditional Breakpoint" })
-vim.keymap.set("n", "<leader>dr", dap.repl.toggle, { desc = "DAP REPL" })
-vim.keymap.set("n", "<leader>dl", dap.run_last, { desc = "DAP Run Last" })
-vim.keymap.set("n", "<leader>du", dv.toggle, { desc = "DAP View Toggle" })
+vim.keymap.set("n", "<leader>dc", dap.continue, { desc = "Continue" })
+vim.keymap.set("n", "<leader>dn", dap.step_over, { desc = "Step Over (next)" })
+vim.keymap.set("n", "<leader>di", dap.step_into, { desc = "Step Into" })
+vim.keymap.set("n", "<leader>do", dap.step_out, { desc = "Step Out" })
+vim.keymap.set("n", "<leader>db", dap.toggle_breakpoint, { desc = "Toggle Breakpoint" })
+vim.keymap.set("n", "<leader>dB", function() dap.set_breakpoint(vim.fn.input("Breakpoint condition: ")) end, { desc = "Conditional Breakpoint" })
+vim.keymap.set("n", "<leader>dr", dap.repl.toggle, { desc = "REPL" })
+vim.keymap.set("n", "<leader>dl", dap.run_last, { desc = "Run Last" })
+vim.keymap.set("n", "<leader>du", dv.toggle, { desc = "View Toggle" })
 -- stylua: ignore end
 
 -- Autocmds ===================================================================

@@ -88,6 +88,8 @@ end, { nargs = "?" })
 -- stylua: ignore start
 if vim.fn.executable("lazygit") == 1 then
   vim.keymap.set("n", "<leader>gg", function() open("lazygit") end, { desc = "Lazygit" })
+  vim.keymap.set("n", "<leader>gl", function() open("lazygit log") end, { desc = "Lazygit Log" })
+  vim.keymap.set("n", "<leader>gf", function() open("lazygit -f " .. vim.api.nvim_buf_get_name(0)) end, { desc = "Lazygit Current File" })
 end
 if vim.fn.executable("lazydocker") == 1 then
   vim.keymap.set("n", "<leader>td", function() open("lazydocker") end, { desc = "Lazydocker" })
