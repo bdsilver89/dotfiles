@@ -58,7 +58,7 @@ vim.o.statusline = table.concat({
   " %{% &ruler ? ( &rulerformat == '' ? ' %-14.(%l,%c%V%) %P' : &rulerformat ) : '' %}",
 })
 
-require("vim._core.ui2").enable({ msg = { targets = "msg" } })
+require("vim._core.ui2").enable()
 
 vim.cmd.colorscheme("catppuccin")
 
