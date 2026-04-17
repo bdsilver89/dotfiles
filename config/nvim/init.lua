@@ -104,6 +104,7 @@ for _, pkg in ipairs({
   "copilot-language-server",
   "jdtls",
   "json-lsp",
+  "lemminx",
   "lua-language-server",
   "neocmakelsp",
   "yaml-language-server",
