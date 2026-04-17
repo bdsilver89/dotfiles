@@ -92,7 +92,6 @@ vim.pack.add({
   "https://github.com/mfussenegger/nvim-dap",
   "https://github.com/igorlfs/nvim-dap-view",
   "https://github.com/tpope/vim-dadbod",
-  "https://github.com/kristijanhusak/vim-dadbod-completion",
 })
 
 require("mason").setup()
@@ -269,8 +268,6 @@ vim.keymap.set("n", "<leader>w", "<cmd>w<cr>")
 vim.keymap.set("n", "<leader>q", "<cmd>q<cr>")
 vim.keymap.set("n", "<leader>-", "<c-w>s")
 vim.keymap.set("n", "<leader>|", "<c-w>v")
-
-vim.keymap.set("n", "<leader>pu", vim.pack.update, { desc = "Pack Update" })
 
 -- stylua: ignore start
 vim.keymap.set("n", "<leader>ud", toggle("diagnostics", vim.diagnostic.is_enabled, vim.diagnostic.enable), { desc = "Toggle Diagnostics" })
@@ -465,3 +462,46 @@ vim.api.nvim_create_autocmd("LspProgress", {
     })
   end,
 })
+
+-- Commands ===================================================================
+vim.api.nvim_create_user_command("PackUpdate", function(opts)
+  if opts.args ~= "" then
+    local plugins = vim.split(opts.args, "%s+", { trimempty = true })
+    vim.pack.update(plugins)
+  else
+    vim.pack.update()
+  end
+end, { desc = "Pack Update", nargs = "*" })
+
+vim.api.nvim_create_user_command("PackDel", function(opts)
+  vim.pack.del(opts.fargs)
+end, { nargs = "+", desc = "Delete plugins (space separated)" })
+
+vim.api.nvim_create_user_command("PackCheck", function()
+  local non_active = vim
+    .iter(vim.pack.get())
+    :filter(function(x)
+      return not x.active
+    end)
+    :map(function(x)
+      return x.spec.name
+    end)
+    :totable()
+
+  if #non_active == 0 then
+    vim.print("No non-active plugins found")
+    return
+  end
+
+  vim.print("Non-active plugins: ")
+  for _, name in ipairs(non_active) do
+    vim.print(name)
+  end
+
+  vim.ui.input({ prompt = "Delete non-active plugins? (y/N): " }, function(input)
+    if input == "y" or input == "Y" then
+      vim.pack.del(non_active)
+      vim.print("Deleted non-active plugins")
+    end
+  end)
+end, { desc = "Check for non-active plugins" })
