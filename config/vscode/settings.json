@@ -1,14 +1,26 @@
 {
+    "editor.cursorSmoothCaretAnimation": "on",
+    "editor.copyWithSyntaxHighlighting": false,
     "editor.fontLigatures": true,
+    "editor.fontSize": 12,
     "editor.lineNumbers": "relative",
+    "editor.linkedEditing": true,
     "editor.minimap.enabled": false,
-    "workbench.settings.editor": "json",
+    "editor.mouseWheelZoom": true,
+    "editor.quickSuggestions": {
+        "strings": false
+    },
+    "explorer.confirmDelete": false,
+    "explorer.confirmDragAndDrop": false,
     "extensions.experimental.affinity": {
         "asvetliakov.vscode-neovim": 1
     },
-    "workbench.colorTheme": "Rosé Pine",
-    "editor.fontSize": 12,
-    "editor.mouseWheelZoom": true,
-    "explorer.confirmDragAndDrop": false,
-    "window.zoomLevel": 0
+    "git.enableSmartCommit": true,
+    "git.confirmSync": true,
+    "window.zoomLevel": 0,
+    "workbench.activityBar.location": "default",
+    "workbench.colorTheme": "Catppuccin Mocha",
+    "workbench.settings.editor": "json",
+    "workbench.iconTheme": "catppuccin-mocha",
+    "workbench.startupEditor": "none"
 }
