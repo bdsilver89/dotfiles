@@ -25,6 +25,11 @@
         "when": "filesExplorerFocus && !inputFocus"
     },
     {
+        "key": "x",
+        "command": "filesExplorer.cut",
+        "when": "filesExplorerFocus && !inputFocus"
+    },
+    {
         "key": "p",
         "command": "filesExplorer.paste",
         "when": "filesExplorerFocus && !inputFocus"
@@ -38,5 +43,10 @@
         "key": "escape",
         "command": "workbench.action.focusActiveEditorGroup",
         "when":"filesExplorerFocus && !inputFocus"
+    },
+    {
+        "key": "ctrl+/",
+        "command": "workbench.action.terminal.toggleTerminal",
+        "when": "terminal.active || editorTextFocus"
     }
 ]
