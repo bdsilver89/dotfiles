@@ -1,52 +1,47 @@
 [
     {
-        "key": "cmd+o",
-        "command": "projectManager.listGitProjects#sideBarGit",
-        "when": "isMac"
-    },
-    {
-        "key": "ctrl+o",
-        "command": "projectManager.listGitProjects#sideBarGit",
-        "when": "isWindows || isLinux"
-    },
-    {
         "key": "a",
-        "command": "explorer.newFile",
-        "when": "filesExplorerFocus && !inputFocus"
-    },
-    {
-        "key": "r",
-        "command": "renameFile",
-        "when": "filesExplorerFocus && !inputFocus"
+        "command": "workbench.files.action.createFileFromExplorer",
+        "when": "filesExplorerFocus && foldersViewVisible && !explorerResourceIsRoot && !explorerResourceReadonly && !inputFocus"
     },
     {
         "key": "c",
         "command": "filesExplorer.copy",
-        "when": "filesExplorerFocus && !inputFocus"
+        "when": "filesExplorerFocus && foldersViewVisible && !explorerResourceIsRoot && !explorerResourceReadonly && !inputFocus"
     },
     {
         "key": "x",
         "command": "filesExplorer.cut",
-        "when": "filesExplorerFocus && !inputFocus"
+        "when": "filesExplorerFocus && foldersViewVisible && !explorerResourceIsRoot && !explorerResourceReadonly && !inputFocus"
     },
     {
         "key": "p",
         "command": "filesExplorer.paste",
-        "when": "filesExplorerFocus && !inputFocus"
+        "when": "filesExplorerFocus && foldersViewVisible && !explorerResourceIsRoot && !explorerResourceReadonly && !inputFocus"
     },
     {
         "key": "d",
         "command": "deleteFile",
-        "when": "filesExplorerFocus && !inputFocus"
+        "when": "filesExplorerFocus && foldersViewVisible && !explorerResourceIsRoot && !explorerResourceReadonly && !inputFocus"
+    },
+    {
+        "key": "r",
+        "command": "renameFile",
+        "when": "filesExplorerFocus && foldersViewVisible && !explorerResourceIsRoot && !explorerResourceReadonly && !inputFocus"
+    },
+    {
+        "key": "enter",
+        "command": "list.select",
+        "when": "filesExplorerFocus && foldersViewVisible && !explorerResourceIsRoot && !explorerResourceReadonly && !inputFocus"
+    },
+    {
+        "key": "shift-enter",
+        "command": "explorer.openToSide",
+        "when": "filesExplorerFocus && foldersViewVisible && !explorerResourceIsRoot && !explorerResourceReadonly && !inputFocus"
     },
     {
         "key": "escape",
         "command": "workbench.action.focusActiveEditorGroup",
-        "when":"filesExplorerFocus && !inputFocus"
-    },
-    {
-        "key": "ctrl+/",
-        "command": "workbench.action.terminal.toggleTerminal",
-        "when": "terminal.active || editorTextFocus"
+        "when": "filesExplorerFocus && foldersViewVisible && !inputFocus"
     }
 ]

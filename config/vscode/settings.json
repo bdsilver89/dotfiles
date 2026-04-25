@@ -1,112 +1,114 @@
 {
     "breadcrumbs.enabled": true,
-    "breadcrumbs.icons": true,
-    "breadcrumbs.symbolPath": "off",
-    "claudeCode.preferredLocation": "sidebar",
-    "editor.copyWithSyntaxHighlighting": false,
+    "editor.codeLens": false,
+    "editor.colorDecorators": false,
     "editor.cursorBlinking": "smooth",
+    "editor.cursorSurroundingLines": 8,
+    "editor.cursorSurroundingLinesStyle": "default",
     "editor.cursorSmoothCaretAnimation": "on",
     "editor.fontLigatures": true,
-    "editor.fontSize": 14,
-    "editor.guides.bracketPairs": "active",
+    "editor.glyphMargin": true,
+    "editor.guides.bracketPairs": false,
+    "editor.guides.indentation": true,
     "editor.hideCursorInOverviewRuler": true,
+    "editor.hover.enabled": "on",
+    "editor.lightbulb.enabled": "off",
     "editor.lineNumbers": "relative",
     "editor.linkedEditing": true,
-    "editor.glyphMargin": true,
+    "editor.links": true,
+    "editor.matchBrackets": "never",
     "editor.minimap.enabled": false,
-    "editor.mouseWheelZoom": true,
+    "editor.occurrencesHighlight": "singleFile",
     "editor.overviewRulerBorder": false,
-    "editor.quickSuggestions": { "strings": false },
+    "editor.parameterHints.enabled": true,
+    "editor.quickSuggestions": { "other": "on", "strings": "off" },
+    "editor.renderLineHighlight": "line",
+    "editor.renderWhitespace": "trailing",
+    "editor.scrollbar.horizontal": "auto",
+    "editor.scrollbar.vertical": "auto",
+    "editor.selectionHighlight": false,
     "editor.showFoldingControls": "mouseover",
-    "editor.smoothScrolling": true,
-    "editor.stickyScroll.enabled": true,
-    "editor.suggest.insertMode": "replace",
-    // "editor.roundedSelection": true,
+    "editor.smoothScrolling": "on",
+    "editor.snippetSuggestions": "top",
+    "editor.stickyScroll.enabled": false,
+    "editor.suggestOnTriggerCharacters": true,
+    "editor.tabCompletion": "on",
+    "explorer.compactFolders": true,
+    "explorer.confirmDelete": false,
     "explorer.confirmDragAndDrop": false,
+    "explorer.decorations.badges": false,
     "explorer.fileNesting.enabled": true,
+    "extensions.experimental.affinity": { "vscodevim.vim": 1 },
     "extensions.ignoreRecommendations": true,
-    "extensions.experimental.affinity": {
-        "vscodevim.vim": 1
-    },
+    "git.autoStash": true,
     "git.confirmSync": true,
+    "git.decorations.enabled": false,
     "git.detectSubmodules": false,
     "git.openRepositoryInParentFolders": "always",
-    "git.autoStash": true,
-    "gitlens.ai.model": "vscode",
-    "gitlens.ai.vscode.model": "copilot:gpt-4.1",
-    // "gitlens.statusBar.enabled": false,
     "gitlens.blame.avatars": false,
     "gitlens.blame.heatmap.enabled": false,
-    "gitlens.hovers.currentLine.enabled": false,
     "gitlens.hovers.annotations.enabled": false,
-    "gitlens.showWhatsNewAfterUpgrades": false,
+    "gitlens.hovers.currentLine.enabled": false,
     "gitlens.plusFeatures.enabled": false,
-    "gitlens.views.scm.grouped.views": {
-        "commits": true,
-        "branches": true,
-        "remotes": true,
-        "stashes": true,
-        "tags": true,
-        "worktrees": true,
-        "contributors": true,
-        "fileHistory": false,
-        "repositories": true,
-        "searchAndCompare": false,
-        "launchpad": true
-    },
-    "projectManager.git.baseFolders": [
-        "~/dev/projects",
-        "~/Developer/projects"
-    ],
+    "gitlens.showWhatsNewAfterUpgrades": false,
+    "material-icon-theme.hidesExplorerArrows": true,
+    "projectManager.git.baseFolders": [ "~/dev/projects", "~/Developer/projects" ],
     "projectManager.git.ignoredFolders": [".bare"],
     "projectManager.git.maxDepthRecursion": 2,
     "projectManager.sortList": "Recent",
-    "remote.extensionKind": {
-        "alefragnani.project-manager": ["workspace"]
+    "remote.extensionKind": { "alefragnani.project-manager": ["workspace"] },
+    "search.exclude": {
+        "**/.next": true,
+        "**/*.lock": true,
+        "**/*.vare": true,
+        "**/bower_components": true,
+        "**/build": true,
+        "**/dist": true,
+        "**/node_modules": true,
+        "**/out": true,
+        "**/target": true
     },
-    "security.workspace.trust.untrustedFiles": "open",
     "scm.defaultViewMode": "tree",
     "scm.diffDecorations": "gutter",
     "telemetry.telemetryLevel": "off",
+    "terminal.integrated.tabs.enabled": true,
     "window.commandCenter": false,
-    // "window.density.editorTabHeight": "compact",
-    // "workbench.editor.showTabs": "single",
     "window.menuBarVisibility": "compact",
     "window.titleBarStyle": "custom",
-    "window.zoomLevel": 0,
     "workbench.activityBar.location": "top",
     "workbench.browser.showInTitleBar": false,
     "workbench.colorTheme": "Catppuccin Mocha",
     "workbench.editor.empty.hint": "hidden",
     "workbench.editor.enablePreview": false,
-    // "workbench.editor.decorations.badges": false,
-    // "workbench.editor.decorations.colors": false,
+    "workbench.editor.showTabs": "single",
     "workbench.iconTheme": "material-icon-theme",
     "workbench.layoutControl.enabled": false,
     "workbench.list.smoothScrolling": true,
-    "workbench.statusBar.visible": true,
-    "workbench.settings.editor": "json",
-    "workbench.startupEditor": "none",
     "workbench.productIconTheme": "material-product-icons",
+    "workbench.settings.editor": "json",
+    "workbench.sideBar.location": "left",
+    "workbench.startupEditor": "none",
+    "workbench.statusBar.visible": true,
     "workbench.tips.enabled": false,
+    "workbench.tree.enableStickyScroll": false,
     "workbench.tree.renderIndentGuides": "none",
-    "vim.leader": "<space>",
     "vim.foldfix": true,
     "vim.handleKeys": {
-        "<C-d>": true,
+        "<C-p>": false,
         "<C-s>": false,
         "<C-z>": false,
-        "<C-p>": false
+        "<C-d>": true,
+        "<C-u>": true
     },
     "vim.highlightedyank.enable": true,
     "vim.hlsearch": true,
     "vim.incsearch": true,
-    "vim.useSystemClipboard": true,
+    "vim.leader": "<space>",
     "vim.normalModeKeyBindingsNonRecursive": [
         {
             "before": ["<Esc>"],
-            "commands": [":nohl"],
-            "when": "editorFocus",
+            "commands": [":nohlsearch"],
+            "when": "editorTextFocus && vim.mode == 'Normal'",
             "silent": true
         },
         {
@@ -118,6 +120,10 @@
             "commands": ["workbench.action.findInFiles"]
         },
         {
+            "before": ["<leader>", ","],
+            "commands": ["workbench.action.showAllEditors"]
+        },
+        {
             "before": ["<leader>", "s", "s"],
             "commands": ["workbench.action.gotoSymbol"]
         },
@@ -126,20 +132,12 @@
             "commands": ["workbench.action.showAllSymbols"]
         },
         {
-            "before": ["<leader>", ","],
-            "commands": ["workbench.action.showAllEditors"]
-        },
-        {
             "before": ["<leader>", "-"],
             "commands": ["workbench.action.splitEditorDown"]
         },
         {
             "before": ["<leader>", "|"],
             "commands": ["workbench.action.splitEditorRight"]
-        },
-        {
-            "before": ["z", "a"],
-            "commands": ["editor.toggleFold"]
         },
         {
             "before": ["<leader>", "w"],
@@ -172,10 +170,6 @@
         {
             "before": ["<leader>", "g", "o"],
             "commands": ["gitlens.openFileOnRemote"]
-        },
-        {
-            "before": ["<leader>", "d"],
-            "commands": ["workbench.view.debug"]
         },
         {
             "before": ["K"],
@@ -245,5 +239,7 @@
             "before": ["<c-l>"],
             "commands": ["workbench.action.navigateRight"]
         }
-    ]
+    ],
+    "vim.useSystemClipboard": true,
+    "claudeCode.preferredLocation": "sidebar"
 }
