@@ -34,6 +34,13 @@
     "git.autoStash": true,
     "gitlens.ai.model": "vscode",
     "gitlens.ai.vscode.model": "copilot:gpt-4.1",
+    // "gitlens.statusBar.enabled": false,
+    "gitlens.blame.avatars": false,
+    "gitlens.blame.heatmap.enabled": false,
+    "gitlens.hovers.currentLine.enabled": false,
+    "gitlens.hovers.annotations.enabled": false,
+    "gitlens.showWhatsNewAfterUpgrades": false,
+    "gitlens.plusFeatures.enabled": false,
     "gitlens.views.scm.grouped.views": {
         "commits": true,
         "branches": true,
@@ -147,8 +154,24 @@
             "commands": ["workbench.view.explorer"]
         },
         {
-            "before": ["<leader>", "g"],
+            "before": ["<leader>", "g", "g"],
             "commands": ["workbench.view.scm"]
+        },
+        {
+            "before": ["<leader>", "g", "b"],
+            "commands": ["gitlens.toggleFileBlame"]
+        },
+        {
+            "before": ["<leader>", "g", "h"],
+            "commands": ["gitlens.showQuickFileHistory"]
+        },
+        {
+            "before": ["<leader>", "g", "l"],
+            "commands": ["gitlens.showQuickCommitFileDetails"]
+        },
+        {
+            "before": ["<leader>", "g", "o"],
+            "commands": ["gitlens.openFileOnRemote"]
         },
         {
             "before": ["<leader>", "d"],
