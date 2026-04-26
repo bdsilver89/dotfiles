@@ -16,5 +16,6 @@ pkief.material-product-icons
 redhat.vscode-xml
 redhat.vscode-yaml
 rust-lang.rust-analyzer
+usernamehw.errorlens
 vscjava.vscode-java-pack
 vscodevim.vim
