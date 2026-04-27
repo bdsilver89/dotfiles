@@ -104,6 +104,8 @@
     "vim.hlsearch": true,
     "vim.incsearch": true,
     "vim.leader": "<space>",
+    "vim.ignorecase": true,
+    "vim.smartcase": true,
     "vim.normalModeKeyBindingsNonRecursive": [
         {
             "before": ["<Esc>"],
@@ -217,11 +219,51 @@
         },
         {
             "before": ["[", "b"],
-            "commands": ["workbench.action.previousEditor"]
+            "commands": ["workbench.action.previousEditorInGroup"]
         },
         {
             "before": ["]", "b"],
-            "commands": ["workbench.action.nextEditor"]
+            "commands": ["workbench.action.nextEditorInGroup"]
+        },
+        {
+            "before": ["[", "c"],
+            "commands": ["workbench.action.editor.previousChange"]
+        },
+        {
+            "before": ["]", "c"],
+            "commands": ["workbench.action.editor.nextChange"]
+        },
+        {
+            "before": ["<leader>", "h", "s"],
+            "commands": ["git.stageSelectedRanges"]
+        },
+        {
+            "before": ["<leader>", "h", "r"],
+            "commands": ["git.revertSelectedRanges"]
+        },
+        {
+            "before": ["<leader>", "h", "u"],
+            "commands": ["git.unstageSelectedRanges"]
+        },
+        {
+            "before": ["<leader>", "h", "S"],
+            "commands": ["git.stage"]
+        },
+        {
+            "before": ["<leader>", "h", "U"],
+            "commands": ["git.unstage"]
+        },
+        {
+            "before": ["<leader>", "h", "R"],
+            "commands": ["git.clean"]
+        },
+        {
+            "before": ["<leader>", "h", "p"],
+            "commands": ["editor.action.dirtydiff.next"]
+        },
+        {
+            "before": ["<leader>", "h", "d"],
+            "commands": ["git.openChange"]
         },
         {
             "before": ["<c-h>"],
@@ -240,6 +282,5 @@
             "commands": ["workbench.action.navigateRight"]
         }
     ],
-    "vim.useSystemClipboard": true,
-    "claudeCode.preferredLocation": "sidebar"
+    "vim.useSystemClipboard": true
 }
