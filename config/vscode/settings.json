@@ -96,9 +96,7 @@
     "vim.handleKeys": {
         "<C-p>": false,
         "<C-s>": false,
-        "<C-z>": false,
-        "<C-d>": true,
-        "<C-u>": true
+        "<C-z>": false
     },
     "vim.highlightedyank.enable": true,
     "vim.hlsearch": true,
@@ -266,6 +264,18 @@
             "commands": ["git.openChange"]
         },
         {
+            "before": ["<C-d>"],
+            "commands": [
+                { "command": "editorScroll", "args": { "to": "down", "by": "halfPage", "revealCursor": true } }
+            ]
+        },
+        {
+            "before": ["<C-u>"],
+            "commands": [
+                { "command": "editorScroll", "args": { "to": "up", "by": "halfPage", "revealCursor": true } }
+            ]
+        },
+        {
             "before": ["<c-h>"],
             "commands": ["workbench.action.navigateLeft"]
         },
@@ -280,6 +290,20 @@
         {
             "before": ["<c-l>"],
             "commands": ["workbench.action.navigateRight"]
+        }
+    ],
+    "vim.visualModeKeyBindingsNonRecursive": [
+        {
+            "before": ["<C-d>"],
+            "commands": [
+                { "command": "editorScroll", "args": { "to": "down", "by": "halfPage", "revealCursor": true } }
+            ]
+        },
+        {
+            "before": ["<C-u>"],
+            "commands": [
+                { "command": "editorScroll", "args": { "to": "up", "by": "halfPage", "revealCursor": true } }
+            ]
         }
     ],
     "vim.useSystemClipboard": true
