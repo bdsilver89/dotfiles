@@ -108,6 +108,7 @@
     "restore_unsaved_buffers": true,
   },
   "git_panel": {
+    "tree_view": true,
     "dock":"left",
     "default_width": 300
   },

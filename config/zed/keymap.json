@@ -24,6 +24,7 @@
       "space g g": "git_panel::ToggleFocus",
       "space g b": "git::Blame",
       "space g d": "git::Diff",
+      "space g h": "git_graph::Open",
 
       "space h s": "git::StageAndNext",
       "space h r": "git::Restore",
