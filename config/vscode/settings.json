@@ -1,170 +1,79 @@
 {
-    "breadcrumbs.enabled": false,
-    "diffEditor.ignoreTrimWhitespace": false,
-    "diffEditor.renderSideBySide": true,
-    "editor.accessibilitySupport": "off",
-    "editor.bracketPairColorization.enabled": false,
-    "editor.codeLens": false,
-    "editor.colorDecorators": false,
+    // general
+    "editor.bracketPairColorization.enabled": true,
     "editor.cursorBlinking": "smooth",
-    "editor.cursorSmoothCaretAnimation": "on",
+    "editor.cursorSmoothCaretAnimation": true,
     "editor.cursorSurroundingLines": 8,
-    "editor.cursorSurroundingLinesStyle": "default",
-    "editor.detectIndentation": true,
-    "editor.emptySelectionClipboard": false,
     "editor.fontLigatures": true,
-    "editor.fontSize": 14,
-    "editor.glyphMargin": false,
-    "editor.gotoLocation.multipleReferences": "goto",
-    "editor.gotoLocation.multipleDefinitions": "goto",
-    "editor.gotoLocation.multipleDeclarations": "goto",
-    "editor.gotoLocation.multipleImplementations": "goto",
-    "editor.gotoLocation.multipleTypeDefinitions": "goto",
-    "editor.guides.bracketPairs": false,
-    "editor.guides.bracketPairsHorizontal": false,
-    "editor.guides.highlightActiveBracketPair": false,
-    "editor.guides.indentation": true,
-    "editor.hideCursorInOverviewRuler": true,
-    "editor.hover.enabled": "on",
-    "editor.inlayHints.enabled": "off",
-    "editor.lightbulb.enabled": "off",
-    "editor.lineNumbers": "relative",
+    "editor.guides.bracketPairs": "active",
     "editor.linkedEditing": true,
-    "editor.links": true,
-    "editor.matchBrackets": "never",
     "editor.minimap.enabled": false,
-    "editor.mouseWheelZoom": true,
-    "editor.occurrencesHighlight": "off",
-    "editor.overviewRulerBorder": false,
-    "editor.parameterHints.enabled": false,
-    "editor.quickSuggestions": { "other": "on", "strings": "off" },
-    "editor.quickSuggestionsDelay": 0,
-    "editor.renderControlCharacters": false,
-    "editor.renderLineHighlight": "line",
-    "editor.renderValidationDecorations": "off",
-    "editor.renderWhitespace": "trailing",
-    "editor.scrollBeyondLastLine": false,
-    "editor.scrollbar.horizontal": "hidden",
-    "editor.scrollbar.vertical": "hidden",
-    "editor.selectionHighlight": false,
-    "editor.showFoldingControls": "mouseover",
     "editor.smoothScrolling": true,
-    "editor.snippetSuggestions": "top",
-    "editor.stickyScroll.enabled": false,
-    "editor.suggest.showWords": false,
-    "editor.suggest.preview": false,
-    "editor.suggestOnTriggerCharacters": true,
-    "editor.suggestSelection": "first",
-    "editor.tabCompletion": "on",
-    "editor.wordWrap": "off",
-    "explorer.compactFolders": true,
-    "explorer.confirmDelete": false,
-    "explorer.confirmDragAndDrop": false,
-    "explorer.confirmPasteNative": false,
-    "explorer.decorations.badges": false,
-    "explorer.decorations.colors": false,
-    "explorer.fileNesting.enabled": true,
-    "explorer.openEditors.visible": 1,
-    "extensions.experimental.affinity": { "vscodevim.vim": 1 },
+    "explorer.autoReveal": false,
     "extensions.ignoreRecommendations": true,
-    "files.watcherExclude": {
-        ".git/objects/**": true,
-        ".git/subtree-cache/**": true,
-        ".hg/store/**": true,
-        "*/.git/objects/**": true,
-        "*/.git/subtree-cache/**": true,
-        "*/.hg/store/**": true,
-        "**/node_modules/**": true,
-        "**/target/**": true,
-        "**/dist/**": true,
-        "**/build/**": true,
-        "**/out/**": true
-    },
     "git.autofetch": true,
-    "git.autorefresh": true,
-    "git.autoStash": true,
     "git.confirmSync": false,
-    "git.decorations.enabled": false,
-    "git.detectSubmodules": false,
-    "git.fetchOnPull": true,
-    "git.openRepositoryInParentFolders": "always",
-    "git.suggestSmartCommit": false,
-    "gitlens.blame.avatars": false,
-    "gitlens.blame.heatmap.enabled": false,
-    "gitlens.hovers.annotations.enabled": false,
-    "gitlens.hovers.currentLine.enabled": false,
-    "gitlens.plusFeatures.enabled": false,
-    "gitlens.showWhatsNewAfterUpgrades": false,
-    "markdown.preview.markEditorSelection": false,
-    "material-icon-theme.hidesExplorerArrows": true,
-    "outline.problems.colors": false,
-    "problems.decorations.enabled": false,
-    "projectManager.git.baseFolders": [ "~/dev/projects", "~/Developer/projects" ],
-    "projectManager.git.ignoredFolders": [".bare"],
-    "projectManager.git.maxDepthRecursion": 2,
-    "projectManager.sortList": "Recent",
-    "remote.extensionKind": { "alefragnani.project-manager": ["workspace"] },
-    "scm.defaultViewMode": "tree",
-    "scm.diffDecorations": "gutter",
-    "search.exclude": {
-        "**/.next": true,
-        "**/*.lock": true,
-        "**/*.vare": true,
-        "**/bower_components": true,
-        "**/build": true,
-        "**/dist": true,
-        "**/node_modules": true,
-        "**/out": true,
-        "**/target": true
-    },
     "search.smartCase": true,
     "telemetry.telemetryLevel": "off",
-    "terminal.integrated.enableMultiLinePasteWarning": "never",
-    "terminal.integrated.tabs.enabled": true,
     "window.commandCenter": false,
-    "window.density.editorTabHeight": "compact",
-    "window.menuBarVisibility": "compact",
-    "window.title": "${rootName}",
-    "window.titleBarStyle": "custom",
-    "workbench.activityBar.location": "hidden",
-    "workbench.browser.showInTitleBar": false,
+    // "window.density.editorTabHeight": "compact",
+    "window.restoreWindows": "none",
+    "workbench.activityBar.location": "top",
     "workbench.colorTheme": "Catppuccin Mocha",
-    "workbench.editor.editorActionsLocation": "hidden",
-    "workbench.editor.empty.hint": "hidden",
     "workbench.editor.enablePreview": false,
-    "workbench.editor.enablePreviewFromQuickOpen": false,
-    "workbench.editor.revealIfOpen": true,
-    "workbench.editor.showTabs": "single",
+    "workbench.editor.limit.enabled": true,
+    "workbench.editor.limit.value": 10,
+    "workbench.editor.showTabs": "none",
     "workbench.iconTheme": "material-icon-theme",
-    "workbench.layoutControl.type": "menu",
+    "workbench.layoutControl.enabled": false,
     "workbench.list.smoothScrolling": true,
     "workbench.productIconTheme": "material-product-icons",
     "workbench.settings.editor": "json",
-    "workbench.sideBar.location": "left",
-    "workbench.secondarySideBar.defaultVisibility": "hidden",
     "workbench.startupEditor": "none",
-    "workbench.statusBar.visible": false,
     "workbench.tips.enabled": false,
-    "workbench.tree.enableStickyScroll": false,
-    "workbench.tree.indent": 16,
-    "workbench.tree.renderIndentGuides": "none",
-    "vim.foldfix": true,
-    "vim.handleKeys": {
-        "<C-p>": false,
-        "<C-s>": false,
-        "<C-z>": false,
-        "<C-r>": true
+
+    "files.watcherExclude": {
+        "**/node_modules": true,
+        "**/.bare": true,
+        "**/build": true,
+        "**/dist": true,
+        "**/out": true,
+        "**/target": true
     },
-    "vim.highlightedyank.enable": true,
-    "vim.hlsearch": true,
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/.bare": true,
+        "**/build": true,
+        "**/dist": true,
+        "**/out": true,
+        "**/target": true
+     },
+
+    // vim
+    "vim.foldfix": true,
     "vim.incsearch": true,
+    "vim.hlsearch": true,
     "vim.leader": "<space>",
+    "vim.smartRelativeLine": true,
+    "vim.useSystemClipboard": true,
     "vim.normalModeKeyBindingsNonRecursive": [
         {
             "before": ["<Esc>"],
             "commands": [":nohlsearch"],
-            "when": "editorTextFocus && vim.mode == 'Normal'",
+            "when": "editorTextFocus",
             "silent": true
+        },
+        {
+            "before": ["<leader>", "w"],
+            "commands": [":w!"]
+        },
+        {
+            "before": ["<leader>", "q"],
+            "commands": [":q!"]
+        },
+        {
+            "before": ["<leader>", "e"],
+            "commands": ["workbench.view.explorer"]
         },
         {
             "before": ["<leader>", "<space>"],
@@ -195,40 +104,9 @@
             "commands": ["workbench.action.splitEditorRight"]
         },
         {
-            "before": ["<leader>", "w"],
-            "commands": ["workbench.action.files.save"]
-        },
-        {
-            "before": ["<leader>", "q"],
-            "commands": ["workbench.action.closeActiveEditor"]
-        },
-        {
-            "before": ["<leader>", "e"],
-            "commands": ["workbench.view.explorer"]
-        },
-        {
-            "before": ["<leader>", "g", "g"],
-            "commands": ["workbench.view.scm"]
-        },
-        {
-            "before": ["<leader>", "g", "b"],
-            "commands": ["gitlens.toggleFileBlame"]
-        },
-        {
-            "before": ["<leader>", "g", "h"],
-            "commands": ["gitlens.showQuickFileHistory"]
-        },
-        {
-            "before": ["<leader>", "g", "l"],
-            "commands": ["gitlens.showQuickCommitFileDetails"]
-        },
-        {
-            "before": ["<leader>", "g", "o"],
-            "commands": ["gitlens.openFileOnRemote"]
-        },
-        {
             "before": ["K"],
-            "commands": ["editor.action.showHover"]
+            "commands": ["editor.action.showHover"],
+            "when": "editorTextFocus && vim.mode == 'Normal'"
         },
         {
             "before": ["g", "r", "d"],
@@ -285,6 +163,10 @@
         {
             "before": ["]", "c"],
             "commands": ["workbench.action.editor.nextChange"]
+        },
+        {
+            "before": ["<leader>", "g", "g"],
+            "commands": ["workbench.view.scm"]
         },
         {
             "before": ["<leader>", "h", "s"],
@@ -345,22 +227,16 @@
         {
             "before": ["<c-l>"],
             "commands": ["workbench.action.navigateRight"]
-        }
-    ],
-    "vim.visualModeKeyBindingsNonRecursive": [
-        {
-            "before": ["<C-d>"],
-            "commands": [
-                { "command": "editorScroll", "args": { "to": "down", "by": "halfPage", "revealCursor": true } }
-            ]
         },
-        {
-            "before": ["<C-u>"],
-            "commands": [
-                { "command": "editorScroll", "args": { "to": "up", "by": "halfPage", "revealCursor": true } }
-            ]
-        }
     ],
-    "vim.useSystemClipboard": true,
-    "workbench.layoutControl.enabled": false
+
+    // extensions
+    "claudeCode.preferredLocation": "panel",
+    "projectManager.git.baseFolders": [
+        "$home/Developer/projects",
+        "$home/dev/projects",
+    ],
+    "extensions.experimental.affinity": {
+        "vscodevim.vim": 1,
+    },
 }

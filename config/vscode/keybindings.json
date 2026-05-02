@@ -30,18 +30,23 @@
         "when": "filesExplorerFocus && foldersViewVisible && !explorerResourceIsRoot && !explorerResourceReadonly && !inputFocus"
     },
     {
-        "key": "enter",
-        "command": "list.select",
-        "when": "filesExplorerFocus && foldersViewVisible && !explorerResourceIsRoot && !explorerResourceReadonly && !inputFocus"
+        "key": "ctrl+shift+]",
+        "command": "workbench.action.nextEditorInGroup",
+        "when": "!isMac"
     },
     {
-        "key": "shift-enter",
-        "command": "explorer.openToSide",
-        "when": "filesExplorerFocus && foldersViewVisible && !explorerResourceIsRoot && !explorerResourceReadonly && !inputFocus"
+        "key": "ctrl+shift+[",
+        "command": "workbench.action.previousEditorInGroup",
+        "when": "!isMac"
     },
     {
-        "key": "escape",
-        "command": "workbench.action.focusActiveEditorGroup",
-        "when": "filesExplorerFocus && foldersViewVisible && !inputFocus"
+        "key": "cmd+shift+]",
+        "command": "workbench.action.nextEditorInGroup",
+        "when": "isMac"
+    },
+    {
+        "key": "cmd+shift+[",
+        "command": "workbench.action.previousEditorInGroup",
+        "when": "isMac"
     }
 ]
