@@ -1,3 +1,4 @@
+aaron-bond.better-comments
 alefragnani.project-manager
 anthropic.claude-code
 catppuccin.catppuccin-vsc

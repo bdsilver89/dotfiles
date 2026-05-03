@@ -2,7 +2,7 @@
     // general
     "editor.bracketPairColorization.enabled": true,
     "editor.cursorBlinking": "smooth",
-    "editor.cursorSmoothCaretAnimation": true,
+    "editor.cursorSmoothCaretAnimation": "on",
     "editor.cursorSurroundingLines": 8,
     "editor.fontLigatures": true,
     "editor.guides.bracketPairs": "active",
@@ -13,6 +13,8 @@
     "extensions.ignoreRecommendations": true,
     "git.autofetch": true,
     "git.autoStash": true,
+    "git.blame.statusBarItem.enabled": true,
+    "git.blame.editorDecoration.enabled": true,
     "git.confirmSync": false,
     "git.detectSubmodules": false,
     "scm.defaultViewMode": "tree",
@@ -22,11 +24,11 @@
     // "window.density.editorTabHeight": "compact",
     "window.restoreWindows": "none",
     "workbench.activityBar.location": "top",
-    "workbench.colorTheme": "Catppuccin Mocha",
+    "workbench.colorTheme": "Catppuccin Macchiato",
     "workbench.editor.enablePreview": false,
     "workbench.editor.limit.enabled": true,
     "workbench.editor.limit.value": 10,
-    "workbench.editor.showTabs": "none",
+    "workbench.editor.showTabs": "multi",
     "workbench.iconTheme": "material-icon-theme",
     "workbench.layoutControl.enabled": false,
     "workbench.list.smoothScrolling": true,
@@ -100,11 +102,17 @@
         },
         {
             "before": ["<leader>", "-"],
-            "commands": ["workbench.action.splitEditorDown"]
+            "commands": [
+                "workbench.action.splitEditorDown",
+                "workbench.action.moveEditorToNextGroup",
+            ]
         },
         {
             "before": ["<leader>", "|"],
-            "commands": ["workbench.action.splitEditorRight"]
+            "commands": [
+                "workbench.action.splitEditorRight",
+                "workbench.action.moveEditorToNextGroup",
+            ]
         },
         {
             "before": ["K"],
@@ -230,16 +238,16 @@
         {
             "before": ["<c-l>"],
             "commands": ["workbench.action.navigateRight"]
-        },
+        }
     ],
 
     // extensions
     "claudeCode.preferredLocation": "panel",
     "projectManager.git.baseFolders": [
         "$home/Developer/projects",
-        "$home/dev/projects",
+        "$home/dev/projects"
     ],
     "extensions.experimental.affinity": {
-        "vscodevim.vim": 1,
+        "vscodevim.vim": 1
     },
 }
