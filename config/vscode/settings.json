@@ -21,7 +21,7 @@
     "search.smartCase": true,
     "telemetry.telemetryLevel": "off",
     "window.commandCenter": false,
-    // "window.density.editorTabHeight": "compact",
+    "window.menuBarVisibility": "compact",
     "window.restoreWindows": "none",
     "workbench.activityBar.location": "top",
     "workbench.colorTheme": "Catppuccin Macchiato",
