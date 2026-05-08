@@ -8,6 +8,10 @@
       "type": "registry",
     },
   },
+  "telemetry": {
+    "diagnostics": false,
+    "metrics": false,
+  },
   "theme": "Catppuccin Macchiato",
   "icon_theme": "Material Icon Theme",
   "buffer_font_family": ".ZedMono",
@@ -26,13 +30,19 @@
   "git": {
     "worktree_directory": "."
   },
+  "colorize_brackets": true,
   "format_on_save": "off",
   "ensure_final_newline_on_save": false,
   "remove_trailing_whitespace_on_save": false,
+  "indent_guides": {
+    "enabled": true,
+    "coloring": "indent_aware"
+  },
   "vim_mode": true,
   "vim": {
     "use_system_clipboard": "always",
     "use_smartcase_find": true,
+    "toggle_relative_line_numbers": true,
   },
 
   // "title_bar": {
