@@ -6,6 +6,7 @@
       "space ,": "tab_switcher::Toggle",
       "space /": "pane::DeploySearch",
       "space :": "command_palette::Toggle",
+      "space .": "outline::Toggle",
       "space f r": ["projects::OpenRecent", { "create_new_window": false }],
       "space f n": "workspace::NewFile",
 
@@ -19,16 +20,36 @@
 
       "space c f": "editor::Format",
 
+      "space c s": "outline_panel::Toggle",
+
       "space x x": "diagnostics::Deploy",
+
+      "space d s": "debugger::Start",
+      "space d b": "editor::ToggleBreakpoint",
+      "space d B": "debugger::ToggleDataBreakpoint",
+      "space d c": "debugger::Continue",
+      "space d n": "debugger::StepOver",
+      "space d i": "debugger::StepInto",
+      "space d o": "debugger::StepOut",
+      "space d r": "debugger::Restart",
+      "space d t": "debugger::Stop",
+      "space d u": "debug_panel::ToggleFocus",
+      "space d e": "debugger::EvaluateSelectedText",
 
       "space g g": "git_panel::ToggleFocus",
       "space g b": "git::Blame",
       "space g d": "git::Diff",
+      "space g p": "editor::ToggleSelectedDiffHunks",
       "space g h": "git_graph::Open",
+      "space g w": "git::Worktree",
 
       "space h s": "git::StageAndNext",
       "space h r": "git::Restore",
+      "space h S": "git::StageFile",
+      "space h R": "git::RestoreFile",
+      "space h d": "editor::ToggleSelectedDiffHunks",
       "space h p": "git::ToggleStaged",
+      "space u b": "editor::ToggleGitBlameInline",
 
       "space e": "project_panel::ToggleFocus",
       "space t": "terminal_panel::Toggle",
@@ -52,13 +73,32 @@
       "d": "project_panel::Delete",
     },
   },
-
   {
-    "context": "AgentPanel",
+    "context": "OutlinePanel",
     "bindings": {
-      "escape": "agent::ToggleFocus",
-      // "space a": "agent::Toggle"
-    },
+      "escape escape": "outline_panel::Toggle"
+    }
+  },
+  {
+    "context": "AgentPanel && vim_mode == normal",
+    "bindings": {
+      "space a": "agent::Toggle"
+    }
+  },
+  {
+    "context": "GitPanel && !editing",
+    "bindings": {
+      "space g g": "git_panel::Toggle"
+    }
+  },
+  {
+    "context": "ProjectPanel || AgentPanel || GitPanel || OutlinePanel",
+    "bindings": {
+      "ctrl-h": "workspace::ActivatePaneLeft",
+      "ctrl-j": "workspace::ActivatePaneDown",
+      "ctrl-k": "workspace::ActivatePaneUp",
+      "ctrl-l": "workspace::ActivatePaneRight"
+    }
   },
   {
     "context": "Terminal",
