@@ -91,7 +91,7 @@ function Copy-File {
       Warning "File already exists: $Destination"
       $choice = Read-Host "[s]kip, [S]kip all, [o]verwrite, [O]verwrite all, [b]ackup, [B]ackup all?"
 
-      switch ($choice.ToLower()) {
+      switch -CaseSensitive ($choice) {
         "s" { $skip = $true }
         "o" { $overwrite = $true }
         "b" { $backup = $true }
@@ -167,7 +167,7 @@ function Link-File {
         Warning "File already exists: $Destination"
         $choice = Read-Host "[s]kip, [S]kip all, [o]verwrite, [O]verwrite all, [b]ackup, [B]ackup all?"
 
-        switch ($choice.ToLower()) {
+        switch -CaseSensitive ($choice) {
           "s" { $skip = $true }
           "o" { $overwrite = $true }
           "b" { $backup = $true }
