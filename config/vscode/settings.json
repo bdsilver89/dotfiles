@@ -9,6 +9,7 @@
     "editor.linkedEditing": true,
     "editor.minimap.enabled": false,
     "editor.smoothScrolling": true,
+    "editor.tabSize": 2,
     "explorer.autoReveal": false,
     "extensions.ignoreRecommendations": true,
     "git.autofetch": true,
@@ -140,7 +141,7 @@
             "commands": ["editor.action.referenceSearch.trigger"]
         },
         {
-            "before": ["g", "r", "o"],
+            "before": ["g", "r", "t"],
             "commands": ["editor.action.goToTypeDefinition"]
         },
         {
@@ -238,6 +239,22 @@
         {
             "before": ["<c-l>"],
             "commands": ["workbench.action.navigateRight"]
+        },
+        {
+            "before": ["g", "O"],
+            "commands": ["workbench.action.gotoSymbol"]
+        },
+        {
+            "before": ["<C-w>", "d"],
+            "commands": ["editor.action.marker.next"]
+        },
+        {
+            "before": ["[", "D"],
+            "commands": ["editor.action.marker.prevInFiles"]
+        },
+        {
+            "before": ["]", "D"],
+            "commands": ["editor.action.marker.nextInFiles"]
         }
     ],
 

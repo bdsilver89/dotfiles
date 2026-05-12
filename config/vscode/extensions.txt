@@ -3,7 +3,6 @@ alefragnani.project-manager
 anthropic.claude-code
 catppuccin.catppuccin-vsc
 dbcode.dbcode
-eamodio.gitlens
 echoapi.echoapi-for-vscode
 editorconfig.editorconfig
 github.vscode-github-actions
