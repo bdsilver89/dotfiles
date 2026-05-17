@@ -321,6 +321,66 @@ setup_vscode() {
   fi
 }
 
+# Merge the statusLine block into ~/.claude/settings.json without clobbering
+# per-machine state (enabledPlugins, editorMode, etc.). Idempotent.
+configure_claude_settings() {
+  local settings="$HOME/.claude/settings.json"
+  local cmd="sh ~/.claude/statusline-command.sh"
+
+  if ! command -v jq >/dev/null 2>&1; then
+    warning "jq not found; add statusLine to ${settings} manually"
+    return 0
+  fi
+
+  mkdir -p "$HOME/.claude"
+
+  local base='{}'
+  if [ -e "$settings" ]; then
+    if jq -e . "$settings" >/dev/null 2>&1; then
+      base="$(cat "$settings")"
+    else
+      cp "$settings" "${settings}.bak.$(unixstamp)"
+      warning "Existing ${settings} was not valid JSON; backed up"
+    fi
+  fi
+
+  local tmp="${settings}.tmp.$$"
+  if printf '%s' "$base" | jq --arg cmd "$cmd" \
+      '.statusLine = {type: "command", command: $cmd}' >"$tmp" 2>/dev/null; then
+    mv "$tmp" "$settings"
+    status "Configured statusLine in ${settings}"
+  else
+    rm -f "$tmp"
+    warning "Failed to update ${settings}"
+  fi
+}
+
+setup_claude() {
+  title "Setting up Claude Code"
+
+  if is_windows; then
+    log_and_die "windows not supported"
+  fi
+
+  mkdir -p "$HOME/.claude"
+
+  # Top-level files (e.g. statusline-command.sh) are symlinked directly.
+  # Subdirectories (skills/, commands/, agents/, ...) are linked per-entry
+  # so ~/.claude/<dir> stays a real directory - host-local items (e.g.
+  # work-machine-only skills) can live there untracked, alongside the
+  # ones shared via this repo.
+  for src in $(find "${DOTFILES_DIR}/claude" -mindepth 1 -maxdepth 1); do
+    name="$(basename "$src")"
+    if [ -d "$src" ]; then
+      link_files_in_dir "$src" "$HOME/.claude/$name"
+    else
+      link_file "$src" "$HOME/.claude/$name"
+    fi
+  done
+
+  configure_claude_settings
+}
+
 install_packages() {
   local packages=("$@")
 
@@ -697,6 +757,9 @@ main() {
     --vscode)
       steps_to_run+=("setup_vscode")
       ;;
+    --claude)
+      steps_to_run+=("setup_claude")
+      ;;
     --tmux)
       steps_to_run+=("setup_tmux")
       ;;
@@ -730,6 +793,7 @@ OPTIONS:
 --zsh-omz   Install zsh and plugins using oh-my-zsh
 --zsh-zinit Install zsh and plugins using zinit
 --vscode    Configure vscode
+--claude    Configure Claude Code (statusline + settings.json)
 --update    Update local dotfile repository
 --help      Show this help message
 "

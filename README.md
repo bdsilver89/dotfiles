@@ -49,6 +49,7 @@ The `bootstrap.sh` script supports granular installation with the following opti
 | `--dry-run` | Show what would be done without making changes |
 | `--update` | Update the local dotfiles repository |
 | `--symlinks` | Create symlinks from dotfiles to system locations |
+| `--claude` | Symlink Claude Code files to `~/.claude/` and merge the statusline into `settings.json` |
 | `--mac` | Install Homebrew and packages from Brewfile |
 | `--linux` | Install packages using system package manager (apt/dnf) |
 | `--asdf` | Install asdf and CLI tools (bat, eza, fd, fzf, jq, lazygit, ripgrep, zoxide) |
@@ -206,6 +207,7 @@ dotfiles/
 │   ├── wezterm/
 │   └── ...
 ├── bin/              # User scripts (symlinked to ~/.local/bin/)
+├── claude/           # Claude Code files (symlinked to ~/.claude/)
 ├── profile.d/        # Shell profile snippets
 ├── zsh/              # Zsh configuration
 ├── tmux/             # Tmux configuration
