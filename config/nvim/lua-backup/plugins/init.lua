@@ -4,6 +4,7 @@ require("plugins.mason")
 require("plugins.treesitter")
 require("plugins.markdown")
 require("plugins.blink")
+require("plugins.flash")
 require("plugins.oil")
 require("plugins.git")
 require("plugins.snacks")
@@ -15,7 +16,6 @@ require("plugins.dap")
 
 vim.pack.add({
   "https://github.com/mfussenegger/nvim-lint",
-  "https://github.com/yorickpeterse/nvim-jump", -- TODO: replace with folke
   "https://github.com/folke/trouble.nvim",
   "https://github.com/gbprod/yanky.nvim",
   "https://github.com/nvim-mini/mini.nvim",

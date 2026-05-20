@@ -20,6 +20,10 @@
       "rev": "18aeab3d63d350dcf44d64c462cc489a3412af40",
       "src": "https://github.com/stevearc/conform.nvim"
     },
+    "flash.nvim": {
+      "rev": "fcea7ff883235d9024dc41e638f164a450c14ca2",
+      "src": "https://github.com/folke/flash.nvim"
+    },
     "friendly-snippets": {
       "rev": "6cd7280adead7f586db6fccbd15d2cac7e2188b9",
       "src": "https://github.com/rafamadriz/friendly-snippets"
@@ -83,10 +87,6 @@
     "nvim-jdtls": {
       "rev": "77ccaeb422f8c81b647605da5ddb4a7f725cda90",
       "src": "https://github.com/mfussenegger/nvim-jdtls"
-    },
-    "nvim-jump": {
-      "rev": "672204397c51507d7a821bc61ba9fad7dbed4303",
-      "src": "https://github.com/yorickpeterse/nvim-jump"
     },
     "nvim-lint": {
       "rev": "665525810630701b84181e4d9eefd24b49845b29",
