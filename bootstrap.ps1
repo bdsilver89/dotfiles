@@ -277,8 +277,17 @@ function Setup-VSCode {
     Warning "VSCode settings not found at $vscodeSettings"
   }
 
+  $vscodeKeybindings = Join-Path $DotfilesDir "config/vscode/keybindings.json"
+  $vscodeKeybindingsTarget = Join-Path $env:APPDATA "Code/User/keybindings.json"
+
+  if (Test-Path $vscodeKeybindings) {
+    Deploy-File -Source $vscodeKeybindings -Destination $vscodeKeybindingsTarget
+  } else {
+    Warning "VSCode keybindings not found at $vscodeKeybindings"
+  }
+
   $vscodeExtensions = Join-Path $DotfilesDir "config/vscode/extensions.txt"
-  if (Test-Path $vscodeSettings) {
+  if (Test-Path $vscodeExtensions) {
     Get-Content -Path $vscodeExtensions | ForEach-Object {
       code --install-extension "$_"
     }
