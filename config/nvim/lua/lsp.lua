@@ -1,25 +1,45 @@
+local icons = require("icons")
+
 vim.diagnostic.config({
   underline = true,
   severity_sort = true,
   update_in_insert = false,
+  status = {
+    format = function(counts)
+      local items = {}
+      for severity, count in pairs(counts) do
+        local name = vim.diagnostic.severity[severity]
+        local hl = "DiagnosticSign" .. name:sub(1, 1) .. name:sub(2):lower()
+        table.insert(items, ('%%#%s#%s %d'):format(hl, icons.diagnostics[name], count))
+      end
+      return table.concat(items, " ")
+    end,
+  },
+  virtual_text = {
+    spacing = 2,
+  },
+  float = {
+    source = "if_many",
+    prefix = function(diag)
+      local level = vim.diagnostic.severity[diag.severity]
+      local prefix = string.format(" %s ", icons.diagnostics[level])
+      return prefix, "Diagnostic" .. level:gsub("^%l", string.upper)
+    end,
+  },
+  signs = {
+    text = {
+      [vim.diagnostic.severity.ERROR] = icons.diagnostics.ERROR,
+      [vim.diagnostic.severity.WARN] = icons.diagnostics.WARN,
+      [vim.diagnostic.severity.HINT] = icons.diagnostics.HINT,
+      [vim.diagnostic.severity.INFO] = icons.diagnostics.INFO,
+    },
+  }
 })
 
-vim.lsp.config("lua_ls", {
-  settings = {
-    Lua = {
-      runtime = { version = "LuaJIT" },
-      diagnostics = {
-        globlas = { "vim", "Snacks" },
-      },
-      workspace = {
-        checkThirdParty = false,
-        library = {
-          vim.env.VIMRUNTIME,
-          "${3rd}/luv/library",
-        },
-      },
-    },
-  },
+-- Give every server blink's completion capabilities (blink does not register
+-- these itself). Servers started via vim.lsp.enable inherit the "*" config.
+vim.lsp.config("*", {
+  capabilities = require("blink.cmp").get_lsp_capabilities(),
 })
 
 vim.lsp.enable({
@@ -27,6 +47,25 @@ vim.lsp.enable({
   "clangd",
   "rust_analyzer",
 })
+
+local function on_attach(client, bufnr)
+  -- local function keymap(lhs, rhs, opts, mode)
+  --   mode = mode or "n"
+  --   opts = type(opts) == "string" and { desc = opts } or opts
+  --   opts.buffer = bufnr
+  --   vim.keymap.set(mode, lhs, rhs, opts)
+  -- end
+
+  if client:supports_method("textDocument/completion") then
+    vim.lsp.completion.enable(true, client.id, bufnr, { autotrigger = true })
+  end
+
+  if client:supports_method("textDocument/documentColor") then
+    vim.lsp.document_color.enable(true, { bufnr = bufnr }, {
+      style = "virtual",
+    })
+  end
+end
 
 vim.api.nvim_create_autocmd("LspAttach", {
   group = vim.api.nvim_create_augroup("config_lspattach", { clear = true }),
@@ -36,15 +75,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
       return
     end
 
-    if client:supports_method("textDocument/completion") then
-      vim.lsp.completion.enable(true, client.id, ev.buf, { autotrigger = true })
-    end
-
-    if client:supports_method("textDocument/documentColor") then
-      vim.lsp.document_color.enable(true, { bufnr = ev.buf }, {
-        style = "virtual",
-      })
-    end
+    on_attach(client, ev.buf)
   end,
 })
 

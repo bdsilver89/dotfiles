@@ -3,4 +3,5 @@ vim.pack.add({
 })
 
 require("catppuccin").setup()
+
 vim.cmd.colorscheme("catppuccin-macchiato")

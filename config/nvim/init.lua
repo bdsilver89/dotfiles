@@ -1,3 +1,5 @@
+vim.loader.enable()
+
 require("options")
 require("keymaps")
 require("autocmds")
@@ -5,3 +7,5 @@ require("commands")
 require("packui")
 require("plugins")
 require("lsp")
+require("statusline")
+require("winbar")

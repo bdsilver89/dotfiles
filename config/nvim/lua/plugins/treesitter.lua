@@ -1,58 +1,58 @@
 vim.pack.add({
   "https://github.com/nvim-treesitter/nvim-treesitter",
   "https://github.com/nvim-treesitter/nvim-treesitter-textobjects",
-  "https://github.com/windwp/nvim-ts-autotag",
 })
 
-require("nvim-treesitter").setup({
-  ensure_installed = {
-    "bash",
-    "c",
-    "cpp",
-    "cmake",
-    "java",
-    "markdown",
-    "make",
-    "rust",
-    "python",
-    "toml",
-    "javascript",
-    "typescript",
-    "tsx",
-    "json",
-    "lua",
-    "yaml",
-    "xml",
-  },
-})
+local parsers = {
+  "bash",
+  "c",
+  "cmake",
+  "css",
+  "cpp",
+  "go",
+  "gitcommit",
+  "html",
+  "java",
+  "javascript",
+  "json",
+  "json5",
+  "lua",
+  "make",
+  "markdown",
+  "markdown_inline",
+  "python",
+  "query",
+  "regex",
+  "rust",
+  "scss",
+  "toml",
+  "tsx",
+  "typescript",
+  "vim",
+  "vimdoc",
+  "xml",
+  "yaml",
+}
 
-vim.api.nvim_create_autocmd("PackChanged", {
-  group = vim.api.nvim_create_augroup("config_tsupdate", { clear = true }),
-  callback = function(ev)
-    if ev.data.kind == "update" then
-      local ok = pcall(vim.cmd, "TSUpdate")
-      if not ok then
-        vim.notify("TSUpdate completed", vim.log.levels.INFO)
-      end
-    end
-  end,
-})
+require("nvim-treesitter").install(parsers)
 
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "*",
-  callback = function()
-    local ft = vim.bo.filetype
-    local ok = pcall(vim.treesitter.start)
-    if not ok then
+  callback = function(ev)
+    local ft = vim.bo[ev.buf].filetype
+    local lang = vim.treesitter.language.get_lang(ft)
+    if not lang then
       return
     end
 
+    pcall(vim.treesitter.language.add, lang)
+    pcall(vim.treesitter.start, ev.buf, lang)
+
     vim.wo[0].foldmethod = "expr"
     vim.wo[0].foldexpr = "v:lua.vim.treesitter.foldexpr()"
-  end,
+    vim.b[ev.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+  end
 })
-
-vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
 
 require("nvim-treesitter-textobjects").setup({
   select = {
@@ -89,5 +89,3 @@ for _, map in ipairs({
     fn(map[4], "textobjects")
   end, { desc = "Move to " .. qstr })
 end
-
-require("nvim-ts-autotag").setup()

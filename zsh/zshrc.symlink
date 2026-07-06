@@ -36,3 +36,5 @@ export PATH=/Users/briansilver/.opencode/bin:$PATH
 
 # Load universal profile configurations
 source "$HOME/.profile.d/00_core/00_loader.sh"
+
+. "$HOME/.local/share/../bin/env"

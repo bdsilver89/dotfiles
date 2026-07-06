@@ -3,7 +3,7 @@ let mapleader = " "
 set breakindent
 set gdefault
 set ignorecase
-set jumptions+=stack
+set jumpoptions+=stack
 set smartcase
 set splitbelow
 set splitright
@@ -14,33 +14,107 @@ set clipboard=unnamed
 set incsearch
 set hlsearch
 set scrolloff=8
+
+" IdeaVim plugins
 set surround
+set commentary
+set sneak
+set NERDTree
 
 sethandler <C-v> a:vim
 sethandler H a:vim
 sethandler L a:vim
 sethandler <C-w> a:vim
 
+" Clear search highlight on <Esc>
+nnoremap <Esc> :nohlsearch<CR>
+
+" Window navigation
 nmap <C-h> <C-w>h
 nmap <C-j> <C-w>j
 nmap <C-k> <C-w>k
 nmap <C-l> <C-w>l
 
-nmap <leader>| <Action>(SplitVertically)
+" Splits
 nmap <leader>- <Action>(SplitHorizontally)
+nmap <leader>\| <Action>(SplitVertically)
 
+" Buffer / tab navigation
 nmap [b <Action>(PreviousTab)
 nmap ]b <Action>(NextTab)
 
-nmap K <Action>(QuickJavaDoc)
+" Diagnostics navigation
+nmap [d <Action>(GotoPreviousError)
+nmap ]d <Action>(GotoNextError)
+
+" Change (git hunk) navigation
+nmap [c <Action>(VcsShowPrevChangeMarker)
+nmap ]c <Action>(VcsShowNextChangeMarker)
+
+" Files / search / commands
+nmap <leader><space> <Action>(GotoFile)
+nmap <leader>, <Action>(Switcher)
+nmap <leader>/ <Action>(FindInPath)
+nmap <leader>: <Action>(GotoAction)
+nmap <leader>. <Action>(FileStructurePopup)
+nmap <leader>fr <Action>(RecentFiles)
+nmap <leader>fn <Action>(NewFile)
+
+" Buffer / window lifecycle
+nmap <leader>w <Action>(SaveAll)
+nmap <leader>q <Action>(CloseContent)
+nmap <leader>bd <Action>(CloseContent)
+nmap <leader>bo <Action>(CloseAllEditorsButActive)
+
+" Panels
+nmap <leader>e <Action>(ActivateProjectToolWindow)
+nmap <leader>t <Action>(ActivateTerminalToolWindow)
+nmap <leader>a <Action>(ActivateAIAssistantToolWindow)
+
+" Code
+nmap <leader>cf <Action>(ReformatCode)
+nmap <leader>cs <Action>(FileStructurePopup)
+
+" Diagnostics list
+nmap <leader>xx <Action>(ActivateProblemsViewToolWindow)
+
+" Git
+nmap <leader>gg <Action>(ActivateVersionControlToolWindow)
+nmap <leader>gb <Action>(Annotate)
+nmap <leader>gd <Action>(Compare.SameVersion)
+nmap <leader>gh <Action>(Vcs.ShowTabbedFileHistory)
+
+" Hunks
+nmap <leader>hp <Action>(VcsShowCurrentChangeMarker)
+nmap <leader>hr <Action>(Vcs.RollbackChangedLines)
+nmap <leader>hd <Action>(Compare.SameVersion)
+
+" Debug
+nmap <leader>ds <Action>(Debug)
+nmap <leader>db <Action>(ToggleLineBreakpoint)
+nmap <leader>dc <Action>(Resume)
+nmap <leader>dn <Action>(StepOver)
+nmap <leader>di <Action>(StepInto)
+nmap <leader>do <Action>(StepOut)
+nmap <leader>dr <Action>(Rerun)
+nmap <leader>dt <Action>(Stop)
+nmap <leader>du <Action>(ActivateDebugToolWindow)
+nmap <leader>de <Action>(EvaluateExpression)
+
+" LSP-style mappings
+nmap K <Action>(ShowHoverInfo)
 nmap gcc <Action>(CommentByLineComment)
 vmap gc <Action>(CommentByLineComment)
-nmap grn <Action>(RenameElement)
 nmap gd <Action>(GotoDeclaration)
 nmap gy <Action>(GotoTypeDeclaration)
 nmap gi <Action>(GotoImplementation)
+nmap gO <Action>(FileStructurePopup)
+
+nmap grn <Action>(RenameElement)
 nmap grr <Action>(ShowUsages)
 nmap gra <Action>(ShowIntentionActions)
-nmap <leader><space>(GotoFile)
-nmap <leader>/ <Action>(SearchEverywhere)
-
+nmap grd <Action>(GotoDeclaration)
+nmap grD <Action>(GotoTypeDeclaration)
+nmap gri <Action>(GotoImplementation)
+nmap grt <Action>(GotoTypeDeclaration)
+nmap grf <Action>(ReformatCode)

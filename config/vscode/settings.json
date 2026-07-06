@@ -10,7 +10,7 @@
     "editor.minimap.enabled": false,
     "editor.smoothScrolling": true,
     "editor.tabSize": 2,
-    "explorer.autoReveal": false,
+    "explorer.autoReveal": true,
     "extensions.ignoreRecommendations": true,
     "git.autofetch": true,
     "git.autoStash": true,
@@ -30,10 +30,9 @@
     "workbench.editor.limit.enabled": true,
     "workbench.editor.limit.value": 10,
     "workbench.editor.showTabs": "multi",
-    "workbench.iconTheme": "material-icon-theme",
+    "workbench.iconTheme": "catppuccin-macchiato",
     "workbench.layoutControl.enabled": false,
     "workbench.list.smoothScrolling": true,
-    "workbench.productIconTheme": "material-product-icons",
     "workbench.settings.editor": "json",
     "workbench.startupEditor": "none",
     "workbench.tips.enabled": false,
@@ -267,4 +266,19 @@
     "extensions.experimental.affinity": {
         "vscodevim.vim": 1
     },
+    "[typescriptreact]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[html]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[css]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[typescript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[python]": {
+        "editor.tabSize": 4
+    }
 }
