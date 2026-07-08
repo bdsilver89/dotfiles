@@ -1,5 +1,12 @@
 return {
   {
+    "LazyVim",
+    opts = {
+      colorscheme = "catppuccin-macchiato",
+    },
+  },
+
+  {
     "nvim-lspconfig",
     opts = {
       codelens = {
