@@ -3,10 +3,14 @@ param(
   [switch]$Winget = $false,
   [switch]$All = $false,
   [switch]$UseSymlinks = $false,
+  [switch]$Copy = $false,
   [switch]$DryRun = $false,
   [string[]]$Apps = @(),
   [switch]$Help = $false
 )
+
+# Files are linked by default (hardlink first, symlink fallback) so live edits
+# round-trip into the repo. Pass -Copy to snapshot-copy instead.
 
 # =============================================================================
 # Dotfiles Bootstrap Script for Windows
@@ -137,6 +141,88 @@ function Copy-File {
   }
 }
 
+# Return a stable identity string (volume + file index) for a path, following
+# reparse points, so hardlinks and resolved symlinks compare equal to their
+# target. Empty string if the path can't be opened.
+$script:FileIdHelperLoaded = $false
+function Get-FileId {
+  param([string]$Path)
+
+  if (-not $script:FileIdHelperLoaded) {
+    Add-Type -TypeDefinition @'
+using System;
+using System.Runtime.InteropServices;
+public static class NativeFileId {
+  [StructLayout(LayoutKind.Sequential)]
+  struct INFO {
+    public uint FileAttributes;
+    public System.Runtime.InteropServices.ComTypes.FILETIME CreationTime;
+    public System.Runtime.InteropServices.ComTypes.FILETIME LastAccessTime;
+    public System.Runtime.InteropServices.ComTypes.FILETIME LastWriteTime;
+    public uint VolumeSerialNumber;
+    public uint FileSizeHigh;
+    public uint FileSizeLow;
+    public uint NumberOfLinks;
+    public uint FileIndexHigh;
+    public uint FileIndexLow;
+  }
+  [DllImport("kernel32.dll", SetLastError=true, CharSet=CharSet.Unicode)]
+  static extern IntPtr CreateFile(string name, uint access, uint share, IntPtr sec, uint disp, uint flags, IntPtr tmpl);
+  [DllImport("kernel32.dll", SetLastError=true)]
+  static extern bool GetFileInformationByHandle(IntPtr h, out INFO info);
+  [DllImport("kernel32.dll", SetLastError=true)]
+  static extern bool CloseHandle(IntPtr h);
+  public static string Get(string path) {
+    IntPtr h = CreateFile(path, 0, 7, IntPtr.Zero, 3, 0x02000000, IntPtr.Zero);
+    if (h == new IntPtr(-1)) return "";
+    try {
+      INFO info;
+      if (!GetFileInformationByHandle(h, out info)) return "";
+      return info.VolumeSerialNumber + ":" + info.FileIndexHigh + ":" + info.FileIndexLow;
+    } finally { CloseHandle(h); }
+  }
+}
+'@
+    $script:FileIdHelperLoaded = $true
+  }
+
+  return [NativeFileId]::Get($Path)
+}
+
+function Test-SameFile {
+  param([string]$A, [string]$B)
+  $idA = Get-FileId $A
+  $idB = Get-FileId $B
+  return ($idA -ne "") -and ($idA -eq $idB)
+}
+
+# Establish a link at $Destination pointing at $Source. Hardlink first (files
+# only, same volume, no privileges); fall back to a symlink (directories or
+# cross-volume; needs Developer Mode or admin). Returns $true on success.
+function New-Link {
+  param([string]$Source, [string]$Destination)
+
+  if (-not (Test-Path -Path $Source -PathType Container)) {
+    try {
+      New-Item -Path $Destination -ItemType HardLink -Value $Source -Force -ErrorAction Stop | Out-Null
+      Status "Hardlinked $Destination -> $Source"
+      return $true
+    } catch {
+      Info "Hardlink not possible ($($_.Exception.Message)); trying symlink"
+    }
+  }
+
+  try {
+    New-Item -Path $Destination -ItemType SymbolicLink -Value $Source -Force -ErrorAction Stop | Out-Null
+    Status "Symlinked $Destination -> $Source"
+    return $true
+  } catch {
+    Error "Failed to link ${Destination} -> ${Source}: $($_.Exception.Message)"
+    Error "Symlinks need Windows Developer Mode enabled (Settings > System > For developers) or an elevated shell"
+    return $false
+  }
+}
+
 function Link-File {
   param(
     [string]$Source,
@@ -154,13 +240,9 @@ function Link-File {
 
   if (Test-Path -Path $Destination) {
     if (-not $script:OverwriteAll -and -not $script:BackupAll -and -not $script:SkipAll) {
-      # Check if it's already a symlink pointing to the correct location
-      $item = Get-Item -Path $Destination -Force
-      if ($item.LinkType -eq "SymbolicLink") {
-        $currentTarget = $item.Target
-        if ($currentTarget -eq $Source) {
-          $skip = $true
-        }
+      # Already linked to the right source (hardlink or symlink)? Nothing to do.
+      if (Test-SameFile $Destination $Source) {
+        $skip = $true
       }
 
       if (-not $skip) {
@@ -205,14 +287,7 @@ function Link-File {
     New-Item -Path $parentDir -ItemType Directory -Force | Out-Null
   }
 
-  try {
-    New-Item -Path $Destination -ItemType SymbolicLink -Value $Source -Force -ErrorAction Stop | Out-Null
-    Status "Linked $Source to $Destination"
-  } catch {
-    Error "Failed to create symlink: $_"
-    Error "You may need to run PowerShell as Administrator to create symlinks"
-    Log-And-Die "Symlink creation failed"
-  }
+  New-Link -Source $Source -Destination $Destination | Out-Null
 }
 
 function Deploy-File {
@@ -221,22 +296,16 @@ function Deploy-File {
     [string]$Destination
   )
 
-  if ($UseSymlinks) {
-    Link-File -Source $Source -Destination $Destination
-  } else {
+  if ($Copy) {
     Copy-File -Source $Source -Destination $Destination
+  } else {
+    Link-File -Source $Source -Destination $Destination
   }
 }
 
 # =============================================================================
 # Helper Functions
 # =============================================================================
-
-function Test-IsAdmin {
-  $currentUser = [Security.Principal.WindowsIdentity]::GetCurrent()
-  $principal = New-Object Security.Principal.WindowsPrincipal($currentUser)
-  return $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
-}
 
 function Reload-Path {
   $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
@@ -289,7 +358,11 @@ function Setup-VSCode {
   $vscodeExtensions = Join-Path $DotfilesDir "config/vscode/extensions.txt"
   if (Test-Path $vscodeExtensions) {
     Get-Content -Path $vscodeExtensions | ForEach-Object {
-      code --install-extension "$_"
+      if ($DryRun) {
+        Info "[DRY RUN] Would install extension: $_"
+      } else {
+        code --install-extension "$_"
+      }
     }
   } else {
     Warning "VSCode extensions not found at $vscodeExtensions"
@@ -453,7 +526,8 @@ OPTIONS:
   -All               Perform all configuration steps
   -Update            Update local dotfile repository
   -Winget            Install applications via winget
-  -UseSymlinks       Use symlinks instead of copying files (requires admin)
+  -Copy              Snapshot-copy files instead of linking (no round-trip)
+  -UseSymlinks       Deprecated alias; linking is now the default
   -DryRun            Show what would be done without making changes
   -Apps <app1,app2>  Deploy specific apps (vscode, zed, neovim, wezterm, alacritty, terminal, powershell, starship)
   -Help              Show this help message
@@ -462,7 +536,7 @@ EXAMPLES:
   .\bootstrap.ps1 -All
   .\bootstrap.ps1 -Update -Apps vscode,zed
   .\bootstrap.ps1 -DryRun -All
-  .\bootstrap.ps1 -UseSymlinks -Apps neovim
+  .\bootstrap.ps1 -Copy -Apps neovim
 
 "@
 }
@@ -471,13 +545,6 @@ function Main {
   if ($Help) {
     Show-Help
     exit 0
-  }
-
-  # Check for admin rights if using symlinks
-  if ($UseSymlinks -and -not (Test-IsAdmin)) {
-    Error "Symlink mode requires administrator privileges"
-    Error "Please run PowerShell as Administrator or use copy mode (remove -UseSymlinks flag)"
-    exit 1
   }
 
   if ($DryRun) {
