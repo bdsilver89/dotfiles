@@ -19,7 +19,7 @@ alias pg="ps aux | grep -v grep | grep -i -e VSZ -e"
 # eza/exa/ls improvments
 if command -v eza >/dev/null 2>&1; then
     alias l="eza --color=always --icons=always --git"
-    alias ll="eza --color=always --icons=always --git -lah"
+    alias ll="eza --color=always --icons=always --git -lagSX"
     alias lt="eza --color=always --tree --level=2 --icons=always --long --git"
 elif command -v exa >/dev/null 2>&1; then
     alias l="exa --color=always"

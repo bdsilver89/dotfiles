@@ -6,6 +6,7 @@
 return {
   "AstroNvim/astrocommunity",
   { import = "astrocommunity.ai.codecompanion-nvim" },
+  { import = "astrocommunity.code-runner.overseer" },
   { import = "astrocommunity.colorscheme.catppuccin" },
   { import = "astrocommunity.debugging.nvim-dap-view" },
   { import = "astrocommunity.editing-support.nvim-treesitter-context" },

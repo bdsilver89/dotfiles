@@ -3,23 +3,48 @@
 
 # Sets user-defined palette
 # Palettes must be defined _after_ this line
-palette = "catppuccin_mocha"
+palette = "dracula"
 
-# Starship modules
+[aws]
+style = "bold orange"
+
 [character]
-# Note the use of Catppuccin color 'peach'
-success_symbol = "[❯](peach)"
-error_symbol = "[❯](peach)"
-vimcmd_symbol = "[❮](subtext1)" # For use with zsh-vi-mode
+error_symbol = "[❯](bold red)"
+success_symbol = "[❯](bold green)"
 
-[git_branch]
-style = "bold mauve"
+[cmd_duration]
+style = "bold yellow"
 
 [directory]
-truncation_length = 4
-style = "bold lavender"
+style = "bold green"
+
+[git_branch]
+style = "bold pink"
+
+[git_status]
+style = "bold red"
+
+[hostname]
+style = "bold purple"
+
+[username]
+format = "[$user]($style) on "
+style_user = "bold cyan"
 
 # Palette definitions
+[palettes.dracula]
+background = "#282a36"
+current_line = "#44475a"
+foreground = "#f8f8f2"
+comment = "#6272a4"
+cyan = "#8be9fd"
+green = "#50fa7b"
+orange = "#ffb86c"
+pink = "#ff79c6"
+purple = "#bd93f9"
+red = "#ff5555"
+yellow = "#f1fa8c"
+
 [palettes.catppuccin_latte]
 rosewater = "#dc8a78"
 flamingo = "#dd7878"

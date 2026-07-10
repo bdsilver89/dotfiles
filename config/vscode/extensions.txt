@@ -1,12 +1,13 @@
 aaron-bond.better-comments
 alefragnani.project-manager
+akamud.vscode-theme-onedark
 anthropic.claude-code
-catppuccin.catppuccin-vsc
 dbcode.dbcode
 echoapi.echoapi-for-vscode
 editorconfig.editorconfig
 github.vscode-github-actions
 github.vscode-pull-request-github
+gruntfuggly.todo-tree
 ms-azuretools.vscode-containers
 ms-python.python
 ms-vscode-remote.vscode-remote-extensionpack
@@ -16,6 +17,5 @@ pkief.material-product-icons
 redhat.vscode-xml
 redhat.vscode-yaml
 rust-lang.rust-analyzer
-usernamehw.errorlens
 vscjava.vscode-java-pack
 vscodevim.vim

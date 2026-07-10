@@ -50,7 +50,10 @@
   ],
   "profiles": {
     "defaults": {
-      "colorScheme": "Catppuccin Mocha",
+      "colorScheme": {
+        "dark": "Atom One Dark",
+        "light": "Atom One Light"
+      },
       "experimental.retroTerminalEffect": false,
       "font": {
         "face": "JetBrainsMono Nerd Font Mono"
@@ -121,6 +124,52 @@
     ]
   },
   "schemes": [
+    {
+      "name": "Atom One Dark",
+      "cursorColor": "#528BFF",
+      "selectionBackground": "#3E4451",
+      "background": "#282C34",
+      "foreground": "#ABB2BF",
+      "black": "#282C34",
+      "red": "#E06C75",
+      "green": "#98C379",
+      "yellow": "#E5C07B",
+      "blue": "#61AFEF",
+      "purple": "#C678DD",
+      "cyan": "#56B6C2",
+      "white": "#ABB2BF",
+      "brightBlack": "#5C6370",
+      "brightRed": "#E06C75",
+      "brightGreen": "#98C379",
+      "brightYellow": "#E5C07B",
+      "brightBlue": "#61AFEF",
+      "brightPurple": "#C678DD",
+      "brightCyan": "#56B6C2",
+      "brightWhite": "#FFFFFF"
+    },
+    {
+      "name": "Atom One Light",
+      "cursorColor": "#526FFF",
+      "selectionBackground": "#BFCEFF",
+      "background": "#FAFAFA",
+      "foreground": "#383A42",
+      "black": "#383A42",
+      "red": "#E45649",
+      "green": "#50A14F",
+      "yellow": "#C18401",
+      "blue": "#4078F2",
+      "purple": "#A626A4",
+      "cyan": "#0184BC",
+      "white": "#A0A1A7",
+      "brightBlack": "#696C77",
+      "brightRed": "#E45649",
+      "brightGreen": "#50A14F",
+      "brightYellow": "#C18401",
+      "brightBlue": "#4078F2",
+      "brightPurple": "#A626A4",
+      "brightCyan": "#0184BC",
+      "brightWhite": "#383A42"
+    },
     {
       "name": "Catppuccin Frappe",
       "cursorColor": "#F2D5CF",
@@ -383,10 +432,81 @@
       "brightRed": "#b4637a",
       "brightWhite": "#575279",
       "brightYellow": "#ea9d34"
+    },
+    {
+      "name": "Dracula",
+      "cursorColor": "#F8F8F2",
+      "selectionBackground": "#44475A",
+      "background": "#282A36",
+      "foreground": "#F8F8F2",
+      "black": "#21222C",
+      "blue": "#BD93F9",
+      "cyan": "#8BE9FD",
+      "green": "#50FA7B",
+      "purple": "#FF79C6",
+      "red": "#FF5555",
+      "white": "#F8F8F2",
+      "yellow": "#F1FA8C",
+      "brightBlack": "#6272A4",
+      "brightBlue": "#D6ACFF",
+      "brightCyan": "#A4FFFF",
+      "brightGreen": "#69FF94",
+      "brightPurple": "#FF92DF",
+      "brightRed": "#FF6E6E",
+      "brightWhite": "#FFFFFF",
+      "brightYellow": "#FFFFA5"
     }
   ],
-  "theme": "Catppuccin Mocha",
+  "theme": {
+    "dark": "Atom One Dark",
+    "light": "Atom One Light"
+  },
   "themes": [
+    {
+      "name": "Atom One Dark",
+      "tab": {
+        "background": "#282C34FF",
+        "showCloseButton": "always",
+        "unfocusedBackground": null
+      },
+      "tabRow": {
+        "background": "#21252BFF",
+        "unfocusedBackground": "#21252BFF"
+      },
+      "window": {
+        "applicationTheme": "dark"
+      }
+    },
+    {
+      "name": "Atom One Light",
+      "tab": {
+        "background": "#FAFAFAFF",
+        "showCloseButton": "always",
+        "unfocusedBackground": null
+      },
+      "tabRow": {
+        "background": "#EAEAEBFF",
+        "unfocusedBackground": "#EAEAEBFF"
+      },
+      "window": {
+        "applicationTheme": "light"
+      }
+    },
+    {
+      "name": "Dracula",
+      "tab": {
+        "background": "#282A36FF",
+        "showCloseButton": "always",
+        "unfocusedBackground": null
+      },
+      "tabRow": {
+        "background": "#21222CFF",
+        "unfocusedBackground": "#21222CFF"
+      },
+      "window": {
+        "applicationTheme": "dark"
+      }
+    },
     {
       "name": "Catppuccin Frappe",
       "tab": {

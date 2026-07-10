@@ -44,10 +44,10 @@ end
 
 wezterm.on("toggle-colorscheme", function(window, pane)
 	local overrides = window:get_config_overrides() or {}
-	if overrides.color_scheme == "Catppuccin Mocha" then
-		overrides.color_scheme = "Catppuccin Latte"
+	if overrides.color_scheme == "OneHalfDark" then
+		overrides.color_scheme = "OneHalfLight"
 	else
-		overrides.color_scheme = "Catppuccin Mocha"
+		overrides.color_scheme = "OneHalfDark"
 	end
 	window:set_config_overrides(overrides)
 end)
@@ -83,7 +83,7 @@ end)
 
 return {
 	animation_fps = 1,
-	color_scheme = "Catppuccin Mocha",
+	color_scheme = "OneHalfDark",
 	cursor_blink_rate = 500,
 	default_cursor_style = "BlinkingBlock",
 	hide_tab_bar_if_only_one_tab = true,
@@ -102,7 +102,7 @@ return {
 		{
 			key = "e",
 			mods = "CTRL|SHIFT",
-			action = act.EmitEvent("toggle-colorscheme"),
+			-- action = act.EmitEvent("toggle-colorscheme"),
 		},
 		{
 			key = "f",
