@@ -22,7 +22,7 @@
     
     // workbench settings
     "workbench.activityBar.location": "default",
-    "workbench.colorTheme": "Atom One Dark",
+    "workbench.colorTheme": "One Dark Pro",
     "workbench.iconTheme": "material-icon-theme",
     "workbench.productIconTheme": "material-product-icons",
     "workbench.editor.enablePreview": false,
@@ -44,6 +44,7 @@
     "diffEditor.ignoreTrimWhitespace": false,
     "diffEditor.hideUnchangedRegions.enabled": true,
     "diffEditor.renderSideBySide": true,
+    "scm.defaultViewMode": "list",
 
     // misc settings
     "telemetry.telemetryLevel": "off",
@@ -83,6 +84,7 @@
         "~/Developer/projects",
         "~/dev/projects"
     ],
+    "claudeCode.useTerminal": true,
 
     // languages
     "yaml.disableSchemaDetection": [
@@ -93,5 +95,4 @@
         "**/.forgejo/workflows/*.yml",
         "**/.forgejo/workflows/*.yaml"
     ],
-
 }

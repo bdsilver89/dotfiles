@@ -1,6 +1,6 @@
 aaron-bond.better-comments
 alefragnani.project-manager
-akamud.vscode-theme-onedark
+zhuangtongfa.material-theme
 anthropic.claude-code
 dbcode.dbcode
 echoapi.echoapi-for-vscode

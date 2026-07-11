@@ -50,10 +50,7 @@
   ],
   "profiles": {
     "defaults": {
-      "colorScheme": {
-        "dark": "Atom One Dark",
-        "light": "Atom One Light"
-      },
+      "colorScheme": "One Dark Pro",
       "experimental.retroTerminalEffect": false,
       "font": {
         "face": "JetBrainsMono Nerd Font Mono"
@@ -125,50 +122,27 @@
   },
   "schemes": [
     {
-      "name": "Atom One Dark",
-      "cursorColor": "#528BFF",
-      "selectionBackground": "#3E4451",
+      "name": "One Dark Pro",
       "background": "#282C34",
-      "foreground": "#ABB2BF",
-      "black": "#282C34",
-      "red": "#E06C75",
-      "green": "#98C379",
-      "yellow": "#E5C07B",
+      "black": "#3F4451",
       "blue": "#61AFEF",
-      "purple": "#C678DD",
-      "cyan": "#56B6C2",
-      "white": "#ABB2BF",
-      "brightBlack": "#5C6370",
-      "brightRed": "#E06C75",
-      "brightGreen": "#98C379",
+      "brightBlack": "#4F5666",
+      "brightBlue": "#4DC4FF",
+      "brightCyan": "#4CD1E0",
+      "brightGreen": "#A5E075",
+      "brightPurple": "#DE73FF",
+      "brightRed": "#BE5046",
+      "brightWhite": "#E6E6E6",
       "brightYellow": "#E5C07B",
-      "brightBlue": "#61AFEF",
-      "brightPurple": "#C678DD",
-      "brightCyan": "#56B6C2",
-      "brightWhite": "#FFFFFF"
-    },
-    {
-      "name": "Atom One Light",
-      "cursorColor": "#526FFF",
-      "selectionBackground": "#BFCEFF",
-      "background": "#FAFAFA",
-      "foreground": "#383A42",
-      "black": "#383A42",
-      "red": "#E45649",
-      "green": "#50A14F",
-      "yellow": "#C18401",
-      "blue": "#4078F2",
-      "purple": "#A626A4",
-      "cyan": "#0184BC",
-      "white": "#A0A1A7",
-      "brightBlack": "#696C77",
-      "brightRed": "#E45649",
-      "brightGreen": "#50A14F",
-      "brightYellow": "#C18401",
-      "brightBlue": "#4078F2",
-      "brightPurple": "#A626A4",
-      "brightCyan": "#0184BC",
-      "brightWhite": "#383A42"
+      "cursorColor": "#528BFF",
+      "cyan": "#56B6C2",
+      "foreground": "#ABB2BF",
+      "green": "#98C379",
+      "purple": "#C678DD",
+      "red": "#E06C75",
+      "selectionBackground": "#ABB2BF",
+      "white": "#D7DAE0",
+      "yellow": "#D19A66"
     },
     {
       "name": "Catppuccin Frappe",
@@ -356,13 +330,10 @@
     },
     {
       "name": "rose-pine",
-
       "cursorColor": "#555169",
       "selectionBackground": "#2a2837",
-
       "background": "#191724",
       "foreground": "#e0def4",
-
       "black": "#26233a",
       "blue": "#9ccfd8",
       "cyan": "#ebbcba",
@@ -380,16 +351,12 @@
       "brightWhite": "#e0def4",
       "brightYellow": "#f6c177"
     },
-
     {
       "name": "rose-pine-moon",
-
       "cursorColor": "#59546d",
       "selectionBackground": "#312f44",
-
       "background": "#232136",
       "foreground": "#e0def4",
-
       "black": "#393552",
       "blue": "#9ccfd8",
       "cyan": "#ea9a97",
@@ -409,13 +376,10 @@
     },
     {
       "name": "rose-pine-dawn",
-
       "cursorColor": "#9893a5",
       "selectionBackground": "#eee9e6",
-
       "background": "#faf4ed",
       "foreground": "#575279",
-
       "black": "#f2e9de",
       "blue": "#56949f",
       "cyan": "#d7827e",
@@ -457,39 +421,21 @@
       "brightYellow": "#FFFFA5"
     }
   ],
-  "theme": {
-    "dark": "Atom One Dark",
-    "light": "Atom One Light"
-  },
+  "theme": "One Dark Pro",
   "themes": [
     {
-      "name": "Atom One Dark",
+      "name": "One Dark Pro",
       "tab": {
         "background": "#282C34FF",
         "showCloseButton": "always",
         "unfocusedBackground": null
       },
       "tabRow": {
-        "background": "#21252BFF",
-        "unfocusedBackground": "#21252BFF"
+        "background": "#282C34FF",
+        "unfocusedBackground": "#282C34FF"
       },
       "window": {
         "applicationTheme": "dark"
-      }
-    },
-    {
-      "name": "Atom One Light",
-      "tab": {
-        "background": "#FAFAFAFF",
-        "showCloseButton": "always",
-        "unfocusedBackground": null
-      },
-      "tabRow": {
-        "background": "#EAEAEBFF",
-        "unfocusedBackground": "#EAEAEBFF"
-      },
-      "window": {
-        "applicationTheme": "light"
       }
     },
     {

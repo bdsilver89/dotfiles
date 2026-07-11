@@ -1,37 +1,28 @@
-# Get editor completions based on the config schema
-"$schema" = 'https://starship.rs/config-schema.json'
-
 # Sets user-defined palette
 # Palettes must be defined _after_ this line
-palette = "dracula"
-
-[aws]
-style = "bold orange"
-
-[character]
-error_symbol = "[❯](bold red)"
-success_symbol = "[❯](bold green)"
-
-[cmd_duration]
-style = "bold yellow"
-
-[directory]
-style = "bold green"
-
-[git_branch]
-style = "bold pink"
-
-[git_status]
-style = "bold red"
-
-[hostname]
-style = "bold purple"
-
-[username]
-format = "[$user]($style) on "
-style_user = "bold cyan"
+palette = "one_dark"
 
 # Palette definitions
+[palettes.one_dark]
+mono0 = '#d7dae0' # terminal white, from the One Dark Pro VSCode theme.
+mono1 = '#abb2bf' # syntax_fg.
+mono2 = '#828997'
+mono3 = '#5c6370'
+mono4 = '#3f4451' # terminal black, from the One Dark Pro VSCode theme.
+color_red0 = '#e06c75'
+color_red1 = '#be5046'
+color_green = '#98c379'
+color_yellow = '#e5c07b'
+color_blue = '#61afef'
+color_purple = '#c678dd'
+color_cyan = '#56b6c2'
+color_orange = '#d19a66'
+syntax_fg = '#abb2bf'
+syntax_bg = '#282c34'
+color_bg2 = '#665c54'
+syntax_gutter = '#647382'
+syntax_accent = '#528cff'
+
 [palettes.dracula]
 background = "#282a36"
 current_line = "#44475a"
