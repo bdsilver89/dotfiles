@@ -7,7 +7,6 @@ echoapi.echoapi-for-vscode
 editorconfig.editorconfig
 github.vscode-github-actions
 github.vscode-pull-request-github
-gruntfuggly.todo-tree
 ms-azuretools.vscode-containers
 ms-python.python
 ms-vscode-remote.vscode-remote-extensionpack
