@@ -54,13 +54,67 @@
     "vim.leader": "<space>",
     "vim.smartRelativeLine": true,
     "vim.useSystemClipboard": true,
-    "vim.normalModeKeyBindingNonRecursive": [
+    "vim.normalModeKeyBindingsNonRecursive": [
         {
             "before": ["<Esc>"],
             "commands": [":nohlsearch"],
             "when": "editorTextFocus",
             "silent": true
         },
+        // split / pane navigation without the <c-w> prefix
+        {
+            "before": ["<c-h>"],
+            "commands": ["workbench.action.navigateLeft"]
+        },
+        {
+            "before": ["<c-j>"],
+            "commands": ["workbench.action.navigateDown"]
+        },
+        {
+            "before": ["<c-k>"],
+            "commands": ["workbench.action.navigateUp"]
+        },
+        {
+            "before": ["<c-l>"],
+            "commands": ["workbench.action.navigateRight"]
+        },
+        // buffer (tab) navigation
+        {
+            "before": ["[", "b"],
+            "commands": ["workbench.action.previousEditorInGroup"]
+        },
+        {
+            "before": ["]", "b"],
+            "commands": ["workbench.action.nextEditorInGroup"]
+        },
+        {
+            "before": ["[", "B"],
+            "commands": ["workbench.action.firstEditorInGroup"]
+        },
+        {
+            "before": ["]", "B"],
+            "commands": ["workbench.action.lastEditorInGroup"]
+        },
+        // diagnostics
+        {
+            "before": ["[", "d"],
+            "commands": ["editor.action.marker.prev"]
+        },
+        {
+            "before": ["]", "d"],
+            "commands": ["editor.action.marker.next"]
+        },
+        // git hunks
+        {
+            "before": ["[", "c"],
+            "commands": ["workbench.action.editor.previousChange"]
+        },
+        {
+            "before": ["]", "c"],
+            "commands": ["workbench.action.editor.nextChange"]
+        }
+    ],
+    "vim.visualModeKeyBindingsNonRecursive": [
         {
             "before": ["<c-h>"],
             "commands": ["workbench.action.navigateLeft"]
