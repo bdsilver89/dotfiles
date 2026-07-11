@@ -21,7 +21,7 @@
     "search.smartCase": true,
     
     // workbench settings
-    "workbench.activityBar.location": "top",
+    "workbench.activityBar.location": "default",
     "workbench.colorTheme": "Atom One Dark",
     "workbench.iconTheme": "material-icon-theme",
     "workbench.productIconTheme": "material-product-icons",
@@ -29,6 +29,7 @@
     "workbench.settings.editor": "json",
     
     // window settings
+    "window.commandCenter": false,
     "window.menuBarVisibility": "compact",
 
     // git settings
@@ -42,6 +43,7 @@
     // diff and scm settings
     "diffEditor.ignoreTrimWhitespace": false,
     "diffEditor.hideUnchangedRegions.enabled": true,
+    "diffEditor.renderSideBySide": true,
 
     // misc settings
     "telemetry.telemetryLevel": "off",
