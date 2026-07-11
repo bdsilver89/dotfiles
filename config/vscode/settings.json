@@ -50,7 +50,8 @@
     "vim.foldfix": true,
     "vim.leader": "<space>",
     "vim.smartRelativeLine": true,
-    "vim.normakModeKeyBindingNonRecursive": [
+    "vim.useSystemClipboard": true,
+    "vim.normalModeKeyBindingNonRecursive": [
         {
             "before": ["<Esc>"],
             "commands": [":nohlsearch"],
@@ -72,9 +73,16 @@
         {
             "before": ["<c-l>"],
             "commands": ["workbench.action.navigateRight"]
-        },
+        }
     ],
 
+    // plugins
+    "projectManager.git.baseFolders": [
+        "~/Developer/projects",
+        "~/dev/projects"
+    ],
+
+    // languages
     "yaml.disableSchemaDetection": [
         "**/.github/workflows/*.yml",
         "**/.github/workflows/*.yaml",
@@ -83,4 +91,5 @@
         "**/.forgejo/workflows/*.yml",
         "**/.forgejo/workflows/*.yaml"
     ],
+
 }
