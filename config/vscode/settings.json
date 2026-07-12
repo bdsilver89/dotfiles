@@ -134,9 +134,14 @@
     ],
 
     // plugins
+    "remote.extensionKind": {
+        "alefragnani.project-manager": [
+            "workspace"
+        ]
+    },
     "projectManager.git.baseFolders": [
-        "~/Developer/projects",
-        "~/dev/projects"
+        "$home/dev/projects",
+        "$home/Developer/projects"
     ],
     "claudeCode.useTerminal": true,
 
