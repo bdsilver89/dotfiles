@@ -112,9 +112,51 @@
         {
             "before": ["]", "c"],
             "commands": ["workbench.action.editor.nextChange"]
+        },
+        // lsp — neovim 0.11+ builtin defaults
+        {
+            "before": ["g", "r", "n"],
+            "commands": ["editor.action.rename"]
+        },
+        {
+            "before": ["g", "r", "a"],
+            "commands": ["editor.action.quickFix"]
+        },
+        {
+            "before": ["g", "r", "r"],
+            "commands": ["references-view.findReferences"]
+        },
+        {
+            "before": ["g", "r", "i"],
+            "commands": ["references-view.findImplementations"]
+        },
+        {
+            "before": ["g", "r", "t"],
+            "commands": ["editor.action.goToTypeDefinition"]
+        },
+        {
+            "before": ["g", "O"],
+            "commands": ["workbench.action.gotoSymbol"]
+        },
+        {
+            "before": ["g", "d"],
+            "commands": ["editor.action.revealDefinition"]
+        },
+        {
+            "before": ["g", "D"],
+            "commands": ["editor.action.revealDeclaration"]
+        },
+        {
+            "before": ["K"],
+            "commands": ["editor.action.showHover"]
         }
     ],
     "vim.visualModeKeyBindingsNonRecursive": [
+        // lsp — code action over the selection
+        {
+            "before": ["g", "r", "a"],
+            "commands": ["editor.action.quickFix"]
+        },
         {
             "before": ["<c-h>"],
             "commands": ["workbench.action.navigateLeft"]
@@ -130,6 +172,13 @@
         {
             "before": ["<c-l>"],
             "commands": ["workbench.action.navigateRight"]
+        }
+    ],
+    "vim.insertModeKeyBindingsNonRecursive": [
+        // lsp — signature help
+        {
+            "before": ["<c-s>"],
+            "commands": ["editor.action.triggerParameterHints"]
         }
     ],
 
