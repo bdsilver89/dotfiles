@@ -1,0 +1,38 @@
+# Colors (One Dark Pro)
+
+# Default colors
+[colors.primary]
+background = '#282c34'
+foreground = '#abb2bf'
+
+# Cursor colors
+[colors.cursor]
+text   = '#282c34'
+cursor = '#528bff'
+
+# Selection colors
+[colors.selection]
+text       = '#282c34'
+background = '#abb2bf'
+
+# Normal colors
+[colors.normal]
+black   = '#3f4451'
+red     = '#e06c75'
+green   = '#98c379'
+yellow  = '#d19a66'
+blue    = '#61afef'
+magenta = '#c678dd'
+cyan    = '#56b6c2'
+white   = '#d7dae0'
+
+# Bright colors
+[colors.bright]
+black   = '#4f5666'
+red     = '#be5046'
+green   = '#a5e075'
+yellow  = '#e5c07b'
+blue    = '#4dc4ff'
+magenta = '#de73ff'
+cyan    = '#4cd1e0'
+white   = '#e6e6e6'

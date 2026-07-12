@@ -102,7 +102,7 @@ return {
 		{
 			key = "e",
 			mods = "CTRL|SHIFT",
-			-- action = act.EmitEvent("toggle-colorscheme"),
+			action = act.EmitEvent("toggle-colorscheme"),
 		},
 		{
 			key = "f",
