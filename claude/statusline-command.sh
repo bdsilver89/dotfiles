@@ -1,122 +1,78 @@
 #!/bin/sh
-# Claude Code status line - theme-following, worktree-aware
-#
-# Colors use the standard 16-color ANSI palette so they inherit whatever
-# your terminal theme (Catppuccin, etc.) maps those slots to. Editing your
-# terminal palette recolors this automatically - no hardcoded RGB.
-#
-# Layout:
-#   <project> <⑂worktree?> <branch> <git-status> <#PR?>  ·  <model> <ctx%>
-
-BOLD='\033[1m'
-RESET='\033[0m'
-BLUE='\033[34m'      # project / directory
-MAGENTA='\033[35m'   # git branch
-YELLOW='\033[33m'    # model
-DIM='\033[90m'       # ctx, separators, untracked, draft
-RED='\033[31m'       # dirty / behind
-GREEN='\033[32m'     # staged / ahead
-CYAN='\033[36m'      # open PR
-
 input=$(cat)
-cwd=$(echo "$input" | jq -r '.workspace.current_dir // .cwd // ""')
-model=$(echo "$input" | jq -r '.model.display_name // ""')
-used_pct=$(echo "$input" | jq -r '.context_window.used_percentage // empty')
 
-[ -z "$cwd" ] && cwd=$(pwd 2>/dev/null)
+MODEL=$(echo "$input" | jq -r '.model.display_name')
+DIR=$(echo "$input" | jq -r '.workspace.current_dir')
+PCT=$(echo "$input" | jq -r '.context_window.used_percentage // 0' | cut -d. -f1)
+USED_IN=$(echo "$input" | jq -r 'context_window.total_input_tokens // 0')
+USED_OUT=$(echo "$input" | jq -r 'context_window.total_output_tokens // 0')
+MAX=$(echo "$input" | jq -r '.context_window.context_window_size // 200000')
+EFFORT=$(echo "$input" | jq -r '.effort.level // empty')
+COST=$(echo "$input" | jq -r '.cost.total_cost_usd // 0')
+DURATION_MS=$(echo "$input" | jq -r '.cost.total_duration_ms // 0')
 
-parts=""
+CYAN='\033[0;36m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+RED='\033[0;31m'
+MAGENTA='\033[0;35m'
+BLUE='\033[0;34m'
+DIM='\033[2m'
+RESET='\033[0m'
 
-# --- Git-aware identity: project, worktree, branch ----------------------
-toplevel=$(git -C "$cwd" rev-parse --show-toplevel 2>/dev/null)
-if [ -n "$toplevel" ]; then
-    common=$(git -C "$cwd" rev-parse --path-format=absolute --git-common-dir 2>/dev/null)
-    gitdir=$(git -C "$cwd" rev-parse --path-format=absolute --git-dir 2>/dev/null)
+FOLDER="${DIR##*/}"
 
-    # Project = name of the main repo (parent of the shared .git dir)
-    repo_root=$(dirname "$common")
-    project=$(basename "$repo_root")
+BRANCH=""
+if git -C "$DIR" rev-parse --git-dir >/dev/null 2>&1; then
+  BRANCH=$(git -C "$DIR" branch --show-current 2>/dev/null)
+fi
 
-    parts="${BOLD}${BLUE}${project}${RESET}"
-
-    # Worktree marker only when this is a linked worktree (not main checkout)
-    if [ -n "$gitdir" ] && [ -n "$common" ] && [ "$gitdir" != "$common" ]; then
-        wt=$(basename "$toplevel")
-        parts="${parts} ${DIM}⑂${RESET}${BLUE}${wt}${RESET}"
-    fi
-
-    branch=$(git -C "$cwd" --no-optional-locks branch --show-current 2>/dev/null)
-    [ -z "$branch" ] && branch=$(git -C "$cwd" rev-parse --short HEAD 2>/dev/null)
-    [ -n "$branch" ] && parts="${parts} ${BOLD}${MAGENTA}${branch}${RESET}"
-
-    # --- Git status: staged / modified / deleted / untracked ------------
-    counts=$(git -C "$cwd" --no-optional-locks status --porcelain=v1 2>/dev/null | awk '
-        /^\?\?/ { u++; next }
-        { x=substr($0,1,1); y=substr($0,2,1);
-          if (x!=" " && x!="?") s++;
-          if (y=="M" || y=="T") m++;
-          else if (y=="D") d++ }
-        END { printf "%d %d %d %d", s+0, m+0, d+0, u+0 }')
-    set -- $counts
-    s=$1; m=$2; d=$3; u=$4
-    st=""
-    [ "${s:-0}" -gt 0 ] && st="${st}${GREEN}+${s}${RESET}"
-    [ "${m:-0}" -gt 0 ] && st="${st}${RED}●${m}${RESET}"
-    [ "${d:-0}" -gt 0 ] && st="${st}${RED}✘${d}${RESET}"
-    [ "${u:-0}" -gt 0 ] && st="${st}${DIM}?${u}${RESET}"
-    [ -n "$st" ] && parts="${parts} ${st}"
-
-    # --- Ahead / behind upstream ----------------------------------------
-    ab=$(git -C "$cwd" --no-optional-locks rev-list --left-right --count '@{upstream}...HEAD' 2>/dev/null)
-    if [ -n "$ab" ]; then
-        behind=$(echo "$ab" | awk '{print $1+0}')
-        ahead=$(echo "$ab" | awk '{print $2+0}')
-        sync=""
-        [ "$ahead" -gt 0 ] && sync="${sync}${GREEN}⇡${ahead}${RESET}"
-        [ "$behind" -gt 0 ] && sync="${sync}${RED}⇣${behind}${RESET}"
-        [ -n "$sync" ] && parts="${parts} ${sync}"
-    fi
-
-    # --- PR number for current branch (cached, non-blocking) ------------
-    if [ -n "$branch" ] && command -v gh >/dev/null 2>&1; then
-        cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/claude-statusline"
-        key=$(printf '%s' "${common}|${branch}" | cksum | tr -d ' ')
-        cache="${cache_dir}/pr-${key}"
-        mkdir -p "$cache_dir" 2>/dev/null
-
-        # Stale (or missing) if not modified within the last 10 minutes.
-        if [ -z "$(find "$cache" -mmin -10 2>/dev/null)" ]; then
-            touch "$cache" 2>/dev/null   # debounce: one refresh per TTL window
-            ( cd "$toplevel" 2>/dev/null && \
-              gh pr view "$branch" --json number,state,isDraft \
-                  -q '[.number,.state,.isDraft]|@tsv' > "${cache}.new" 2>/dev/null \
-              && mv "${cache}.new" "$cache" \
-              || { : > "$cache"; rm -f "${cache}.new"; } ) >/dev/null 2>&1 &
-        fi
-
-        if [ -s "$cache" ]; then
-            num=$(cut -f1 "$cache"); state=$(cut -f2 "$cache"); draft=$(cut -f3 "$cache")
-            if [ -n "$num" ]; then
-                case "$draft:$state" in
-                    true:*)     prc="$DIM" ;;
-                    *:MERGED)   prc="$MAGENTA" ;;
-                    *:CLOSED)   prc="$RED" ;;
-                    *)          prc="$CYAN" ;;
-                esac
-                parts="${parts} ${prc}#${num}${RESET}"
-            fi
-        fi
-    fi
+if [ "$PCT" -ge 90 ]; then
+  PCT_COLOR="$RED"
+elif [ "$PCT" -ge 70 ]; then
+  PCT_COLOR="$YELLOW"
 else
-    # Not a git repo: fall back to the current directory's name
-    [ -n "$cwd" ] && parts="${BOLD}${BLUE}$(basename "$cwd")${RESET}"
+  PCT_COLOR="$GREEN"
 fi
 
-# --- Model + context usage ---------------------------------------------
-[ -n "$model" ] && parts="${parts} ${DIM}·${RESET} ${YELLOW}${model}${RESET}"
-if [ -n "$used_pct" ]; then
-    used_int=$(printf '%.0f' "$used_pct")
-    parts="${parts} ${DIM}ctx:${used_int}%${RESET}"
-fi
+case "$EFFORT" in
+  max) EFFORT_COLOR="$RED" ;;
+  high) EFFORT_COLOR="$YELLOW" ;;
+  medium) EFFORT_COLOR="$GREEN" ;;
+  *) EFFORT_COLOR="$DIM" ;;
+esac
 
-printf "%b" "$parts"
+USED=$((USED_IN + USED_OUT))
+
+format_tokesn() {
+  local n=$1
+  if [ "$n" -ge 1000000 ]; then
+    awk -v v="$n" 'BEGIN{printf "%.1fM", v/1000000}'
+  elif [ "$n" -ge 1000 ]; then
+    awk -v v="$n" 'BEGIN{printf "%.1fK", v/1000}'
+  else
+    echo "$n"
+  fi
+}
+
+USED_FMT=$(format_tokesn "$USED")
+MAX_FMT=$(format_tokesn "$MAX")
+
+COST_FMT=$(printf "$%.2f" "$COST")
+
+DURATION_SEC=$((DURATION_MS / 1000))
+MINS=$((DURATION_SEC / 60))
+SECS=$((DURATION_SEC % 60))
+DURATION_FMT=$(printf "%dm %02ds" "$MINS" "$SECS")
+
+SEP="${DIM} | ${RESET}"
+
+OUT="${CYAN}${MODEL}${RESET}"
+[ -n "$EFFORT" ] && OUT="${OUT}${SEP}${EFFORT_COLOR}${EFFORT}${RESET}"
+OUT="${OUT}${SEP}${BLUE}${FOLDER}${RESET}"
+[ -n "$BRANCH" ] && OUT="${OUT}${SEP}${BLUE}${BRANCH}${RESET}"
+OUT="${OUT}${SEP}${PCT_COLOR}${USED_FMT}/${MAX_FMT} (${PCT}%)${RESET}"
+OUT="${OUT}${SEP}${YELLOW}${COST_FMT}${RESET}"
+OUT="${OUT}${SEP}${CYAN}${DURATION_FMT}${RESET}"
+
+printf '%b\n' "$OUT"
