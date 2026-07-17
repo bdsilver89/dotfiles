@@ -19,6 +19,7 @@
 
     // search
     "search.smartCase": true,
+    "search.seedWithNearestWord": true,
     
     // workbench settings
     "workbench.activityBar.location": "default",
@@ -181,6 +182,34 @@
             "before": ["<leader>", ","],
             "commands": ["workbench.action.showAllEditors"]
         },
+        {
+            "before": ["<leader>", ":"],
+            "commands": ["workbench.action.showCommands"]
+        },
+        // symbols — <leader>s is the search prefix, as in lazyvim
+        {
+            "before": ["<leader>", "s", "s"],
+            "commands": ["workbench.action.gotoSymbol"]
+        },
+        {
+            "before": ["<leader>", "s", "S"],
+            "commands": ["workbench.action.showAllSymbols"]
+        },
+        // grep the word under the cursor — needs search.seedWithNearestWord
+        {
+            "before": ["<leader>", "s", "w"],
+            "commands": ["workbench.action.findInFiles"]
+        },
+        // buffer — <c-w> is the window prefix here, so closing needs a leader map
+        {
+            "before": ["<leader>", "b", "d"],
+            "commands": ["workbench.action.closeActiveEditor"]
+        },
+        // diagnostics list — <leader>x, as trouble.nvim in lazyvim
+        {
+            "before": ["<leader>", "x", "x"],
+            "commands": ["workbench.actions.view.problems"]
+        },
         // splits
         {
             "before": ["<leader>", "-"],
@@ -212,6 +241,15 @@
         {
             "before": ["<c-l>"],
             "commands": ["workbench.action.navigateRight"]
+        },
+        // keep the selection after shifting, as `<gv` / `>gv` in vim
+        {
+            "before": ["<"],
+            "commands": ["editor.action.outdentLines"]
+        },
+        {
+            "before": [">"],
+            "commands": ["editor.action.indentLines"]
         }
     ],
     "vim.insertModeKeyBindingsNonRecursive": [
