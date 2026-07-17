@@ -23,14 +23,13 @@
     // workbench settings
     "workbench.activityBar.location": "default",
     "workbench.colorTheme": "One Dark Pro",
-    "workbench.iconTheme": "material-icon-theme",
-    "workbench.productIconTheme": "material-product-icons",
+    // "workbench.iconTheme": "material-icon-theme",
+    // "workbench.productIconTheme": "material-product-icons",
     "workbench.editor.enablePreview": false,
     "workbench.settings.editor": "json",
-    
-    // window settings
-    "window.commandCenter": false,
+    "workbench.experimental.modernUI": true,
     "window.menuBarVisibility": "compact",
+    "window.commandCenter": false,
 
     // git settings
     "git.autofetch": true,
@@ -55,7 +54,9 @@
     "vim.smartRelativeLine": true,
     "vim.useSystemClipboard": true,
     "vim.handleKeys": {
-        "<C-p>": false
+        "<C-p>": false,
+        "<C-b>": false,
+        "<C-f>": false
     },
     "vim.normalModeKeyBindingsNonRecursive": [
         {
@@ -115,6 +116,28 @@
         {
             "before": ["]", "c"],
             "commands": ["workbench.action.editor.nextChange"]
+        },
+        // searching
+        {
+            "before": ["<leader>", "<space>"],
+            "commands": ["workbench.action.quickOpen"]
+        },
+        {
+            "before": ["<leader>", "/"],
+            "commands": ["workbench.action.quickTextSearch"]
+        },
+        {
+            "before": ["<leader>", ","],
+            "commands": ["workbench.action.showAllEditors"]
+        },
+        // splits
+        {
+            "before": ["<leader>", "-"],
+            "commands": ["workbench.action.splitEditorDown"]
+        },
+        {
+            "before": ["<leader>", "|"],
+            "commands": ["workbench.action.splitEditorRight"]
         }
     ],
     "vim.visualModeKeyBindingsNonRecursive": [
@@ -146,7 +169,7 @@
         "$home/dev/projects",
         "$home/Developer/projects"
     ],
-    "claudeCode.useTerminal": true,
+    "redhat.telemetry.enabled": false,
 
     // languages
     "yaml.disableSchemaDetection": [
