@@ -19,6 +19,8 @@
       "space |": "pane::SplitRight",
 
       "space c f": "editor::Format",
+      "space c a": "editor::ToggleCodeActions",
+      "space c r": "editor::Rename",
 
       "space c s": "outline_panel::Toggle",
 
@@ -63,7 +65,7 @@
   },
 
   {
-    "context": "ProjectPanel && !editing",
+    "context": "ProjectPanel && not_editing",
     "bindings": {
       "escape": "project_panel::ToggleFocus",
       "space e": "project_panel::Toggle",
@@ -86,7 +88,7 @@
     }
   },
   {
-    "context": "GitPanel && !editing",
+    "context": "GitPanel && not_editing",
     "bindings": {
       "space g g": "git_panel::Toggle"
     }
@@ -107,7 +109,7 @@
     },
   },
   {
-    "context": "ProjectSearch",
+    "context": "ProjectSearchView",
     "bindings": {
       "escape": "workspace::ToggleBottomDock",
     },
