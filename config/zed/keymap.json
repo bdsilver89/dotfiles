@@ -38,7 +38,14 @@
       "space d u": "debug_panel::ToggleFocus",
       "space d e": "debugger::EvaluateSelectedText",
 
-      "space g g": "git_panel::ToggleFocus",
+      // "space g g": "git_panel::ToggleFocus",
+      "space g g": [
+        "task::Spawn",
+        {
+          "task_name": "LazyGit",
+          "reveal_target": "center",
+        }
+      ],
       "space g b": "git::Blame",
       "space g d": "git::Diff",
       "space g p": "editor::ToggleSelectedDiffHunks",
