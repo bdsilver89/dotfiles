@@ -43,7 +43,7 @@ function M.add(specs)
 end
 
 ---@param events string|string[]
----@param specs PluginSpec
+---@param specs PluginSpec[]
 ---@param opts? { pattern?: string|string[], replay?: boolean }
 function M.add_on_event(events, specs, opts)
   opts = opts or {}
@@ -65,16 +65,16 @@ function M.add_on_event(events, specs, opts)
   })
 end
 
----@param patterns string|strings[]
+---@param patterns string|string[]
 ---@param specs PluginSpec
 function M.add_on_file_type(patterns, specs)
   M.add_on_event("FileType", specs, { pattern = patterns, replay = true })
 end
 
----@param cmds string|strings[]
+---@param cmds string|string[]
 ---@param specs PluginSpec
 function M.add_on_cmd(cmds, specs)
-  cmds = type(cmds) == "string" and { cmds } or cmds
+  cmds = type(cmds) == "string" and { cmds } or cmds ---@cast cmds string[]
   local loaded = false
 
   for _, cmd in ipairs(cmds) do

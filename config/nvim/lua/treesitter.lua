@@ -1,27 +1,53 @@
-local pack = require("pack")
+vim.pack.add({
+  "https://github.com/nvim-treesitter/nvim-treesitter",
+})
 
 local parsers = {
-  "bash", "c", "cmake", "cpp", "css", "diff", "git_config", "gitcommit",
-  "git_rebase", "go", "html", "java", "javascript", "json", "json5", "lua",
-  "luadoc", "luap", "markdown", "markdown_inline", "python", "query", "regex",
-  "rust", "sql", "toml", "tsx", "typescript", "vim", "vimdoc", "xml", "yaml",
+  "bash",
+  "c",
+  "cmake",
+  "cpp",
+  "css",
+  "diff",
+  "git_config",
+  "gitcommit",
+  "git_rebase",
+  "go",
+  "html",
+  "java",
+  "javascript",
+  "json",
+  "json5",
+  "lua",
+  "luadoc",
+  "luap",
+  "markdown",
+  "markdown_inline",
+  "python",
+  "query",
+  "regex",
+  "rust",
+  "sql",
+  "toml",
+  "tsx",
+  "typescript",
+  "vim",
+  "vimdoc",
+  "xml",
+  "yaml",
 }
 
-pack.on_plugin_update("nvim-treesitter", function()
-  vim.cmd("TSUpdate")
-end)
+require("nvim-treesitter").install(parsers)
 
-pack.add({
-  {
-    src = "nvim-treesitter/nvim-treesitter",
-    version = "main",
-    setup = false,
-    on_setup = function()
-      vim.schedule(function()
-        require("nvim-treesitter").install(parsers)
-      end)
-    end,
-  },
+vim.api.nvim_create_autocmd("PackChanged", {
+  group = vim.api.nvim_create_augroup("config_blink", { clear = true }),
+  callback = function(ev)
+    local name, kind = ev.data.spec.name, ev.data.kind
+    if name == "nvim-treesitter" and (kind == "install" or kind == "update") then
+      vim.notify("Updating nvim-treesitter...")
+      vim.cmd(":TSUpdate")
+    end
+  end,
 })
 
 vim.api.nvim_create_autocmd("FileType", {
@@ -37,3 +63,16 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
+vim.keymap.set("n", "<leader>xl", function()
+  local success, err = pcall(vim.fn.getloclist(0, { winid = 0 }).winid ~= 0 and vim.cmd.lclose or vim.cmd.lopen)
+  if not success and err then
+    vim.notify(err, vim.log.levels.ERROR)
+  end
+end, { desc = "Toggle location list" })
+
+vim.keymap.set("n", "<leader>xq", function()
+  local success, err = pcall(vim.fn.getqflist({ winid = 0 }).winid ~= 0 and vim.cmd.cclose or vim.cmd.copen)
+  if not success and err then
+    vim.notify(err, vim.log.levels.ERROR)
+  end
+end, { desc = "Toggle quickfix list" })

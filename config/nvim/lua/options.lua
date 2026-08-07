@@ -1,52 +1,38 @@
 vim.g.mapleader = " "
 
-vim.o.number = true
-vim.o.relativenumber = true
-
-vim.o.shiftwidth = 2
-vim.o.tabstop = 2
-vim.o.softtabstop = 2
-vim.o.expandtab= true
-
-vim.o.splitright = true
-vim.o.splitbelow = true
-
+vim.o.breakindent = true
+vim.o.cmdheight = 0
+vim.o.completeopt = "menu,menuone,noselect,preview"
+vim.o.cursorline = true
+vim.o.expandtab = true
+vim.o.ignorecase = true
+vim.o.incsearch = true
 vim.o.laststatus = 3
-
 vim.o.list = true
-
-vim.o.updatetime = 250
-vim.o.timeoutlen = 300
-
+vim.o.number = true
+vim.o.pumheight = 10
+vim.o.relativenumber = true
+vim.o.scrolloff = 8
+vim.o.shiftwidth = 2
+vim.o.showmode = false
+vim.o.signcolumn = "yes"
+vim.o.smartcase = true
+vim.o.smartindent = true
+vim.o.softtabstop = 2
+vim.o.splitbelow = true
+vim.o.splitright = true
+vim.o.tabstop = 2
+vim.o.updatetime = 200
+vim.o.winborder = "rounded"
 vim.o.wrap = false
 
-vim.schedule(function()
-  vim.o.clipboard = "unnamedplus"
+vim.opt.fillchars = { eob = " " }
+vim.opt.listchars = {
+  tab = "» ",
+  trail = "·",
+  nbsp = "␣",
+  extends = "…",
+  -- precedes = '〈',
+}
 
-  local osc52 = require("vim.ui.clipboard.osc52")
-  if vim.fn.has("wsl") == 1 then
-    vim.g.clipboard = {
-      name = "wsl-osc52",
-      copy = {
-        ["+"] = osc52.copy("+"),
-        ["*"] = osc52.copy("*"),
-      },
-      paste = {
-        ["+"] = { "win32yank.exe", "-o", "--lf" },
-        ["*"] = { "win32yank.exe", "-o", "--lf" },
-      },
-    }
-  elseif vim.env.SSH_TTY or vim.env.SSH_CONNECTION then
-    vim.g.clipboard = {
-      name = "OSC52",
-      copy = {
-        ["+"] = osc52.copy("+"),
-        ["*"] = osc52.copy("*"),
-      },
-      paste = {
-        ["+"] = function() return vim.split(vim.fn.getreg('"'), "\n") end,
-        ["*"] = function() return vim.split(vim.fn.getreg('"'), "\n") end,
-      },
-    }
-  end
-end)
+require("vim._core.ui2").enable({})

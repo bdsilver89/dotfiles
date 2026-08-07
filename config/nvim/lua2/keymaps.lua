@@ -3,21 +3,9 @@ vim.keymap.set({ "n", "x" }, "<Down>", "v:count == 0 ? 'gj' : 'j'", { desc = "Do
 vim.keymap.set({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { desc = "Up", expr = true, silent = true })
 vim.keymap.set({ "n", "x" }, "<Up>", "v:count == 0 ? 'gk' : 'k'", { desc = "Up", expr = true, silent = true })
 
-vim.keymap.set("n", "n", "nzzzv", { desc = "Next result" })
-vim.keymap.set("n", "N", "Nzzzv", { desc = "Next result" })
-
-vim.keymap.set("n", "<leader>-", "<c-w>s", { desc = "Split horizontal" })
-vim.keymap.set("n", "<leader>|", "<c-w>v", { desc = "Split vertical" })
-vim.keymap.set("n", "<leader>q", "<c-w>c", { desc = "Close window" })
-vim.keymap.set("n", "<leader>qq", "<cmd>qa<cr>", { desc = "Close all windows" })
-
-vim.keymap.set("n", "<leader>w", "<cmd>w<cr>", { desc = "Write" })
-
 vim.keymap.set("i", ",", ",<c-g>u")
 vim.keymap.set("i", ".", ".<c-g>u")
 vim.keymap.set("i", ";", ";<c-g>u")
-
-vim.keymap.set("n", "<leader>p", '"_d{', { desc = "Paste without replacing register" })
 
 vim.keymap.set("x", "<", "<gv")
 vim.keymap.set("x", ">", ">gv")
@@ -25,6 +13,4 @@ vim.keymap.set("x", ">", ">gv")
 vim.keymap.set({ "i", "n", "s" }, "<esc>", function()
   vim.cmd("noh")
   return "<esc>"
-end, { desc = "Clear hlsearch", expr = true })
-
-vim.keymap.set("t", "<esc>", "<c-\\><c-n>", { desc = "Exit terminal mode" })
+end, { desc= "Clear hlsearch", expr = true })
