@@ -23,7 +23,10 @@ pack.add({
     module_name = "blink.cmp",
     opts = {
       snippets = { preset = "luasnip" },
-      keymap = { preset = "default" },
+      keymap = {
+        preset = "enter",
+        ["<C-y>"] = { "select_and_accept" },
+      },
       completion = {
         documentation = { auto_show = true },
       },

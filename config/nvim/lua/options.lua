@@ -18,6 +18,8 @@ vim.o.list = true
 vim.o.updatetime = 250
 vim.o.timeoutlen = 300
 
+vim.o.wrap = false
+
 vim.schedule(function()
   vim.o.clipboard = "unnamedplus"
 

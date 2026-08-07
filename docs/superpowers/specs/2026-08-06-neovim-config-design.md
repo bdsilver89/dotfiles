@@ -222,31 +222,85 @@ checkpoint in Phase 1, not a guess to be made now.
 
 ## Tool provisioning
 
-Hybrid: toolchain-bound servers come from their toolchain, Mason handles the
-long tail. **Mason is `require`d only inside `:ToolSync` and never appears in
-any startup path.**
+Split by **ownership, not by platform**. `bootstrap.sh` already carries this
+repo's per-platform matrix — `is_darwin`/`is_debian`/`is_rhel`,
+`install_packages()`, `brew bundle` — and it keeps sole responsibility for
+compilers and language runtimes. Mason owns every editor-facing tool. Neovim
+holds no OS knowledge and shells out to no package manager: a second platform
+matrix, in a second language, is a guarantee that the two will drift.
 
-| Server / tool | Language | Source |
+**Mason is `require`d only inside `:ToolSync` and never appears in any startup
+path.**
+
+| Layer | Owner | Examples |
 |---|---|---|
-| `rust_analyzer` | Rust | `rustup component add` (via rustaceanvim) |
-| `clangd` | C/C++ | system `apt` / `brew` |
-| `basedpyright`, `ruff` | Python | `uv tool install` |
-| `gopls` | Go | `go install` |
-| `taplo` | TOML | `cargo install` |
-| `jdtls` | Java | Mason |
-| `lua_ls` | Lua | Mason |
-| `bashls` | Bash | Mason |
-| `jsonls`, `yamlls` | JSON/YAML | Mason (+ `schemastore.nvim`) |
-| `lemminx` | XML | Mason |
-| `neocmake` | CMake | Mason |
+| Compilers, runtimes, CLI utilities | `bootstrap.sh` | clang, cmake, go, node, python, rustup, tmux, ripgrep |
+| Language servers, formatters, linters, DAP adapters | Mason, via `:ToolSync!` | every entry in the table below |
+
+| Server / tool | Language | Mason package |
+|---|---|---|
+| `rust_analyzer` | Rust | `rust-analyzer` (superseded by rustaceanvim at runtime) |
+| `clangd`, `clang-format` | C/C++ | `clangd`, `clang-format` |
+| `basedpyright`, `ruff` | Python | `basedpyright`, `ruff` |
+| `gopls` | Go | `gopls` |
+| `taplo` | TOML | `taplo` |
+| `jdtls` | Java | `jdtls` |
+| `lua_ls` | Lua | `lua-language-server` |
+| `bashls` | Bash | `bash-language-server` |
+| `jsonls`, `yamlls` | JSON/YAML | `json-lsp`, `yaml-language-server` (+ `schemastore.nvim`) |
+| `lemminx` | XML | `lemminx` |
+| `neocmake` | CMake | `neocmakelsp` |
+
+A Mason entry is a **floor, not a mandate**. `mason/bin` is *appended* to `PATH`,
+never prepended, so a toolchain-native binary shadows Mason's copy whenever one
+is present. That matters for exactly two tools: `clangd` should match the
+compiler that produced `compile_commands.json`, and `rust-analyzer`'s proc-macro
+ABI must match the rustc that built the crate. Installing either from its
+toolchain (`rustup component add rust-analyzer`) makes it win automatically on
+the next start, with no config change.
+
+**Rejected:** giving `lua/tools.lua` its own `install`/`darwin` command fields
+with a `vim.uv.os_uname()` branch. It duplicates `bootstrap.sh` without being
+visible to it — none of those commands were reflected in the `Brewfile` or the
+apt/dnf lists, making it a *rival* provisioner rather than a redundant one — and
+`vim.system({'sudo', 'apt', ...})` has no tty for the password prompt, so
+`:ToolSync!` would hang on Linux.
 
 Formatters and linters follow the same table: `stylua`, `shfmt`, `shellcheck`,
 `clang-format`, `google-java-format`, `ruff format`.
 
 `lua/tools.lua` declares this as data and provides:
 
-- **`:ToolSync`** — checks each entry with `vim.fn.executable()`, reports what
-  is missing, and offers to install it by the declared method.
+- **`:ToolSync`** — reports status. **`:ToolSync!`** converges the inventory in
+  one operation: absent tools are installed, Mason-owned ones are brought to
+  latest. There is no install/update split to expose, because Mason does not have
+  one — `MasonInstall` on an already-present package upgrades it. So sync is a
+  single `M.install()` over `M.syncable()`, with no version-comparison API and no
+  second code path.
+
+  `M.syncable()` is one predicate — *missing, or Mason-owned* — which keeps the
+  two halves from drifting and makes deduplication unnecessary. Tools satisfied by
+  the system toolchain match neither clause and are excluded: a native `clangd` or
+  rustup `rust-analyzer` belongs to `bootstrap.sh` / `apt upgrade` /
+  `rustup update`, and syncing it here would fetch a second copy that PATH order
+  guarantees will never run.
+
+- **Automatic provisioning on first interactive start.** Missing tools install
+  themselves, exactly as `vim.pack` clones plugins and `nvim-treesitter` builds
+  parsers. A fresh machine becomes usable by launching the editor, not by knowing
+  which command to type. Three properties keep this honest:
+  - **Startup installs; it does not sync.** The autocmd runs `M.install()` over
+    `M.missing()`, deliberately not `M.syncable()`. Installing what is absent has
+    a fixed point and stops; updating has none, so on the startup path it would
+    mean a network round-trip every launch plus a last-checked timestamp — the
+    exact bookkeeping this design avoids — and it would shift tool behaviour
+    mid-stream, which is what `nvim-pack-lock.json` prevents for plugins.
+  - **No first-run marker.** The missing set *is* the state — once a binary
+    resolves on `PATH`, `executable()` returns 1 and the check is a permanent
+    no-op. Nothing to write, invalidate, or clean up.
+  - **Interactive sessions only.** `#vim.api.nvim_list_uis() == 0` skips the
+    whole thing under `--headless`, so scripts, git hooks and CI stay scriptable
+    rather than triggering a multi-hundred-MB download.
 - **`:checkhealth tools`** — reports per-language what is present and what is
   missing. This is the degradation story for locked-down work boxes: the config
   never hard-fails on a missing binary, it tells you what you do not have.
