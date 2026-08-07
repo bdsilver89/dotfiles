@@ -3,6 +3,6 @@ vim.pack.add({
 })
 
 require("onedark").setup({
-  style = "darker",
+  style = "dark",
 })
 require("onedark").load()
