@@ -5,42 +5,48 @@ vim.pack.add({
   "https://github.com/rafamadriz/friendly-snippets",
 })
 
-require("luasnip.loaders.from_vscode").lazy_load()
+vim.api.nvim_create_autocmd({ "InsertEnter", "CmdlineEnter" }, {
+  group = vim.api.nvim_create_augroup("config_completion", { clear = true }),
+  once = true,
+  callback = function()
+    require("luasnip.loaders.from_vscode").lazy_load()
 
-require("blink.cmp").setup({
-  snippets = { preset = "luasnip" },
-  keymap = {
-    preset = "default",
-    ["<tab>"] = { "accept", "fallback" },
-    ["<cr>"] = { "accept", "fallback" },
-    ["<s-tab>"] = { "show" },
-  },
-  completion = {
-    menu = {
-      draw = {
-        treesitter = { "lsp" },
-        columns = { { "kind_icon", "label", "label_description", gap = 1 }, { "kind" } },
+    require("blink.cmp").setup({
+      snippets = { preset = "luasnip" },
+      keymap = {
+        preset = "default",
+        ["<tab>"] = { "accept", "fallback" },
+        ["<cr>"] = { "accept", "fallback" },
+        ["<s-tab>"] = { "show" },
       },
-    },
-    documentation = {
-      auto_show = true,
-      auto_show_delay_ms = 200,
-    },
-    ghost_text = {
-      enabled = true,
-    },
-  },
-  signature = { enabled = true },
-  fuzzy = { implementation = "lua" },
-  sources = {
-    default = { "lsp", "path", "snippets", "buffer" },
-    per_filetype = {
-      sql = { "lsp", "snippets", "buffer" },
-    },
-    providers = {
-      lsp = { score_offset = 90 },
-    },
-  },
+      completion = {
+        menu = {
+          draw = {
+            treesitter = { "lsp" },
+            columns = { { "kind_icon", "label", "label_description", gap = 1 }, { "kind" } },
+          },
+        },
+        documentation = {
+          auto_show = true,
+          auto_show_delay_ms = 200,
+        },
+        ghost_text = {
+          enabled = true,
+        },
+      },
+      signature = { enabled = true },
+      fuzzy = { implementation = "lua" },
+      sources = {
+        default = { "lsp", "path", "snippets", "buffer" },
+        per_filetype = {
+          sql = { "lsp", "snippets", "buffer" },
+        },
+        providers = {
+          lsp = { score_offset = 90 },
+        },
+      },
+    })
+  end,
 })
 
 vim.api.nvim_create_autocmd("PackChanged", {

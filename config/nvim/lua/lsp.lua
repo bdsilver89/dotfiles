@@ -5,15 +5,6 @@ vim.pack.add({
   "https://github.com/neovim/nvim-lspconfig",
 })
 
-require("mason").setup()
-require("mason-lspconfig").setup()
-require("mason-tool-installer").setup({
-  ensure_installed = {
-    "stylua",
-    "lua_ls",
-  },
-})
-
 vim.diagnostic.config({
   virtual_text = true,
 })
@@ -35,3 +26,14 @@ vim.api.nvim_create_autocmd("LspAttach", {
     vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts("Go to declaration"))
   end,
 })
+
+vim.schedule(function()
+  require("mason").setup()
+  require("mason-lspconfig").setup()
+  require("mason-tool-installer").setup({
+    ensure_installed = {
+      "stylua",
+      "lua_ls",
+    },
+  })
+end)

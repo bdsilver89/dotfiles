@@ -2,8 +2,11 @@ vim.pack.add({
   "https://github.com/ibhagwan/fzf-lua",
 })
 
-local fzf = require("fzf-lua")
-fzf.setup()
+local function pick(name)
+  return function()
+    require("fzf-lua")[name]()
+  end
+end
 
-vim.keymap.set("n", "<leader><space>", fzf.files, { desc = "Find files" })
-vim.keymap.set("n", "<leader>/", fzf.live_grep, { desc = "Live grep" })
+vim.keymap.set("n", "<leader><space>", pick("files"), { desc = "Find files" })
+vim.keymap.set("n", "<leader>/", pick("live_grep"), { desc = "Live grep" })

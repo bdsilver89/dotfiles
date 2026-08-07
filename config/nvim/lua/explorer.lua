@@ -20,18 +20,20 @@ require("oil-git-status").setup({
   show_ignored = false,
 })
 
-require("nvim-tree").setup({
-  hijack_cursor = true,
-  sync_root_with_cwd = true,
-  update_focused_file = {
-    enable = true,
-  },
-  renderer = {
-    indent_markers = {
+vim.schedule(function()
+  require("nvim-tree").setup({
+    hijack_cursor = true,
+    sync_root_with_cwd = true,
+    update_focused_file = {
       enable = true,
     },
-  },
-})
+    renderer = {
+      indent_markers = {
+        enable = true,
+      },
+    },
+  })
+end)
 
 vim.keymap.set("n", "-", "<cmd>Oil<cr>", { desc = "Explorer (oil)" })
 vim.keymap.set("n", "<leader>e", "<cmd>NvimTreeToggle<cr>", { desc = "Explorer (tree)" })
