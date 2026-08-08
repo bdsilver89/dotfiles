@@ -3,6 +3,7 @@
 ### CMake ###
 # Compiler diagnostics on by default
 export CMAKE_COLOR_DIAGNOSTICS="ON"
+export CMAKE_EXPORT_COMPILE_COMMANDS="ON"
 
 ### Ninja ###
 if command -v ninja >/dev/null 2>&1; then
