@@ -101,35 +101,14 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
-vim.api.nvim_create_user_command("PackClean", function()
-  local inactive = vim
-    .iter(vim.pack.get())
-    :filter(function(x)
-      return not x.active
-    end)
-    :map(function(x)
-      return x.spec.name
-    end)
-    :totable()
-  if #inactive == 0 then
-    vim.notify("No inactive plugins to remove")
-    return
-  end
-  vim.pack.del(inactive)
-  vim.notify("Removed: " .. table.concat(inactive, ", "))
-end, { desc = "Remove plugins not specified" })
-
-vim.api.nvim_create_user_command("PackUpdate", function()
-  vim.pack.update()
-end, { desc = "Update plugins" })
-
-vim.api.nvim_create_user_command("StartupTime", function()
-  local log = vim.fn.tempname()
-  vim.system({ "nvim", "--startuptime", log, "-c", "q" }, { text = true }, function()
-    vim.schedule(function()
-      local lines = vim.fn.readfile(log)
-      local last = lines[#lines - 1] or ""
-      vim.notify("Startup: " .. (last:match("^(%d+%.%d+)") or "?") .. " ms")
-    end)
-  end)
-end, { desc = "Measure startup time" })
+vim.api.nvim_create_autocmd("BufReadPre", {
+  group = vim.api.nvim_create_augroup("config_largefile", { clear = true }),
+  callback = function(ev)
+    local ok, stats = pcall(vim.uv.fs_stat, vim.api.nvim_buf_get_name(ev.buf))
+    if ok and stats and stats.size > 1024 * 1024 then
+      vim.b[ev.buf].large_file = true
+      vim.opt_local.foldmethod = "manual"
+      vim.opt_local.undofile = false
+    end
+  end,
+})
