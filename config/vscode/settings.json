@@ -23,12 +23,9 @@
     
     // workbench settings
     "workbench.activityBar.location": "default",
-    "workbench.colorTheme": "One Dark Pro",
-    // "workbench.iconTheme": "material-icon-theme",
-    // "workbench.productIconTheme": "material-product-icons",
     "workbench.editor.enablePreview": false,
     "workbench.settings.editor": "json",
-    "workbench.experimental.modernUI": true,
+    "workbench.experimental.modernUI": false,
     "window.menuBarVisibility": "compact",
     "window.commandCenter": false,
 
@@ -282,4 +279,11 @@
         "**/.forgejo/workflows/*.yaml"
     ],
     "claudeCode.useTerminal": true,
+    "git.blame.editorDecoration.enabled": true,
+    "github.copilot.enable": {
+        "*": false,
+        "plaintext": false,
+        "markdown": false,
+        "scminput": false
+    },
 }
