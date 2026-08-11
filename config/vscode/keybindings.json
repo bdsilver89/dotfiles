@@ -81,4 +81,9 @@
         "command": "workbench.action.navigateRight",
         "when": "sideBarFocus && !inputFocus"
     },
+    {
+        "key": "escape",
+        "command": "closeMarkersNavigation",
+        "when": "editorFocus && markersNavigationVisible"
+    }
 ]
