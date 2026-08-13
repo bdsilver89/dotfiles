@@ -1,0 +1,180 @@
+vim.loader.enable()
+
+vim.pack.add({
+  "https://github.com/nvim-mini/mini.nvim",
+  "https://github.com/nvim-treesitter/nvim-treesitter",
+})
+
+-- ============================================================================
+-- Utils
+-- ============================================================================
+local misc = require("mini.misc")
+local now = function(f) misc.safely("now", f) end
+local later = function(f) misc.safely("later", f) end
+local now_if_args = vim.fn.argc(-1) > 0 and now or later
+local on_filetype = function(ft, f) misc.safely("filetype:" .. ft, f) end
+
+local group = vim.api.nvim_create_augroup("config", { clear = true })
+local new_autocmd = function(event, pattern, callback, desc)
+  vim.api.nvim_create_autocmd(event, { group = gr, pattern = pattern, callback = callback, desc = desc })
+end
+
+local on_packchanged = function(plugin, kinds, callback, desc)
+  local f = function(ev)
+    local name, kind = ev.data.spec.name, ev.data.kind
+    if not (name == plugin and vim.tbl_contains(kinds, kind)) then return end
+    if not ev.data.active then vim.cmd.packadd(plugin) end
+    callback(ev.data)
+  end
+  new_autocmd("PackChanged", "*", f, desc)
+end
+
+-- ============================================================================
+-- Options
+-- ============================================================================
+vim.g.mapleader = " "
+vim.g.maplocalleader = " "
+
+vim.g.netrw_liststyle = 3
+vim.g.netrw_banner = 0
+vim.g.netrw_winsize = 25
+vim.g.netrw_browse_split = 0
+vim.g.netrw_alftfile = 1
+
+vim.o.breakindent = true
+vim.o.completeopt = "menuone,noselect,fuzzy,nosort"
+vim.o.confirm = true
+vim.o.cursorline = true
+vim.o.cursorlineopt = "screenline,number"
+vim.o.fillchars = 'eob: ,fold:╌'
+vim.o.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+vim.o.foldlevelstart = 99
+vim.o.foldmethod = 'expr'
+vim.o.ignorecase = true
+vim.o.inccommand = "split"
+vim.o.linebreak = true
+vim.o.list = true
+vim.o.listchars = 'extends:…,nbsp:␣,precedes:…,tab:» '
+vim.o.mouse = "a"
+vim.o.number = true
+vim.o.pumborder = "rounded"
+vim.o.pumheight = 10
+vim.o.pummaxwidth = 100
+vim.o.relativenumber = true
+vim.o.ruler = false
+vim.o.scrolloff = 10
+vim.o.showmode = false
+vim.o.signcolumn = "yes"
+vim.o.smartcase = true
+vim.o.splitbelow = true
+vim.o.splitkeep = "screen"
+vim.o.splitright = true
+vim.o.timeoutlen = 300
+vim.o.undofile = true
+vim.o.updatetime = 250
+vim.o.winborder = "rounded"
+vim.o.wrap = false
+vim.o.expandtab = true
+vim.o.infercase = true
+vim.o.shiftwidth = 2
+vim.o.tabstop = 2
+vim.o.virtualedit = "block"
+
+later(function() vim.o.clipboard = "unnamedplus" end)
+later(function()
+  vim.diagnostic.config({
+    update_in_insert = false,
+    severity_sort = true,
+    float = { border = "rounded", source = "if_many" },
+    underline = {
+      severity = {
+        min = vim.diagnostic.severity.HINT,
+        max = vim.diagnostic.severity.ERROR,
+      },
+    },
+    virtual_text = { 
+      current_line = true,
+      severity = {
+        min = vim.diagnostic.severity.ERROR,
+        max = vim.diagnostic.severity.ERROR,
+      },
+    },
+    jump = {
+      on_jump = function(_, bufnr)
+        vim.diagnostic.open_float({
+          bufnr = bufnr,
+          scope = "cursor",
+          focus = false,
+        })
+      end,
+    },
+  })
+end)
+
+-- ============================================================================
+-- Autocmds
+-- ============================================================================
+new_autocmd("TextYankPost", "*", function() vim.hl.on_yank() end)
+
+vim.api.nvim_create_autocmd("LspAttach", {
+  group = vim.api.nvim_create_augroup("lspattach", { clear = true }),
+  callback = function(ev)
+    local client = vim.lsp.get_client_by_id(ev.data.client_id)
+    if not client then
+      return
+    end
+
+    vim.keymap.set("n", "gd", vim.lsp.buf.definition, { buf = ev.buf })
+    vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { buf = ev.buf })
+
+    if client:supports_method("textDocument/completion") then
+      vim.lsp.completion.enable(true, client.id, ev.buf, { autotrigger = true })
+    end
+
+    if client:supports_method("textDocument/inlayHint") then
+      vim.keymap.set("n", "<leader>uh", function()
+        vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+      end, { buf = ev.buf })
+    end
+  end,
+})
+
+-- ============================================================================
+-- Keymaps
+-- ============================================================================
+vim.keymap.set("n", "<leader>e", "<cmd>Lexplore<cr>", { silent = true })
+vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
+
+vim.keymap.set("x", "<", "<gv")
+vim.keymap.set("x", ">", ">gv")
+
+vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
+
+-- ============================================================================
+-- Plugins
+-- ============================================================================
+later(function()
+  require("mini.extra").setup()
+  require("mini.diff").setup()
+  require("mini.git").setup()
+  require("mini.indentscope").setup()
+  require("mini.pairs").setup()
+  require("mini.surround").setup()
+end)
+now(function()
+  require("mini.icons").setup()
+  later(MiniIcons.mock_nvim_web_devicons)
+end)
+
+now_if_args(function()
+  local parsers = { "bash", "c", "diff", "html", "lua", "luadoc", "markdown", "markdown_inline", "query", "regex", "vim", "vimdoc" }
+
+  local ts_update = function() vim.cmd("TSUpdate") end
+  on_packchanged("nvim-treesitter", { "update" }, ts_update)
+
+  local isnt_installed = function()
+    return #vim.api.nvim_get_runtime_file("parser/" .. lang .. ".*", false) == 0
+  end
+  local to_install = vim.tbl_filter(isnt_installed, languages)
+  if #to_install > 0 then require("nvim-treesitter").install(to_install) end
+end)
