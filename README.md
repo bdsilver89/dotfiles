@@ -1,5 +1,7 @@
 # dotfiles
 
+[![ci](https://github.com/bdsilver89/dotfiles/actions/workflows/ci.yml/badge.svg)](https://github.com/bdsilver89/dotfiles/actions/workflows/ci.yml)
+
 chezmoi-managed dotfiles for Linux, WSL, macOS, and Windows.
 
 ## New Machine
@@ -8,8 +10,27 @@ chezmoi-managed dotfiles for Linux, WSL, macOS, and Windows.
 sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply git@github.com:bdsilver89/dotfiles.git
 ```
 
-You will be asked for the machine's role (`desktop` or `headless`), whether it is a work machine, and a git email.
+Or, on a machine with nothing installed at all — this adds the Xcode CLT / apt
+prerequisites, chezmoi itself, and non-interactive answers:
+
+```sh
+sh -c "$(curl -fsLS https://raw.githubusercontent.com/bdsilver89/dotfiles/main/bootstrap.sh)"
+./bootstrap.sh --role headless --theme dracula --no-work --yes
+```
+
+You will be asked for the machine's role (`desktop` or `headless`), whether it is a work machine, a git email, and a colour scheme.
 Answers are stored in `~/.config/chezmoi/chezmoi.toml`, which is never committed.
+
+## Colour scheme
+
+One variable drives eleven tools. `theme` with no arguments lists the schemes and marks the active one:
+
+```sh
+theme            # onedark / catppuccin-mocha / dracula / rose-pine
+theme dracula    # switch and re-apply
+```
+
+Running tmux servers need `prefix-r` and running editors need a restart; everything else re-renders on the spot.
 
 ## Daily use
 
