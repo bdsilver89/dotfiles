@@ -1,0 +1,19 @@
+{{- $role := promptStringOnce . "role" "Machine role (desktop/headless)" "desktop" -}}
+{{- $work := promptBoolOnce . "work" "Is this a work machine?" false -}}
+{{- $email := promptStringOnce . "email" "Git email" "github@briansilver.net" -}}
+
+[data]
+    role = {{ $role | quote }}
+    work = {{ $work }}
+    email = {{ $email | quote }}
+
+encryption = "none"
+
+[edit]
+    command = "nvim"
+
+{{- if eq .chezmoi.os "windows" }}
+[interpreters.ps1]
+    command = "pwsh"
+    args = ["-NoLogo", "-NoProfile"]
+{{- end }}

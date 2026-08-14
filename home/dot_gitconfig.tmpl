@@ -1,0 +1,16 @@
+[user]
+  name = Brian Silver
+  email = {{ .email }}
+
+[core]
+  editor = nvim
+{{- if eq .chezmoi.os "windows" }}
+  autocrlf = input
+{{- end }}
+
+[init]
+  defaultBranch = main
+
+[include]
+  # Untracked. Work signing keys, internal URLS, credential helpers.
+  path = ~/.gitconfig.local

@@ -1,0 +1,7 @@
+{{- if eq .chezmoi.os "windows" -}}
+$ErrorActionPreference = 'Stop'
+
+{{ range .packages.desktop.windows.winget }}
+winget instal --id {{ . }} --silent --accept-package-agreements --accept-source-agreements
+{{- end }}
+{{- end }}

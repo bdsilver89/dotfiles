@@ -1,10 +1,18 @@
-.DS_Store
-.netrwhist
-.git
-Brewfile.lock.json
-lazy-lock.json
+# NOTE: .chezmoiroot, .chezmoidata/, .chezmoiignore, .chezmoiexternal.toml and
+# .chezmoi.toml.tmpl MUST be committed. They are the source-of-truth control
+# files; without .chezmoiroot a fresh clone treats the repo root as the source
+# dir, and without .chezmoidata/ every install script renders with no packages.
 
-# the way we handle zed, we need to ignore the generated stuff
-config/zed/conversations
-config/zed/prompts
-config/zed/themes
+# Backups and editor droppings
+*.bak
+*.swp
+*.swp
+
+# OS-specific clutter
+.DS_Store
+Thumbs.db
+
+# Private or sensitive data (fallback protection)
+*.key
+*.pem
+*.token

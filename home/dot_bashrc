@@ -1,0 +1,23 @@
+# Interactive only. Without this guard, scp/rsync/git-over-ssh and
+# VS Code Remote's server startup all break
+case $- in *i*) ;; *) return ;; esac
+
+# Hand off to zsh where chsh is blocked (LDAP accounts have no /etc/passwd entry,
+# so chsh can never work there). Escape hatch: ssh host -t bash --noprofile
+if [ -z "$ZSH_VERSION" ] && command -v zsh >/dev/null 2>&1; then
+  exec zsh -l
+fi
+
+# Unquoted so the glob expands. If it matches nothing, bash leaves the literal
+# pattern and the -r test skips it.
+for f in "$HOME"/.config/sh/*.sh; do
+  [ -r "$f" ] && . "$f"
+done
+unset f
+
+# The only bash-specific lines permitted in this repo.
+shopt -s histappend checkwinsize
+HISTSIZE=100000
+HISTFILESIZE=100000
+HISTCONTROL=ignoreboth
+[ -f "$HOME/.fzf.bash" ] && . "$HOME/.fzf.bash"

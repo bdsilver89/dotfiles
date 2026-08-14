@@ -1,0 +1,17 @@
+{{- if ne .chezmoi.os "windows" -}}
+#!/bin/sh
+set -eu
+
+# Package list, inlined so run_onchange re-triggers when it changes:
+# {{ .packages.extra | join " " }}
+
+{{ if eq .chezmoi.os "darwin" }}
+command -v workmux >/dev/null 2>&1 || brew install raine/workmux/workmux
+command -v opencode >/dev/null 2>&1 || brew install anomalyco/tap/opencode
+{{ else }}
+command -v workmux >/dev/null 2>&1 || \
+  curl -fsSL https://raw.githubusercontent.com/raine/workmux/main/scripts/install.sh | bash
+command -v opencode >/dev/null 2>&1 || \
+  curl -fsSL https://opencode.ai/install | bash
+{{ end }}
+{{- end }}

@@ -1,0 +1,24 @@
+{{- if and (eq .chezmoi.os "linux") (has .chezmoi.osRelease.id (list "ubuntu" "debian")) -}}
+#!/bin/sh
+set -eu
+
+sudo apt-get update
+sudo apt-get install -y \
+{{- range .packages.core }}
+  {{ index $.packages.apt_names . | default . }} \
+{{- end }}
+  ;
+
+{{ if eq .role "desktop" }}
+sudo apt-get install -y \
+{{- range .packages.desktop.linux.apt }}
+  {{ . }} \
+{{- end }}
+  ;
+{{ end }}
+
+# Debian names these differently; proviode the canonical names on PATH
+mkdir -p "$HOME/.local/bin"
+[ -x /usr/bin/batcat ] && ln -sf /usr/bin/batcat "$HOME/.local/bin/bat"
+[ -x /usr/bin/fdfind ] && ln -sf /usr/bin/fdfind "$HOME/.local/bin/fd"
+{{- end }}

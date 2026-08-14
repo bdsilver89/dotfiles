@@ -1,0 +1,42 @@
+packages:
+  core:
+    - git
+    - neovim
+    - tmux
+    - fzf
+    - ripgrep
+    - fd
+    - bat
+    - eza
+    - zoxide
+    - jq
+    - starship
+    - lazygit
+    - zsh
+    - gh
+
+  extra:
+    - workmux
+    - opencode
+
+  desktop:
+    darwin:
+      casks: [zerterm, visual-studio-code, zed]
+    linux:
+      apt: [wezterm]
+    windows:
+      winget: [wez.wezterm, Microsoft.VisualStudioCode, Zed.Zed]
+
+  apt_names:
+    fd: fd-find
+    bat: batcat
+    eza: eza
+
+  vscode_extensions:
+    - vscodevim.vim
+    - ms-vscode-remote.remote-ssh
+
+  mise:
+    - node@lts
+    - python@3.14
+    - rust@stable

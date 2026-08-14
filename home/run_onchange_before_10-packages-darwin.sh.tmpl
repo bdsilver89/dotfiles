@@ -1,0 +1,21 @@
+{{- if eq .chezmoi.os "darwin" -}}
+#!/bin/sh
+set -eu
+
+command -v brew >/dev/null 2>&1 || \
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+brew install \
+{{- range .packages.core }}
+  {{ . }} \
+{{- end }}
+  ;
+
+{{ if eq .role "desktop" }}
+brew install --cask \
+{{- range .packages.desktop.darwin.casks }}
+ {{ . }} \
+{{- end }}
+  ;
+{{ end }}
+{{- end }}

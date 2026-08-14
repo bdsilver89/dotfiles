@@ -1,0 +1,28 @@
+{{- $desktop := eq .role "desktop" -}}
+
+{{ if not $desktop }}
+# headless: no GUI configs ever materialize
+.config/wezterm
+.config/zed
+.config/Code
+.vsvimrc
+.ideavimrc
+{{ end }}
+
+{{ if ne .chezmoi.os "windows" }}
+Documents/
+{{ end }}
+
+{{ if eq .chezmoi.os "windows" }}
+# tmux is Unix-only; workmux depends on tmux and ships no Windows build.
+.config/tmux
+.config/workmux
+.local/bin/tmux-sessionizer
+.local/bin/tmux-windowizer
+.bashrc
+.profile
+.zshenv
+.zshrc
+.config/sh
+.config/zsh
+{{ end }}
