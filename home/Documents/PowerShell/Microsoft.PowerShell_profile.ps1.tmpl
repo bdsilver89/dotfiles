@@ -19,7 +19,7 @@ $env:LG_CONFIG_FILE  = "$env:XDG_CONFIG_HOME\lazygit\config.yml"
 # Persisting at User scope fixes every launcher at once. Each write hits the
 # registry and broadcasts WM_SETTINGCHANGE, so compare first and write only on
 # change: unconditional writes would cost every new shell a broadcast.
-foreach ($kv in [ordered]@{
+$persist = [ordered]@{
     XDG_CONFIG_HOME = $env:XDG_CONFIG_HOME
     XDG_DATA_HOME   = $env:XDG_DATA_HOME
     XDG_CACHE_HOME  = $env:XDG_CACHE_HOME
@@ -29,7 +29,8 @@ foreach ($kv in [ordered]@{
     STARSHIP_CONFIG = $env:STARSHIP_CONFIG
     MISE_CONFIG_DIR = $env:MISE_CONFIG_DIR
     LG_CONFIG_FILE  = $env:LG_CONFIG_FILE
-}.GetEnumerator()) {
+}
+foreach ($kv in $persist.GetEnumerator()) {
     if ([Environment]::GetEnvironmentVariable($kv.Key, 'User') -ne $kv.Value) {
         [Environment]::SetEnvironmentVariable($kv.Key, $kv.Value, 'User')
     }

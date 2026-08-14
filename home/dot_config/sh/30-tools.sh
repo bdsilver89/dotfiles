@@ -9,6 +9,11 @@ else
   _sh=""
 fi
 
+# SC2089/SC2090: the quotes in --preview are meant to survive as literal text.
+# fzf does its own shell-like splitting of FZF_DEFAULT_OPTS, so `bat {}` has to
+# reach it still quoted; the array rewrite shellcheck suggests is for arguments
+# this shell will expand, which these are not.
+# shellcheck disable=SC2089,SC2090
 if command -v fzf >/dev/null 2>&1; then
   if command -v bat >/dev/null 2>&1; then
     FZF_DEFAULT_OPTS="--preview 'bat --color=always {}'"

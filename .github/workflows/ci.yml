@@ -92,6 +92,13 @@ jobs:
           sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "$HOME/.local/bin"
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
+      # Only the ubuntu image ships shellcheck. macOS needs it too: the darwin
+      # branches of the run_onchange templates render nowhere else, so skipping
+      # it here would leave them permanently unlinted.
+      - name: install shellcheck
+        if: runner.os == 'macOS'
+        run: brew install shellcheck
+
       - name: render every combination, twice
         run: |
           set -uo pipefail
@@ -157,7 +164,10 @@ jobs:
           # Templates are rendered first; plain .ps1 files are parsed as-is.
           $sources = @{}
           foreach ($t in Get-ChildItem -Recurse -Filter '*.ps1.tmpl') {
-            $rendered = chezmoi execute-template --config="$cfg" --source="$PWD" < $t.FullName | Out-String
+            # No `<` redirection in PowerShell - the operator is reserved and
+            # this is a parse error, not a runtime one. Pipe the file in.
+            $rendered = Get-Content -Raw $t.FullName |
+              chezmoi execute-template --config="$cfg" --source="$PWD" | Out-String
             if ($rendered.Trim()) { $sources[$t.FullName] = $rendered }
           }
           foreach ($p in @('bootstrap.ps1', 'home/dot_claude/statusline-command.ps1')) {

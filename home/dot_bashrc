@@ -12,6 +12,7 @@ fi
 # Unquoted so the glob expands. A quoted glob does not expand — it would loop
 # once over the literal pattern and source nothing at all.
 for f in "$HOME"/.config/sh/*.sh; do
+    # shellcheck source=/dev/null  # glob target, not knowable statically
     [ -r "$f" ] && . "$f"
 done
 unset f
@@ -22,4 +23,5 @@ HISTSIZE=100000
 HISTFILESIZE=100000
 HISTCONTROL=ignoredups:erasedups
 set -o vi
+# shellcheck source=/dev/null  # written by fzf's installer, absent in this repo
 [ -f "$HOME/.fzf.bash" ] && . "$HOME/.fzf.bash"
