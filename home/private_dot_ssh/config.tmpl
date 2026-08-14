@@ -1,0 +1,13 @@
+# Machine-level hosts come first: ssh honors the EARLIEST matching directive,
+# so anything included later cannot override these defaults.
+# A glob that mactches nothing is not an error, so no placeholder file is needed.
+Include ~/.ssh/conf.d/*.conf
+
+Host *
+    AddKeysToAgent yes
+    ServerAliveInterval 60
+    ServerAliveCountMax 3
+    HashKnownHosts no
+{{- if eq .chezmoi.os "darwin" }}
+    UseKeychain yes
+{{- end }}

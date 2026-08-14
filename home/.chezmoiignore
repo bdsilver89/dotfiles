@@ -13,6 +13,12 @@
 Documents/
 {{ end }}
 
+{{ if .work }}
+# Work maintains its own Claude Code settings in full.
+# Skills, agents, and the statusline scripts are still managed.
+.claude/settings.json
+{{ end }}
+
 {{ if eq .chezmoi.os "windows" }}
 # tmux is Unix-only; workmux depends on tmux and ships no Windows build.
 .config/tmux

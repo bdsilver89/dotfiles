@@ -2,16 +2,28 @@
 #!/bin/sh
 set -eu
 
-# Package list, inlined so run_onchange re-triggers when it changes:
-# {{ .packages.extra | join " " }}
+# Inlined so run_onchange re-triggers when either list changes:
+# extra:      {{ .packages.extra | join " " }}
+# unpackaged: {{ .packages.unpackaged | join " " }}
 
+command -v mise >/dev/null 2>&1 || curl -fsSL https://mise.run | sh
+export PATH="$HOME/.local/bin:$PATH"
 {{ if eq .chezmoi.os "darwin" }}
-command -v workmux >/dev/null 2>&1 || brew install raine/workmux/workmux
+command -v workmux  >/dev/null 2>&1 || brew install raine/workmux/workmux
 command -v opencode >/dev/null 2>&1 || brew install anomalyco/tap/opencode
+command -v claude   >/dev/null 2>&1 || curl -fsSL https://claude.ai/install.sh | bash
 {{ else }}
+# apt has no starship or lazygit, and its neovim (0.9.5 on Ubuntu 24.04) predates
+# the lsp/ runtime directory this config relies on. mise handles arch detection.
+{{- range .packages.unpackaged }}
+mise use -g {{ . }}@latest
+{{- end }}
+
 command -v workmux >/dev/null 2>&1 || \
-  curl -fsSL https://raw.githubusercontent.com/raine/workmux/main/scripts/install.sh | bash
+    curl -fsSL https://raw.githubusercontent.com/raine/workmux/main/scripts/install.sh | bash
 command -v opencode >/dev/null 2>&1 || \
-  curl -fsSL https://opencode.ai/install | bash
+    curl -fsSL https://opencode.ai/install | bash
+command -v claude >/dev/null 2>&1 || \
+    curl -fsSL https://claude.ai/install.sh | bash
 {{ end }}
 {{- end }}

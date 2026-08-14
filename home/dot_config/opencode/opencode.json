@@ -1,0 +1,16 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+{{- if .work }}
+  "provider": {
+    "amazon-bedwork": {}
+  }
+{{- else }}
+  "provider": {
+    "anthropic": {
+      "options": {
+        "apiKey": "{env:ANTHROPIC_API_KEY}"
+      }
+    }
+  }
+{{- end }}
+}

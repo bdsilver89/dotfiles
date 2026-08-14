@@ -19,5 +19,6 @@ unset f
 shopt -s histappend checkwinsize
 HISTSIZE=100000
 HISTFILESIZE=100000
-HISTCONTROL=ignoreboth
+HISTCONTROL=ignoredups:erasedups
+set -o vi
 [ -f "$HOME/.fzf.bash" ] && . "$HOME/.fzf.bash"

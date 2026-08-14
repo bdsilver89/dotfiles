@@ -4,5 +4,5 @@ set -eu
 
 COMPDIR="${XDG_DATA_HOME:-$HOME/.local/share}/zsh/completions"
 mkdir -p "$COMPDIR"
-command -v workmux >/dev/null 2>&1 && workmux completions zsh > "$COMPDIR/_workmux
+command -v workmux >/dev/null 2>&1 && workmux completions zsh > "$COMPDIR/_workmux"
 {{- end }}

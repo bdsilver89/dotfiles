@@ -109,14 +109,18 @@ workmux is Unix-only, so the question does not arise. The only irreducible excep
     │   ├── zsh/ 00-completion.zsh  10-history.zsh  20-keybinds.zsh  99-plugins.zsh
     │   ├── nvim/  tmux/  wezterm/  bat/  lazygit/  starship.toml
     │   ├── workmux/config.yaml          # unix only, optional
-    │   ├── opencode/opencode.json
+    │   ├── opencode/opencode.json.tmpl
     │   └── zed/  Code/User/             # desktop only
     │
     ├── dot_local/bin/
     │   ├── executable_tmux-sessionizer
     │   └── executable_tmux-windowizer
     │
-    ├── dot_claude/
+    ├── dot_claude/                      # allowlist; never `chezmoi add ~/.claude`
+    │   ├── settings.json
+    │   ├── agents/  skills/             # NOT exact_ — see §7.34
+    │   ├── executable_statusline-command.sh
+    │   └── statusline-command.ps1
     ├── private_dot_ssh/config.tmpl
     ├── Documents/PowerShell/Microsoft.PowerShell_profile.ps1.tmpl
     │
@@ -164,7 +168,7 @@ Build in this order. Every file in §6 appears exactly once below.
 | 7.21 | `home/dot_config/zsh/99-plugins.zsh` | new |
 | 7.22 | `home/dot_gitconfig.tmpl` | new |
 | 7.23 | `home/private_dot_ssh/config.tmpl` | new |
-| 7.24 | `home/dot_config/opencode/opencode.json` | new |
+| 7.24 | `home/dot_config/opencode/opencode.json.tmpl` | new |
 | 7.25 | `home/dot_config/workmux/config.yaml` | deferred |
 | 7.26 | `home/Documents/PowerShell/…profile.ps1.tmpl` | new |
 | 7.27 | `home/run_onchange_before_10-packages-darwin.sh.tmpl` | new |
@@ -174,6 +178,7 @@ Build in this order. Every file in §6 appears exactly once below.
 | 7.31 | `home/run_onchange_after_20-mise-runtimes.sh.tmpl` | new |
 | 7.32 | `home/run_onchange_after_21-vscode-extensions.sh.tmpl` | new |
 | 7.33 | `home/run_onchange_after_22-completions.sh.tmpl` | new |
+| 7.34 | `home/dot_claude/settings.json` | ported |
 
 ### Copied unchanged — no implementation needed
 
@@ -193,7 +198,10 @@ do not change.
 | `home/dot_config/Code/User/` | `config/vscode/` (settings.json, keybindings.json) |
 | `home/dot_local/bin/executable_tmux-sessionizer` | `bin/tmux-sessionizer` |
 | `home/dot_local/bin/executable_tmux-windowizer` | `bin/tmux-windowizer` |
-| `home/dot_claude/` | `claude/` |
+| `home/dot_claude/skills/` | `claude/skills/` |
+| `home/dot_claude/agents/` | *(untracked — currently only in `~/.claude/agents/`)* |
+| `home/dot_claude/executable_statusline-command.sh` | `claude/statusline-command.sh` |
+| `home/dot_claude/statusline-command.ps1` | `claude/statusline-command.ps1` |
 | `home/dot_vimrc` | `vim/vimrc.symlink` |
 | `home/dot_ideavimrc` | `vim/ideavimrc.symlink` |
 | `home/dot_vsvimrc` | `vim/vsvim.symlink` |
@@ -310,6 +318,11 @@ encryption = "none"
 
 Two traps: the email **must** be `| quote`d or the generated TOML is invalid and chezmoi cannot read its own config; and do not compute `$desktop`/`$wsl` here — `.role` does not exist in this template's context during init, so `eq .role "desktop"` errors on incompatible types. Derive those in `.chezmoiignore`, where the data does exist.
 
+`work` has exactly two consumers: §7.24, which selects the Bedrock provider for
+opencode, and one flat exclusion in §7.6, which hands `~/.claude/settings.json` over
+to the machine entirely. Everything else about a work machine's Claude Code setup is
+untracked by design — see §7.34.
+
 ## 7.6 `home/.chezmoiignore`
 
 The load-bearing file — keep it a flat table. Patterns are target-relative; listed paths are never written. `README.md`, `docs/`, and `.pre-commit-config.yaml` need no entries: `.chezmoiroot` puts them outside the source tree.
@@ -328,6 +341,12 @@ The load-bearing file — keep it a flat table. Patterns are target-relative; li
 
 {{ if ne .chezmoi.os "windows" }}
 Documents/
+{{ end }}
+
+{{ if .work }}
+# Work maintains its own Claude Code settings in full — see §7.34.
+# Skills, agents, and the statusline scripts are still managed.
+.claude/settings.json
 {{ end }}
 
 {{ if eq .chezmoi.os "windows" }}
@@ -402,6 +421,7 @@ packages:
     - mise
     - workmux
     - opencode
+    - claude-code
 
   # apt package names that differ from the canonical name.
   # NOTE: on Ubuntu the bat *package* is `bat`; only the *binary* is batcat.
@@ -799,13 +819,21 @@ Host *
 
 Internal hostnames are themselves sensitive; they belong in `~/.ssh/conf.d/`, which is never tracked.
 
-## 7.24 `home/dot_config/opencode/opencode.json`
+## 7.24 `home/dot_config/opencode/opencode.json.tmpl`
 
-Safe to track: opencode never inlines credentials, it resolves `{env:VAR}` and `{file:path}` references at run time.
+Safe to track either way: opencode never inlines credentials. On a personal machine
+it resolves `{env:VAR}` and `{file:path}` references at run time; on a work machine
+the `amazon-bedrock` provider takes no key at all and reads the standard AWS
+credential chain, so there is nothing to inline.
 
-```json
+```
 {
   "$schema": "https://opencode.ai/config.json",
+{{- if .work }}
+  "provider": {
+    "amazon-bedrock": {}
+  }
+{{- else }}
   "provider": {
     "anthropic": {
       "options": {
@@ -813,14 +841,26 @@ Safe to track: opencode never inlines credentials, it resolves `{env:VAR}` and `
       }
     }
   }
+{{- end }}
 }
 ```
 
-The key itself goes in the untracked `~/.config/sh/local.sh`:
+The personal key goes in the untracked `~/.config/sh/local.sh`:
 
 ```sh
 export ANTHROPIC_API_KEY='…'
 ```
+
+**Verify in step 4.** The provider id `amazon-bedrock` and the model-id form
+(`us.anthropic.claude-…-v1:0` inference profiles, *not* the `anthropic.`-prefixed
+Mantle ids) are inferred from opencode routing Bedrock through the AI SDK rather
+than confirmed against its schema. If the work account is not entitled to opencode's
+default model, pin one with a top-level `"model"` key.
+
+This file is templated while Claude Code's settings (§7.34) are excluded outright on
+work machines. The asymmetry is deliberate: opencode's work delta is three non-secret
+lines, worth templating for reproducibility, while Claude Code's spans four surfaces
+and includes internal MCP endpoints.
 
 Add model and agent settings per upstream docs once the basics work.
 
@@ -942,6 +982,7 @@ export PATH="$HOME/.local/bin:$PATH"
 {{ if eq .chezmoi.os "darwin" }}
 command -v workmux  >/dev/null 2>&1 || brew install raine/workmux/workmux
 command -v opencode >/dev/null 2>&1 || brew install anomalyco/tap/opencode
+command -v claude   >/dev/null 2>&1 || curl -fsSL https://claude.ai/install.sh | bash
 {{ else }}
 # apt has no starship or lazygit, and its neovim (0.9.5 on Ubuntu 24.04) predates
 # the lsp/ runtime directory this config relies on. mise handles arch detection.
@@ -953,13 +994,15 @@ command -v workmux >/dev/null 2>&1 || \
     curl -fsSL https://raw.githubusercontent.com/raine/workmux/main/scripts/install.sh | bash
 command -v opencode >/dev/null 2>&1 || \
     curl -fsSL https://opencode.ai/install | bash
+command -v claude >/dev/null 2>&1 || \
+    curl -fsSL https://claude.ai/install.sh | bash
 {{ end }}
 {{- end }}
 ```
 
 The `command -v` guards make this re-runnable but mean it will not *upgrade* an already-installed tool; upgrades are a manual `brew upgrade` or `mise upgrade`. Acceptable at this size — revisit past four tools.
 
-Confirm on first run that mise's registry resolves `neovim`, `starship`, and `lazygit`. If one does not, fall back to that project's own installer.
+Confirm on first run that mise's registry resolves `neovim`, `starship`, and `lazygit`. If one does not, fall back to that project's own installer. Confirm the Claude Code installer URL too — on macOS `brew install --cask claude-code` is the fallback.
 
 ## 7.31 `home/run_onchange_after_20-mise-runtimes.sh.tmpl`
 
@@ -1012,6 +1055,145 @@ command -v workmux >/dev/null 2>&1 && workmux completions zsh > "$COMPDIR/_workm
 
 The directory is put on `fpath` before `compinit` by §7.18; without that ordering the completion is silently ignored.
 
+## 7.34 `home/dot_claude/settings.json`
+
+### `~/.claude` is mostly runtime state
+
+Of the 33 entries in a live `~/.claude`, five are configuration. The rest is churn:
+`history.jsonl` alone is 1.2 MB, plus `daemon.log`, `sessions/`, `projects/`,
+`file-history/`, `session-env/`, `tasks/`, `shell-snapshots/`, and several caches.
+
+**Never run `chezmoi add ~/.claude`.** The source tree is an explicit allowlist:
+
+| Tracked | Not tracked |
+|---|---|
+| `settings.json` | everything else |
+| `agents/` | |
+| `skills/` | |
+| `executable_statusline-command.sh` | |
+| `statusline-command.ps1` | |
+
+### No `exact_` prefix — this is the load-bearing rule
+
+Work machines carry their own subagents, skills, hooks, commands, and MCP server
+definitions in the same directories, and none of it is tracked here. A normal
+chezmoi-managed directory leaves unknown files alone; an `exact_` directory deletes
+them. So `exact_dot_claude/`, `exact_agents/`, or `exact_skills/` would silently wipe
+a work machine's Claude setup on every `chezmoi apply`.
+
+This is the one place in the repo where an `exact_` prefix would be actively
+destructive. Anything added under `dot_claude/` later must keep the plain form.
+
+### The file
+
+Ported from the live `~/.claude/settings.json`. Two keys are dropped in the port —
+`feedbackSurveyState` and `attribution` — because Claude Code rewrites them at run
+time and they would show up as permanent drift in `chezmoi status`.
+
+```json
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(git status:*)", "Bash(git diff:*)", "Bash(git log:*)",
+      "Bash(git show:*)", "Bash(git branch:*)", "Bash(git blame:*)",
+      "Bash(git worktree list:*)", "Bash(git remote -v)",
+      "Bash(rg:*)", "Bash(fd:*)", "Bash(eza:*)", "Bash(bat:*)", "Bash(jq:*)",
+      "Bash(cargo check:*)", "Bash(cargo clippy:*)", "Bash(cargo fmt:*)",
+      "Bash(cargo tree:*)", "Bash(cargo metadata:*)",
+      "Bash(ruff check:*)", "Bash(ruff format:*)",
+      "Bash(mypy:*)", "Bash(basedpyright:*)", "Bash(tsc --noEmit:*)",
+      "Bash(clang-format:*)", "Bash(clang-tidy:*)",
+      "Read(//tmp/**)"
+    ],
+    "deny": [
+      "Read(**/.env)", "Read(**/.env.*)",
+      "Read(~/.aws/**)", "Read(~/.ssh/**)",
+      "Read(**/*.pem)", "Read(**/*.key)", "Read(**/credentials)"
+    ],
+    "ask": []
+  },
+  "model": "opus[1m]",
+  "statusLine": {
+    "type": "command",
+    "command": "sh ~/.claude/statusline-command.sh",
+    "padding": 1,
+    "refreshInterval": 1
+  },
+  "enabledPlugins": {
+    "superpowers@superpowers-marketplace": true,
+    "ralph-loop@claude-plugins-official": true,
+    "linear@claude-plugins-official": true,
+    "rust-analyzer-lsp@claude-plugins-official": true
+  },
+  "effortLevel": "high",
+  "tui": "fullscreen",
+  "editorMode": "vim",
+  "skipWorkflowUsageWarning": true,
+  "skipAutoPermissionPrompt": true,
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  }
+}
+```
+
+The `deny` list already blocks `Read(~/.aws/**)`, which matters more once work
+machines authenticate through Bedrock — see §8.
+
+### Work machines own this file outright
+
+Work's Claude Code config differs across all four surfaces — settings, agents and
+skills, MCP servers, and hooks and commands — and the MCP endpoints in particular
+name internal infrastructure. None of it belongs in a repo that pushes to a personal
+GitHub remote, so none of it is tracked.
+
+The mechanism is the single flat exclusion in §7.6: on a work machine
+`.claude/settings.json` is never written, and the machine's own copy is left alone.
+Skills, agents, and the statusline scripts are still managed there, which is the
+point of splitting the allowlist rather than excluding `dot_claude/` wholesale.
+
+Bedrock selection moves into that machine-local file:
+
+```json
+{
+  "env": {
+    "CLAUDE_CODE_USE_BEDROCK": "1"
+  }
+}
+```
+
+Region, profile, and credentials stay out of it — they come from `~/.aws/config` and
+`~/.aws/sso/cache/`. `local.sh` carries the two non-secret pointers:
+
+```sh
+export AWS_PROFILE=…
+export AWS_REGION=…
+```
+
+If the work account is not entitled to Claude Code's default model, pin
+`ANTHROPIC_MODEL` (and `ANTHROPIC_DEFAULT_HAIKU_MODEL`) in the same `env` block, set
+to the Bedrock inference-profile ids the account actually has.
+
+### Two things to verify in step 4
+
+**Whether `~/.claude/settings.local.json` is merged at the user level.** Claude Code
+documents `.claude/settings.local.json` as a *project*-level override; a user-level
+equivalent would be strictly better than the whole-file exclusion above, because work
+would inherit the shared permission allowlist instead of duplicating it. Confirm on
+the work box; if it works, replace the §7.6 exclusion with a tracked `settings.json`
+plus an untracked `settings.local.json`. If it does not, the exclusion stands.
+
+**That `chezmoi apply` does not delete untracked files** under `~/.claude/agents/`
+and `~/.claude/skills/`. This is the `exact_` rule above, and it is worth proving on
+a real work machine rather than trusting the prefix convention.
+
+### Migration note
+
+`~/.claude/statusline-command.sh` is currently a symlink into `~/dotfiles/claude/`,
+the `.symlink` convention §9 deletes. Remove it before the first `chezmoi apply` on
+each machine, or apply will write through the symlink into the old tree instead of
+replacing it.
+
 ---
 
 ## 8. Secrets model
@@ -1020,9 +1202,11 @@ Three tiers, strictly separated.
 
 | Tier | Location | Tracked | Contents |
 |---|---|---|---|
-| Public config | `~/dotfiles/home/**` | Yes | aliases, keybinds, nvim, tmux, opencode.json |
+| Public config | `~/dotfiles/home/**` | Yes | aliases, keybinds, nvim, tmux, opencode.json, Claude Code settings |
 | Machine variables | `~/.config/chezmoi/chezmoi.toml` | No | `role`, `work`, `email` |
-| Secrets | `~/.config/sh/local.sh`, `~/.gitconfig.local`, `~/.ssh/conf.d/*.conf` | No | tokens, API keys, internal URLs, proxies, signing keys, internal hostnames |
+| Secrets | `~/.config/sh/local.sh`, `~/.gitconfig.local`, `~/.ssh/conf.d/*.conf` | No | tokens, API keys, internal URLs, proxies, signing keys, internal hostnames, `AWS_PROFILE`/`AWS_REGION` |
+| Cloud credentials | `~/.aws/config`, `~/.aws/credentials`, `~/.aws/sso/cache/` | No | AWS profiles, SSO tokens, any Bedrock gateway endpoint |
+| Work Claude config | `~/.claude/settings.json` (work only), plus work-only entries under `~/.claude/agents/`, `skills/`, and any hooks or commands | No | internal MCP endpoints, work permission rules, Bedrock env |
 
 Keys obtained through opencode's interactive `/connect` are stored outside `~/.config/opencode`. Confirm during step 1 by running `chezmoi diff` after a `/connect` and checking nothing new appears.
 
@@ -1065,6 +1249,15 @@ Verify: correct PATH and prompt in a new shell; autosuggestions and syntax highl
 
 **Step 4 — headless on the LDAP work server.** Verify the `exec zsh -l` handoff fires on interactive login and does *not* fire for `ssh host true`, `scp`, or VS Code Remote. Confirm no GUI config was written.
 
+This is also the first `work = true` machine, so it is where the Bedrock path gets proved:
+
+- `chezmoi diff` shows no entry for `.claude/settings.json` — the §7.6 exclusion fired, and the machine's own settings survive untouched.
+- **`chezmoi apply` deletes nothing** under `~/.claude/agents/` or `~/.claude/skills/`. Drop a scratch file in each, apply, confirm both are still there. This proves the `exact_` rule in §7.34.
+- `claude` authenticates against Bedrock without prompting for a Max login.
+- `~/.config/opencode/opencode.json` renders the `amazon-bedrock` provider, and opencode reaches a model the account is entitled to (§7.24's unverified assumption).
+- `chezmoi status` is clean — no AWS profile, region, account id, or internal MCP endpoint has reached a tracked file.
+- Test whether a user-level `~/.claude/settings.local.json` is merged (§7.34). If it is, adopt it and drop the §7.6 exclusion.
+
 **Step 5 — macOS desktop.** Full profile including casks.
 
 **Step 6 — Linux desktop, then merge.**
@@ -1089,7 +1282,11 @@ Delete the old entry points in the merge commit.
 
 ## 12. Risks
 
-**`.chezmoiignore` is load-bearing.** It encodes the whole role/platform matrix. Keep it a flat table; when a rule needs real logic, split into separate per-platform files and exclude whole files instead.
+**`.chezmoiignore` is load-bearing.** It encodes the whole role/platform matrix. Keep it a flat table; when a rule needs real logic, split into separate per-platform files and exclude whole files instead. `work` is a third axis on top of role × platform, so it earns exactly one flat line — `.claude/settings.json` — and nothing more. Its other effect (§7.24) is a template, because there the delta is three non-secret lines rather than a whole file.
+
+**Work Claude Code config is invisible to `chezmoi status`.** §2 lists drift detection as a goal, and this is the one deliberate hole in it: everything under `~/.claude` on a work machine except skills, agents, and the statusline scripts is unmanaged. That is the price of keeping internal MCP endpoints out of a repo with a personal remote. Revisit only if an encrypted tier (§8) is added later.
+
+**An `exact_` prefix under `dot_claude/` would be destructive.** See §7.34 — it would delete a work machine's untracked agents, skills, hooks, and commands on every apply. Nothing else in the repo has this property, which is exactly why it is easy to add by reflex.
 
 **The XDG-on-Windows bet.** nvim, wezterm, git, bat, and opencode are confirmed. lazygit needs verification in step 3; starship and mise are pinned by env var and so are immune. If lazygit fails, give it a Windows-specific target path — contained, not fatal.
 

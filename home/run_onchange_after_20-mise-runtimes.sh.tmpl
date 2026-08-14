@@ -1,0 +1,10 @@
+{{- if ne .chezmoi.os "windows" -}}
+#!/bin/sh
+set -eu
+
+# runtimes: {{ .packages.mise_rnutimes | join " " }}
+command -v >/dev/null 2>&1 || exit 0
+{{- range .packages.mise_runtimes }}
+mise use -g {{ . }}
+{{- end }}
+{{- end }}

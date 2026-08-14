@@ -1,0 +1,6 @@
+$env:EDITOR = 'nvim'
+Set-Alias -Name vim -Value nvim
+Set-Alias -Name g -Value git
+
+Invoke-Expression (&starship init powershell)
+Invoke-Expression (& { (zoxide init powershell | Out-String) })

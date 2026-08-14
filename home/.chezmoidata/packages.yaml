@@ -1,7 +1,6 @@
 packages:
   core:
     - git
-    - neovim
     - tmux
     - fzf
     - ripgrep
@@ -10,18 +9,25 @@ packages:
     - eza
     - zoxide
     - jq
-    - starship
-    - lazygit
     - zsh
     - gh
 
+  # In Homebrew, but apt/dnf either lack these or ship versions too old.
+  # Installed via mise on Linux, via brew on macOS.
+  unpackaged:
+    - neovim
+    - starship
+    - lazygit
+
   extra:
+    - mise
     - workmux
     - opencode
+    - claude-code
 
   desktop:
     darwin:
-      casks: [zerterm, visual-studio-code, zed]
+      casks: [wezterm, visual-studio-code, zed]
     linux:
       apt: [wezterm]
     windows:

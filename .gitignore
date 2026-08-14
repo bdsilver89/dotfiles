@@ -6,7 +6,6 @@
 # Backups and editor droppings
 *.bak
 *.swp
-*.swp
 
 # OS-specific clutter
 .DS_Store

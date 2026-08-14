@@ -9,6 +9,9 @@ brew install \
 {{- range .packages.core }}
   {{ . }} \
 {{- end }}
+{{- range .packages.unpackaged }}
+  {{ . }} \
+{{- end }}
   ;
 
 {{ if eq .role "desktop" }}

@@ -1,7 +1,11 @@
 {{- if eq .chezmoi.os "windows" -}}
 $ErrorActionPreference = 'Stop'
 
+[Environment]::SetEnvironmentVariable('XDG_CONFIG_HOME', "$env:USERPROFILE\.config",      'User')
+[Environment]::SetEnvironmentVariable('XDG_DATA_HOME',   "$env:USERPROFILE\.local\share", 'User')
+[Environment]::SetEnvironmentVariable('XDG_CACHE_HOME',  "$env:USERPROFILE\.cache",       'User')
+
 {{ range .packages.desktop.windows.winget }}
-winget instal --id {{ . }} --silent --accept-package-agreements --accept-source-agreements
+winget install --id {{ . }} --silent --accept-package-agreements --accept-source-agreements
 {{- end }}
 {{- end }}
