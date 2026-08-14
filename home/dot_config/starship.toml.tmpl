@@ -1,0 +1,124 @@
+{{- $t := index .themes (.theme | default "onedark") -}}
+{{- $p := $t.palette -}}
+"$schema" = 'https://starship.rs/config-schema.json'
+
+format = """
+$directory$git_branch$git_state$git_status$cmd_duration
+$character"""
+
+right_format = "$c$rust$golang$java$python$nodejs$docker_context$time"
+
+add_newline = true
+command_timeout = 1000
+palette = "theme"
+
+# Generated from .chezmoidata/themes.yaml.
+[palettes.theme]
+mono0 = '{{ $p.fg_bright }}'
+mono1 = '{{ $p.fg }}'
+mono3 = '{{ $p.grey }}'
+mono4 = '{{ $p.black }}'
+red = '{{ $p.red }}'
+green = '{{ $p.green }}'
+yellow = '{{ $p.yellow }}'
+blue = '{{ $p.blue }}'
+purple = '{{ $p.magenta }}'
+cyan = '{{ $p.cyan }}'
+orange = '{{ $p.orange }}'
+
+[directory]
+style = "blue bold"
+truncation_length = 3
+truncate_to_repo = true
+truncation_symbol = "…/"
+read_only = " "
+
+[git_branch]
+symbol = " "
+style = "purple"
+format = "[$symbol$branch]($style) "
+
+[git_status]
+style = "red"
+format = '([$all_status$ahead_behind]($style) )'
+conflicted = "="
+ahead = "⇡${count}"
+behind = "⇣${count}"
+diverged = "⇕⇡${ahead_count}⇣${behind_count}"
+untracked = "?${count}"
+stashed = "\\$${count}"
+modified = "!${count}"
+staged = "+${count}"
+renamed = "»${count}"
+deleted = "✘${count}"
+
+[git_state]
+style = "yellow bold"
+format = '\([$state( $progress_current/$progress_total)]($style)\) '
+
+[cmd_duration]
+min_time = 2000
+style = "yellow"
+format = "[ $duration]($style) "
+
+[character]
+success_symbol = "[❯](green)"
+error_symbol = "[❯](red)"
+vimcmd_symbol = "[❮](orange)"
+
+[time]
+disabled = false
+style = "mono3"
+format = "[$time]($style)"
+time_format = "%H:%M"
+
+# Right-prompt language modules: version only when the project actually uses
+# the language. symbol + version, no prose.
+[c]
+symbol = " "
+style = "blue"
+format = "[$symbol($version )]($style)"
+[rust]
+symbol = " "
+style = "orange"
+format = "[$symbol($version )]($style)"
+[golang]
+symbol = " "
+style = "cyan"
+format = "[$symbol($version )]($style)"
+[java]
+symbol = " "
+style = "red"
+format = "[$symbol($version )]($style)"
+[python]
+symbol = " "
+style = "yellow"
+format = "[$symbol($version )]($style)"
+[nodejs]
+symbol = " "
+style = "green"
+format = "[$symbol($version )]($style)"
+[docker_context]
+symbol = " "
+style = "blue"
+format = "[$symbol$context]($style) "
+only_with_files = true
+
+# ---------------------------------------------------------------------------
+# Disabled deliberately: the aws/gcloud/azure/kubernetes modules render
+# AWS_PROFILE, AWS_REGION and the current context into the prompt — which is in
+# every screen share, screenshot and asciinema recording. Those variables live
+# in the untracked local.sh precisely so an account identifier never leaks.
+# ---------------------------------------------------------------------------
+[aws]
+disabled = true
+[gcloud]
+disabled = true
+[azure]
+disabled = true
+[kubernetes]
+disabled = true
+[hostname]
+ssh_only = true
+style = "green"
+format = "[$hostname]($style) "

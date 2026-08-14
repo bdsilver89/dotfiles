@@ -1,8 +1,8 @@
 _prepend_path() {
-  case ":$PATH:" in
-    *":$1:"*) ;;
-    *) [ -d "$1" ] && PATH="$1:$PATH" ;;
-  esac
+    case ":$PATH:" in
+        *":$1:"*) ;;
+        *) [ -d "$1" ] && PATH="$1:$PATH" ;;
+    esac
 }
 
 _prepend_path "$HOME/.local/bin"

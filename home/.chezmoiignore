@@ -1,15 +1,32 @@
 {{- $desktop := eq .role "desktop" -}}
+{{- $wsl := and (eq .chezmoi.os "linux") (contains "microsoft" (lower .chezmoi.kernel.osrelease)) -}}
 
 {{ if not $desktop }}
 # headless: no GUI configs ever materialize
 .config/wezterm
 .config/zed
 .config/Code
+Library/
+AppData/
 .vsvimrc
 .ideavimrc
 {{ end }}
 
+# VS Code's config directory is a different absolute path on each platform, so
+# the source tree carries all three and excludes the two that do not apply.
+# The content lives once in .chezmoitemplates/vscode/.
+#
+# WSL is excluded from the Linux branch too: VS Code runs there as a Remote-WSL
+# server, which reads ~/.vscode-server/data/Machine/settings.json and never
+# ~/.config/Code/User. Writing it is harmless but misleading.
+{{ if not (and (eq .chezmoi.os "linux") (not $wsl)) }}
+.config/Code
+{{ end }}
+{{ if ne .chezmoi.os "darwin" }}
+Library/
+{{ end }}
 {{ if ne .chezmoi.os "windows" }}
+AppData/
 Documents/
 {{ end }}
 
@@ -25,6 +42,7 @@ Documents/
 .config/workmux
 .local/bin/tmux-sessionizer
 .local/bin/tmux-windowizer
+.local/bin/theme
 .bashrc
 .profile
 .zshenv

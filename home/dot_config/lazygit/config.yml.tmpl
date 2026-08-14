@@ -1,0 +1,73 @@
+{{- $t := index .themes (.theme | default "onedark") -}}
+{{- $p := $t.palette -}}
+gui:
+  nerdFontsVersion: "3"
+  showFileIcons: true
+  border: rounded
+  showRandomTip: false
+  showCommandLog: false
+  showDivergenceFromBaseBranch: arrowAndNumber
+  filterMode: fuzzy
+  sidePanelWidth: 0.28
+  mainPanelSplitMode: flexible
+  timeFormat: "2006-01-02"
+  shortTimeFormat: "15:04"
+  theme:
+    activeBorderColor: ["{{ $p.blue }}", bold]
+    inactiveBorderColor: ["{{ $p.grey }}"]
+    searchingActiveBorderColor: ["{{ $p.cyan }}", bold]
+    optionsTextColor: ["{{ $p.green }}"]
+    selectedLineBgColor: ["{{ $p.surface }}"]
+    inactiveViewSelectedLineBgColor: ["{{ $p.bg_alt }}"]
+    cherryPickedCommitFgColor: ["{{ $p.bg }}"]
+    cherryPickedCommitBgColor: ["{{ $p.yellow }}"]
+    markedBaseCommitFgColor: ["{{ $p.bg }}"]
+    markedBaseCommitBgColor: ["{{ $p.yellow }}"]
+    unstagedChangesColor: ["{{ $p.red }}"]
+    defaultFgColor: ["{{ $p.fg }}"]
+  authorColors:
+    "*": "{{ $p.magenta }}"
+
+git:
+  paging:
+    colorArg: always
+    # Same pager as `git diff`, so a hunk looks identical in both.
+    # --syntax-theme is passed explicitly rather than inherited from
+    # ~/.gitconfig: lazygit invokes delta directly, not through git.
+    pager: delta {{ if $t.dark }}--dark{{ else }}--light{{ end }} --paging=never --line-numbers --syntax-theme={{ $t.bat.theme | quote }}
+  commit:
+    signOff: false
+    autoWrapCommitMessage: true
+    autoWrapWidth: 72
+  # Unset would auto-detect per repo; naming both is what makes
+  # showDivergenceFromBaseBranch above useful on the repos still on master.
+  mainBranches: [main, master]
+  autoFetch: true
+  autoRefresh: true
+  fetchAll: false
+  parseEmoji: false
+  log:
+    order: topo-order
+    showGraph: always
+
+os:
+  # Drives `e`, `o`, and the "open at line" actions in one setting.
+  editPreset: nvim
+
+# lazygit suspends itself to run the editor; returning straight to the UI is
+# the whole point of editing from inside it.
+promptToReturnFromSubprocess: false
+disableStartupPopups: true
+confirmOnQuit: false
+
+update:
+  method: never
+
+customCommands:
+  # `w` is unbound in the branches context. Hands the branch to workmux, which
+  # creates the worktree and the tmux window in one step.
+  - key: "w"
+    context: "localBranches"
+    description: "workmux: open branch in a worktree + window"
+    command: "workmux add {{ "{{" }}.SelectedLocalBranch.Name{{ "}}" }}"
+    subprocess: true

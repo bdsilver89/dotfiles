@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# Open (or reuse) a tmux window named after $1, cd into it if it is a
+# directory, and run the remaining arguments there.
+#
+#   tmux-windowizer feature/foo cargo test
+set -euo pipefail
+
+[ $# -ge 1 ] || { echo "usage: tmux-windowizer <name> [command...]" >&2; exit 1; }
+
+branch_name=$(basename "$1")
+session_name=$(tmux display-message -p "#S")
+clean_name=$(echo "$branch_name" | tr './' '__')
+target="$session_name:$clean_name"
+
+if ! tmux has-session -t="$target" 2>/dev/null; then
+    tmux neww -dn "$clean_name"
+fi
+
+shift
+if [ -d "$branch_name" ]; then
+    tmux send-keys -t "$target" "cd '$branch_name'" Enter
+fi
+[ $# -gt 0 ] && tmux send-keys -t "$target" "$*" Enter

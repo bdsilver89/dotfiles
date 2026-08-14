@@ -1,0 +1,44 @@
+{{- if ne .chezmoi.os "windows" -}}
+#!/bin/sh
+set -eu
+
+# Inlined so run_onchange re-triggers when either list changes.
+# mise:   {{ .language_tools.mise | join " " }}
+# rustup: {{ .language_tools.toolchain.rust_components | join " " }}
+
+export PATH="$HOME/.local/bin:$PATH"
+command -v mise >/dev/null 2>&1 || exit 0
+
+{{ range .language_tools.mise -}}
+mise use -g {{ . }}@latest
+{{ end }}
+{{- if eq .chezmoi.os "darwin" }}
+# clangd is keg-only inside llvm: brew puts it at
+# $(brew --prefix llvm)/bin/clangd and `command -v clangd` still fails.
+# Symlink the one binary rather than adding the directory to PATH, which
+# would shadow Apple's clang/clang++ for every build on the machine.
+brew list llvm >/dev/null 2>&1 || brew install {{ .language_tools.toolchain.clangd.brew }}
+mkdir -p "$HOME/.local/bin"
+ln -sf "$(brew --prefix llvm)/bin/clangd" "$HOME/.local/bin/clangd"
+
+{{ range .language_tools.toolchain.java_brew -}}
+brew list {{ . }} >/dev/null 2>&1 || brew install {{ . }}
+{{ end -}}
+{{- else }}
+command -v clangd >/dev/null 2>&1 || \
+    sudo apt-get install -y {{ .language_tools.toolchain.clangd.apt }}
+
+# jdtls and google-java-format are not packaged for Debian and are left out on
+# purpose: Java on the Linux boxes is rare here, and the Eclipse jdtls tarball
+# is a versioned manual install.
+{{- end }}
+
+# rustup components, only if a toolchain exists. `|| true` because on a
+# mise-managed toolchain `rustup component add` can fail for a pinned channel,
+# and that must not abort the apply.
+if command -v rustup >/dev/null 2>&1; then
+{{- range .language_tools.toolchain.rust_components }}
+    rustup component add {{ . }} >/dev/null 2>&1 || true
+{{- end }}
+fi
+{{- end }}

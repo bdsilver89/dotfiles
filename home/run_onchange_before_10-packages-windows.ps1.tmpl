@@ -4,8 +4,28 @@ $ErrorActionPreference = 'Stop'
 [Environment]::SetEnvironmentVariable('XDG_CONFIG_HOME', "$env:USERPROFILE\.config",      'User')
 [Environment]::SetEnvironmentVariable('XDG_DATA_HOME',   "$env:USERPROFILE\.local\share", 'User')
 [Environment]::SetEnvironmentVariable('XDG_CACHE_HOME',  "$env:USERPROFILE\.cache",       'User')
-
-{{ range .packages.desktop.windows.winget }}
+{{ if eq .role "desktop" }}
+{{- range .packages.desktop.windows.winget }}
 winget install --id {{ . }} --silent --accept-package-agreements --accept-source-agreements
 {{- end }}
+{{- range .packages.desktop.windows.scoop }}
+# Upstream recommends WSL over native Windows for opencode; treat this as
+# optional and drop it if it proves fussy.
+scoop install {{ . }}
+{{- end }}
+{{ end }}
+# clangd for the native side. The .sh language-tools script is Unix-only.
+winget install --id {{ .language_tools.toolchain.clangd.winget }} --silent --accept-package-agreements --accept-source-agreements
+
+# gh extensions. Fully supported on Windows; they land in
+# %LOCALAPPDATA%\GitHub CLI\extensions.
+if (Get-Command gh -ErrorAction SilentlyContinue) {
+    $installed = (gh extension list 2>$null | Out-String)
+{{- range .packages.gh_extensions }}
+    if ($installed -notmatch [regex]::Escape('{{ . }}')) {
+        gh extension install {{ . }}
+        if ($LASTEXITCODE -ne 0) { Write-Warning "gh: {{ . }} install failed" }
+    }
+{{- end }}
+}
 {{- end }}

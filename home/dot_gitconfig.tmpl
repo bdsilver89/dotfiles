@@ -4,12 +4,74 @@
 
 [core]
   editor = nvim
+  ignorecase = false
+  pager = delta
 {{- if eq .chezmoi.os "windows" }}
   autocrlf = input
 {{- end }}
 
 [init]
   defaultBranch = main
+
+[pull]
+  rebase = true
+
+[push]
+  default = simple
+  autoSetupRemote = true
+
+[fetch]
+  prune = true
+
+[submodule]
+  recurse = true
+
+[rerere]
+  enabled = true
+  autoupdate = true
+
+[merge]
+  conflictstyle = zdiff3
+  tool = nvimdiff
+  prompt = false
+
+[diff]
+  algorithm = histogram
+  colorMoved = default
+  tool = nvimdiff
+
+[color]
+  ui = auto
+
+[interactive]
+  diffFilter = delta --color-only
+
+[delta]
+  navigate = true
+  line-numbers = true
+  # delta uses bat's theme registry, so this is the same field bat/config reads
+  # — a diff hunk and a `bat` page of the same file colour identically.
+  syntax-theme = {{ (index .themes (.theme | default "onedark")).bat.theme }}
+  {{ if (index .themes (.theme | default "onedark")).dark }}dark{{ else }}light{{ end }} = true
+
+[difftool "nvimdiff"]
+  cmd = nvim -c "packadd nvim.difftool" -c "DiffTool $LOCAL $REMOTE"
+
+[mergetool "nvimdiff4"]
+  cmd = nvim -d $LOCAL $BASE $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
+
+[alias]
+  hist = log --pretty=format:"%Cgreen%h %Creset%cd %Cblue[%cn] %Creset%s%C(yellow)%d%C(reset)" --graph --date=relative --decorate --all
+  llog = log --graph --name-status --pretty=format:"%C(red)%h %C(reset)(%cd) %C(green)%an %Creset%s %C(yellow)%d%Creset" --date=relative
+  clwt = "!f() { \
+      name=${2:-$(basename \"$1\" .git)}; \
+      mkdir \"$name\" && cd \"$name\" && \
+      git clone --bare \
+        -c remote.origin.fetch='+refs/heads/*:refs/remotes/origin/*' \
+        \"$1\" .bare && \
+      echo 'gitdir: ./.bare' > .git && \
+      git remote set-head origin -a; \
+    }; f"
 
 [include]
   # Untracked. Work signing keys, internal URLS, credential helpers.

@@ -23,7 +23,7 @@
   "model": "opus[1m]",
   "statusLine": {
     "type": "command",
-    "command": "~/.claude/statusline-command.sh",
+    "command": {{ if eq .chezmoi.os "windows" }}"pwsh -NoProfile -File ~/.claude/statusline-command.ps1"{{ else }}"sh ~/.claude/statusline-command.sh"{{ end }},
     "padding": 1,
     "refreshInterval": 1
   },

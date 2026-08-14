@@ -1,6 +1,8 @@
 packages:
+  # Present and current in every system package manager.
   core:
     - git
+    - git-delta
     - tmux
     - fzf
     - ripgrep
@@ -13,36 +15,55 @@ packages:
     - gh
 
   # In Homebrew, but apt/dnf either lack these or ship versions too old.
+  # Verified on Ubuntu 24.04: starship and lazygit absent; neovim is 0.9.5,
+  # while the nvim config uses the lsp/ runtime directory, which needs 0.11+.
   # Installed via mise on Linux, via brew on macOS.
   unpackaged:
     - neovim
     - starship
     - lazygit
 
+  # Own installers, all Unix platforms.
   extra:
     - mise
     - workmux
     - opencode
     - claude-code
 
-  desktop:
-    darwin:
-      casks: [wezterm, visual-studio-code, zed]
-    linux:
-      apt: [wezterm]
-    windows:
-      winget: [wez.wezterm, Microsoft.VisualStudioCode, Zed.Zed]
-
+  # apt package names that differ from the canonical name.
+  # NOTE: on Ubuntu the bat *package* is `bat`; only the *binary* is batcat.
+  # Do not map bat here — `apt install batcat` fails.
   apt_names:
     fd: fd-find
-    bat: batcat
-    eza: eza
 
-  vscode_extensions:
-    - vscodevim.vim
-    - ms-vscode-remote.remote-ssh
+  desktop:
+    darwin:
+      casks:
+        - wezterm
+        - visual-studio-code
+        - zed
+        - font-jetbrains-mono-nerd-font
+    linux:
+      # WezTerm is not in Debian's default repos.
+      # The font is fetched from the nerd-fonts release in 11-extra-tools
+      # instead; apt has no JetBrainsMono Nerd Font package.
+      apt: [wezterm, fontconfig]
+    windows:
+      winget:
+        - wez.wezterm
+        - Microsoft.VisualStudioCode
+        - Zed.Zed
+        - DEVCOM.JetBrainsMonoNerdFont
+      scoop: [opencode]
 
-  mise:
+  # gh extensions. All ship release binaries, so none needs Go.
+  # gh-dash and gh-enhance are both referenced by zed/tasks.json.
+  gh_extensions:
+    - dlvhdr/gh-dash
+    - dlvhdr/gh-enhance
+    - github/gh-stack
+
+  mise_runtimes:
     - node@lts
     - python@3.14
     - rust@stable

@@ -1,0 +1,10 @@
+{{- if hasKey (index .themes (.theme | default "onedark")).bat "tmtheme" -}}
+#!/bin/sh
+set -eu
+# The theme name is load-bearing, not decoration: run_onchange_ hashes the
+# rendered script, so without it this file is byte-identical across two schemes
+# that both need a .tmTheme and the cache never rebuilds on the switch.
+# theme: {{ .theme }}
+command -v bat >/dev/null 2>&1 || exit 0
+bat cache --build >/dev/null
+{{- end }}

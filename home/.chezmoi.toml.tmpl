@@ -1,11 +1,19 @@
 {{- $role := promptStringOnce . "role" "Machine role (desktop/headless)" "desktop" -}}
 {{- $work := promptBoolOnce . "work" "Is this a work machine?" false -}}
 {{- $email := promptStringOnce . "email" "Git email" "github@briansilver.net" -}}
+{{- /*
+  NOTE: `chezmoi init --promptString` is keyed by the PROMPT TEXT below, not by
+  the data key. bootstrap.sh and .github/workflows/ci.yml both pass these exact
+  strings; changing one means changing all three. Kept short for that reason —
+  the scheme list lives in themes.yaml and is printed by `theme` with no args.
+*/ -}}
+{{- $theme := promptStringOnce . "theme" "Colour scheme" "onedark" -}}
 
 [data]
     role = {{ $role | quote }}
     work = {{ $work }}
     email = {{ $email | quote }}
+    theme = {{ $theme | quote }}
 
 encryption = "none"
 

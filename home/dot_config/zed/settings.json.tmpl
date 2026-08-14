@@ -1,0 +1,69 @@
+{{- $t := index .themes (.theme | default "onedark") -}}
+{
+  "theme": {
+    "mode": "dark",
+    "dark": {{ $t.zed.dark | quote }},
+    "light": {{ $t.zed.light | quote }}
+  },
+{{- if $t.zed.extension }}
+  "auto_install_extensions": {
+    {{ $t.zed.extension | quote }}: true
+  },
+{{- end }}
+  "icon_theme": {
+    "mode": "dark",
+    "light": "Zed (Default)",
+    "dark": "Zed (Default)"
+  },
+  "buffer_font_family": "JetBrainsMono Nerd Font",
+  "buffer_font_size": 13,
+  "terminal": {
+    "font_family": "JetBrainsMono Nerd Font",
+    "shell": "system",
+    "copy_on_select": false
+  },
+
+  "vim_mode": true,
+  "vim": {
+    "use_system_clipboard": "always",
+    "use_smartcase_find": true,
+    "toggle_relative_line_numbers": true
+  },
+  "relative_line_numbers": true,
+
+  "colorize_brackets": true,
+  "format_on_save": "off",
+  "indent_guides": {
+    "coloring": "indent_aware"
+  },
+  "remove_trailing_whitespace_on_save": true,
+  "ensure_final_newline_on_save": true,
+
+  "title_bar": {
+    "show_onboarding_banner": false,
+    "show_sign_in": false
+  },
+  "project_panel": { "dock": "left" },
+  "outline_panel": { "dock": "left" },
+  "collaboration_panel": { "dock": "left", "button": false },
+  "git_panel": { "dock": "left", "tree_view": true },
+  "agent": {
+    "sidebar_side": "right",
+    "dock": "right",
+    "favorite_models": [],
+    "model_parameters": []
+  },
+  "agent_servers": {
+    "claude-acp": { "type": "registry" }
+  },
+
+  "git": {
+    "worktree_directory": ".."
+  },
+
+  "telemetry": {
+    "diagnostics": false,
+    "metrics": false,
+    "anthropic_retention": false
+  }
+}

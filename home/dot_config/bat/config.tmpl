@@ -1,0 +1,15 @@
+{{- $t := index .themes (.theme | default "onedark") -}}
+--theme={{ $t.bat.theme | quote }}
+--style="numbers,changes,header-filename"
+--italic-text=always
+
+# fzf's preview and delta both call bat; paging from inside them would
+# deadlock. Interactive paging comes from $PAGER instead.
+--paging=never
+
+# Extensionless files bat otherwise renders as plain text.
+--map-syntax=".chezmoiignore:Git Ignore"
+--map-syntax=".chezmoiexternal.toml:TOML"
+--map-syntax="*.tmpl:Jinja2"
+--map-syntax=".gitconfig.local:INI"
+--map-syntax="**/.ssh/conf.d/*.conf:SSH Config"

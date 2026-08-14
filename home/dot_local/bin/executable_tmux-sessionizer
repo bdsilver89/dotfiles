@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+# Pick a project directory and attach a tmux session to it.
+#
+# Sources, in order, deduplicated:
+#   1. every immediate subdirectory of each root in $TS_SEARCH_PATHS
+#   2. zoxide's frecency list, if zoxide is installed
+#
+# Override the roots per machine from ~/.config/sh/local.sh:
+#   export TS_SEARCH_PATHS="$HOME/work/repos:$HOME/dev/projects"
+set -euo pipefail
+
+DEFAULT_PATHS="$HOME/dev/projects:$HOME/Developer/projects:$HOME/src:$HOME/work"
+IFS=':' read -r -a roots <<< "${TS_SEARCH_PATHS:-$DEFAULT_PATHS}"
+
+candidates() {
+    for root in "${roots[@]}"; do
+        [ -d "$root" ] || continue
+        find "$root" -mindepth 1 -maxdepth 1 -type d 2>/dev/null
+    done
+    command -v zoxide >/dev/null 2>&1 && zoxide query -l 2>/dev/null
+}
+
+if [ $# -eq 1 ]; then
+    selected=$1
+else
+    selected=$(candidates | awk '!seen[$0]++' \
+        | fzf --reverse --header "sessionizer" --preview 'ls -1 {} | head -40') || true
+fi
+
+[ -z "${selected:-}" ] && exit 0
+[ -d "$selected" ] || { echo "tmux-sessionizer: not a directory: $selected" >&2; exit 1; }
+
+# tmux session names cannot contain . or :
+session=$(basename "$selected" | tr '.:' '__')
+
+# `new-session -A` attaches if it exists and creates it otherwise, which
+# replaces the has_session/new/switch dance the old script open-coded.
+if [ -z "${TMUX:-}" ]; then
+    tmux new-session -A -s "$session" -c "$selected"
+    exit 0
+fi
+
+if ! tmux has-session -t="$session" 2>/dev/null; then
+    tmux new-session -ds "$session" -c "$selected"
+    # Per-project or global hydration hook.
+    for hook in "$selected/.tmux-sessionizer" "$HOME/.tmux-sessionizer"; do
+        if [ -f "$hook" ]; then
+            tmux send-keys -t "$session" "source $hook" C-m
+            break
+        fi
+    done
+fi
+
+tmux switch-client -t "$session"

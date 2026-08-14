@@ -10,7 +10,7 @@ if command -v fzf >/dev/null 2>&1; then
   else
     FZF_DEFAULT_OPTS="--preview 'cat {}'"
   fi
-  export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS --border=rounded --info=default"
+  export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS --border=rounded --info=default $FZF_THEME_COLORS"
   eval "$(fzf --"$_sh")"
 fi
 

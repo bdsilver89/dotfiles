@@ -1,0 +1,18 @@
+syntax on
+
+set ignorecase
+set smartcase
+set incsearch
+set tabstop=4
+set shiftwidth=4
+set backspace=eol,start,indent
+set nostartofline
+set hlsearch
+set autoindent
+set expandtab
+set ttimeout
+set ttimeoutlen=50
+set laststatus=2
+set wrap
+
+inoremap z,p <c-r>"

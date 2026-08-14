@@ -1,0 +1,32 @@
+{{- $t := index .themes (.theme | default "onedark") -}}
+[".config/tmux/plugins/tmux-resurrect"]
+    type = "git-repo"
+    url = "https://github.com/tmux-plugins/tmux-resurrect.git"
+    refreshPeriod = "168h"
+
+[".config/tmux/plugins/tmux-continuum"]
+    type = "git-repo"
+    url = "https://github.com/tmux-plugins/tmux-continuum.git"
+    refreshPeriod = "168h"
+
+[".local/share/zsh/plugins/zsh-autosuggestions"]
+    type = "git-repo"
+    url = "https://github.com/zsh-users/zsh-autosuggestions.git"
+    refreshPeriod = "168h"
+
+[".local/share/zsh/plugins/zsh-syntax-highlighting"]
+    type = "git-repo"
+    url = "https://github.com/zsh-users/zsh-syntax-highlighting.git"
+    refreshPeriod = "168h"
+{{- if hasKey $t.bat "tmtheme" }}
+
+# hasKey, not a bare truth test: chezmoi renders with missingkey=error, so
+# `if $t.bat.tmtheme` is a hard error on the rows that omit the key entirely.
+#
+# Only the schemes whose bat theme is not built in need a .tmTheme.
+# run_onchange_after_23-bat-cache.sh then registers it with `bat cache --build`.
+[".config/bat/themes"]
+    type = "git-repo"
+    url = {{ $t.bat.tmtheme | quote }}
+    refreshPeriod = "168h"
+{{- end }}

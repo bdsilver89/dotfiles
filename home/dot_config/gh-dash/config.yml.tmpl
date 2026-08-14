@@ -1,0 +1,49 @@
+{{- $t := index .themes (.theme | default "onedark") -}}
+{{- $p := $t.palette -}}
+# yaml-language-server: $schema=https://gh-dash.dev/schema.json
+#
+# Deliberately account-scoped, not repo-scoped: the upstream sample config is
+# `repo:`-filtered, which here would either be wrong on the work machines or
+# would put internal repository names into a tracked file.
+prSections:
+  - title: Mine
+    filters: is:open author:@me sort:updated-desc
+  - title: Review
+    filters: is:open review-requested:@me sort:updated-desc
+  - title: Involved
+    filters: is:open involves:@me -author:@me sort:updated-desc
+
+issuesSections:
+  - title: Assigned
+    filters: is:open assignee:@me sort:updated-desc
+  - title: Mentioned
+    filters: is:open mentions:@me sort:updated-desc
+
+defaults:
+  view: prs
+  refetchIntervalMinutes: 5
+  prsLimit: 20
+  issuesLimit: 20
+  preview:
+    open: true
+    width: 60
+
+theme:
+  ui:
+    table:
+      showSeparators: true
+      compact: false
+  colors:
+    text:
+      primary: {{ $p.fg_bright | quote }}
+      secondary: {{ $p.blue | quote }}
+      inverted: {{ $p.bg | quote }}
+      faint: {{ $p.grey | quote }}
+      warning: {{ $p.yellow | quote }}
+      success: {{ $p.green | quote }}
+    background:
+      selected: {{ $p.surface | quote }}
+    border:
+      primary: {{ $p.blue | quote }}
+      secondary: {{ $p.black | quote }}
+      faint: {{ $p.black | quote }}

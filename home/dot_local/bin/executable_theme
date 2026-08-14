@@ -1,0 +1,34 @@
+#!/bin/sh
+# Switch the colour scheme across every tool.
+#   theme            list available schemes, mark the active one
+#   theme dracula    switch to dracula and re-apply
+set -eu
+
+CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/chezmoi/chezmoi.toml"
+current=$(chezmoi data | jq -r '.theme // "onedark"')
+
+if [ $# -eq 0 ]; then
+    chezmoi data | jq -r '.themes | keys[]' | while read -r t; do
+        if [ "$t" = "$current" ]; then printf '* %s\n' "$t"; else printf '  %s\n' "$t"; fi
+    done
+    exit 0
+fi
+
+want=$1
+chezmoi data | jq -e --arg t "$want" '.themes | has($t)' >/dev/null 2>&1 || {
+    echo "theme: unknown scheme '$want'" >&2
+    exit 1
+}
+
+# The data key may not exist yet on a machine initialised before themes did.
+# sed -i.bak then rm rather than bare `sed -i`: GNU sed accepts -i with no
+# argument and BSD sed does not, and this script runs on both.
+if grep -q '^[[:space:]]*theme[[:space:]]*=' "$CONFIG"; then
+    sed -i.bak "s|^\([[:space:]]*\)theme[[:space:]]*=.*|\1theme = \"$want\"|" "$CONFIG"
+    rm -f "$CONFIG.bak"
+else
+    printf '    theme = "%s"\n' "$want" >> "$CONFIG"
+fi
+
+chezmoi apply
+echo "theme: $want — restart tmux (prefix-r) and any running editor"

@@ -1,0 +1,108 @@
+# The colour scheme registry. `theme` in ~/.config/chezmoi/chezmoi.toml selects
+# one row; every themed config renders from it. To add a scheme, add a row —
+# no config file below needs to change.
+#
+# palette keys are semantic, not literal: `red` means "errors and unstaged
+# changes", not "the reddest colour in the scheme". ansi/brights are the
+# 16-colour terminal set, which is usually more saturated than the syntax
+# colours so 16-colour TUIs stay legible.
+themes:
+  onedark:
+    name: "One Dark"
+    dark: true
+    palette:
+      bg: "#282c34"
+      bg_alt: "#21252b"
+      surface: "#2c313a"
+      fg: "#abb2bf"
+      fg_bright: "#d7dae0"
+      grey: "#5c6370"
+      black: "#3f4451"
+      red: "#e06c75"
+      green: "#98c379"
+      yellow: "#e5c07b"
+      orange: "#d19a66"
+      blue: "#61afef"
+      magenta: "#c678dd"
+      cyan: "#56b6c2"
+    ansi: ["#3f4451", "#e05561", "#8cc265", "#d18f52", "#4aa5f0", "#c162de", "#42b3c2", "#d7dae0"]
+    brights: ["#4f5666", "#ff616e", "#a5e075", "#f0a45d", "#4dc4ff", "#de73ff", "#4cd1e0", "#e6e6e6"]
+    bat: { theme: "OneHalfDark" }
+    nvim: { plugin: "https://github.com/navarasu/onedark.nvim", colorscheme: "onedark" }
+    vscode: { extension: "zhuangtongfa.material-theme", name: "One Dark Pro Darker" }
+    zed: { extension: "", dark: "One Dark", light: "One Light" }
+
+  catppuccin-mocha:
+    name: "Catppuccin Mocha"
+    dark: true
+    palette:
+      bg: "#1e1e2e"
+      bg_alt: "#181825"
+      surface: "#313244"
+      fg: "#cdd6f4"
+      fg_bright: "#f5e0dc"
+      grey: "#6c7086"
+      black: "#45475a"
+      red: "#f38ba8"
+      green: "#a6e3a1"
+      yellow: "#f9e2af"
+      orange: "#fab387"
+      blue: "#89b4fa"
+      magenta: "#cba6f7"
+      cyan: "#94e2d5"
+    ansi: ["#45475a", "#f38ba8", "#a6e3a1", "#f9e2af", "#89b4fa", "#cba6f7", "#94e2d5", "#bac2de"]
+    brights: ["#585b70", "#f38ba8", "#a6e3a1", "#f9e2af", "#89b4fa", "#cba6f7", "#94e2d5", "#a6adc8"]
+    bat: { theme: "Catppuccin Mocha", tmtheme: "https://github.com/catppuccin/bat.git" }
+    nvim: { plugin: "https://github.com/catppuccin/nvim", colorscheme: "catppuccin-mocha" }
+    vscode: { extension: "Catppuccin.catppuccin-vsc", name: "Catppuccin Mocha" }
+    zed: { extension: "catppuccin", dark: "Catppuccin Mocha", light: "Catppuccin Latte" }
+
+  dracula:
+    name: "Dracula"
+    dark: true
+    palette:
+      bg: "#282a36"
+      bg_alt: "#21222c"
+      surface: "#44475a"
+      fg: "#f8f8f2"
+      fg_bright: "#ffffff"
+      grey: "#6272a4"
+      black: "#21222c"
+      red: "#ff5555"
+      green: "#50fa7b"
+      yellow: "#f1fa8c"
+      orange: "#ffb86c"
+      blue: "#bd93f9"
+      magenta: "#ff79c6"
+      cyan: "#8be9fd"
+    ansi: ["#21222c", "#ff5555", "#50fa7b", "#f1fa8c", "#bd93f9", "#ff79c6", "#8be9fd", "#f8f8f2"]
+    brights: ["#6272a4", "#ff6e6e", "#69ff94", "#ffffa5", "#d6acff", "#ff92df", "#a4ffff", "#ffffff"]
+    bat: { theme: "Dracula" }
+    nvim: { plugin: "https://github.com/Mofiqul/dracula.nvim", colorscheme: "dracula" }
+    vscode: { extension: "dracula-theme.theme-dracula", name: "Dracula Theme" }
+    zed: { extension: "dracula", dark: "Dracula", light: "Dracula" }
+
+  rose-pine:
+    name: "Rosé Pine"
+    dark: true
+    palette:
+      bg: "#191724"
+      bg_alt: "#1f1d2e"
+      surface: "#26233a"
+      fg: "#e0def4"
+      fg_bright: "#e0def4"
+      grey: "#6e6a86"
+      black: "#26233a"
+      red: "#eb6f92"
+      green: "#31748f"
+      yellow: "#f6c177"
+      orange: "#ebbcba"
+      blue: "#9ccfd8"
+      magenta: "#c4a7e7"
+      cyan: "#9ccfd8"
+    ansi: ["#26233a", "#eb6f92", "#31748f", "#f6c177", "#9ccfd8", "#c4a7e7", "#ebbcba", "#e0def4"]
+    brights: ["#6e6a86", "#eb6f92", "#31748f", "#f6c177", "#9ccfd8", "#c4a7e7", "#ebbcba", "#e0def4"]
+    bat: { theme: "rose-pine", tmtheme: "https://github.com/rose-pine/tm-theme.git" }
+    nvim: { plugin: "https://github.com/rose-pine/neovim", colorscheme: "rose-pine" }
+    vscode: { extension: "mvllow.rose-pine", name: "Rosé Pine" }
+    zed: { extension: "rose-pine-theme", dark: "Rosé Pine", light: "Rosé Pine Dawn" }

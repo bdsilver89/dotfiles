@@ -1,0 +1,33 @@
+vscode:
+  # The always-on set. Installed into the default profile and into every
+  # named profile below. The colour theme extension is deliberately absent —
+  # it comes from the active themes.yaml row and is appended by the script.
+  base:
+    - aaron-bond.better-comments
+    - alefragnani.project-manager
+    - anthropic.claude-code
+    - editorconfig.editorconfig
+    - github.vscode-github-actions
+    - github.vscode-pull-request-github
+    - ms-azuretools.vscode-containers
+    - ms-vscode-remote.vscode-remote-extensionpack
+    - pkief.material-icon-theme
+    - pkief.material-product-icons
+    - vscodevim.vim
+
+  profiles:
+    - name: "C++"
+      location: cpp
+      extensions: [ms-vscode.cpptools-extension-pack]
+    - name: "Rust"
+      location: rust
+      extensions: [rust-lang.rust-analyzer]
+    - name: "Java"
+      location: java
+      extensions: [vscjava.vscode-java-pack, vmware.vscode-boot-dev-pack, redhat.vscode-xml]
+    - name: "Python"
+      location: python
+      extensions: [ms-python.python]
+    - name: "Data & APIs"
+      location: data
+      extensions: [dbcode.dbcode, humao.rest-client, redhat.vscode-yaml]

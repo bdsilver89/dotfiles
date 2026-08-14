@@ -1,0 +1,11 @@
+{{- $t := index .themes (.theme | default "onedark") -}}
+-- Generated from .chezmoidata/themes.yaml. Do not hand-edit.
+vim.pack.add({ {{ $t.nvim.plugin | quote }} })
+
+-- pcall: on first launch vim.pack has queued the clone but the runtime path
+-- is not populated yet, and a hard error here aborts the rest of init.lua.
+-- The next launch picks it up.
+local ok = pcall(vim.cmd.colorscheme, {{ $t.nvim.colorscheme | quote }})
+if not ok then
+  vim.notify("theme: " .. {{ $t.nvim.colorscheme | quote }} .. " not installed yet", vim.log.levels.WARN)
+end

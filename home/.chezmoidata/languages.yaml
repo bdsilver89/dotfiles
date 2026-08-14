@@ -1,0 +1,30 @@
+# Language servers, formatters, and the one standalone linter no server bundles.
+# Consumed by run_onchange_after_24-language-tools.sh.tmpl and by nvim's lsp/.
+language_tools:
+  # mise on every Unix platform, including macOS where Homebrew would also work.
+  # Deliberate: a formatter whose version differs between the laptop and the
+  # Linux box produces diff churn in every repo shared between them. That
+  # matters more for stylua than it does for tmux, so this list does not follow
+  # packages.yaml's brew-on-macOS/apt-on-Linux split.
+  mise:
+    - "npm:bash-language-server"
+    - "npm:typescript-language-server"
+    - "npm:vscode-langservers-extracted" # html, css, json, eslint servers
+    - "npm:yaml-language-server"
+    - "npm:prettier"
+    - lua-language-server
+    - stylua
+    - ruff
+    - taplo
+    - shfmt
+    - shellcheck
+    - marksman
+
+  # Not standalone binaries — these ship inside a toolchain.
+  toolchain:
+    clangd:
+      brew: llvm # Xcode CLT does NOT ship clangd; the llvm formula does
+      apt: clangd
+      winget: LLVM.LLVM
+    rust_components: [rust-analyzer, clippy, rustfmt]
+    java_brew: [jdtls, google-java-format]

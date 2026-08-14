@@ -1,0 +1,66 @@
+{{- if and (eq .role "desktop") (ne .chezmoi.os "windows") -}}
+{{- $t := index .themes (.theme | default "onedark") -}}
+#!/bin/sh
+# shellcheck disable=SC2086  # $BASE is a deliberately word-split list
+set -eu
+
+# Inlined so run_onchange re-triggers when any of these change. The theme line
+# is what makes a colour-scheme switch reinstall the theme extension.
+# base:      {{ .vscode.base | join " " }}
+# theme ext: {{ $t.vscode.extension }}
+{{- range .vscode.profiles }}
+# profile:   {{ .name }} = {{ .extensions | join " " }}
+{{- end }}
+
+command -v code >/dev/null 2>&1 || exit 0
+command -v jq   >/dev/null 2>&1 || exit 0
+
+{{ if eq .chezmoi.os "darwin" -}}
+USER_DIR="$HOME/Library/Application Support/Code/User"
+{{- else -}}
+USER_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/Code/User"
+{{- end }}
+STORAGE="$USER_DIR/globalStorage/storage.json"
+
+# VS Code reads storage.json at startup and rewrites it wholesale on exit, so
+# patching it under a running instance loses the new profiles the next time the
+# app quits. Skip rather than corrupt.
+if pgrep -x "Code Helper" >/dev/null 2>&1 || pgrep -x code >/dev/null 2>&1; then
+    echo "vscode: running - skipping profile registration, re-run chezmoi apply after quitting" >&2
+    exit 0
+fi
+
+mkdir -p "$(dirname "$STORAGE")"
+[ -f "$STORAGE" ] || echo '{}' > "$STORAGE"
+
+register() {   # $1 = display name, $2 = location
+    jq --arg n "$1" --arg l "$2" '
+        .userDataProfiles = ((.userDataProfiles // [])
+          | map(select(.name != $n))
+          + [{ name: $n, location: $l,
+               useDefaultFlags: { settings: true, keybindings: true,
+                                  snippets: true, tasks: true, mcp: true,
+                                  prompts: true, languageModels: true } }])
+    ' "$STORAGE" > "$STORAGE.tmp" && mv "$STORAGE.tmp" "$STORAGE"
+    mkdir -p "$USER_DIR/profiles/$2"
+}
+
+install_into() {   # $1 = profile name or "" for the default profile
+    _p="$1"; shift
+    for _e in "$@"; do
+        if [ -n "$_p" ]; then
+            code --profile "$_p" --install-extension "$_e" --force >/dev/null
+        else
+            code --install-extension "$_e" --force >/dev/null
+        fi
+    done
+}
+
+BASE="{{ .vscode.base | join " " }}{{ if $t.vscode.extension }} {{ $t.vscode.extension }}{{ end }}"
+
+install_into "" $BASE
+{{ range .vscode.profiles }}
+register {{ .name | quote }} {{ .location | quote }}
+install_into {{ .name | quote }} $BASE {{ .extensions | join " " }}
+{{- end }}
+{{- end }}

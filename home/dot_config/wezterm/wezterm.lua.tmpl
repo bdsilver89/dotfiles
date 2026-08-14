@@ -1,0 +1,159 @@
+{{- $t := index .themes (.theme | default "onedark") -}}
+{{- $p := $t.palette -}}
+local wezterm = require("wezterm")
+local act = wezterm.action
+local config = wezterm.config_builder()
+
+local triple = wezterm.target_triple
+local is_windows = triple:find("windows") ~= nil
+local is_mac = triple:find("darwin") ~= nil
+
+-- ---------------------------------------------------------------------------
+-- Colours — generated from .chezmoidata/themes.yaml
+-- ---------------------------------------------------------------------------
+config.color_schemes = {
+  [{{ $t.name | quote }}] = {
+    foreground     = {{ $p.fg | quote }},
+    background     = {{ $p.bg | quote }},
+    cursor_bg      = {{ $p.blue | quote }},
+    cursor_fg      = {{ $p.bg | quote }},
+    cursor_border  = {{ $p.blue | quote }},
+    selection_fg   = {{ $p.fg_bright | quote }},
+    selection_bg   = {{ $p.surface | quote }},
+    scrollbar_thumb = {{ $p.grey | quote }},
+    split          = {{ $p.black | quote }},
+    ansi    = { {{ range $i, $c := $t.ansi }}{{ if $i }}, {{ end }}{{ $c | quote }}{{ end }} },
+    brights = { {{ range $i, $c := $t.brights }}{{ if $i }}, {{ end }}{{ $c | quote }}{{ end }} },
+    tab_bar = {
+      background = {{ $p.bg_alt | quote }},
+      active_tab         = { bg_color = {{ $p.blue | quote }},    fg_color = {{ $p.bg | quote }}, intensity = "Bold" },
+      inactive_tab       = { bg_color = {{ $p.bg_alt | quote }},  fg_color = {{ $p.grey | quote }} },
+      inactive_tab_hover = { bg_color = {{ $p.surface | quote }}, fg_color = {{ $p.fg | quote }} },
+      new_tab            = { bg_color = {{ $p.bg_alt | quote }},  fg_color = {{ $p.grey | quote }} },
+      new_tab_hover      = { bg_color = {{ $p.surface | quote }}, fg_color = {{ $p.fg | quote }} },
+    },
+  },
+}
+config.color_scheme = {{ $t.name | quote }}
+
+-- ---------------------------------------------------------------------------
+-- Font — installed as a desktop package
+-- ---------------------------------------------------------------------------
+config.font = wezterm.font_with_fallback({
+  "JetBrainsMono Nerd Font",
+  "Symbols Nerd Font Mono",
+  "Noto Color Emoji",
+})
+-- Retina and 1080p disagree by about two points at the same apparent size.
+config.font_size = is_mac and 13.0 or 11.0
+config.line_height = 1.05
+config.adjust_window_size_when_changing_font_size = false
+
+-- ---------------------------------------------------------------------------
+-- Window and tabs
+-- ---------------------------------------------------------------------------
+-- tmux owns tabs on Unix, so the bar is only ever seen on native Windows or in
+-- the brief moment before tmux attaches. Keep it, keep it out of the way.
+config.enable_tab_bar = true
+config.hide_tab_bar_if_only_one_tab = true
+config.use_fancy_tab_bar = false
+config.tab_bar_at_bottom = false
+
+config.window_padding = { left = 6, right = 6, top = 4, bottom = 0 }
+config.window_background_opacity = 1.0
+config.macos_window_background_blur = 0
+config.scrollback_lines = 10000
+config.audible_bell = "Disabled"
+config.animation_fps = 1
+config.cursor_blink_rate = 500
+config.default_cursor_style = "BlinkingBlock"
+-- tmux sessions survive the window closing; the prompt asks about nothing.
+config.window_close_confirmation = "NeverPrompt"
+config.check_for_updates = false
+
+-- ---------------------------------------------------------------------------
+-- Shell and domains
+-- ---------------------------------------------------------------------------
+-- On Unix, default_prog is deliberately unset: WezTerm spawns the login shell,
+-- which is zsh where chsh worked and bash otherwise — and .bashrc execs zsh in
+-- that case. Setting it here would bypass that handoff.
+if is_windows then
+  -- WSL is the real shell on Windows; pwsh is the fallback in the launcher.
+  config.wsl_domains = wezterm.default_wsl_domains()
+  if #config.wsl_domains > 0 then
+    config.default_domain = config.wsl_domains[1].name
+  else
+    config.default_prog = { "pwsh.exe", "-NoLogo" }
+  end
+end
+
+local launch_menu = {}
+if is_windows then
+  table.insert(launch_menu, { label = "PowerShell", args = { "pwsh.exe", "-NoLogo" } })
+  table.insert(launch_menu, { label = "Cmd", args = { "cmd.exe", "/NoLogo" } })
+  for _, dom in ipairs(config.wsl_domains or {}) do
+    table.insert(launch_menu, { label = dom.name, domain = { DomainName = dom.name } })
+  end
+  -- Visual Studio developer shells, discovered rather than hard-coded.
+  for _, vsvers in ipairs(wezterm.glob("Microsoft Visual Studio/20*/*", "C:/Program Files")) do
+    local version = vsvers:gsub("Microsoft Visual Studio/", ""):gsub("/", " ")
+    local root = "C:/Program Files/" .. vsvers .. "/VC/Auxiliary/Build"
+    for _, script in ipairs(wezterm.glob("vcvars*.bat", root)) do
+      local arch = script:gsub("vcvars", ""):gsub("%.bat", "")
+      if arch ~= "all" then
+        table.insert(launch_menu, {
+          label = "VS " .. version .. " DevTools " .. arch,
+          args = { "cmd.exe", "/k", root .. "/" .. script },
+        })
+      end
+    end
+  end
+else
+  table.insert(launch_menu, { label = "zsh", args = { "zsh", "-l" } })
+  table.insert(launch_menu, { label = "bash", args = { "bash", "-l" } })
+  table.insert(launch_menu, { label = "tmux", args = { "zsh", "-lc", "tmux new -A -s main" } })
+end
+config.launch_menu = launch_menu
+
+-- ---------------------------------------------------------------------------
+-- Keys — every binding is CTRL|SHIFT so none of them collide with the tmux
+-- prefix (C-a), readline, or a TUI running inside the pane.
+-- ---------------------------------------------------------------------------
+-- Light/dark flip. The light side is a WezTerm builtin rather than a second
+-- generated scheme: themes.yaml carries one palette per row, and a light
+-- variant for all four is four more palettes to keep in step for a keybinding
+-- that gets used on a sunny afternoon.
+wezterm.on("toggle-colorscheme", function(window, _)
+  local dark = {{ $t.name | quote }}
+  local overrides = window:get_config_overrides() or {}
+  overrides.color_scheme = (overrides.color_scheme == "OneHalfLight") and dark or "OneHalfLight"
+  window:set_config_overrides(overrides)
+end)
+
+config.keys = {
+  { key = "e", mods = "CTRL|SHIFT", action = act.EmitEvent("toggle-colorscheme") },
+  { key = "f", mods = "CTRL|SHIFT", action = act.ToggleFullScreen },
+  { key = "Space", mods = "CTRL|SHIFT", action = act.ShowLauncherArgs({ flags = "LAUNCH_MENU_ITEMS|DOMAINS|FUZZY" }) },
+  { key = "c", mods = "CTRL|SHIFT", action = act.CopyTo("Clipboard") },
+  { key = "v", mods = "CTRL|SHIFT", action = act.PasteFrom("Clipboard") },
+  { key = "|", mods = "CTRL|SHIFT", action = act.SplitHorizontal({ domain = "CurrentPaneDomain" }) },
+  { key = "_", mods = "CTRL|SHIFT", action = act.SplitVertical({ domain = "CurrentPaneDomain" }) },
+  { key = "n", mods = "CTRL|SHIFT", action = act.SpawnWindow },
+  { key = "w", mods = "CTRL|SHIFT", action = act.CloseCurrentPane({ confirm = true }) },
+  { key = "k", mods = "CTRL|SHIFT", action = act.ClearScrollback("ScrollbackAndViewport") },
+  { key = "0", mods = "CTRL|SHIFT", action = act.ResetFontSize },
+}
+
+-- ---------------------------------------------------------------------------
+-- Machine-local overrides — untracked, same tier as ~/.config/sh/local.sh.
+-- WezTerm puts the config directory on package.path, so this just works.
+-- ssh_domains belongs here: a list of internal hostnames is not tracked.
+-- ---------------------------------------------------------------------------
+local ok, machine = pcall(require, "machine")
+if ok and type(machine) == "table" then
+  for k, v in pairs(machine) do
+    config[k] = v
+  end
+end
+
+return config

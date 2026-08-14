@@ -1,0 +1,39 @@
+agent: claude
+
+base_branch: auto
+merge_strategy: rebase
+merge_keep: false
+
+# worktree_dir: ~/dev
+worktree_naming: basename
+
+mode: window
+window_prefix: "wm-"
+window_placement: after_current
+status_format: true
+
+windows:
+  - name: editor
+    panes:
+      - command: nvim
+        focus: true
+  - name: server
+  - name: agent
+    panes:
+      - command: claude
+
+
+files:
+  copy:
+    - .env
+    - .env.local
+  symlink:
+    - node_modules
+    - .venv
+    - target
+
+post_create:
+  - direnv allow 2>/dev/null || true
+
+auto_name:
+  command: "claude -p"

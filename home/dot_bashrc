@@ -1,17 +1,18 @@
-# Interactive only. Without this guard, scp/rsync/git-over-ssh and
-# VS Code Remote's server startup all break
+# Interactive only. Without this guard, scp/rsync/git-over-ssh and VS Code
+# Remote's server startup all break.
 case $- in *i*) ;; *) return ;; esac
 
-# Hand off to zsh where chsh is blocked (LDAP accounts have no /etc/passwd entry,
-# so chsh can never work there). Escape hatch: ssh host -t bash --noprofile
+# Hand off to zsh where chsh is blocked. LDAP/SSSD accounts have no
+# /etc/passwd entry, so chsh can never work on those boxes.
+# Escape hatch: ssh host -t bash --noprofile
 if [ -z "$ZSH_VERSION" ] && command -v zsh >/dev/null 2>&1; then
-  exec zsh -l
+    exec zsh -l
 fi
 
-# Unquoted so the glob expands. If it matches nothing, bash leaves the literal
-# pattern and the -r test skips it.
+# Unquoted so the glob expands. A quoted glob does not expand — it would loop
+# once over the literal pattern and source nothing at all.
 for f in "$HOME"/.config/sh/*.sh; do
-  [ -r "$f" ] && . "$f"
+    [ -r "$f" ] && . "$f"
 done
 unset f
 

@@ -1,0 +1,36 @@
+{{- $t := index .themes (.theme | default "onedark") -}}
+{{- $p := $t.palette -}}
+# .zshenv sets these for zsh, but bash never reads it, so they must be set here
+# too — otherwise STARSHIP_CONFIG resolves to /starship.toml in every bash
+# session. Idempotent, so double-setting is harmless.
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
+export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
+export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
+
+export EDITOR=nvim
+export VISUAL=nvim
+export PAGER=less
+export LESS='-FRX'
+
+# Pinned explicitly rather than relying on XDG discovery, which makes these
+# immune to the Windows XDG question entirely.
+export STARSHIP_CONFIG="$XDG_CONFIG_HOME/starship.toml"
+export MISE_CONFIG_DIR="$XDG_CONFIG_HOME/mise"
+
+# lazygit is the one tool §5 flagged as unverified on Windows: it falls back to
+# %APPDATA%\lazygit. LG_CONFIG_FILE is an absolute override that outranks every
+# discovery rule, so pinning it here settles the question instead of deferring
+# it to step 3. The PowerShell profile (§7.26) sets the same variable.
+export LG_CONFIG_FILE="$XDG_CONFIG_HOME/lazygit/config.yml"
+
+export EZA_COLORS="uu=36:uR=31:un=35:gu=37:da=2;34:ur=34:uw=95:ux=36:ue=36:gr=34:gw=35:gx=36:tr=34:tw=35:tx=36:xx=95"
+
+# Theme colours for the fzf UI, rendered from §7.35. Kept separate from
+# FZF_DEFAULT_OPTS, which 30-tools.sh assembles: colours are static, the
+# preview command is not. bg:-1 keeps the terminal's own background, so fzf
+# stays transparent over whatever wezterm is doing.
+export FZF_THEME_COLORS="--color=fg:{{ $p.fg }},bg:-1,hl:{{ $p.blue }}\
+,fg+:{{ $p.fg_bright }},bg+:{{ $p.surface }},hl+:{{ $p.blue }}\
+,info:{{ $p.green }},prompt:{{ $p.magenta }},pointer:{{ $p.red }}\
+,marker:{{ $p.yellow }},spinner:{{ $p.cyan }},header:{{ $p.grey }},border:{{ $p.grey }}"
