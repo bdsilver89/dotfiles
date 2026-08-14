@@ -161,13 +161,26 @@ jobs:
           $cfg = "$env:RUNNER_TEMP/desktop-false-onedark.toml"
           $fail = $false
 
+          # The install step appends ~/.local/bin to GITHUB_PATH from bash, so on
+          # Windows the entry is an MSYS path (/c/Users/...) that pwsh cannot
+          # resolve - every bash step in this job sees chezmoi, this one does
+          # not. Resolve the binary explicitly instead of trusting PATH.
+          $chezmoi = (Get-Command chezmoi -ErrorAction SilentlyContinue).Source
+          if (-not $chezmoi) {
+            $chezmoi = Join-Path $env:USERPROFILE '.local\bin\chezmoi.exe'
+          }
+          if (-not (Test-Path $chezmoi)) {
+            Write-Output "::error::chezmoi not found (tried PATH and $chezmoi)"
+            exit 1
+          }
+
           # Templates are rendered first; plain .ps1 files are parsed as-is.
           $sources = @{}
           foreach ($t in Get-ChildItem -Recurse -Filter '*.ps1.tmpl') {
             # No `<` redirection in PowerShell - the operator is reserved and
             # this is a parse error, not a runtime one. Pipe the file in.
             $rendered = Get-Content -Raw $t.FullName |
-              chezmoi execute-template --config="$cfg" --source="$PWD" | Out-String
+              & $chezmoi execute-template --config="$cfg" --source="$PWD" | Out-String
             if ($rendered.Trim()) { $sources[$t.FullName] = $rendered }
           }
           foreach ($p in @('bootstrap.ps1', 'home/dot_claude/statusline-command.ps1')) {
