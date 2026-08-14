@@ -9,10 +9,22 @@
   with no args.
 */ -}}
 {{- $theme := promptStringOnce . "theme" "Colour scheme" "onedark" -}}
+{{- /*
+  role is free text and fails silently when mistyped — "Desktop" or "server"
+  just selects every headless branch in .chezmoiignore, with no error anywhere.
+  Reject it here, while the offending value is still on screen.
 
-# Above [data]: a bare key after a table header belongs to that table, so
-# putting this below would set data.encryption and leave the real option unset.
-encryption = "none"
+  The matching check for theme lives in .chezmoiignore instead: .chezmoidata is
+  not loaded yet at config-render time, so `.themes` is undefined in this file.
+*/ -}}
+{{- if not (has $role (list "desktop" "headless")) -}}
+{{-   fail (printf "role must be \"desktop\" or \"headless\", got %q" $role) -}}
+{{- end -}}
+
+# No `encryption` key: the only accepted values are age and gpg, and the empty
+# default already means "no encryption". Setting it to "none" is a hard error —
+# which stayed hidden for as long as the key sat below [data], where it parsed
+# as an inert data.encryption rather than as the option it looked like.
 
 [data]
     role = {{ $role | quote }}

@@ -9,7 +9,32 @@ $env:STARSHIP_CONFIG = "$env:XDG_CONFIG_HOME\starship.toml"
 $env:MISE_CONFIG_DIR = "$env:XDG_CONFIG_HOME\mise"
 $env:LG_CONFIG_FILE  = "$env:XDG_CONFIG_HOME\lazygit\config.yml"
 
-$env:EDITOR = 'nvim'
+# The assignments above only last for this process, which is enough for anything
+# started from this shell and nothing else. chezmoi writes nvim's config to
+# ~/.config/nvim, but on Windows nvim reads $LOCALAPPDATA\nvim unless
+# XDG_CONFIG_HOME is set — so nvim launched from Explorer, cmd.exe, a VS Code
+# integrated terminal that is not pwsh, or any GUI shortcut finds no config at
+# all. bat, gh-dash and lazygit have the same split.
+#
+# Persisting at User scope fixes every launcher at once. Each write hits the
+# registry and broadcasts WM_SETTINGCHANGE, so compare first and write only on
+# change: unconditional writes would cost every new shell a broadcast.
+foreach ($kv in [ordered]@{
+    XDG_CONFIG_HOME = $env:XDG_CONFIG_HOME
+    XDG_DATA_HOME   = $env:XDG_DATA_HOME
+    XDG_CACHE_HOME  = $env:XDG_CACHE_HOME
+    XDG_STATE_HOME  = $env:XDG_STATE_HOME
+    EDITOR          = $env:EDITOR
+    VISUAL          = $env:VISUAL
+    STARSHIP_CONFIG = $env:STARSHIP_CONFIG
+    MISE_CONFIG_DIR = $env:MISE_CONFIG_DIR
+    LG_CONFIG_FILE  = $env:LG_CONFIG_FILE
+}.GetEnumerator()) {
+    if ([Environment]::GetEnvironmentVariable($kv.Key, 'User') -ne $kv.Value) {
+        [Environment]::SetEnvironmentVariable($kv.Key, $kv.Value, 'User')
+    }
+}
+
 Set-Alias -Name vim -Value nvim
 Set-Alias -Name g -Value git
 Set-Alias -Name c -Value Clear-Host

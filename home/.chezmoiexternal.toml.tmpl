@@ -1,3 +1,4 @@
+{{- template "assert-theme" . -}}
 {{- $t := index .themes (.theme | default "onedark") -}}
 [".config/tmux/plugins/tmux-resurrect"]
     type = "git-repo"

@@ -1,3 +1,4 @@
+{{- template "assert-theme" . -}}
 {{- $desktop := eq .role "desktop" -}}
 {{- $wsl := and (eq .chezmoi.os "linux") (contains "microsoft" (lower .chezmoi.kernel.osrelease)) -}}
 

@@ -1,0 +1,15 @@
+{{- /*
+  Fails the run when `theme` names a scheme themes.yaml does not define.
+
+  Included from the two templates chezmoi renders before any target file —
+  .chezmoiexternal.toml.tmpl and .chezmoiignore — because whichever of them runs
+  first is where an unknown key would otherwise surface, as a nil-pointer on
+  $t.bat or $t.palette rather than as a name and a list of valid ones. Both need
+  it: `--exclude=externals` skips the first, and CI renders that way.
+
+  It cannot live in .chezmoi.toml.tmpl with the matching role check, because
+  .chezmoidata is not loaded while the config template renders.
+*/ -}}
+{{- if not (hasKey .themes .theme) -}}
+{{-   fail (printf "unknown colour scheme %q; themes.yaml offers: %s" .theme (join ", " (sortAlpha (keys .themes)))) -}}
+{{- end -}}

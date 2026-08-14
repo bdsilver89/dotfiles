@@ -52,6 +52,30 @@ jobs:
             home/dot_local/bin/executable_tmux-sessionizer \
             home/dot_local/bin/executable_tmux-windowizer
 
+      # chezmoi keys --promptString/--promptBool by the prompt TEXT, so the
+      # literals in the config template and in its three callers have to stay
+      # byte-identical. Drift is silent: the flag simply stops matching and the
+      # prompt falls back to its default, which on a --no-tty run means a
+      # machine quietly configured wrong. Comments alone never caught this.
+      - name: prompt strings match across bootstrap and CI
+        run: |
+          set -uo pipefail
+          prompts="$(sed -nE \
+            's/.*prompt(String|Bool)Once[^"]*"[^"]*"[[:space:]]*"([^"]*)".*/\2/p' \
+            home/.chezmoi.toml.tmpl)"
+          [ -n "$prompts" ] || { echo "::error::no prompts found - extraction broke"; exit 1; }
+
+          fail=0
+          # A `... | while` pipeline would run the loop in a subshell and throw
+          # the fail flag away, so feed the loop with a here-string instead.
+          while IFS= read -r p; do
+            for f in bootstrap.sh bootstrap.ps1 .github/workflows/ci.yml; do
+              grep -qF -- "$p" "$f" \
+                || { echo "::error file=$f::prompt \"$p\" from .chezmoi.toml.tmpl is missing here"; fail=1; }
+            done
+          done <<< "$prompts"
+          exit $fail
+
   render:
     strategy:
       fail-fast: false
@@ -118,6 +142,41 @@ jobs:
               || { echo "::error file=$f::shellcheck failed"; exit 1; }
           done
 
+      # The Unix scripts get shellcheck; the PowerShell side had nothing at all,
+      # so a syntax error in the profile would only ever surface as a broken
+      # shell on a real Windows box. Parsing is the PowerShell equivalent that
+      # runs without executing anything.
+      - name: parse the PowerShell scripts
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $cfg = "$env:RUNNER_TEMP/desktop-false-onedark.toml"
+          $fail = $false
+
+          # Templates are rendered first; plain .ps1 files are parsed as-is.
+          $sources = @{}
+          foreach ($t in Get-ChildItem -Recurse -Filter '*.ps1.tmpl') {
+            $rendered = chezmoi execute-template --config="$cfg" --source="$PWD" < $t.FullName | Out-String
+            if ($rendered.Trim()) { $sources[$t.FullName] = $rendered }
+          }
+          foreach ($p in @('bootstrap.ps1', 'home/dot_claude/statusline-command.ps1')) {
+            $sources[$p] = Get-Content -Raw $p
+          }
+
+          foreach ($kv in $sources.GetEnumerator()) {
+            $errors = $null
+            [System.Management.Automation.Language.Parser]::ParseInput(
+              $kv.Value, [ref]$null, [ref]$errors) | Out-Null
+            if ($errors) {
+              $fail = $true
+              foreach ($e in $errors) {
+                Write-Output "::error file=$($kv.Key)::$($e.Extent.StartLineNumber): $($e.Message)"
+              }
+            }
+          }
+          if ($fail) { exit 1 }
+
   apply:
     needs: render
     strategy:
@@ -179,3 +238,78 @@ jobs:
             printf '%s\n' "$status"
             exit 1
           fi
+
+      # Everything above proves the files render and land correctly. Nothing
+      # above ever *runs* them — which is how ~/.profile shipped sourcing two
+      # filenames that had not existed since the sh/ files were numbered. The
+      # rendered config was byte-perfect and completely inert.
+      #
+      # Login shells are the interesting case: ~/.profile is read by whatever
+      # /bin/sh happens to be, so it must work under dash as well as bash, and
+      # the tool integrations it pulls in only emit bash and zsh syntax.
+      - name: shell startup smoke test
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          set -uo pipefail
+          fail=0
+
+          # Errors a broken rc file produces. `set -e` cannot be used to catch
+          # these: a login shell reporting a missing include still exits 0 in
+          # bash, so the assertion has to be on stderr, not on status.
+          markers='No such file|not found|Syntax error|parse error|unexpected|cannot open'
+
+          check() {   # $1 = label, rest = command to run
+            local label="$1"; shift
+            local out err st bad=0
+            err="$RUNNER_TEMP/${label//[^a-zA-Z0-9]/_}.err"
+            out="$("$@" 2>"$err")"; st=$?
+
+            [ $st -eq 0 ] || { echo "::error::$label exited $st"; bad=1; }
+            if grep -qE "$markers" "$err"; then
+              echo "::error::$label wrote errors to stderr"; sed 's/^/    /' "$err"; bad=1
+            fi
+            case "$out" in
+              *"EDITOR=nvim"*) ;;
+              *) echo "::error::$label did not load ~/.config/sh/10-env.sh (got: $out)"; bad=1 ;;
+            esac
+            case "$out" in
+              *"$HOME/.local/bin"*) ;;
+              *) echo "::error::$label did not load ~/.config/sh/00-path.sh (got: $out)"; bad=1 ;;
+            esac
+            if [ $bad -eq 0 ]; then echo "ok: $label"; else fail=1; fi
+          }
+
+          probe='printf "EDITOR=%s PATH=%s" "${EDITOR:-}" "$PATH"'
+
+          # POSIX login shells -> ~/.profile. dash is the one that matters most:
+          # it is /bin/sh on Debian and it will not parse bash-only syntax.
+          for sh in sh dash bash; do
+            if command -v "$sh" >/dev/null 2>&1; then
+              check "$sh -lc (.profile)" "$sh" -lc "$probe"
+            else
+              echo "skip: $sh not installed"
+            fi
+          done
+
+          # Interactive zsh -> ~/.zshrc, the daily driver. Without a tty zsh
+          # warns about zle on stderr; that is expected and not in $markers.
+          if command -v zsh >/dev/null 2>&1; then
+            check "zsh -ic (.zshrc)" zsh -ic "$probe"
+          fi
+
+          # ~/.bashrc hands off to zsh when one exists, so asserting on its
+          # environment would just re-test zsh. Assert only that the handoff is
+          # clean: start it, feed it EOF, expect a quiet exit.
+          err="$RUNNER_TEMP/bashrc.err"
+          if bash -i </dev/null >/dev/null 2>"$err"; then
+            if grep -qE "$markers" "$err"; then
+              echo "::error::.bashrc wrote errors to stderr"; sed 's/^/    /' "$err"; fail=1
+            else
+              echo "ok: bash -i (.bashrc handoff)"
+            fi
+          else
+            echo "::error::bash -i exited $?"; sed 's/^/    /' "$err"; fail=1
+          fi
+
+          exit $fail
