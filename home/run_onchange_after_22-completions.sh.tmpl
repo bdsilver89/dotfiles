@@ -4,5 +4,9 @@ set -eu
 
 COMPDIR="${XDG_DATA_HOME:-$HOME/.local/share}/zsh/completions"
 mkdir -p "$COMPDIR"
-command -v workmux >/dev/null 2>&1 && workmux completions zsh > "$COMPDIR/_workmux"
+# `x && y` as the last statement would exit 1 when x is false, and chezmoi
+# treats a non-zero script as a failed apply.
+if command -v workmux >/dev/null 2>&1; then
+    workmux completions zsh > "$COMPDIR/_workmux"
+fi
 {{- end }}

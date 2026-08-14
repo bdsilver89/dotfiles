@@ -45,7 +45,6 @@ jobs:
             home/dot_config/sh/00-path.sh \
             home/dot_config/sh/20-aliases.sh \
             home/dot_config/sh/30-tools.sh \
-            home/dot_config/sh/99-local.sh \
             home/dot_claude/executable_statusline-command.sh \
             home/dot_local/bin/executable_theme
           shellcheck --shell=bash \

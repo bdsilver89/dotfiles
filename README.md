@@ -44,7 +44,7 @@ Running tmux servers need `prefix-r` and running editors need a restart; everyth
 
 ## Machine-local overrides
 
-Neither file is tracked. Both are optionsl.
+Neither file is tracked. Both are optional.
 
 - `~/.config/sh/local.sh` — env vars, proxies, API keys
 - `~/.gitconfig.local` — email, signing keys, credential helpers
@@ -54,5 +54,5 @@ Neither file is tracked. Both are optionsl.
 ## Layout
 
 - `home/` — the chezmoi source tree (see `.chezmoiroot`)
-- `home/.chezmoidata/packages.yml` — the entire tool inventory
+- `home/.chezmoidata/packages.yaml` — the entire tool inventory
 - `home/.chezmoiignore` — the role/pattern exclusion matrix

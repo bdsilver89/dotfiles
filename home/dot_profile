@@ -1,2 +1,7 @@
-. "$HOME/.config/sh/path.sh"
-. "$HOME/.config/sh/env.sh"
+# Same glob loader as .bashrc and .zshrc. Naming the files individually drifts
+# the moment one is added or renumbered, and a missing `.` target exits a
+# non-interactive shell outright.
+for f in "$HOME"/.config/sh/*.sh; do
+    [ -r "$f" ] && . "$f"
+done
+unset f

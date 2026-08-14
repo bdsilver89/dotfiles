@@ -20,4 +20,6 @@ shift
 if [ -d "$branch_name" ]; then
     tmux send-keys -t "$target" "cd '$branch_name'" Enter
 fi
-[ $# -gt 0 ] && tmux send-keys -t "$target" "$*" Enter
+if [ $# -gt 0 ]; then
+    tmux send-keys -t "$target" "$*" Enter
+fi

@@ -23,11 +23,21 @@ chezmoi data | jq -e --arg t "$want" '.themes | has($t)' >/dev/null 2>&1 || {
 # The data key may not exist yet on a machine initialised before themes did.
 # sed -i.bak then rm rather than bare `sed -i`: GNU sed accepts -i with no
 # argument and BSD sed does not, and this script runs on both.
+#
+# Appending to the end of the file would bind the key to whichever table header
+# came last ([edit], or [interpreters.ps1] on Windows), so the fallback inserts
+# directly after [data]. awk rather than `sed a\`, whose append text BSD sed
+# reads as a command when it starts with indentation.
 if grep -q '^[[:space:]]*theme[[:space:]]*=' "$CONFIG"; then
     sed -i.bak "s|^\([[:space:]]*\)theme[[:space:]]*=.*|\1theme = \"$want\"|" "$CONFIG"
     rm -f "$CONFIG.bak"
+elif grep -q '^[[:space:]]*\[data\][[:space:]]*$' "$CONFIG"; then
+    awk -v line="    theme = \"$want\"" '
+        { print }
+        !ins && /^[[:space:]]*\[data\][[:space:]]*$/ { print line; ins = 1 }
+    ' "$CONFIG" > "$CONFIG.tmp" && mv "$CONFIG.tmp" "$CONFIG"
 else
-    printf '    theme = "%s"\n' "$want" >> "$CONFIG"
+    printf '\n[data]\n    theme = "%s"\n' "$want" >> "$CONFIG"
 fi
 
 chezmoi apply
