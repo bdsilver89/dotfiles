@@ -256,7 +256,11 @@ jobs:
           # Fail with the reason rather than a bare 127 from the first call.
           command -v chezmoi >/dev/null 2>&1 \
             || { echo "::error::chezmoi not on PATH"; exit 1; }
-          args=(--source="$PWD" --no-tty --force)
+          # --exclude has to reach `status` as well as `apply`: it is what
+          # bootstrap ran with, so anything excluded there was never applied and
+          # status would report it as pending forever. `--force` is an apply-only
+          # flag, hence the split.
+          args=(--source="$PWD" --no-tty)
           # `[ -n … ] && args+=…` here would abort under `set -e` on the two
           # matrix legs where exclude is empty.
           if [ -n "${{ matrix.exclude }}" ]; then
@@ -266,14 +270,14 @@ jobs:
           # -v prints every change as a shell command, and prints the body of
           # any script it re-runs. Empty output is the strong assertion: no file
           # drifted AND no run_onchange re-triggered.
-          out="$(chezmoi apply -v "${args[@]}")"
+          out="$(chezmoi apply -v --force "${args[@]}")"
           if [ -n "$out" ]; then
             echo "::error::second apply was not a no-op"
             printf '%s\n' "$out"
             exit 1
           fi
 
-          status="$(chezmoi status --source="$PWD")"
+          status="$(chezmoi status "${args[@]}")"
           if [ -n "$status" ]; then
             echo "::error::chezmoi status is not clean"
             printf '%s\n' "$status"
