@@ -45,6 +45,7 @@ Documents/
 .local/bin/tmux-windowizer
 .local/bin/theme
 .bashrc
+.bash_profile
 .profile
 .zshenv
 .zshrc
