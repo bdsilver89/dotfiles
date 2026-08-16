@@ -42,6 +42,7 @@ jobs:
           shellcheck --shell=sh \
             bootstrap.sh \
             home/dot_profile \
+            home/dot_bash_profile \
             home/dot_config/sh/00-path.sh \
             home/dot_config/sh/20-aliases.sh \
             home/dot_config/sh/30-tools.sh \
@@ -233,11 +234,28 @@ jobs:
             -Theme onedark -Email ci@example.com `
             -Exclude '${{ matrix.exclude }}' -Yes
 
+          # bootstrap.ps1 installs chezmoi with winget, which drops it in the
+          # WinGet Links shim directory - not ~/.local/bin, where the install
+          # script puts it on Unix - and updates only the User PATH variable,
+          # which later steps in this job do not inherit. Publish the resolved
+          # directory so the shared bash step below can find it on every OS.
+          $env:Path = [Environment]::GetEnvironmentVariable('Path', 'Machine') +
+                      ';' + [Environment]::GetEnvironmentVariable('Path', 'User')
+          $cm = (Get-Command chezmoi -ErrorAction SilentlyContinue).Source
+          if (-not $cm) {
+            Write-Output "::error::chezmoi not on PATH after bootstrap"
+            exit 1
+          }
+          Add-Content -Path $env:GITHUB_PATH -Value (Split-Path $cm)
+
       - name: apply again - the second run must be a no-op
         shell: bash
         run: |
           set -euo pipefail
           export PATH="$HOME/.local/bin:$PATH"
+          # Fail with the reason rather than a bare 127 from the first call.
+          command -v chezmoi >/dev/null 2>&1 \
+            || { echo "::error::chezmoi not on PATH"; exit 1; }
           args=(--source="$PWD" --no-tty --force)
           # `[ -n … ] && args+=…` here would abort under `set -e` on the two
           # matrix legs where exclude is empty.
