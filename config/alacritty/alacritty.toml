@@ -1,5 +1,0 @@
-[general]
-import = [
-  "~/.config/alacritty/alacritty-common.toml",
-  "~/.config/alacritty/themes/one_dark_pro.toml",
-]
