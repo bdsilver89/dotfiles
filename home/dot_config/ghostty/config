@@ -1,0 +1,3 @@
+theme = dark:Catppuccin Mocha,light:Catppuccin Latte
+font-family = JetBrains Mono
+keybind = shift+enter=text:\n

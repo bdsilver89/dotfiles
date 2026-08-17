@@ -1,0 +1,10 @@
+# Managed by chezmoi from .chezmoidata/packages.yaml.
+# `mise use -g` writes here too; anything it adds is reverted on the next apply.
+[tools]
+{{ range .packages.mise -}}
+{{ . }} = "latest"
+{{ end -}}
+{{ range .packages.mise_runtimes -}}
+{{ $spec := splitList "@" . -}}
+{{ index $spec 0 }} = "{{ index $spec 1 }}"
+{{ end -}}

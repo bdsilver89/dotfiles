@@ -1,0 +1,13 @@
+{{- if ne .chezmoi.os "windows" -}}
+#!/bin/sh
+set -eu
+
+# These tools update themselves, so this only ever bootstraps a missing one —
+# re-running an installer over a working install would fight its own updater.
+export PATH="$HOME/.local/bin:$PATH"
+{{ range .packages.vendor }}
+if ! command -v {{ .command }} >/dev/null 2>&1; then
+    curl -fsSL {{ .url }} | bash -s -- {{ .args }} || echo "{{ .name }}: install failed" >&2
+fi
+{{- end }}
+{{ end -}}

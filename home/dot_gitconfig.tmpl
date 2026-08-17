@@ -1,0 +1,73 @@
+[include]
+  path = ~/.gitconfig.local
+
+[user]
+  name = Brian Silver
+  email = github@briansilver.net
+
+[core]
+  editor = nvim
+  ignorecase = false
+  pager = delta
+{{- if eq .chezmoi.os "windows" }}
+  autocrlf = input
+{{- end }}
+
+[init]
+  defaultBranch = main
+
+[pull]
+  rebase = true
+
+[push]
+  default = simple
+  autoSetupRemote = true
+
+[fetch]
+  prune = true
+
+[submodule]
+  recurse = true
+
+[rerere]
+  enabled = true
+  autoupdate = true
+
+[merge]
+  conflictstyle = zdiff3
+  tool = nvimdiff
+  prompt = false
+
+[diff]
+  algorithm = histogram
+  colorMoved = default
+  tool = nvim_difftool
+
+[color]
+  ui = auto
+
+[interactive]
+  diffFilter = delta --color-only
+
+[delta]
+  navigate = true
+  line-numbers = true
+
+[difftool]
+  prompt = false
+
+[difftool "nvim_difftool"]
+  cmd = nvim -c \"packadd nvim.difftool\" -d \"$LOCAL\" \"$REMOTE\"
+
+[alias]
+  hist = log --pretty=format:"%cgreen%h %Creset%cd %Cblue[%cn] %Creset%s%C(yellow)%d%c)reset)" --graph --date=relative --all
+  llog = log --graph --name-status --pretty=format:"%C(red)%h %C(reset)(%cd) %C(green)%an %Creset%s %Creset%s %C(yellow)%d%Creset" --date=relative
+  clwt = "!f() { \
+      name=${2:-$(basename \"%1\" .git)}; \
+      mkdir \"$name\" && cd \"$name\" && \
+      git clone --bare \
+          -c remote.origin.fetch='+refs/heads/*:refs/remotes/origin/*' \
+          \"$1\" .bare && \
+      echo 'gitdir: ./.bare' > .git && \
+      git remote set-head origin -a; \
+  }; f"

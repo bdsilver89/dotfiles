@@ -1,0 +1,26 @@
+{{- if and (eq .chezmoi.os "linux") (has .chezmoi.osRelease.id (list "debian" "ubuntu" "linuxmint" "pop" "raspbian")) -}}
+#!/bin/sh
+set -eu
+
+sudo apt-get update
+sudo apt-get install -y \
+{{- range .packages.core }}
+  {{ index $.packages.apt_names . | default . }} \
+{{- end }}
+  ;
+
+{{ if and (eq .role "desktop") .packages.desktop.linux.apt }}
+sudo apt-get install -y \
+{{- range .packages.desktop.linux.apt }}
+  {{ . }} \
+{{- end }}
+  ;
+{{ end }}
+
+# Debian names these differently; provide the canonical names on PATH.
+# Newer releases ship /usr/bin/fd directly, so neither link is guaranteed —
+# an `x && y` tail on the last line would exit 1 and fail the whole apply.
+mkdir -p "$HOME/.local/bin"
+if [ -x /usr/bin/batcat ]; then ln -sf /usr/bin/batcat "$HOME/.local/bin/bat"; fi
+if [ -x /usr/bin/fdfind ]; then ln -sf /usr/bin/fdfind "$HOME/.local/bin/fd"; fi
+{{- end }}

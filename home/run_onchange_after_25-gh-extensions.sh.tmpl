@@ -1,0 +1,15 @@
+{{- if ne .chezmoi.os "windows" -}}
+#!/usr/bin/env bash
+set -eu
+
+# extensions: {{ .packages.gh_extensions | join " " }}
+command -v gh >/dev/null 2>&1 || exit 0
+
+installed="$(gh extension list 2>/dev/null || true)"
+{{- range .packages.gh_extensions }}
+case "$installed" in
+    *{{ . }}*) ;;
+    *) gh extension install {{ . }} || echo "gh: {{ . }} install failed" >&2 ;;
+esac
+{{- end }}
+{{ end -}}

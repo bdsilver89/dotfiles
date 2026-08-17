@@ -1,0 +1,32 @@
+{{- if eq .chezmoi.os "windows" -}}
+$ErrorActionPreference = "Stop"
+
+if (-not (Get-Command winget -ErrorAction SilentlyContinue)) {
+    Write-Error "winget not found; install App Installer from the Microsoft Store"
+    exit 1
+}
+
+{{ if eq .role "desktop" }}
+$packages = @(
+{{- range .packages.desktop.windows.winget }}
+    "{{ . }}"
+{{- end }}
+)
+
+foreach ($id in $packages) {
+    # Native commands do not honour $ErrorActionPreference, so every exit code
+    # is checked by hand. `winget install` on an already-installed package
+    # exits non-zero, which would fail every apply after the first — hence the
+    # `winget list` probe rather than installing unconditionally.
+    winget list --id $id --exact --accept-source-agreements *> $null
+    if ($LASTEXITCODE -eq 0) { continue }
+
+    winget install --id $id --exact --silent `
+        --accept-package-agreements --accept-source-agreements
+    if ($LASTEXITCODE -ne 0) {
+        Write-Error "winget install $id failed ($LASTEXITCODE)"
+        exit 1
+    }
+}
+{{ end }}
+{{- end -}}

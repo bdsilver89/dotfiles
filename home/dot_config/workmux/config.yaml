@@ -1,0 +1,12 @@
+
+mode: session
+status_format: false
+nerdfont: true
+agent: claude
+
+windows:
+  - name: editor
+    panes:
+      - command: nvim
+        focus: true
+      - command: claude

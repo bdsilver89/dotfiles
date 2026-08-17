@@ -1,0 +1,36 @@
+{{- if eq .chezmoi.os "darwin" -}}
+#!/bin/sh
+set -eu
+
+if ! command -v brew >/dev/null 2>&1; then
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+    # The installer cannot alter the PATH of the shell that invoked it, so the
+    # `brew install` below would still not find it. `|| continue` rather than an
+    # `&&` chain: a failed last iteration would exit 1 and trip `set -e`.
+    for prefix in /opt/homebrew /usr/local; do
+        [ -x "$prefix/bin/brew" ] || continue
+        eval "$("$prefix/bin/brew" shellenv)"
+        break
+    done
+
+    command -v brew >/dev/null 2>&1 || {
+        echo "brew is still not on PATH after install" >&2
+        exit 1
+    }
+fi
+
+brew install \
+{{- range .packages.core }}
+  {{ . }} \
+{{- end }}
+  ;
+
+{{ if eq .role "desktop" }}
+brew install --cask \
+{{- range .packages.desktop.darwin.casks }}
+ {{ . }} \
+{{- end }}
+  ;
+{{ end }}
+{{- end }}

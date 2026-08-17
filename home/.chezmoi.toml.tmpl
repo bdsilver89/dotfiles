@@ -1,0 +1,16 @@
+{{- $role := promptChoiceOnce . "role" "role" (list "desktop" "headless") "desktop" -}}
+
+sourceDir = {{ .chezmoi.workingTree | quote }}
+
+[edit]
+    command = "nvim"
+
+[data]
+    role = {{ $role | quote }}
+
+{{- if eq .chezmoi.os "windows" }}
+
+[interpreters.ps1]
+    command = "pwsh"
+    args = ["-NoLogo", "-NoProfile"]
+{{- end }}

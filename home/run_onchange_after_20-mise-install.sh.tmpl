@@ -1,0 +1,12 @@
+{{- if ne .chezmoi.os "windows" -}}
+#!/bin/sh
+set -eu
+
+# tools: {{ .packages.mise | join " " }} {{ .packages.mise_runtimes | join " " }}
+export PATH="$HOME/.local/bin:$PATH"
+command -v mise >/dev/null 2>&1 || exit 0
+
+# The tool list lives in ~/.config/mise/config.toml, written from the same data
+# earlier in this apply, so there is nothing to pass here.
+mise install
+{{ end -}}

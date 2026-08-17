@@ -1,0 +1,12 @@
+{{ if eq .chezmoi.os "windows" }}
+.config/tmux
+.config/workmux
+.config/sh
+.config/zsh
+.local/bin/tmux-sessionizer
+.bashrc
+.bash_profile
+.profile
+.zshenv
+.zshrc
+{{ end }}

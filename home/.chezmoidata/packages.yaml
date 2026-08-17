@@ -1,0 +1,61 @@
+packages:
+  core:
+    - git
+    - git-delta
+    - tmux
+    - fzf
+    - ripgrep
+    - fd
+    - bat
+    - eza
+    - zoxide
+    - jq
+    - zsh
+    - gh
+
+  mise:
+    - neovim
+    - starship
+    - lazygit
+    - workmux
+
+  vendor:
+    - name: claude-code
+      command: claude
+      url: https://claude.ai/install.sh
+      args: ""
+    - name: opencode
+      command: opencode
+      url: https://opencode.ai/install
+      args: "--no-modify-path"
+
+  apt_names:
+    fd: fd-find
+
+  dnf_names:
+    fd: fd-find
+
+  desktop:
+    darwin:
+      casks:
+        - wezterm
+        - visual-studio-code
+        - zed
+    linux:
+      apt: []
+      dnf: []
+    windows:
+      winget:
+        - wez.wezterm
+        - Microsoft.VisualStudioCode
+        - Zed.Zed
+
+  gh_extensions:
+    - dlvhdr/gh-dash
+    - dlvhdr/gh-enhance
+    - github/gh-stack
+
+  mise_runtimes:
+    - node@lts
+    - python@3.14
+    - rust@stable

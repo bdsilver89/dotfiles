@@ -1,0 +1,11 @@
+{{- if ne .chezmoi.os "windows" -}}
+#!/bin/sh
+set -eu
+
+# mise installs everything in packages.mise, so it has to exist before the
+# after-scripts run. Its own installer is the only path that behaves the same
+# on macOS, Debian and RHEL; the distro packages are absent or stale.
+if [ ! -x "$HOME/.local/bin/mise" ]; then
+    MISE_INSTALL_PATH="$HOME/.local/bin/mise" curl -fsSL https://mise.run | sh
+fi
+{{ end -}}
