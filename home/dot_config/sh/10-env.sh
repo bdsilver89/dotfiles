@@ -12,3 +12,9 @@ else
 fi
 export PAGER=less
 export LESS='-FRX'
+
+if [ -d "$HOME/Developer/projects" ]; then
+    export TS_SEARCH_PATHS="$HOME/Developer/projects"
+else
+    export TS_SEARCH_PATHS="$HOME/dev/projects"
+fi
