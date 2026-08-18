@@ -48,7 +48,7 @@ packages:
       winget:
         - wez.wezterm
         - Microsoft.VisualStudioCode
-        - Zed.Zed
+        - ZedIndustries.Zed
 
   gh_extensions:
     - dlvhdr/gh-dash

@@ -6,7 +6,6 @@ if (-not (Get-Command winget -ErrorAction SilentlyContinue)) {
     exit 1
 }
 
-{{ if eq .role "desktop" }}
 $packages = @(
 {{- range .packages.desktop.windows.winget }}
     "{{ . }}"
@@ -28,5 +27,4 @@ foreach ($id in $packages) {
         exit 1
     }
 }
-{{ end }}
 {{- end -}}
