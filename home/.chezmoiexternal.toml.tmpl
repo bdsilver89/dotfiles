@@ -1,0 +1,13 @@
+{{ if ne .chezmoi.os "windows" -}}
+[".config/tmux/plugins/catppuccin"]
+    type = "archive"
+    url = "https://github.com/catppuccin/tmux/archive/refs/tags/v2.3.0.tar.gz"
+    exact = true
+    stripComponents = 1
+
+[".config/tmux/vim-tmux-navigator.tmux"]
+    type = "file"
+    url = "https://raw.githubusercontent.com/christoomey/vim-tmux-navigator/master/vim-tmux-navigator.tmux"
+    executable = true
+    refreshPeriod = "168h"
+{{ end -}}
