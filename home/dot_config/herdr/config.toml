@@ -1,0 +1,24 @@
+[theme]
+name = "catppuccin"
+auto_switch = true
+dark_name = "catppuccin"
+light_name = "catppuccin-latte"
+
+[update]
+# mise owns the version; `herdr update` would fight it.
+version_check = false
+
+[keys]
+prefix = "ctrl+a"
+
+# prefix+g is lazygit, matching .tmux.conf, so goto moves to the
+# prefix+f slot tmux-sessionizer used.
+goto = "prefix+f"
+open_worktree = "prefix+shift+o"
+
+[[keys.command]]
+key = "prefix+g"
+type = "popup"
+command = "lazygit"
+width = "90%"
+height = "90%"
