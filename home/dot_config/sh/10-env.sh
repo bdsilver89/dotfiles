@@ -18,3 +18,6 @@ if [ -d "$HOME/Developer/projects" ]; then
 else
     export TS_SEARCH_PATHS="$HOME/dev/projects"
 fi
+
+export CMAKE_COLOR_DIAGNOSTICS="ON"
+export CMAKE_EXPORT_COMPILE_COMMANDS="ON"
