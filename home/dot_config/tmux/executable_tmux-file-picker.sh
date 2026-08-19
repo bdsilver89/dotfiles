@@ -7,7 +7,7 @@ pane_pid=$(tmux display-message -p '#{pane_pid}')
 
 # Detect AI tools running in pane
 ai_mode=false
-pgrep -P "$pane_pid" -f "opencode|claude|codex" >/dev/null && ai_mode=true
+pgrep -P "$pane_pid" -f "claude" >/dev/null && ai_mode=true
 
 # Find git root (fallback to pane_dir)
 git_root=$(cd "$pane_dir" && git rev-parse --show-toplevel 2>/dev/null || echo "$pane_dir")

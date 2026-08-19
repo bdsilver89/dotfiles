@@ -24,10 +24,6 @@ packages:
       command: claude
       url: https://claude.ai/install.sh
       args: ""
-    - name: opencode
-      command: opencode
-      url: https://opencode.ai/install
-      args: "--no-modify-path"
 
   apt_names:
     fd: fd-find
