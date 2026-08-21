@@ -1,0 +1,81 @@
+{{- if ne .chezmoi.os "windows" -}}
+#!/bin/sh
+set -eu
+
+# Merges these baseline values into ~/.claude/settings.json with jq instead
+# of writing the whole file, so that permissions Claude Code adds itself
+# while working (e.g. approving a Bash command) don't show up as chezmoi
+# diffs. Scalars/objects here always win; permissions.allow/deny are unioned
+# with whatever is already on disk instead of being replaced.
+command -v jq >/dev/null 2>&1 || { echo "claude-settings: jq not found, skipping" >&2; exit 0; }
+
+file="$HOME/.claude/settings.json"
+mkdir -p "$(dirname "$file")"
+
+baseline='{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
+  "permissions": {
+    "allow": [
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git show:*)",
+      "Bash(git branch:*)",
+      "Bash(git blame:*)",
+      "Bash(git worktree list:*)",
+      "Bash(git remote -v)",
+      "Bash(rg:*)",
+      "Bash(fd:*)",
+      "Bash(eza:*)",
+      "Bash(bat:*)",
+      "Bash(jq:*)",
+      "Bash(cargo check:*)",
+      "Bash(cargo clippy:*)",
+      "Bash(cargo fmt:*)",
+      "Bash(cargo tree:*)",
+      "Bash(cargo metadata:*)",
+      "Bash(ruff check:*)",
+      "Bash(ruff format:*)",
+      "Bash(mypy:*)",
+      "Bash(basedpyright:*)",
+      "Bash(tsc --noEmit:*)",
+      "Bash(clang-format:*)",
+      "Bash(clang-tidy:*)",
+      "Read(//tmp/**)"
+    ],
+    "deny": [
+      "Read(**/.env)",
+      "Read(**/.env.*)",
+      "Read(~/.aws/**)",
+      "Read(~/.ssh/**)",
+      "Read(**/*.pem)",
+      "Read(**/*.key)",
+      "Read(**/credentials)"
+    ],
+    "ask": [],
+    "defaultMode": "auto"
+  },
+  "model": "sonnet",
+  "statusLine": {
+    "type": "command",
+    "command": "starship statusline claude-code"
+  },
+  "effortLevel": "low",
+  "tui": "fullscreen",
+  "editorMode": "vim"
+}'
+
+current='{}'
+[ -f "$file" ] && current="$(cat "$file")"
+
+tmp="$(mktemp "${file}.XXXXXX")"
+jq -n --argjson current "$current" --argjson baseline "$baseline" '
+  $current * $baseline
+  | .permissions.allow = (($current.permissions.allow // []) + $baseline.permissions.allow | unique)
+  | .permissions.deny  = (($current.permissions.deny  // []) + $baseline.permissions.deny  | unique)
+' >"$tmp"
+mv "$tmp" "$file"
+{{ end -}}

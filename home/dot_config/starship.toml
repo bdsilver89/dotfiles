@@ -11,3 +11,10 @@ success_symbol = '[➜](bold green)' # The 'success_symbol' segment is being set
 # Disable the package module, hiding it from the prompt completely
 [package]
 disabled = true
+
+# Always show the Claude Code context percentage, regardless of usage level.
+# Also show session input/output tokens and this turn's cache read tokens
+# (cache hits are what keep a turn cheap/fast, worth seeing at a glance).
+[claude_context]
+format = '[$gauge $percentage \($input_tokens in/$output_tokens out, $curr_cache_read_tokens cache\)]($style) '
+display = [{ threshold = 0.0, style = "bold green", hidden = false }]
