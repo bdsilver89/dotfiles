@@ -4,6 +4,11 @@
 {{ range .packages.mise -}}
 {{ . }} = "latest"
 {{ end -}}
+{{ if and (eq .chezmoi.os "linux") (has .chezmoi.osRelease.id (list "rhel" "centos" "rocky" "almalinux" "ol")) -}}
+{{ range .packages.rhel_mise_extra -}}
+{{ . }} = "latest"
+{{ end -}}
+{{ end -}}
 {{ range .packages.mise_runtimes -}}
 {{ $spec := splitList "@" . -}}
 {{ index $spec 0 }} = "{{ index $spec 1 }}"

@@ -17,9 +17,15 @@ sudo dnf config-manager --add-repo https://cli.github.com/packages/rpm/gh-cli.re
   sudo dnf config-manager addrepo --overwrite --from-repofile=https://cli.github.com/packages/rpm/gh-cli.repo
 
 {{ end -}}
+{{ $skip := list -}}
+{{ if ne .chezmoi.osRelease.id "fedora" -}}
+{{ $skip = .packages.rhel_mise_extra -}}
+{{ end -}}
 sudo dnf install -y \
 {{- range .packages.core }}
+{{- if not (has . $skip) }}
   {{ index $.packages.dnf_names . | default . }} \
+{{- end }}
 {{- end }}
   ;
 

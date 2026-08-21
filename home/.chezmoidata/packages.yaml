@@ -20,6 +20,12 @@ packages:
     - workmux
     - herdr
 
+  # eza isn't packaged for RHEL/EPEL (rebuilds like Rocky/Alma included), so
+  # the rhel package script skips it in core and it's installed via mise
+  # instead — see mise/config.toml.tmpl.
+  rhel_mise_extra:
+    - eza
+
   vendor:
     - name: claude-code
       command: claude
