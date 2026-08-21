@@ -11,3 +11,30 @@
 .zshenv
 .zshrc
 {{ end }}
+
+# Guard against accidentally committing local/work-only skills that live
+# alongside chezmoi-managed symlinks in ~/.claude/skills. .chezmoiignore
+# matches TARGET paths, so each tracked symlink's target name (not its
+# symlink_*.tmpl source name) must be listed as an exception below.
+# When adding a new tracked skill, add its name here too.
+.claude/skills/*
+!.claude/skills/caveman
+!.claude/skills/caveman-commit
+!.claude/skills/caveman-compress
+!.claude/skills/caveman-review
+!.claude/skills/grill-me
+!.claude/skills/grilling
+!.claude/skills/to-spec
+!.claude/skills/to-tickets
+!.claude/skills/wait-what
+!.claude/skills/wayfinder
+!.claude/skills/codebase-design
+!.claude/skills/diagnosing-bugs
+!.claude/skills/domain-modeling
+!.claude/skills/handoff
+!.claude/skills/implement
+!.claude/skills/improve-codebase-architecture
+!.claude/skills/prototype
+!.claude/skills/research
+!.claude/skills/resolving-merge-conflicts
+!.claude/skills/tdd
