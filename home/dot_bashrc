@@ -6,6 +6,8 @@ case $- in *i*) ;; *) return ;; esac
 # /etc/passwd entry, so chsh can never work on those boxes.
 # Escape hatch: ssh host -t bash --noprofile
 if [ -z "$ZSH_VERSION" ] && command -v zsh >/dev/null 2>&1; then
+    # /etc/profile.d has alread run by now so skip it for zsh
+    export ETC_PROFILE_SOURCED=1
     exec zsh -l
 fi
 
