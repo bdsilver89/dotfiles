@@ -1,0 +1,12 @@
+{{- if ne .chezmoi.os "windows" -}}
+#!/bin/sh
+set -eu
+
+# Wires rtk's Bash-rewrite hook into Claude Code (writes the hook config and
+# RTK.md under ~/.claude). Re-running is a no-op if already installed, so
+# this is safe to fire on every packages.yaml change.
+export PATH="$HOME/.local/bin:$PATH"
+command -v rtk >/dev/null 2>&1 || { echo "rtk-init: rtk not found, skipping" >&2; exit 0; }
+
+rtk init -g
+{{ end -}}

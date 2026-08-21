@@ -19,22 +19,25 @@ Compress natural language files (CLAUDE.md, todos, preferences) into caveman-spe
 
 ## Process
 
-1. The compression scripts live in `scripts/` (adjacent to this SKILL.md). If the path is not immediately available, search for `scripts/__main__.py` next to this SKILL.md.
+Do this directly — no script, no subprocess. You (Claude) are the compressor.
 
-2. From the directory containing this SKILL.md, run:
+1. Check the target file's extension against Boundaries below. If it's not a compressible natural-language file (or is a `.original.md` backup), stop and tell the user why.
 
-python3 -m scripts <absolute_filepath>
+2. Read the file.
 
-1. The CLI will:
+3. Determine the backup path: `$XDG_DATA_HOME/caveman-compress/backups/<parent-dir-name>/<filename>.original.md` (or `%LOCALAPPDATA%\caveman-compress\backups\<parent-dir-name>\<filename>.original.md` on Windows), where `<parent-dir-name>` is the name of the directory directly containing the target file. Create that backup directory if it doesn't exist, then write the untouched original content there.
 
-- detect file type (no tokens)
-- call Claude to compress
-- validate output (no tokens)
-- if errors: cherry-pick fix with Claude (targeted fixes only, no recompression)
-- retry up to 2 times
-- if still failing after 2 retries: report error to user, leave original file untouched
+4. Apply the Compression Rules below to the file content, applying them only to prose — code blocks, inline code, URLs, paths, commands, and other "Preserve EXACTLY" content pass through unchanged.
 
-1. Return result to user
+5. Validate before writing:
+   - All headings, list nesting, numbering, tables, and frontmatter are intact and unreordered
+   - Every fenced/indented code block and inline-code span is byte-identical to the original
+   - No URL, file path, command, env var, version number, or proper noun was altered
+   - If any check fails, redo the compression for the offending section only (targeted fix, don't recompress the whole file)
+
+6. Overwrite the original file with the compressed content.
+
+7. Report to the user: what was compressed, where the backup lives, and a rough sense of size reduction.
 
 ## Compression Rules
 

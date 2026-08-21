@@ -18,3 +18,7 @@ disabled = true
 [claude_context]
 format = '[$gauge $percentage \($input_tokens in/$output_tokens out, $curr_cache_read_tokens cache\)]($style) '
 display = [{ threshold = 0.0, style = "bold green", hidden = false }]
+
+# Always show session cost too, regardless of how low it is.
+[claude_cost]
+display = [{ threshold = 0.0, style = "bold green", hidden = false }]
