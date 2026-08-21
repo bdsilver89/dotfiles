@@ -1,0 +1,97 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+projects_dir() {
+        if [ -d "$HOME/Developer/projects" ]; then
+                printf '%s' "$HOME/Developer/projects"
+        else
+                printf '%s' "$HOME/dev/projects"
+        fi
+}
+
+sanitize() {
+        printf '%s' "$1" | tr './: ' '----'
+}
+
+container() {
+        local common
+        common=$(git -C "$1" rev-parse --path-format=absolute --git-common-dir 2>/dev/null) || return 1
+        [ -n "$common" ] || return 1
+        case "${common##*/}" in
+        .bare | .git) printf '%s' "${common%/*}" ;;
+        *) printf '%s' "$common" ;;
+        esac
+}
+
+repos() {
+        find "$(projects_dir)" -mindepth 2 -maxdepth 3 \
+                \( -name node_modules -o -name target -o -name vendor \) -prune -o \
+                \( -name .git -o -name .bare \) -print -prune 2>/dev/null |
+                while IFS= read -r marker; do
+                        container "${marker%/*}" && echo
+                done | awk 'NF && !seen[$0]++'
+}
+
+attach() {
+        local sess="$1" path="${2:-}"
+        [ -n "$path" ] && ! tmux has-session -t "=$sess" 2>/dev/null &&
+                tmux new-session -d -s "$sess" -c "$path"
+        if [ -z "${TMUX:-}" ]; then
+                tmux attach -t "=$sess"
+        else
+                tmux switch-client -t "=$sess"
+        fi
+}
+
+wt_root() {
+        local common
+        common=$(git -C "$1" rev-parse --path-format=absolute --git-common-dir 2>/dev/null)
+        if [ "${common##*/}" = ".bare" ]; then
+                printf '%s' "${common%/*}"
+        else
+                printf '%s' "${1}.worktrees"
+        fi
+}
+
+die() {
+        echo "$1"
+        read -r -p "Press enter to close..."
+        exit 1
+}
+
+repo=$(repos | fzf --height 100% --prompt="Project> " --delimiter=/ --with-nth=-1)
+[ -z "$repo" ] && exit 0
+
+git -C "$repo" worktree prune 2>/dev/null || true
+
+branches=$(git -C "$repo" for-each-ref --format='%(refname:short)' refs/heads)
+selection=$(printf '%s\n[new branch]\n' "$branches" | fzf --height 100% --no-preview --prompt="Branch> ")
+[ -z "$selection" ] && exit 0
+
+if [ "$selection" = "[new branch]" ]; then
+        read -r -p "New branch name: " branch
+        [ -z "$branch" ] && exit 0
+else
+        branch="$selection"
+fi
+
+existing=$(git -C "$repo" worktree list --porcelain | awk -v b="refs/heads/$branch" '
+        /^worktree / { p = substr($0, 10) }
+        $0 == "branch " b { print p }
+')
+
+if [ -n "$existing" ]; then
+        wt_path="$existing"
+else
+        root=$(wt_root "$repo")
+        wt_path="$root/$(sanitize "$branch")"
+        [ -e "$wt_path" ] && die "Path exists but isn't a registered worktree: $wt_path"
+        mkdir -p "$root"
+        if [ "$selection" = "[new branch]" ]; then
+                git -C "$repo" worktree add "$wt_path" -b "$branch" || die "worktree add failed"
+        else
+                git -C "$repo" worktree add "$wt_path" "$branch" || die "worktree add failed"
+        fi
+fi
+
+attach "$(sanitize "${repo##*/}($branch)")" "$wt_path"
