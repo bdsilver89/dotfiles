@@ -31,6 +31,10 @@ packages:
       command: claude
       url: https://claude.ai/install.sh
       args: ""
+    - name: rtk
+      command: rtk
+      url: https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh
+      args: ""
 
   zsh_plugins:
     - name: zsh-autosuggestions
@@ -68,3 +72,4 @@ packages:
     - node@lts
     - python@3.14
     - rust@stable
+    - opencode@latest
