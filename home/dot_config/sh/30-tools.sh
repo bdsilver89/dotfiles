@@ -23,10 +23,17 @@ fi
 
 if command -v fzf >/dev/null 2>&1; then
     if command -v bat >/dev/null 2>&1; then
-        export FZF_DEFAULT_OPTS="--preview 'bat {}'"
+        _fzf_file_preview='bat {}'
     else
-        export FZF_DEFAULT_OPTS="--preview 'cat {}'"
+        _fzf_file_preview='cat {}'
     fi
+    if command -v eza >/dev/null 2>&1; then
+        _fzf_dir_preview='eza --color=always --icons=always --git -la {}'
+    else
+        _fzf_dir_preview='ls -la {}'
+    fi
+    export FZF_DEFAULT_OPTS="--preview 'if [ -d {} ]; then $_fzf_dir_preview; else $_fzf_file_preview; fi'"
+    unset _fzf_file_preview _fzf_dir_preview
     export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS --border=rounded --info=default"
 fi
 
