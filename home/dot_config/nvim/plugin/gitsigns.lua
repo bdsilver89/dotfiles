@@ -75,7 +75,7 @@ add_on_event({ "BufReadPre", "BufNewFile" }, {
         end, { desc = "Hunk quickfix all" })
 
         map({ "o", "x" }, "ih", gs.select_hunk)
-      end
+      end,
     },
   },
 })

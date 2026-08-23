@@ -197,7 +197,7 @@ function M.dap_component()
     return nil
   end
 
-  return string.format("%%#%s#%s  %s", M.get_or_create_hl "Special", icons.misc.bug, require("dap").status())
+  return string.format("%%#%s#%s  %s", M.get_or_create_hl("Special"), icons.misc.bug, require("dap").status())
 end
 
 ---@type table<string, string?>
@@ -243,9 +243,9 @@ function M.lsp_progress_component()
   end
 
   return table.concat({
-      "%#StatuslineSpinner#󱥸 ",
-      string.format("%%#StatuslineTitle#%s  ", progress_status.client),
-      string.format("%%#StatuslineItalic#%s...", progress_status.title),
+    "%#StatuslineSpinner#󱥸 ",
+    string.format("%%#StatuslineTitle#%s  ", progress_status.client),
+    string.format("%%#StatuslineItalic#%s...", progress_status.title),
   })
 end
 

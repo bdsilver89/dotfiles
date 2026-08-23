@@ -4,7 +4,7 @@ add_on_event("UIEnter", {
   {
     src = "stevearc/quicker.nvim",
     opts = {
-      vert = require('icons').misc.vertical_bar,
+      vert = require("icons").misc.vertical_bar,
     },
     on_setup = function()
       local quicker = require("quicker")
@@ -28,6 +28,6 @@ add_on_event("UIEnter", {
       vim.keymap.set("n", ">", function()
         quicker.collapse()
       end, { desc = "Collapse context" })
-    end
+    end,
   },
 })

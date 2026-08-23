@@ -18,5 +18,5 @@ add({
       vim.keymap.set("n", "<leader>,", "<cmd>FzfLua buffers sort_mru=true sort_lastused=true<cr>")
       vim.keymap.set("n", "<leader>:", "<cmd>FzfLua command_history<cr>")
     end,
-  }
+  },
 })

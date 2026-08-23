@@ -8,5 +8,5 @@ return {
     local project_root = vim.fs.root(bufnr, root_markers) or vim.uv.cwd()
 
     on_dir(project_root)
-  end
+  end,
 }
