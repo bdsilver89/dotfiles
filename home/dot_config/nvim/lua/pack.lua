@@ -16,7 +16,7 @@ local function init(plugins)
     end)
     :totable()
 
-  vim.pack.add(sources)
+  vim.pack.add(sources, { confirm = false })
 end
 
 ---@param plugins PluginSpec[]

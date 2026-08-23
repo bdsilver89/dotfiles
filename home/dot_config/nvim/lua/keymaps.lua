@@ -20,6 +20,8 @@ vim.keymap.set("n", "<leader>-", "<c-w>s")
 vim.keymap.set("n", "<leader>bb", "<cmd>e #<cr>")
 vim.keymap.set("n", "<leader>bd", "<cmd>bd<cr>")
 
+vim.keymap.set("n", "<leader>u", "<cmd>Undotree<cr>")
+
 vim.keymap.set("x", "<", "<gv")
 vim.keymap.set("x", ">", ">gv")
 
