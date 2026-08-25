@@ -13,10 +13,36 @@ add({
       }
     end,
     on_setup = function()
-      vim.keymap.set("n", "<leader><space>", "<cmd>FzfLua files<cr>")
-      vim.keymap.set("n", "<leader>/", "<cmd>FzfLua live_grep<cr>")
-      vim.keymap.set("n", "<leader>,", "<cmd>FzfLua buffers sort_mru=true sort_lastused=true<cr>")
-      vim.keymap.set("n", "<leader>:", "<cmd>FzfLua command_history<cr>")
+      vim.keymap.set(
+        "n",
+        "<leader>fb",
+        "<cmd>FzfLua buffers sort_mru=true sort_lastused=true<cr>",
+        { desc = "Buffers" }
+      )
+      vim.keymap.set("n", "<leader>ff", "<cmd>FzfLua files<cr>", { desc = "Files" })
+      vim.keymap.set("n", "<leader>fg", "<cmd>FzfLua git_files<cr>", { desc = "Files (git)" })
+      vim.keymap.set("n", "<leader>fr", "<cmd>FzfLua oldfiles<cr>", { desc = "Recent" })
+
+      vim.keymap.set("n", "<leader>gc", "<cmd>FzfLua git_commits<cr>", { desc = "Commits" })
+      vim.keymap.set("n", "<leader>gd", "<cmd>FzfLua git_diff<cr>", { desc = "Diff" })
+      vim.keymap.set("n", "<leader>gs", "<cmd>FzfLua git_status<cr>", { desc = "Status" })
+      vim.keymap.set("n", "<leader>gS", "<cmd>FzfLua git_stash<cr>", { desc = "Stash" })
+
+      vim.keymap.set("n", "<leader>s/", "<cmd>FzfLua search_history<cr>", { desc = "Search history" })
+      vim.keymap.set("n", "<leader>sb", "<cmd>FzfLua buffers<cr>", { desc = "Lines" })
+      vim.keymap.set("n", "<leader>sc", "<cmd>FzfLua command_history<cr>", { desc = "Command history" })
+      vim.keymap.set("n", "<leader>sC", "<cmd>FzfLua commands<cr>", { desc = "Commands" })
+      vim.keymap.set("n", "<leader>sd", "<cmd>FzfLua diagnostics_workspace<cr>", { desc = "Diagnostics" })
+      vim.keymap.set("n", "<leader>sD", "<cmd>FzfLua diagnostics_document<cr>", { desc = "Diagnostics buffer" })
+      vim.keymap.set("n", "<leader>sg", "<cmd>FzfLua live_grep<cr>", { desc = "Grep" })
+      vim.keymap.set("n", "<leader>sk", "<cmd>FzfLua keymaps<cr>", { desc = "Keymaps" })
+      vim.keymap.set("n", "<leader>sR", "<cmd>FzfLua resume<cr>", { desc = "Resume" })
+      vim.keymap.set({ "n", "x" }, "<leader>sw", "<cmd>FzfLua grep_cword<cr>", { desc = "Word" })
+
+      vim.keymap.set("n", "<leader><space>", "<leader>ff", { desc = "Files", remap = true })
+      vim.keymap.set("n", "<leader>,", "<leader>fb", { desc = "Buffers", remap = true })
+      vim.keymap.set("n", "<leader>:", "<leader>sc", { desc = "Command history", remap = true })
+      vim.keymap.set("n", "<leader>/", "<leader>sg", { desc = "Grep", remap = true })
     end,
   },
 })

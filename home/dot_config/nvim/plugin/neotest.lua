@@ -1,13 +1,14 @@
 local add = require("pack").add
-local add_on_filetype = require("pack").add_on_filetype
 
-add_on_filetype("python", {
+add({
+  {
+    src = "nvim-neotest/nvim-nio",
+    setup = false,
+  },
   {
     src = "nvim-neotest/neotest-python",
     setup = false,
   },
-})
-add_on_filetype("java", {
   {
     src = "rcasia/neotest-java",
     setup = false,
@@ -15,17 +16,8 @@ add_on_filetype("java", {
       vim.cmd("NeotestJava setup")
     end,
   },
-})
-add_on_filetype({ "c", "cpp", "cmake" }, {
   {
     src = "orjangj/neotest-ctest",
-    setup = false,
-  },
-})
-
-add({
-  {
-    src = "nvim-neotest/nvim-nio",
     setup = false,
   },
   {

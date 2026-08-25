@@ -43,16 +43,12 @@ local function on_attach(client, bufnr)
   end
 
   if client:supports_method("textDocument/typeDefinition") then
-    map("<leader>cs", "<cmd>FzfLua lsp_document_symbols<cr>", "Document symbols")
+    map("<leader>ss", "<cmd>FzfLua lsp_document_symbols<cr>", "Document symbols")
+    map("<leader>sS", "<cmd>FzfLua lsp_live_workspace_symbols<cr>", "Workspace symbols")
   end
 
   if client:supports_method("textDocument/definition") then
-    map("gd", function()
-      require("fzf-lua").lsp_definitions({ jump1 = true })
-    end, "Definition")
-    map("gD", function()
-      require("fzf-lua").lsp_definitions({ jump1 = false })
-    end, "Definition peek")
+    map("gd", "<cmd>FzfLua lsp_definitions jump1=treu ignore_current_line<cr>", "Goto definition")
   end
 
   if client:supports_method("textDocument/documentHighlight") then

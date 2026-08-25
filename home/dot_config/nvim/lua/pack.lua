@@ -21,6 +21,7 @@ end
 
 ---@param plugins PluginSpec[]
 local function configure(plugins)
+  init(plugins)
   for _, plugin in ipairs(plugins) do
     if plugin.setup ~= false then
       local module_name = plugin.module_name or (plugin.src:match(".+/(.+)"):gsub("%.nvim$", ""))
@@ -41,7 +42,6 @@ end
 ---@param pattern? string|string[]
 ---@param plugins PluginSpec[]
 local function add_on_event(event, pattern, plugins)
-  init(plugins)
   vim.api.nvim_create_autocmd(event, {
     pattern = pattern,
     once = true,
@@ -53,7 +53,6 @@ end
 
 ---@param plugins PluginSpec[]
 function M.add(plugins)
-  init(plugins)
   configure(plugins)
 end
 

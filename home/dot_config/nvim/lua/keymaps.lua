@@ -26,3 +26,7 @@ vim.keymap.set("x", "<", "<gv")
 vim.keymap.set("x", ">", ">gv")
 
 vim.keymap.set("t", "<esc><esc>", "<c-\\><c-n>")
+
+vim.keymap.set("n", "<leader>ud", function()
+  vim.diagnostic.enable(not vim.diagnostic.is_enabled())
+end, { desc = "Toggle diagnostics" })
