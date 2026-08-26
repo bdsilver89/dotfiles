@@ -30,3 +30,21 @@ vim.keymap.set("t", "<esc><esc>", "<c-\\><c-n>")
 vim.keymap.set("n", "<leader>ud", function()
   vim.diagnostic.enable(not vim.diagnostic.is_enabled())
 end, { desc = "Toggle diagnostics" })
+
+vim.keymap.set("n", "<leader>xl", function()
+  local ok, err = pcall(vim.fn.getloclist(0, { winid = 0 }).winid ~= 0 and vim.cmd.lclose or vim.cmd.lopen)
+  if not ok and err then
+    vim.notify(err, vim.log.levels.ERROR)
+  end
+end, { desc = "Toggle location list"})
+
+vim.keymap.set("n", "<leader>xq", function()
+  local ok, err = pcall(vim.fn.getqflist({ winid = 0 }).winid ~= 0 and vim.cmd.cclose or vim.cmd.copen)
+  if not ok and err then
+    vim.notify(err, vim.log.levels.ERROR)
+  end
+end, { desc = "Toggle quickfix list"})
+
+vim.keymap.set("n", "<leader>xd", function()
+  vim.diagnostic.setloclist()
+end, { desc = "View diagnostics"})

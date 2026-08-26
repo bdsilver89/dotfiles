@@ -2,6 +2,10 @@ local add = require("pack").add
 
 add({
   {
+    src = "nvim-lua/plenary.nvim",
+    setup = false,
+  },
+  {
     src = "nvim-neotest/nvim-nio",
     setup = false,
   },
@@ -41,6 +45,7 @@ add({
       map("<leader>tt", function() require("neotest").run.run(vim.fn.expand("%")) end, "Run tests in file")
       map("<leader>tT", function() require("neotest").run.run(vim.uv.cwd()) end, "Run all test files")
       map("<leader>tr", function() require("neotest").run.run() end, "Run nearest test")
+      map("<leader>td", function() require("neotest").run.run({ strategy = "dap" }) end, "Debug nearest test")
       map("<leader>tl", function() require("neotest").run.run_last() end, "Run last test")
       map("<leader>ts", function() require("neotest").summary.toggle() end, "Toggle test summary")
       map("<leader>to", function() require("neotest").output.open({ enter = true, auto_close = true}) end, "Open test output")

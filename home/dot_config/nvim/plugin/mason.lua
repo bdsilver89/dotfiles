@@ -24,7 +24,6 @@ local tools = {
   "taplo",
   "terraform-ls",
   "tsgo",
-  "vtsls", --TODO: remove for tsgo
   "yaml-language-server",
 }
 

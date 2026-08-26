@@ -88,15 +88,6 @@ add({
     end,
   },
   {
-    src = "nvim-treesitter/nvim-treesitter-context",
-    module_name = "treesitter-context",
-    opts = {
-      max_lines = 3,
-      multiline_threshold = 1,
-      min_window_height = 20,
-    },
-  },
-  {
     src = "nvim-treesitter/nvim-treesitter-textobjects",
     opts = {
       select = {

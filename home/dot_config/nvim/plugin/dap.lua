@@ -28,12 +28,14 @@ add_on_event({ "BufReadPost", "BufNewFile" }, {
     src = "igorlfs/nvim-dap-view",
     module_name = "dap-view",
   },
-  -- {
-  --   src = "mfussenegger/nvim-dap-python",
-  --   setup = function()
-  --     require("dap-python").setup("debugpy-adapter")
-  --   end,
-  -- },
+  {
+    src = "mfussenegger/nvim-dap-python",
+    setup = false,
+    on_setup = function()
+      local install_path = require("mason-registry").get_package("debugpy"):get_install_path()
+      require("dap-python").setup(install_path .. "/venv/bin/python")
+    end,
+  },
   {
     src = "mfussenegger/nvim-dap",
     setup = false,
