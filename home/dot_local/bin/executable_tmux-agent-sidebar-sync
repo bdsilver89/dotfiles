@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+[ "$(tmux show-option -gqv @agent_sidebar_enabled)" = "on" ] || exit 0
+
+win="${1:-$(tmux display-message -p '#{window_id}')}"
+
+# already present in this window? nothing to do
+if tmux list-panes -t "$win" -F '#{pane_id} #{@is_agent_sidebar}' |
+	awk '$2=="1"{f=1} END{exit !f}'; then
+	exit 0
+fi
+
+# move existing sidebar here instead of killing+respawning (only one, it follows you)
+existing=$(tmux list-panes -a -F '#{pane_id} #{@is_agent_sidebar}' | awk '$2=="1"{print $1; exit}')
+if [ -n "$existing" ]; then
+	tmux move-pane -b -h -l 30 -s "$existing" -t "$win"
+	exit 0
+fi
+
+newpane=$(tmux split-window -hbf -l 30 -t "$win" -P -F '#{pane_id}' "$HOME/.local/bin/tmux-agent-sidebar")
+tmux set-option -p -t "$newpane" @is_agent_sidebar 1

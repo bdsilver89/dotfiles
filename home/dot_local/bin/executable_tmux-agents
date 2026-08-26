@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+label_status() {
+	case "$1" in
+	working) echo "working" ;;
+	waiting) echo "needs input" ;;
+	done) echo "done" ;;
+	*) echo "$1" ;;
+	esac
+}
+
+attach() {
+	local target="$1" sess
+	sess=$(tmux display-message -p -t "$target" '#{session_name}')
+	if [ -z "${TMUX:-}" ]; then
+		tmux attach -t "=$sess" \; select-window -t "$target" \; select-pane -t "$target"
+	else
+		tmux switch-client -t "=$sess" \; select-window -t "$target" \; select-pane -t "$target"
+	fi
+}
+
+menu=""
+while IFS=$'\t' read -r target tool status wname wpath cmd sess; do
+	[ -n "$tool" ] || continue
+	case "$cmd" in
+	bash | zsh | fish | sh | dash | nvim | vim)
+		tmux set-option -p -t "$target" -u @agent_tool 2>/dev/null || true
+		tmux set-option -p -t "$target" -u @agent_status 2>/dev/null || true
+		continue
+		;;
+	esac
+	branch=$(git -C "$wpath" branch --show-current 2>/dev/null)
+	label=$(printf '%-12s %-8s %-14s %-20s %s' "$(label_status "$status")" "$tool" "${branch:-$wname}" "$sess:$wname" "$target")
+	menu+="$label"$'\t'"$target"$'\n'
+done < <(tmux list-panes -a -F '#{pane_id}	#{@agent_tool}	#{@agent_status}	#{window_name}	#{pane_current_path}	#{pane_current_command}	#{session_name}')
+
+if [ -z "$menu" ]; then
+	echo "no agent windows"
+	read -r -p "Press enter to close..."
+	exit 0
+fi
+
+selection=$(printf '%s' "$menu" | fzf --height 100% --delimiter=$'\t' --with-nth=1 \
+	--preview 'tmux capture-pane -p -t {2}' --preview-window=right:60%)
+[ -z "$selection" ] && exit 0
+
+attach "$(printf '%s' "$selection" | cut -f2)"

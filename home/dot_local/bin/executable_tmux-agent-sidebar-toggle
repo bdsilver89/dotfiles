@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [ "$(tmux show-option -gqv @agent_sidebar_enabled)" = "on" ]; then
+	tmux set-option -g @agent_sidebar_enabled off
+	tmux list-panes -a -F '#{pane_id} #{@is_agent_sidebar}' |
+		awk '$2=="1"{print $1}' |
+		while read -r p; do tmux kill-pane -t "$p" 2>/dev/null || true; done
+else
+	tmux set-option -g @agent_sidebar_enabled on
+	"$HOME/.local/bin/tmux-agent-sidebar-sync" "${1:-}"
+fi

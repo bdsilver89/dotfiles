@@ -1,8 +1,8 @@
-
-mode: session
 status_format: false
 nerdfont: true
 agent: claude
+worktree_dir: "../{project}.worktrees"
+worktree_naming: basename
 
 windows:
   - name: editor
@@ -10,3 +10,4 @@ windows:
       - command: nvim
         focus: true
       - command: claude
+        split: horizontal

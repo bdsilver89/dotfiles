@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
+  "permissions": {
+    "allow": [
+      "Bash(basedpyright:*)",
+      "Bash(bat:*)",
+      "Bash(cargo check:*)",
+      "Bash(cargo clippy:*)",
+      "Bash(cargo fmt:*)",
+      "Bash(cargo metadata:*)",
+      "Bash(cargo tree:*)",
+      "Bash(clang-format:*)",
+      "Bash(clang-tidy:*)",
+      "Bash(eza:*)",
+      "Bash(fd:*)",
+      "Bash(git blame:*)",
+      "Bash(git branch:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git remote -v)",
+      "Bash(git show:*)",
+      "Bash(git status:*)",
+      "Bash(git worktree list:*)",
+      "Bash(jq:*)",
+      "Bash(mypy:*)",
+      "Bash(rg:*)",
+      "Bash(ruff check:*)",
+      "Bash(ruff format:*)",
+      "Bash(tsc --noEmit:*)",
+      "Read(//tmp/**)"
+    ],
+    "deny": [
+      "Read(**/*.key)",
+      "Read(**/*.pem)",
+      "Read(**/.env)",
+      "Read(**/.env.*)",
+      "Read(**/credentials)",
+      "Read(~/.aws/**)",
+      "Read(~/.ssh/**)"
+    ],
+    "ask": [],
+    "defaultMode": "auto"
+  },
+  "model": "sonnet",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "rtk hook claude"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          { "type": "command", "command": "tmux-agent-status working claude" }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "hooks": [
+          { "type": "command", "command": "tmux-agent-status waiting claude" }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          { "type": "command", "command": "tmux-agent-status done claude" }
+        ]
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "starship statusline claude-code"
+  },
+  "effortLevel": "medium",
+  "modelSettings": {
+    "claude-sonnet-5": {
+      "effortLevel": "low"
+    }
+  },
+  "tui": "fullscreen",
+  "editorMode": "vim",
+  "agentPushNotifEnabled": true
+}

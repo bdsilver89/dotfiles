@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+trap 'tput cnorm' EXIT
+tput civis
+
+icon() {
+	case "$1" in
+	working) printf '\033[33m●\033[0m' ;;
+	waiting) printf '\033[31m●\033[0m' ;;
+	done) printf '\033[32m●\033[0m' ;;
+	*) printf '\033[90m●\033[0m' ;;
+	esac
+}
+
+trunc() {
+	local s="$1" w="$2"
+	if [ "${#s}" -gt "$w" ]; then
+		printf '%s' "${s:0:$((w - 1))}…"
+	else
+		printf '%-*s' "$w" "$s"
+	fi
+}
+
+render() {
+	local cols rows out branch
+	cols=$(tput cols)
+	rows=$(tput lines)
+	local tool_w=8
+
+	out=$'\033[1mAGENTS\033[0m\n\n'
+	local n=2 any=false
+	while IFS=$'\t' read -r target tool status wname wpath cmd sess; do
+		[ -n "$tool" ] || continue
+		case "$cmd" in
+		bash | zsh | fish | sh | dash | nvim | vim)
+			tmux set-option -p -t "$target" -u @agent_tool 2>/dev/null || true
+			tmux set-option -p -t "$target" -u @agent_status 2>/dev/null || true
+			continue
+			;;
+		esac
+		any=true
+		branch=$(git -C "$wpath" branch --show-current 2>/dev/null)
+		out+="$(icon "$status") $(trunc "$tool" "$tool_w")"$'\n'
+		out+="  $(trunc "$sess:${branch:-$wname}" "$((cols - 2))")"$'\n'
+		n=$((n + 2))
+		[ "$n" -ge "$((rows - 1))" ] && break
+	done < <(tmux list-panes -a -F '#{pane_id}	#{@agent_tool}	#{@agent_status}	#{window_name}	#{pane_current_path}	#{pane_current_command}	#{session_name}')
+	$any || out+=$'\033[90m(no agent windows)\033[0m\n'
+
+	printf '\033[H%s\033[J' "$out"
+}
+
+while true; do
+	render
+	sleep 2
+done
