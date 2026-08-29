@@ -1,6 +1,6 @@
-local add_on_event = require("pack").add_on_event
+local add = require("pack").add
 
-add_on_event("BufWritePre", {
+add({
   {
     src = "stevearc/conform.nvim",
     opts = {

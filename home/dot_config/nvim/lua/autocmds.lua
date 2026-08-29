@@ -42,6 +42,16 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 vim.api.nvim_create_autocmd("FileType", {
+  group = vim.api.nvim_create_augroup("wrapspell", { clear = true }),
+  pattern = { "text", "markdown", "gitcommit" },
+  callback = function()
+    vim.opt_local.spell = true
+    vim.opt_local.wrap = true
+  end,
+})
+
+
+vim.api.nvim_create_autocmd("FileType", {
   group = vim.api.nvim_create_augroup("bigfile", { clear = true }),
   pattern = "bigfile",
   callback = function(ev)
