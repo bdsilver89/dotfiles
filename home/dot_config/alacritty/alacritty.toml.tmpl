@@ -1,0 +1,37 @@
+# machine.toml: untracked per-machine override, see README.md#machine-local-overrides
+[general]
+import = [
+    "~/.config/alacritty/catppuccin-mocha.toml",
+    "~/.config/alacritty/machine.toml",
+]
+
+[env]
+# default TERM=alacritty lacks terminfo on most remote hosts
+TERM = "xterm-256color"
+
+[font]
+normal = { family = "JetBrains Mono" }
+size = {{ if eq .chezmoi.os "darwin" }}13.0{{ else }}11.0{{ end }}
+
+[window]
+padding = { x = 6, y = 4 }
+dynamic_padding = true
+
+[scrolling]
+history = 10000
+
+[selection]
+save_to_clipboard = true
+
+{{- if eq .chezmoi.os "windows" }}
+
+[terminal]
+shell = { program = "pwsh.exe", args = ["-NoLogo"] }
+{{- end }}
+
+[keyboard]
+bindings = [
+    { key = "N", mods = "Control|Shift", action = "CreateNewWindow" },
+    { key = "W", mods = "Control|Shift", action = "Quit" }, # closes focused window
+    { key = "K", mods = "Control|Shift", action = "ClearHistory" },
+]

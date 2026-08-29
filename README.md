@@ -290,13 +290,16 @@ of `machine` and copies whatever table it returns over the config. Absent, the
 and for `ssh_domains`, which is a list of internal hostnames that has no
 business being tracked.
 
+`~/.config/alacritty/machine.toml` is the same idea for Alacritty: listed last
+in `general.import`, which skips missing files. `catppuccin-mocha.toml` in the
+same directory is an unmodified copy of the upstream theme from
+`catppuccin/alacritty`, imported the same way.
+
 ## Known gaps
 
-- `packages.desktop.linux` is empty, so a `role = desktop` Linux machine
-  installs no terminal at all. wezterm is not in the Debian, Ubuntu or Fedora
-  repositories; it needs wezterm's own apt/rpm repo or a release download. Both
-  Linux scripts guard their desktop block on a non-empty list, so the empty
-  lists are a no-op rather than a `sudo apt-get install -y ;` syntax error.
+- `packages.desktop.linux` only lists `alacritty`, not wezterm — wezterm isn't
+  in the Debian, Ubuntu or Fedora repos and needs its own apt/rpm repo or a
+  release download.
 - On native Windows only `packages.desktop.windows.winget` is installed — host
   GUI apps. The core CLI tooling lives in WSL, which is just the Linux path;
   the mise, gh-extensions and vendor scripts all skip Windows outright.

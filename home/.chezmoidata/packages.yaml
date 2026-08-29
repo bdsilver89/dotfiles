@@ -52,14 +52,18 @@ packages:
     darwin:
       casks:
         - wezterm
+        - alacritty
         - visual-studio-code
         - zed
     linux:
-      apt: []
-      dnf: []
+      apt:
+        - alacritty
+      dnf:
+        - alacritty
     windows:
       winget:
         - wez.wezterm
+        - Alacritty.Alacritty
         - Microsoft.VisualStudioCode
         - ZedIndustries.Zed
 
