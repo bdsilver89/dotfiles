@@ -18,7 +18,6 @@ packages:
     - starship
     - lazygit
     - workmux
-    - herdr
 
   # eza isn't packaged for RHEL/EPEL (rebuilds like Rocky/Alma included), so
   # the rhel package script skips it in core and it's installed via mise
