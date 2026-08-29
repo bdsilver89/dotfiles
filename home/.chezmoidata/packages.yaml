@@ -64,7 +64,7 @@ packages:
         - Alacritty.Alacritty
         - Microsoft.VisualStudioCode
         - ZedIndustries.Zed
-        - JetBrains.JetBrainsMono
+        - DEVCOM.JetBrainsMonoNerdFont
 
   gh_extensions:
     - dlvhdr/gh-dash
