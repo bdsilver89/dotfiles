@@ -311,10 +311,4 @@ own copy.
   install scripts only ever add. Files are different: dropping one from the
   source tree leaves the copy in `$HOME` untouched, and `.chezmoiremove` is
   what deletes it on the next apply.
-- `dot_gitconfig.tmpl` sets `core.pager = delta`, and git treats a missing pager
-  as fatal — `unable to execute pager 'delta'`, exit 128, on every command that
-  paginates. So an apply that writes the dotfiles but fails before installing
-  `git-delta` leaves git unusable rather than merely unstyled. The `nvim` diff
-  and merge tools are not exposed the same way: git falls back to a default when
-  the configured tool is missing, and only `git difftool` touches them at all.
 - No CI.

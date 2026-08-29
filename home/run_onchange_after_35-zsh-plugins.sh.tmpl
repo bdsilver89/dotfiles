@@ -1,0 +1,16 @@
+{{- if ne .chezmoi.os "windows" -}}
+#!/bin/sh
+set -eu
+
+# Clone/update the zsh plugins that 30-plugins.zsh expects to find.
+plugins_dir="${XDG_DATA_HOME:-$HOME/.local/share}/zsh/plugins"
+mkdir -p "$plugins_dir"
+{{ range .packages.zsh_plugins }}
+dest="$plugins_dir/{{ .name }}"
+if [ -d "$dest/.git" ]; then
+    git -C "$dest" pull --ff-only --quiet || echo "{{ .name }}: update failed" >&2
+else
+    git clone --quiet --depth 1 {{ .url }} "$dest" || echo "{{ .name }}: clone failed" >&2
+fi
+{{- end }}
+{{ end -}}

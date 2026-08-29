@@ -1,7 +1,6 @@
 packages:
   core:
     - git
-    - git-delta
     - tmux
     - fzf
     - ripgrep
