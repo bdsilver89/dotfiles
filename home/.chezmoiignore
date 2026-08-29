@@ -10,6 +10,7 @@
 .profile
 .zshenv
 .zshrc
+.claude/skills
 {{ end }}
 
 # Guard against accidentally committing local/work-only skills that live

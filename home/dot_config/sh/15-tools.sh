@@ -10,7 +10,13 @@ if [ -n "$_sh" ]; then
     command -v mise >/dev/null 2>&1 && eval "$(mise activate "$_sh")"
     command -v zoxide >/dev/null 2>&1 && eval "$(zoxide init "$_sh")"
     command -v starship >/dev/null 2>&1 && eval "$(starship init "$_sh")"
-    command -v fzf >/dev/null 2>&1 && eval "$(fzf --$_sh)"
+    if command -v fzf >/dev/null 2>&1; then
+        # --zsh/--bash flags need fzf >=0.48; older fzf lacks them. Try
+        # silently and only eval on success, so a stale fzf earlier on
+        # PATH (e.g. distro package ahead of the mise shim) can't error.
+        _fzf_init=$(fzf --"$_sh" 2>/dev/null) && eval "$_fzf_init"
+        unset _fzf_init
+    fi
 fi
 
 if command -v ninja >/dev/null 2>&1; then
