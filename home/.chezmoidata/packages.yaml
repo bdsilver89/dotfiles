@@ -50,8 +50,8 @@ packages:
   desktop:
     darwin:
       casks:
-        - wezterm
         - alacritty
+        - ghostty
         - visual-studio-code
         - zed
     linux:
@@ -61,7 +61,6 @@ packages:
         - alacritty
     windows:
       winget:
-        - wez.wezterm
         - Alacritty.Alacritty
         - Microsoft.VisualStudioCode
         - ZedIndustries.Zed

@@ -4,6 +4,7 @@
 .config/workmux
 .config/sh
 .config/zsh
+.config/alacritty
 .local/bin/
 .bashrc
 .bash_profile
@@ -11,6 +12,8 @@
 .zshenv
 .zshrc
 .claude/skills
+{{ else }}
+AppData/Roaming/alacritty
 {{ end }}
 
 # Guard against accidentally committing local/work-only skills that live

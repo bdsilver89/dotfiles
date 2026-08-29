@@ -293,7 +293,10 @@ business being tracked.
 `~/.config/alacritty/machine.toml` is the same idea for Alacritty: listed last
 in `general.import`, which skips missing files. `catppuccin-mocha.toml` in the
 same directory is an unmodified copy of the upstream theme from
-`catppuccin/alacritty`, imported the same way.
+`catppuccin/alacritty`, imported the same way. On Windows, Alacritty only reads
+`%APPDATA%\alacritty` (no XDG fallback), so the whole trio is duplicated under
+`~/AppData/Roaming/alacritty` instead — `.chezmoiignore` keeps each OS to its
+own copy.
 
 ## Known gaps
 

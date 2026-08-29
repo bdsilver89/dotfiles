@@ -1,8 +1,8 @@
 # machine.toml: untracked per-machine override, see README.md#machine-local-overrides
 [general]
 import = [
-    "~/.config/alacritty/catppuccin-mocha.toml",
-    "~/.config/alacritty/machine.toml",
+    "~/AppData/Roaming/alacritty/catppuccin-mocha.toml",
+    "~/AppData/Roaming/alacritty/machine.toml",
 ]
 
 [env]
@@ -11,7 +11,7 @@ TERM = "xterm-256color"
 
 [font]
 normal = { family = "JetBrains Mono" }
-size = {{ if eq .chezmoi.os "darwin" }}13.0{{ else }}11.0{{ end }}
+size = 11.0
 
 [window]
 padding = { x = 6, y = 4 }
@@ -22,6 +22,9 @@ history = 10000
 
 [selection]
 save_to_clipboard = true
+
+[terminal]
+shell = { program = "pwsh.exe", args = ["-NoLogo"] }
 
 [keyboard]
 bindings = [
