@@ -64,6 +64,7 @@ packages:
         - Alacritty.Alacritty
         - Microsoft.VisualStudioCode
         - ZedIndustries.Zed
+        - JetBrains.JetBrainsMono
 
   gh_extensions:
     - dlvhdr/gh-dash
