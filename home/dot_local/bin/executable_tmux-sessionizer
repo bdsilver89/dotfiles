@@ -68,6 +68,14 @@ plain_dirs() {
         done
 }
 
+if [ $# -ge 1 ]; then
+        path=$(cd "$1" && pwd)
+        name="${path##*/}"
+        sess=$(sanitize "$name")
+        attach "$sess" "$path"
+        exit 0
+fi
+
 menu=""
 
 add_entry() {
