@@ -16,6 +16,8 @@
 AppData/Roaming/alacritty
 {{ end }}
 
+.pi/node_modules
+
 # Guard against accidentally committing local/work-only skills that live
 # alongside chezmoi-managed symlinks in ~/.claude/skills. .chezmoiignore
 # matches TARGET paths, so each tracked symlink's target name (not its
