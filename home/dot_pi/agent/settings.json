@@ -2,5 +2,9 @@
   "defaultProvider": "anthropic",
   "defaultModel": "claude-sonnet-4-5",
   "lastChangelogVersion": "0.84.2",
-  "theme": "dark"
+  "theme": "catppuccin-mocha",
+  "packages": [
+    "npm:pi-claude-bridge",
+    "npm:pi-vimmode"
+  ]
 }
