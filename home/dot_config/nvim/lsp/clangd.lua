@@ -1,4 +1,4 @@
----@return vim.lsp.Config
+---@type vim.lsp.Config
 return {
   cmd = {
     "clangd",
@@ -10,13 +10,6 @@ return {
   },
   filetypes = { "c", "cpp" },
   root_markers = {
-    ".clangd",
-    ".clang-tidy",
-    ".clang-format",
-    "compile_commands.json",
-    "compile_flags.txt",
-    "configure.ac",
-    ".git",
   },
   capabilities = {
     textDocument = {

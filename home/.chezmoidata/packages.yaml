@@ -76,3 +76,5 @@ packages:
     - rust@stable
     - opencode@latest
     - pi@latest
+    - lua-language-server@latest
+    - stylua@latest

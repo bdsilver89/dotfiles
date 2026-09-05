@@ -1,7 +1,11 @@
-local add_on_event = require("pack").add_on_event
+vim.pack.add({
+  "https://github.com/NMAC427/guess-indent.nvim",
+}, { load = false })
 
-add_on_event({ "BufReadPre", "BufNewFile" }, {
-  {
-    src = "NMAC427/guess-indent.nvim",
-  },
+vim.api.nvim_create_autocmd({ "BufReadPre", "BufNewFile" }, {
+  once = true,
+  callback = function()
+    vim.cmd.packadd("guess-indent")
+    require("guess-indent").setup()
+  end,
 })

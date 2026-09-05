@@ -1,12 +1,12 @@
-local add_on_event = require("pack").add_on_event
+vim.pack.add({
+  "https://github.com/lewis6991/gitsigns.nvim",
+}, { load = false })
 
--- local solid_bar = require("icons").misc.vertical_bar
--- local dashed_bar = require("icons").misc.dashed_bar
-
-add_on_event({ "BufReadPre", "BufNewFile" }, {
-  {
-    src = "lewis6991/gitsigns.nvim",
-    opts = {
+vim.api.nvim_create_autocmd({ "BufReadPre", "BufNewFile" }, {
+  once = true,
+  callback = function()
+    vim.cmd.packadd("gitsigns")
+    require("gitsigns").setup({
       current_line_blame = true,
       on_attach = function(bufnr)
         local gs = package.loaded.gitsigns
@@ -21,6 +21,7 @@ add_on_event({ "BufReadPre", "BufNewFile" }, {
           if vim.wo.diff then
             vim.cmd.normal("]c", { bang = true })
           else
+
             gs.nav_hunk("next")
           end
         end, { desc = "Jump to next change " })
@@ -29,6 +30,7 @@ add_on_event({ "BufReadPre", "BufNewFile" }, {
           if vim.wo.diff then
             vim.cmd.normal("[c", { bang = true })
           else
+
             gs.nav_hunk("prev")
           end
         end, { desc = "Jump to next change " })
@@ -38,9 +40,11 @@ add_on_event({ "BufReadPre", "BufNewFile" }, {
         end, { desc = "Stage hunk" })
         map("v", "<leader>hr", function()
           gs.reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
+
         end, { desc = "Reset hunk" })
 
         map("n", "<leader>hs", gs.stage_hunk, { desc = "Stage hunk" })
+
         map("n", "<leader>hr", gs.reset_hunk, { desc = "Reset hunk" })
         map("n", "<leader>hS", gs.stage_buffer, { desc = "Stage buffer" })
         map("n", "<leader>hR", gs.reset_buffer, { desc = "Reset buffer" })
@@ -62,7 +66,7 @@ add_on_event({ "BufReadPre", "BufNewFile" }, {
         end, { desc = "Hunk quickfix all" })
 
         map({ "o", "x" }, "ih", gs.select_hunk)
-      end,
-    },
-  },
+      end
+    })
+  end,
 })

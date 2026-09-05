@@ -1,12 +1,8 @@
-local add = require("pack").add
-
-add({
-  {
-    src = "catppuccin/nvim",
-    name = "catppuccin",
-    module_name = "catppuccin",
-    on_setup = function()
-      vim.cmd.colorscheme("catppuccin")
-    end,
-  },
+vim.pack.add({
+  { src = "https://github.com/catppuccin/nvim", name = "catppuccin" },
 })
+
+require("catppuccin").setup({
+})
+
+vim.cmd.colorscheme("catppuccin")
