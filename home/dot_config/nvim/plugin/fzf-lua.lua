@@ -1,6 +1,6 @@
 vim.pack.add({
   "https://github.com/ibhagwan/fzf-lua",
-}, { load = false })
+})
 
 vim.schedule(function()
   local fzf = require("fzf-lua")
