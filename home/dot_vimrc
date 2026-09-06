@@ -1,116 +1,109 @@
-let mapleader = " "
+" =============================================================================
+" Options
+" =============================================================================
+set nocompatible
 
-let g:netrw_winsize = 30
-let g:netrw_banner = 0
-let g:netrw_localcopydircmd = "cp -r"
+if has("multi_byte")
+    set encoding=utf-8
+    set fileencodings=ucs-bom,utf-8,latin1
+endif
 
-set autoindent
-set autoread
-set cursorline
-set hidden
-set hlsearch
-set incsearch
-set laststatus=2
-set nowrap
+filetype plugin indent on
+
+if has("syntax")
+    syntax on
+endif
+
 set number
 set relativenumber
-set splitright
-set splitbelow
+set showcmd
+set ruler
+set backspace=indent,eol,start
+
+if has("syntax")
+    set cursorline
+endif
+
+if has("wildmenu")
+    set wildmenu
+    set wildmode=longest:full,full
+endif
+
+if exists("+wildignorecase")
+    set wildignorecase
+endif
+
+set path=**
+
+set ignorecase
 set smartcase
-set smarttab
-set timeout
-set timeoutlen=100
-set termguicolors
-set wildmenu
 
-colorscheme habamax
+if has("extra_search")
+    set hlsearch
+    set incsearch
+endif
 
-syntax on
+set autoindent
+set tabstop=4
+set shiftwidth=4
+set softtabstop=4
+set expandtab
 
-nmap <leader>e :Ex<cr>
+set history=1000
+set undolevels=1000
+set nobackup
+set lazyredraw
 
-" better indenting
-vmap < <gv
-vmap > >gv
+if exists("*mkdir") && !isdirectory(expand("~/.vim/swap"))
+    silent! call mkdir(expand("~/.vim/swap"), "p", 0700)
+endif
 
-" quit
-nmap <leader>qq :qa<cr>
+if isdirectory(expand("~/.vim/swap"))
+    set directory=~/.vim/swap//,.
+endif
 
-" move between windows
-nmap <c-h> <c-w>h
-nmap <c-j> <c-w>j
-nmap <c-k> <c-w>k
-nmap <c-l> <c-w>l
+set noerrorbells
+set novisualbell
 
-" resize windows
-nmap <c-up> :resize +2<cr>
-nmap <c-down> :resize -2<cr>
-nmap <c-left> :vertical resize +2<cr>
-nmap <c-right> :vertical resize -2<cr>
+set laststatus=2
 
-" windows and splits
-nmap <leader>ww <c-w>p
-nmap <leader>wd <c-w>c
-nmap <leader>w- <c-w>s
-nmap <leader>w\| <c-w>v
-nmap <leader>- <c-w>s
-nmap <leader>\| <c-w>v
+if has("termguicolors") && $COLORTERM =~# 'truecolor\|24bit'
+    set termguicolors
+elseif &term =~? '256color\|kitty\|alacritty\|foot\|wezterm'
+    set t_Co=256
+endif
 
-" buffers
-nmap <s-h> :bprevious<cr>
-nmap <s-l> :bnext<cr>
-nmap [b :bprevious<cr>
-nmap ]b  :bnext<cr>
-nmap <leader>bd :bd<cr>
-nmap <leader>bb :e #<cr>
-nmap <leader>` :e #<cr>
+set hidden
+set autoread
+set scrolloff=3
+set sidescrolloff=5
+set splitbelow
+set splitright
+set listchars=tab:>\ ,trail:-,extends:>,precedes:<,nbsp:+
+set ttimeout
+set ttimeoutlen=100
 
-" terminals
-" tmap <esc><esc> <c-\\><c-n>
-" tmap <c-h> :wincmd h<cr>
-" tmap <c-j> :wincmd j<cr>
-" tmap <c-k> :wincmd k<cr>
-" tmap <c-l> :wincmd l<cr>
-" tmap <c-/> :close<cr>
+if v:version > 703
+    set formatoptions+=j
+endif
 
-" quickfix nav
-nmap [q :cprev<cr>
-nmap ]q :cnext<cr>
+" =============================================================================
+" Grep
+" =============================================================================
+set grepprg=grep\ -RIn\ --exclude-dir=.git\ $*\ /dev/null
 
-nmap <leader>e :Lexplore<cr>
+command! -nargs=+ Grep silent grep! <args> | cwindow | redraw!
 
-function! NetrwRemoveRecursive()
-  if &filetype ==# "netrw"
-    cnoremap <buffer> <cr> rm -r<cr>
-    normal mu
-    normal mf
-    try
-      normal mx
-    catch
-      echo "Canceled"
-    endtry
-    cunmap <buffer> <cr>
-  endif
-endfunction!
+" =============================================================================
+" Keymaps
+" =============================================================================
 
-function! NetrwMapping()
-  nmap <buffer> L<cr>:Lexplore<cr>
-  nmap <buffer> H u
-  nmap <buffer> h -^
-  nmap <buffer> l <cr>
-  nmap <buffer> <tab> mf
-  nmap <buffer> <s-tab> mF
-  nmap <buffer> ff %
-  nmap <buffer> fc mc
-  nmap <buffer> fx mm
-  nmap <buffer> f; mx
-  nmap <buffer> fl :echo join(netrw#Expose("netrwmarfilelist"), "\n")<cr>
-  nmap <buffer> fg mtfq
-  nmap <buffer> FF :call NetrwRemoveRecursive()<cr>
-  nmap <buffer> P <c-w>z
-endfunction
+let mapleader = " "
 
-augroup netrw_mapping
-  autocmd!
-  autocmd filetype netrw call NetrwMapping()
-augroup END
+nnoremap <esc><esc> :noh<CR>
+
+nnoremap <leader>/ :Grep<space>
+nnoremap ]q :cnext<CR>
+nnoremap [q :cprevious<CR>
+nnoremap ]Q :clast<CR>
+nnoremap [Q :cfirst<CR>
