@@ -1,0 +1,27 @@
+# machine.toml: untracked per-machine override, see README.md#machine-local-overrides
+[general]
+import = [
+    "~/.config/alacritty/catppuccin-mocha.toml",
+    "~/.config/alacritty/machine.toml",
+]
+
+[env]
+# default TERM=alacritty lacks terminfo on most remote hosts
+TERM = "xterm-256color"
+
+[window]
+padding = { x = 6, y = 4 }
+dynamic_padding = true
+
+[scrolling]
+history = 10000
+
+[selection]
+save_to_clipboard = true
+
+[keyboard]
+bindings = [
+    { key = "N", mods = "Control|Shift", action = "CreateNewWindow" },
+    { key = "W", mods = "Control|Shift", action = "Quit" }, # closes focused window
+    { key = "K", mods = "Control|Shift", action = "ClearHistory" },
+]

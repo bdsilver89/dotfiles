@@ -1,0 +1,21 @@
+# Global mise tools. `mise use -g` writes here through the symlink, so anything
+# it adds shows up as a normal diff in this repo.
+#
+# Machine-local additions go in ~/.config/mise/conf.d/*.toml, which mise merges
+# with this file and which is not tracked.
+[tools]
+neovim = "nightly"
+starship = "latest"
+lazygit = "latest"
+workmux = "latest"
+
+# Prefer these over the distro packages: identical versions everywhere, and
+# RHEL rebuilds have no gh package and name fd "fd-find".
+fd = "latest"
+gh = "latest"
+
+node = "lts"
+python = "3.14"
+rust = "stable"
+opencode = "latest"
+pi = "latest"

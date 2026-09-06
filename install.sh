@@ -19,6 +19,7 @@ ROLE=""                 # desktop | headless
 CONFLICT_MODE="prompt"  # prompt | backup | skip | overwrite
 CONFLICT_ALL=""         # set by the [B]/[O]/[S] menu choices
 RESOLUTION=""           # out-param of resolve_conflict
+BAK=""                  # out-param of backup_path
 ONLY=""                 # run a single phase
 DRY_RUN=0
 VERBOSE=0
@@ -84,9 +85,11 @@ tilde() { printf '%s\n' "${1/#$HOME/~}"; }
 # =============================================================================
 # Utils
 # =============================================================================
+# In dry-run the per-command narration is redundant with the Linked/Backed up
+# lines the callers already print, so it is verbose-only.
 run() {
     if [ "$DRY_RUN" -eq 1 ]; then
-        note "Would run" "$*"
+        vsay "Would run" "$*"
         return 0
     fi
     "$@"
@@ -94,7 +97,7 @@ run() {
 
 quietly() {
     if [ "$DRY_RUN" -eq 1 ]; then
-        note "Would run" "$*"
+        vsay "Would run" "$*"
         return 0
     fi
 
@@ -243,13 +246,14 @@ bootstrap_repo() {
 # Packages
 # =============================================================================
 
-PKGS_CORE="git tmux fzf ripgrep fd bat eza zoxide jq zsh gh"
-PKGS_MISE="neovim starship lazygit workmux"
-PKGS_MISE_RUNTIMES="node@lts python@3.14 rust@stable opencode@latest pi@latest"
+PKGS_CORE="git tmux fzf ripgrep bat eza zoxide jq zsh"
 
-CASKS_DARWIN="alacritty ghostty visual-studio-code zed"
-PKGS_DESKTOP_APT="alacritty"
-PKGS_DESKTOP_DNF="alacritty"
+# The mise tool list is not here: it lives in home/.config/mise/config.toml,
+# which is symlinked into place. Only the one platform conditional is generated,
+# by write_mise_platform_config below.
+
+# macOS-only packages live in ./Brewfile, applied with `brew bundle`.
+PKGS_DESKTOP_LINUX="alacritty"
 
 GH_EXTENSIONS="dlvhdr/gh-dash dlvhdr/gh-enhance github/gh-stack"
 
@@ -263,14 +267,6 @@ zsh-syntax-highlighting|https://github.com/zsh-users/zsh-syntax-highlighting.git
 
 CATPPUCCIN_TMUX_VERSION="v2.3.0"
 VIM_TMUX_NAVIGATOR_REF="master"
-
-pkg_name() {
-    case "$PKG:$1" in
-        apt:fd) echo "fd-find" ;;
-        dnf:fd) echo "fd-find" ;;
-        *)      echo "$1" ;;
-    esac
-}
 
 # eza is not in EPEL, so the RHEL rebuilds get it from mise instead.
 pkg_skipped() {
@@ -307,7 +303,7 @@ resolved_core() {
     local p out=""
     for p in $PKGS_CORE; do
         pkg_skipped "$p" && continue
-        out="$out $(pkg_name "$p")"
+        out="$out $p"
     done
     echo "${out# }"
 }
@@ -348,14 +344,14 @@ packages_darwin() {
         warn "brew install failed"
     fi
 
-    if [ "$ROLE" = "desktop" ]; then
-        if quietly brew install --cask $CASKS_DARWIN; then
-            say "Installed" "$(summarize_list 8 $CASKS_DARWIN)"
-        else
-            warn "cask install failed"
-        fi
+    # Brewfile is casks only today, so headless skips it. If mac-only formulae
+    # are ever added there, this needs to run in both roles.
+    if [ "$ROLE" != "desktop" ]; then
+        vsay "Skipped" "Brewfile (headless)"
+    elif quietly env HOMEBREW_NO_AUTO_UPDATE=1 brew bundle --file="$REPO_DIR/Brewfile"; then
+        say "Installed" "Brewfile"
     else
-        vsay "Skipped" "desktop casks (headless)"
+        warn "brew bundle failed"
     fi
     return 0
 }
@@ -371,9 +367,9 @@ packages_debian() {
         warn "apt-get install failed"
     fi
 
-    if [ "$ROLE" = "desktop" ] && [ -n "$PKGS_DESKTOP_APT" ]; then
-        if quietly sudo apt-get install -y $PKGS_DESKTOP_APT; then
-            say "Installed" "$PKGS_DESKTOP_APT"
+    if [ "$ROLE" = "desktop" ] && [ -n "$PKGS_DESKTOP_LINUX" ]; then
+        if quietly sudo apt-get install -y $(available_packages $PKGS_DESKTOP_LINUX); then
+            say "Installed" "$PKGS_DESKTOP_LINUX"
         else
             warn "desktop package install failed"
         fi
@@ -394,24 +390,14 @@ packages_debian() {
 packages_rhel() {
     if is_rhel_rebuild; then
         # Most of PKGS_CORE lives in EPEL and several EPEL packages need CRB.
-        # Repo names differ per rebuild, so failures here are not fatal.
+        # Repo names differ per rebuild, so failures here are not fatal. gh no
+        # longer needs its own repo here: it comes from mise.
         quietly sudo dnf install -y dnf-plugins-core || warn "dnf-plugins-core failed"
         rpm -q epel-release >/dev/null 2>&1 || \
             quietly sudo dnf install -y \
                 "https://dl.fedoraproject.org/pub/epel/epel-release-latest-$(rpm -E %rhel).noarch.rpm"
         quietly sudo dnf config-manager --set-enabled crb || true
         say "Enabled" "EPEL and CRB"
-
-        # dnf5 (RHEL 10) renamed the subcommand, so try both spellings.
-        if quietly sudo dnf config-manager --add-repo \
-                https://cli.github.com/packages/rpm/gh-cli.repo ||
-           quietly sudo dnf config-manager addrepo --overwrite \
-                --from-repofile=https://cli.github.com/packages/rpm/gh-cli.repo
-        then
-            say "Added" "gh-cli repo"
-        else
-            warn "could not add gh-cli repo"
-        fi
     fi
 
     local core
@@ -423,9 +409,9 @@ packages_rhel() {
     fi
     is_rhel_rebuild && vsay "Deferred" "eza to mise (not in EPEL)"
 
-    if [ "$ROLE" = "desktop" ] && [ -n "$PKGS_DESKTOP_DNF" ]; then
-        if quietly sudo dnf install -y $PKGS_DESKTOP_DNF; then
-            say "Installed" "$PKGS_DESKTOP_DNF"
+    if [ "$ROLE" = "desktop" ] && [ -n "$PKGS_DESKTOP_LINUX" ]; then
+        if quietly sudo dnf install -y $(available_packages $PKGS_DESKTOP_LINUX); then
+            say "Installed" "$PKGS_DESKTOP_LINUX"
         else
             warn "desktop package install failed"
         fi
@@ -444,52 +430,51 @@ install_mise() {
     # Debian and RHEL; the distro packages are absent or stale.
     if [ -x "$HOME/.local/bin/mise" ]; then
         vsay "Present" "mise"
+    elif quietly env MISE_INSTALL_PATH="$HOME/.local/bin/mise" \
+        sh -c 'curl -fsSL https://mise.run | sh'
+    then
+        say "Installed" "mise"
     else
-        if quietly env MISE_INSTALL_PATH="$HOME/.local/bin/mise" \
-            sh -c 'curl -fsSL https://mise.run | sh'
-        then
-            say "Installed" "mise"
-        else
-            warn "mise install failed"
-        fi
+        warn "mise install failed"
     fi
 
     export PATH="$HOME/.local/bin:$PATH"
     have mise || { warn "mise unavailable, skipping"; return 0; }
 
-    write_mise_config
+    write_mise_platform_config
+
+    # The tool list comes from ~/.config/mise/config.toml, symlinked by the
+    # links phase, so there is nothing to pass here.
     if quietly mise install; then
-        say "Installed" "$(summarize_list 8 $PKGS_MISE $PKGS_MISE_RUNTIMES)"
+        say "Installed" "mise tools"
     else
         warn "mise install reported failures"
     fi
     return 0
 }
 
-# Generated, not symlinked: derived from the arrays above.
-write_mise_config() {
-    local dest="$XDG_CONFIG_HOME/mise/config.toml" tool spec
+# The one thing the tracked config.toml cannot express. eza has no EPEL package,
+# and mise can only build it from source (cargo:eza), so it is worth doing on
+# the RHEL rebuilds and not worth it anywhere else. Written as a conf.d drop-in,
+# which mise merges with config.toml.
+write_mise_platform_config() {
+    local dest="$XDG_CONFIG_HOME/mise/conf.d/00-platform.toml"
 
+    if ! is_rhel_rebuild; then
+        [ -e "$dest" ] && run rm -f "$dest"
+        return 0
+    fi
     if [ "$DRY_RUN" -eq 1 ]; then
         note "Would write" "$(tilde "$dest")"
         return 0
     fi
 
     mkdir -p "$(dirname "$dest")"
-    {
-        echo "# Generated by install.sh; edit PKGS_MISE / PKGS_MISE_RUNTIMES there."
-        echo "[tools]"
-        for tool in $PKGS_MISE; do
-            echo "$tool = \"latest\""
-        done
-        if is_rhel_rebuild; then
-            echo "eza = \"latest\""
-        fi
-        for spec in $PKGS_MISE_RUNTIMES; do
-            echo "${spec%%@*} = \"${spec#*@}\""
-        done
-    } >"$dest"
-
+    cat >"$dest" <<'''EOF'''
+# Generated by install.sh. eza has no EPEL package on the RHEL rebuilds.
+[tools]
+eza = "latest"
+EOF
     say "Wrote" "$(tilde "$dest")"
 }
 
@@ -505,10 +490,29 @@ add_link() { LINKS+=("$1|${2:-$1}"); }
 # only for directories with no machine-local content.
 add_tree() { add_link "$1"; }
 
+# Link each file, recreating the repo's directory structure as real
+# directories. The safest granularity: live content can coexist at any depth.
+# For directories that hold generated state or a whole project of their own
+# (~/.pi's sessions and auth, ~/.config/opencode's npm tree, nvim's pack lock).
+add_files() {
+    local rel="$1" root="$REPO_DIR/home/$1" f
+    if [ ! -d "$root" ]; then
+        warn "missing in repo: home/$rel"
+        return 0
+    fi
+    while IFS= read -r f; do
+        [ -n "$f" ] || continue
+        add_link "${f#$REPO_DIR/home/}"
+    done <<EOF
+$(find "$root" \( -name node_modules -o -name .git \) -prune -o \
+       -type f ! -name .DS_Store ! -name .gitignore -print)
+EOF
+}
+
 # Link each entry, leaving the directory itself real, so machine-local files
-# (alacritty machine.toml, wezterm machine.lua, work-only skills) sit beside
-# the links and never enter the repo. Adding a file to one of these in the
-# repo needs another --only=links run.
+# (alacritty machine.toml, wezterm machine.lua, mise conf.d) sit beside the
+# links and never enter the repo. Adding a file to one of these in the repo
+# needs another --only=links run.
 add_entries() {
     local rel="$1" f name
     for f in "$REPO_DIR/home/$rel"/* "$REPO_DIR/home/$rel"/.[!.]*; do
@@ -529,13 +533,25 @@ build_link_map() {
         add_link "$f"
     done
 
-    for f in nvim ghostty workmux zsh sh vim tmux; do
+    # Directories the repo owns outright.
+    for f in ghostty workmux zsh; do
         add_tree ".config/$f"
     done
 
-    # Machine-local overrides live in these two.
+    # Machine-local overrides live in these: alacritty machine.toml,
+    # wezterm machine.lua, mise conf.d/*.toml.
     add_entries ".config/alacritty"
     add_entries ".config/wezterm"
+    add_entries ".config/mise"
+
+    # These hold live content the repo does not track, at varying depths:
+    # nvim's pack lock and notes, a machine-local 30-tools.sh, opencode's own
+    # npm project, and ~/.pi's auth, sessions and skills.
+    add_files ".config/nvim"
+    add_files ".config/sh"
+    add_files ".config/tmux"
+    add_files ".config/opencode"
+    add_files ".pi"
 
     # .config itself is shared, so single files in it are linked individually.
     add_link ".config/starship.toml"
@@ -547,12 +563,29 @@ build_link_map() {
 }
 
 # Adjacent, like the old bootstrap.sh: the backup sits next to what it replaced
-# instead of in a directory you have to go find.
+# instead of in a directory you have to go find. Sets BAK rather than echoing,
+# so log output cannot end up captured as the path.
 backup_path() {
-    local dst="$HOME/$1" bak="$HOME/$1.backup"
-    [ -e "$bak" ] && bak="$bak.$(date +%Y%m%d-%H%M%S)"
-    run mv "$dst" "$bak"
-    printf '%s\n' "$bak"
+    local dst="$HOME/$1"
+    BAK="$HOME/$1.backup"
+    [ -e "$BAK" ] && BAK="$BAK.$(date +%Y%m%d-%H%M%S)"
+    run mv "$dst" "$BAK"
+}
+
+# -r is not enough: /dev/tty can exist and still fail to open (no controlling
+# terminal), which is exactly the case under a pipeline or a CI runner.
+has_tty() {
+    { : >/dev/tty; } 2>/dev/null
+}
+
+same_content() {
+    if [ -d "$1" ] && [ -d "$2" ]; then
+        diff -rq "$1" "$2" >/dev/null 2>&1
+    elif [ -f "$1" ] && [ -f "$2" ]; then
+        cmp -s "$1" "$2"
+    else
+        return 1
+    fi
 }
 
 # Sets RESOLUTION rather than echoing: a $() subshell would discard CONFLICT_ALL.
@@ -561,7 +594,7 @@ resolve_conflict() {
 
     if [ -n "$CONFLICT_ALL" ]; then RESOLUTION="$CONFLICT_ALL"; return 0; fi
     if [ "$CONFLICT_MODE" != "prompt" ]; then RESOLUTION="$CONFLICT_MODE"; return 0; fi
-    if [ ! -r /dev/tty ]; then RESOLUTION="backup"; return 0; fi
+    has_tty || { RESOLUTION="backup"; return 0; }
 
     if [ -L "$dst" ]; then kind="symlink -> $(readlink "$dst")"
     elif [ -d "$dst" ]; then kind="directory"
@@ -591,10 +624,18 @@ resolve_conflict() {
             S) CONFLICT_ALL="skip"; RESOLUTION="skip"; return 0 ;;
             q) RESOLUTION="quit"; return 0 ;;
             d)
+                local out
                 if [ -d "$dst" ] || [ -d "$src" ]; then
-                    diff -ru "$dst" "$src" >/dev/tty 2>&1 || true
+                    out="$(diff -rq "$dst" "$src" 2>&1 || true)"
                 else
-                    diff -u "$dst" "$src" >/dev/tty 2>&1 || true
+                    out="$(diff -u "$dst" "$src" 2>&1 || true)"
+                fi
+                if [ -z "$out" ]; then
+                    printf '%*s (no differences)\n' "$GUTTER" "" >/dev/tty
+                else
+                    printf '%s\n' "$out" | head -n 60 >/dev/tty
+                    [ "$(printf '%s\n' "$out" | wc -l)" -gt 60 ] &&
+                        printf '%*s ... truncated\n' "$GUTTER" "" >/dev/tty
                 fi
                 ;;
             *) printf '%*s unrecognised choice\n' "$GUTTER" "" >/dev/tty ;;
@@ -614,12 +655,23 @@ link_one() {
         return 0
     fi
 
+    # Same bytes as the repo copy is not a conflict worth asking about: the
+    # content is not lost by replacing it, it is what we are linking to.
+    if { [ -e "$dst" ] && [ ! -L "$dst" ]; } && same_content "$src" "$dst"; then
+        run rm -rf "$dst"
+        ensure_dir "$(dirname "$dst")"
+        run ln -s "$src" "$dst"
+        N_LINKED=$((N_LINKED + 1))
+        vsay "Linked" "~/$rel (was identical)"
+        return 0
+    fi
+
     if [ -e "$dst" ] || [ -L "$dst" ]; then
         resolve_conflict "$rel" "$src"
         case "$RESOLUTION" in
             quit) die "aborted at ~/$rel" ;;
             skip) N_UNCHANGED=$((N_UNCHANGED + 1)); vsay "Skipped" "~/$rel"; return 0 ;;
-            backup) bak="$(backup_path "$rel")" ;;
+            backup) backup_path "$rel"; bak="$BAK" ;;
             overwrite) run rm -rf "$dst" ;;
         esac
     fi
@@ -887,6 +939,47 @@ link_skills() {
     return 0
 }
 
+# Removes backups whose content the repo already has. Driven by the link map
+# rather than a filesystem scan, so it can only ever touch paths this script
+# created, and needs no find(1) time predicates (BSD find rejects GNU-style
+# relative ones anyway).
+prune_backups() {
+    phase "Backups"
+    build_link_map
+
+    local record src rel bak n_same=0 n_diff=0
+    local kept=""
+    for record in "${LINKS[@]}"; do
+        src="$REPO_DIR/home/${record%%|*}"
+        rel="${record#*|}"
+        for bak in "$HOME/$rel".backup "$HOME/$rel".backup.*; do
+            [ -e "$bak" ] || continue
+            if same_content "$src" "$bak"; then
+                run rm -rf "$bak"
+                n_same=$((n_same + 1))
+                vsay "Removed" "$(tilde "$bak")"
+            else
+                n_diff=$((n_diff + 1))
+                kept="$kept
+$(tilde "$bak")"
+            fi
+        done
+    done
+
+    if [ "$n_same" -gt 0 ]; then
+        say "Removed" "$(plural "$n_same" "redundant backup")"
+    else
+        note "Removed" "nothing; no redundant backups"
+    fi
+    if [ "$n_diff" -gt 0 ]; then
+        say "Kept" "$(plural "$n_diff" backup) differing from the repo"
+        printf '%s\n' "$kept" | while IFS= read -r bak; do
+            [ -n "$bak" ] && cont "$C_DIM$bak$C_RESET"
+        done
+    fi
+    return 0
+}
+
 update_repo() {
     phase "Update"
     [ -d "$REPO_DIR/.git" ] || { warn "$(tilde "$REPO_DIR") is not a git repo"; return 0; }
@@ -926,7 +1019,10 @@ Usage: install.sh [options]
                           backup writes ~/<file>.backup beside the original
     --only=PHASE          run one phase: packages mise links externals
                           zsh-plugins vendor gh claude skills rtk
-                          or update (git pull; never runs by default)
+                          or, never run by default:
+                            update         git pull in the repo
+                            prune-backups  delete *.backup files whose content
+                                           the repo already has
     --dry-run             print what would run without running it
     -v, --verbose         show unchanged items and subprocess output
     -h, --help            print this message
@@ -958,7 +1054,7 @@ parse_args() {
 PHASES="packages mise links externals zsh-plugins vendor gh claude skills rtk"
 
 # Opt-in only: an automatic pull would clobber uncommitted local work.
-OPTIN_PHASES="update"
+OPTIN_PHASES="update prune-backups"
 
 run_phase() {
     local name="$1"; shift
@@ -997,7 +1093,12 @@ main() {
 
     banner "$OS/$(uname -m) - $ROLE - $(tilde "$REPO_DIR")$([ "$DRY_RUN" -eq 1 ] && echo ' - dry run')"
 
-    run_phase update      update_repo
+        # mise-managed tools (gh, fd) live in the shim dir, which later phases and
+    # --only=gh both need on PATH.
+    export PATH="$HOME/.local/bin:$XDG_DATA_HOME/mise/shims:$PATH"
+
+    run_phase update        update_repo
+    run_phase prune-backups prune_backups
     run_phase packages    install_packages
     run_phase mise        install_mise
     run_phase links       link_dotfiles
