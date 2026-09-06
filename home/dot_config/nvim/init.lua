@@ -171,6 +171,7 @@ require("nvim-treesitter-textobjects").setup({
 })
 
 local servers = {
+  bashls = {},
   clangd = { mason = false },
   rust_analyzer = { mason = false },
   lua_ls = {
