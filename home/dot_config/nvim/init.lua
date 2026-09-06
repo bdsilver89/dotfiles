@@ -83,6 +83,9 @@ vim.keymap.set("n", "N", "Nzzzv")
 
 vim.keymap.set("n", "<esc>", "<cmd>noh<cr>")
 
+vim.keymap.set("n", "<leader>q", "<cmd>q<cr>")
+vim.keymap.set("n", "<leader>w", "<cmd>w<cr>")
+
 vim.keymap.set("x", "<", "<gv")
 vim.keymap.set("x", ">", ">gv")
 
@@ -120,7 +123,6 @@ vim.api.nvim_create_autocmd("FileType", {
   group = vim.api.nvim_create_augroup("config_qclose", { clear = true }),
   pattern = {
     "checkhealth",
-    "directory",
     "git",
     "gitsigns-blame",
     "help",
@@ -151,8 +153,21 @@ vim.schedule(function()
   vim.diagnostic.config({
     update_in_insert = false,
     severity_sort = true,
+    float = { border = "rounded", source = "if_many" },
+    underline = { severity = { min = vim.diagnostic.severity.WARN } },
+
     virtual_text = true,
     virtual_lines = false,
+
+    jump = {
+      on_jump = function(_, bufnr)
+        vim.diagnostic.open_float({
+          bufnr = bufnr,
+          scope = "cursor",
+          focus = false,
+        })
+      end,
+    },
   })
 
   local servers = vim.iter(vim.api.nvim_get_runtime_file("lsp/*.lua", true))
@@ -166,6 +181,30 @@ vim.api.nvim_create_autocmd("LspAttach", {
     local client = vim.lsp.get_client_by_id(ev.data.client_id)
     if not client then
       return
+    end
+
+    local function map(lhs, rhs, opts, mode)
+      opts = type(opts) == "string" and { desc = opts } or opts
+      opts.buffer = ev.buf
+      vim.keymap.set(mode, lhs, rhs, opts)
+    end
+
+    if client:supports_method("textDocument/documentColor") then
+      vim.lsp.document_color.enable(true, { bufnr = ev.buf })
+    end
+
+    if client:supports_method("textDocument/documentHighlight") then
+      local group = vim.api.nvim_create_augroup("config_lsphighlight", { clear = false })
+      vim.api.nvim_create_autocmd({ "CursorHold", "InsertLeave" }, {
+        group = group,
+        buffer = ev.buf,
+        callback = vim.lsp.buf.document_highlight,
+      })
+      vim.api.nvim_create_autocmd({ "CursorMoved", "InsertLeave", "BufLeave" }, {
+        group = group,
+        buffer = ev.buf,
+        callback = vim.lsp.buf.clear_references,
+      })
     end
   end
 })

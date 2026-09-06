@@ -11,12 +11,12 @@ vim.schedule(function()
   require("mini.pairs").setup({})
   require("mini.surround").setup({})
 
-  local indentscope = require("mini.indentscope")
-  indentscope.setup({
-    draw = {
-      animation = indentscope.gen_animation.none()
-    }
-  })
+  -- local indentscope = require("mini.indentscope")
+  -- indentscope.setup({
+  --   draw = {
+  --     animation = indentscope.gen_animation.none()
+  --   }
+  -- })
 
   local hipatterns = require("mini.hipatterns")
   hipatterns.setup({

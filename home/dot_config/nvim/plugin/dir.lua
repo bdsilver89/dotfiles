@@ -195,7 +195,14 @@ end
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "directory",
   callback = function(ev)
+    -- `:edit` leaves the previous listing hidden; wipe it so navigating with
+    -- <cr>/- does not pile up one buffer per directory visited.
+    vim.bo[ev.buf].bufhidden = "wipe"
+
     local opts = { buffer = ev.buf, silent = true }
+    vim.keymap.set("n", "q", function()
+      pcall(vim.api.nvim_buf_delete, ev.buf, { force = true })
+    end, opts)
     vim.keymap.set("n", "a", create, opts)
     vim.keymap.set("n", "r", rename, opts)
     vim.keymap.set({ "n", "x" }, "D", delete, opts)

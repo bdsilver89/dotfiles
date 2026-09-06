@@ -1,5 +1,5 @@
 vim.pack.add({
-  { src = "https://github.com/saghen/blink.cmp", version = vim.version.range("^1") },
+  { src = "https://github.com/saghen/blink.cmp", version = vim.version.range("1.*") },
 }, { load = false })
 
 vim.api.nvim_create_autocmd("InsertEnter", {
@@ -19,8 +19,19 @@ vim.api.nvim_create_autocmd("InsertEnter", {
       },
       completion = {
         documentation = { auto_show = true },
+        menu = {
+          scrollbar = false,
+          draw = {
+            gap = 2,
+            columns = {
+              { "kind_icon", "kind", gap = 1 },
+              { "label", "label_description", gap = 1 },
+            }
+          }
+        },
       },
       fuzzy = { implementation = "prefer_rust" },
+      signature = { enabled = true },
     })
   end,
 })
