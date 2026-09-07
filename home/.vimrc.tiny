@@ -1,0 +1,22 @@
+set nocompatible
+set backspace=indent,eol,start
+set number
+set ruler
+set showcmd
+set laststatus=3
+set incsearch
+set ignorecase
+set smartcase
+set autoindent
+set expandtab
+set tabstop=4
+set softtabstop=4
+set shiftwidth=4
+set scrolloff=8
+set wildmenu
+set wildmode=longest:full,full
+set path=.,,**
+set ttimeout
+set ttimeoutlen=50
+syntax on
+filetype plugin indent on
