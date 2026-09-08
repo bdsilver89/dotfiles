@@ -265,8 +265,9 @@ rtk|rtk|https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.s
 ZSH_PLUGINS="zsh-autosuggestions|https://github.com/zsh-users/zsh-autosuggestions.git|v0.7.1
 zsh-syntax-highlighting|https://github.com/zsh-users/zsh-syntax-highlighting.git|0.8.0"
 
-CATPPUCCIN_TMUX_VERSION="v2.3.0"
-VIM_TMUX_NAVIGATOR_REF="master"
+# The plugin list itself lives in home/.tmux.conf as @plugin lines; tpm reads
+# it from there, so only tpm needs bootstrapping.
+TPM_URL="https://github.com/tmux-plugins/tpm.git"
 
 # eza is not in EPEL, so the RHEL rebuilds get it from mise instead.
 pkg_skipped() {
@@ -734,47 +735,53 @@ EOF
 # Externals
 # =============================================================================
 
-fetch_externals() {
-    phase "Externals"
+install_tmux_plugins() {
+    phase "tmux plugins"
+    have tmux || { warn "tmux not found, skipping"; return 0; }
 
-    local tmux_data="$XDG_DATA_HOME/tmux"
-    ensure_dir "$tmux_data/plugins"
+    # Not $XDG_DATA_HOME: tpm reads its path from the tmux environment, which
+    # holds no shell expansion, so .tmux.conf can only name a fixed path.
+    local dir="$HOME/.local/share/tmux/plugins"
+    local tpm="$dir/tpm"
+    ensure_dir "$dir"
 
-    local catppuccin="$tmux_data/plugins/catppuccin"
-    local stamp="$catppuccin/.version"
-
-    if [ -f "$stamp" ] && [ "$(cat "$stamp" 2>/dev/null)" = "$CATPPUCCIN_TMUX_VERSION" ]; then
-        vsay "Current" "catppuccin/tmux $CATPPUCCIN_TMUX_VERSION"
-    elif [ "$DRY_RUN" -eq 1 ]; then
-        note "Would fetch" "catppuccin/tmux $CATPPUCCIN_TMUX_VERSION"
-    else
-        local tmp
-        tmp="$(mktemp -d)"
-        if curl -fsSL \
-            "https://github.com/catppuccin/tmux/archive/refs/tags/$CATPPUCCIN_TMUX_VERSION.tar.gz" \
-            | tar -xz -C "$tmp" --strip-components=1
-        then
-            rm -rf "$catppuccin"
-            mv "$tmp" "$catppuccin"
-            echo "$CATPPUCCIN_TMUX_VERSION" >"$stamp"
-            say "Fetched" "catppuccin/tmux $CATPPUCCIN_TMUX_VERSION"
-        else
-            rm -rf "$tmp"
-            warn "catppuccin download failed"
+    # Left behind by the pre-tpm installs, which fetched tarballs by hand.
+    local stale
+    for stale in "$dir/catppuccin" "$HOME/.local/share/tmux/vim-tmux-navigator.tmux"; do
+        if [ -e "$stale" ] && [ ! -d "$stale/.git" ]; then
+            run rm -rf "$stale"
+            say "Removed" "$(tilde "$stale")"
         fi
+    done
+
+    if [ -d "$tpm/.git" ]; then
+        vsay "Present" "tpm"
+    elif [ "$DRY_RUN" -eq 1 ]; then
+        note "Would clone" "tpm"
+    elif quietly git clone --depth 1 "$TPM_URL" "$tpm"; then
+        say "Cloned" "tpm"
+    else
+        warn "tpm clone failed"
+        return 0
     fi
 
-    local nav="$tmux_data/vim-tmux-navigator.tmux"
-    if [ -f "$nav" ]; then
-        vsay "Present" "vim-tmux-navigator"
-    elif quietly curl -fsSL -o "$nav" \
-        "https://raw.githubusercontent.com/christoomey/vim-tmux-navigator/$VIM_TMUX_NAVIGATOR_REF/vim-tmux-navigator.tmux"
-    then
-        run chmod +x "$nav"
-        say "Fetched" "vim-tmux-navigator"
-    else
-        warn "vim-tmux-navigator download failed"
+    # install_plugins reads the plugin list from a tmux server it starts itself.
+    # TMUX_TMPDIR gives it a private one: the session the installer is being run
+    # from would answer out of an environment predating this config.
+    if [ "$DRY_RUN" -eq 1 ]; then
+        note "Would install" "tmux plugins"
+        return 0
     fi
+
+    local socket
+    socket="$(mktemp -d)"
+    if quietly env TMUX_TMPDIR="$socket" "$tpm/bin/install_plugins"; then
+        say "Installed" "tmux plugins"
+    else
+        warn "tmux plugin install failed"
+    fi
+    env TMUX_TMPDIR="$socket" tmux kill-server >/dev/null 2>&1 || true
+    rm -rf "$socket"
     return 0
 }
 
@@ -1017,7 +1024,7 @@ Usage: install.sh [options]
     --headless            skip GUI applications
     --on-conflict=MODE    prompt (default) | backup | skip | overwrite
                           backup writes ~/<file>.backup beside the original
-    --only=PHASE          run one phase: packages mise links externals
+    --only=PHASE          run one phase: packages mise links tmux-plugins
                           zsh-plugins vendor gh claude skills rtk
                           or, never run by default:
                             update         git pull in the repo
@@ -1051,7 +1058,7 @@ parse_args() {
     esac
 }
 
-PHASES="packages mise links externals zsh-plugins vendor gh claude skills rtk"
+PHASES="packages mise links tmux-plugins zsh-plugins vendor gh claude skills rtk"
 
 # Opt-in only: an automatic pull would clobber uncommitted local work.
 OPTIN_PHASES="update prune-backups"
@@ -1102,7 +1109,7 @@ main() {
     run_phase packages    install_packages
     run_phase mise        install_mise
     run_phase links       link_dotfiles
-    run_phase externals   fetch_externals
+    run_phase tmux-plugins install_tmux_plugins
     run_phase zsh-plugins install_zsh_plugins
     run_phase vendor      install_vendor
     run_phase gh          install_gh_extensions
