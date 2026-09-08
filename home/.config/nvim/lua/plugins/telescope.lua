@@ -30,6 +30,11 @@ telescope.setup({
   },
 })
 
+local fzf = vim.pack.get({ "telescope-fzf-native.nvim" })[1]
+if fzf and vim.fn.filereadable(fzf.path .. "/build/libfzf.so") == 0 and vim.fn.executable("make") == 1 then
+  vim.system({ "make" }, { cwd = fzf.path }):wait()
+end
+
 telescope.load_extension("fzf")
 telescope.load_extension("ui-select")
 telescope.load_extension("frecency")
