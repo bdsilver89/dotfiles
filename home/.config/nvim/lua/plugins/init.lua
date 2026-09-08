@@ -1,3 +1,15 @@
+vim.api.nvim_create_autocmd("PackChanged", {
+  callback = function(ev)
+    local name, kind = ev.data.spec.name, ev.data.kind
+    if kind ~= "install" and kind ~= "update" then return end
+    if name == "telescope-fzf-native.nvim" and vim.fn.executable("make") == 1 then
+      vim.system({ "make" }, { cwd = ev.data.path }):wait()
+    elseif name == "nvim-treesitter" then
+      vim.cmd("TSUpdate")
+    end
+  end,
+})
+
 vim.pack.add({
   { src = "https://github.com/catppuccin/nvim", name = "catppuccin" },
   "https://github.com/lewis6991/gitsigns.nvim",
