@@ -39,18 +39,15 @@ telescope.load_extension("fzf")
 telescope.load_extension("ui-select")
 telescope.load_extension("frecency")
 
-vim.keymap.set("n", "<leader><space>", function()
-  builtin.find_files({ cwd = vim.fn.getcwd() })
-end)
-vim.keymap.set("n", "<leader>/", function()
-  builtin.live_grep({ cwd = vim.fn.getcwd() })
-end)
-vim.keymap.set("n", "<leader>:", function()
-  builtin.command_history()
-end)
-vim.keymap.set("n", "<leader>,", function()
-  builtin.buffers()
-end)
+vim.keymap.set("n", "<leader><space>", "<cmd>Telescope find_files<cr>")
+vim.keymap.set("n", "<leader>/", "<cmd>Telescope live_grep<cr>")
+vim.keymap.set("n", "<leader>:", "<cmd>Telescope command_history<cr>")
+vim.keymap.set("n", "<leader>,", "<cmd>Telescope buffers sort_mru=true sort_lastused=true<cr>")
+
+vim.keymap.set("n", "<leader>gc", "<cmd>Telescope git_commits<cr>")
+vim.keymap.set("n", "<leader>gl", "<cmd>Telescope git_commits<cr>")
+vim.keymap.set("n", "<leader>gs", "<cmd>Telescope git_status<cr>")
+vim.keymap.set("n", "<leader>gS", "<cmd>Telescope git_stash<cr>")
 
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "TelescopePrompt",

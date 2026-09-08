@@ -10,7 +10,7 @@ vim.api.nvim_create_autocmd("User", {
   callback = function(ev)
     vim.api.nvim_buf_clear_namespace(ev.buf, ns, 0, -1)
     for i, line in ipairs(vim.api.nvim_buf_get_lines(ev.buf, 0, -1, false)) do
-      local icon, hl = "", "Directory"
+      local icon, hl = " ", "Directory"
       if line:sub(-1) ~= "/" then
         icon, hl = devicons.get_icon(line, nil, { default = true })
       end
