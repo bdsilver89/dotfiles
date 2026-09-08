@@ -38,7 +38,10 @@
 [merge]
   conflictstyle = zdiff3
   tool = nvimdiff
+
+[mergetool]
   prompt = false
+  keepBackup = false
 
 [diff]
   algorithm = histogram
@@ -52,9 +55,10 @@
   prompt = false
 
 [difftool "nvim_difftool"]
-  cmd = nvim -c \"packadd nvim.difftool\" -d \"$LOCAL\" \"$REMOTE\"
+  cmd = nvim -c \"packadd nvim.difftool\" -c \"DiffTool $LOCAL $REMOTE\"
 
 [alias]
+  dt = difftool -d
   hist = log --pretty=format:"%cgreen%h %Creset%cd %Cblue[%cn] %Creset%s%C(yellow)%d%c)reset)" --graph --date=relative --all
   llog = log --graph --name-status --pretty=format:"%C(red)%h %C(reset)(%cd) %C(green)%an %Creset%s %Creset%s %C(yellow)%d%Creset" --date=relative
   clwt = "!f() { \

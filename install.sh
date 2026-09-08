@@ -547,13 +547,13 @@ build_link_map() {
     # These hold live content the repo does not track, at varying depths:
     # nvim's pack lock and notes, a machine-local 30-tools.sh, opencode's own
     # npm project, and ~/.pi's auth, sessions and skills.
-    add_files ".config/nvim"
     add_files ".config/sh"
     add_files ".config/tmux"
     add_files ".config/opencode"
     add_files ".pi"
 
     # .config itself is shared, so single files in it are linked individually.
+    add_link ".config/nvim"
     add_link ".config/starship.toml"
 
     # ~/.local/bin is shared with brew, mise and vendor shims.
