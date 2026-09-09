@@ -552,6 +552,7 @@ build_link_map() {
     add_files ".config/tmux"
     add_files ".config/opencode"
     add_files ".pi"
+    add_files ".vim"
 
     # .config itself is shared, so single files in it are linked individually.
     add_link ".config/nvim"

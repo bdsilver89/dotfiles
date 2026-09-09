@@ -11,6 +11,9 @@ let g:vimrc_popup = has('popupwin')
 let g:vimrc_fuzzy = exists('*matchfuzzy')
 
 " --- base options ------------------------------------------------------------
+let mapleader = ' '
+let maplocalleader = ' '
+
 if has('multi_byte')
     set encoding=utf-8
     set fileencodings=ucs-bom,utf-8,latin1
@@ -20,6 +23,30 @@ filetype plugin indent on
 if has('syntax')
     syntax enable
     set cursorline
+endif
+
+" --- plugins -----------------------------------------------------------------
+call plug#begin('~/.vim/plugged')
+
+Plug 'catppuccin/vim', { 'as': 'catppuccin' }
+Plug 'preservim/nerdtree'
+Plug 'mbbill/undotree'
+Plug 'vim-airline/vim-airline'
+Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-dispatch'
+Plug 'tpope/vim-vinegar'
+Plug 'tpope/vim-eunuch'
+Plug 'tpope/vim-sleuth'
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-unimpaired'
+Plug 'junegunn/fzf'
+Plug 'junegunn/fzf.vim'
+
+call plug#end()
+
+if VimrcPatch('9.0.1799')
+    let g:editorconfig = 1
 endif
 
 " --- ui ----------------------------------------------------------------------
@@ -61,10 +88,7 @@ elseif &term =~# '256color'
     set t_Co=256
 endif
 set background=dark
-silent! colorscheme habamax
-if !exists('g:colors_name')
-    silent! colorscheme desert
-endif
+silent! colorscheme catppuccin
 
 " --- finding files -----------------------------------------------------------
 set path=.,,**
@@ -159,8 +183,6 @@ augroup vimrc_core
 augroup END
 
 " --- keymaps -----------------------------------------------------------------
-let mapleader = ' '
-let maplocalleader = ' '
 nnoremap <Space> <Nop>
 
 nnoremap <expr> j v:count == 0 ? 'gj' : 'j'
@@ -196,18 +218,20 @@ nnoremap <leader>/ :Grep<Space>
 nnoremap <leader>* :Grep <C-r><C-w><CR>
 xnoremap <leader>* y:Grep <C-r>"<CR>
 
-nnoremap <silent> ]q :cnext<CR>zz
-nnoremap <silent> [q :cprevious<CR>zz
-nnoremap <silent> ]Q :clast<CR>zz
-nnoremap <silent> [Q :cfirst<CR>zz
-nnoremap <silent> ]l :lnext<CR>zz
-nnoremap <silent> [l :lprevious<CR>zz
-nnoremap <silent> ]L :llast<CR>zz
-nnoremap <silent> [L :lfirst<CR>zz
-nnoremap <silent> ]b :bnext<CR>
-nnoremap <silent> [b :bprevious<CR>
-nnoremap <silent> ]t :tabnext<CR>
-nnoremap <silent> [t :tabprevious<CR>
+nmap <leader>e -
+
+nnoremap <leader>gs :Git<CR>
+nnoremap <leader>gb :Git blame<CR>
+nnoremap <leader>gd :Gvdiffsplit<CR>
+nnoremap <leader>gl :Git log --oneline<CR>
+
+let g:fzf_layout = {'down': '40%'}
+let $FZF_DEFAULT_COMMAND = executable('rg')
+        \ ? 'rg --files --hidden --glob !.git'
+        \ : 'find . -type f -not -path "*/.git/*"'
+nnoremap <leader><space> :Files<CR>
+nnoremap <leader>, :Buffers<CR>
+nnoremap <leader>/ :Rg<CR>
 
 function! s:toggle_qf(which) abort
     let l:loclist = a:which !=# 'c'
@@ -347,124 +371,3 @@ nnoremap <silent> <leader>yy :call <SID>yank_osc52('line')<CR>
 xnoremap <silent> <leader>y :<C-u>call <SID>yank_osc52('visual')<CR>
 command! -range=% Copy silent execute <line1> . ',' . <line2> . 'yank' |
             \ call VimrcOsc52(@@)
-
-" --- tags --------------------------------------------------------------------
-"set tags=./tags;,tags;
-"if exists('+tagcase')
-"    set tagcase=match
-"endif
-"nnoremap <C-]> g<C-]>
-"nnoremap <leader>] :tselect <C-r><C-w><CR>
-"
-"function! VimrcRoot() abort
-"    let l:markers = ['.git', '.hg', '.svn', 'compile_commands.json',
-"                \ 'Cargo.toml', 'go.mod', 'pom.xml', 'CMakeLists.txt', 'Makefile']
-"    let l:dir = expand('%:p:h')
-"    if l:dir ==# ''
-"        let l:dir = getcwd()
-"    endif
-"    while l:dir !=# '/' && l:dir !=# ''
-"        for l:m in l:markers
-"            if !empty(glob(l:dir . '/' . l:m, 1))
-"                return l:dir
-"            endif
-"        endfor
-"        let l:parent = fnamemodify(l:dir, ':h')
-"        if l:parent ==# l:dir
-"            break
-"        endif
-"        let l:dir = l:parent
-"    endwhile
-"    return getcwd()
-"endfunction
-"command! Root execute 'lcd' fnameescape(VimrcRoot()) | pwd
-"
-"function! VimrcTags() abort
-"    let l:bin = ''
-"    for l:c in ['ctags-universal', 'uctags', 'exctags', 'ctags']
-"        if executable(l:c) && system(l:c . ' --version 2>&1') =~? 'universal ctags\|exuberant ctags'
-"            let l:bin = l:c
-"            break
-"        endif
-"    endfor
-"    if l:bin ==# ''
-"        echohl ErrorMsg | echomsg 'no universal/exuberant ctags' | echohl None
-"        return
-"    endif
-"    let l:root = VimrcRoot()
-"    let l:cmd = l:bin . ' -R --exclude=.git --exclude=node_modules --exclude=target -f '
-"                \ . shellescape(l:root . '/tags') . ' ' . shellescape(l:root)
-"    if g:vimrc_async
-"        call job_start(['sh', '-c', l:cmd])
-"    else
-"        call system(l:cmd)
-"    endif
-"    echomsg 'ctags: ' . l:root
-"endfunction
-"command! Tags call VimrcTags()
-"
-"" --- plugins - ---------------------------------------------------------------
-"let g:vimrc_plugins = get(g:, 'vimrc_plugins', [
-"    \ 'tpope/vim-sleuth',
-"    \ 'tpope/vim-commentary',
-"    \ 'tpope/vim-surround',
-"    \ 'tpope/vim-repeat',
-"    \ 'tpope/vim-eunuch',
-"    \ 'tpope/vim-vinegar',
-"    \ 'tpope/vim-fugitive',
-"    \ 'tpope/vim-dispatch',
-"    \ 'vim-test/vim-test',
-"    \ 'mbbill/undotree',
-"    \ 'junegunn/fzf',
-"    \ 'junegunn/fzf.vim',
-"    \ ])
-"
-"function! s:pack(pull) abort
-"    for l:repo in g:vimrc_plugins
-"        let l:d = expand('~/.vim/pack/plugins/start/') . matchstr(l:repo, '[^/]*$')
-"        redraw | echo (isdirectory(l:d) ? 'pull  ' : 'clone ') . l:repo
-"        if !isdirectory(l:d)
-"            call system('git clone -q --depth 1 https://github.com/' . l:repo . ' ' . shellescape(l:d))
-"        elseif a:pull
-"            call system('git -C ' . shellescape(l:d) . ' pull -q --ff-only')
-"        endif
-"    endfor
-"    silent! packloadall
-"    silent! helptags ALL
-"    echo 'pack: done'
-"endfunction
-"command! -bang Pack call s:pack(<bang>0)
-"
-"let g:vimrc_have_plugins = g:vimrc_pack
-"    \ && isdirectory(expand('~/.vim/pack/plugins/start'))
-"
-"if g:vimrc_have_plugins
-"    function! s:have(name) abort
-"        return isdirectory(expand('~/.vim/pack/plugins/start/' . a:name))
-"    endfunction
-"
-"    if s:have('vim-vinegar')
-"        nmap <leader>e -
-"    endif
-"
-"    if s:have('vim-fugitive')
-"        nnoremap <leader>gs :Git<CR>
-"        nnoremap <leader>gb :Git blame<CR>
-"        nnoremap <leader>gd :Gvdiffsplit<CR>
-"        nnoremap <leader>gl :Git log --oneline<CR>
-"    endif
-"
-"    if executable('fzf') && s:have('fzf.vim')
-"        let g:fzf_layout = {'down': '40%'}
-"        let $FZF_DEFAULT_COMMAND = executable('rg')
-"                \ ? 'rg --files --hidden --glob !.git'
-"                \ : 'find . -type f -not -path "*/.git/*"'
-"        nnoremap <leader><space> :Files<CR>
-"        nnoremap <leader>, :Buffers<CR>
-"        nnoremap <leader>/ :Rg<CR>
-"    endif
-"endif
-"
-"if VimrcPatch('9.0.1799')
-"    let g:editorconfig = 1
-"endif
