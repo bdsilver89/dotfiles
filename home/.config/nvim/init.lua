@@ -7,11 +7,11 @@ vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
 vim.o.breakindent = true
+vim.o.cmdheight = 0
 vim.o.confirm = true
 vim.o.cursorline = true
 vim.o.expandtab = true
 vim.o.fillchars = "eob: ,foldopen:▾,foldclose:▸,foldsep: "
-vim.o.foldcolumn = "1"
 vim.o.foldlevel = 99
 vim.o.foldmethod = "expr"
 vim.o.foldexpr = "v:lua.vim.treesitter.foldexpr()"
@@ -34,6 +34,7 @@ vim.o.splitbelow = true
 vim.o.splitright = true
 vim.o.tabstop = 2
 vim.o.termguicolors = true
+vim.o.timeoutlen = 300
 vim.o.undofile = true
 vim.o.updatetime = 250
 vim.o.virtualedit = "block"
@@ -56,11 +57,7 @@ vim.diagnostic.config({
   },
   jump = {
     on_jump = function(_, bufnr)
-      vim.diagnostic.open_float {
-        bufnr = bufnr,
-        scope = "cursor",
-        focus = false,
-      }
+      vim.diagnostic.open_float({ bufnr = bufnr, scope = "cursor", focus = false })
     end,
   },
 })
@@ -138,10 +135,15 @@ vim.api.nvim_create_autocmd("FileType", {
   group = group,
   pattern = {
     "checkhealth",
+    "dap-float",
+    "dbout",
     "fugitive",
     "fugitiveblame",
     "gitsigns-blame",
     "help",
+    "neotest-output",
+    "neotest-output-panel",
+    "neotest-summary",
     "qf",
   },
   callback = function(ev)
@@ -193,26 +195,33 @@ end
 
 -- Colorscheme ----------------------------------------------------------------
 vim.pack.add({ { src = gh("catppuccin/nvim"), name = "catppuccin" } })
-require("catppuccin").setup({})
+require("catppuccin").setup({
+  integrations = {
+    mini = { enabled = true },
+  },
+})
 vim.cmd.colorscheme("catppuccin")
 
 -- Treesitter -----------------------------------------------------------------
 vim.pack.add({ gh("nvim-treesitter/nvim-treesitter") })
 
 -- stylua: ignore
-local parsers = { "bash", "c", "diff", "html", "lua", "luadoc", "markdown", "markdown_inline", "query", "vim", "vimdoc" }
+local parsers = {
+  "bash", "c", "cmake", "cpp", "diff", "html", "java", "javascript", "jsdoc", "json", "json5", "lua", "luadoc",
+  "make", "markdown", "markdown_inline", "ninja", "python", "query", "regex", "rust", "vim", "vimdoc", "xml", "yaml",
+}
 
 require("nvim-treesitter").install(parsers)
 
 vim.api.nvim_create_autocmd("FileType", {
   group = group,
+  -- stylua: ignore
   callback = function(ev)
     local buf, filetype = ev.buf, ev.match
-    local lang = vim.treesitter.language.get_lang(ev.match)
+    local lang = vim.treesitter.language.get_lang(filetype)
     if not lang then return end
     if not vim.treesitter.language.add(lang) then return end
     vim.treesitter.start(buf, lang)
-
     if vim.treesitter.query.get(lang, "indents") ~= nil then
       vim.bo[buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
     end
@@ -248,6 +257,7 @@ require("mason-lspconfig").setup({ automatic_enable = false })
 
 local ensure_installed = vim.tbl_keys(servers)
 vim.list_extend(ensure_installed, {
+  "stylua",
 })
 
 require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
@@ -259,21 +269,24 @@ end
 
 vim.api.nvim_create_autocmd("LspAttach", {
   group = group,
+  -- stylua: ignore
   callback = function(ev)
     local client = vim.lsp.get_client_by_id(ev.data.client_id)
-    if not client then
-      return
+    if not client then return end
+
+    local function map(lhs, rhs, desc)
+      vim.keymap.set("n", lhs, rhs, { desc = desc, buffer = ev.buf })
     end
 
-    vim.keymap.set("n", "grn", vim.lsp.buf.rename, { desc = "Rename", buffer = ev.buf })
-    vim.keymap.set("n", "gra", vim.lsp.buf.code_action, { desc = "Code action", buffer = ev.buf })
-    vim.keymap.set("n", "grD", vim.lsp.buf.declaration, { desc = "Goto declaration", buffer = ev.buf })
-    vim.keymap.set("n", "grx", vim.lsp.codelens.run, { desc = "Codelens", buffer = ev.buf })
+    map("grn", vim.lsp.buf.rename, "Rename")
+    map("gra", vim.lsp.buf.code_action, "Code action")
+    map("grD", vim.lsp.buf.declaration, "Goto declaration")
+    map("grx", vim.lsp.codelens.run, "Codelens")
 
     if client:supports_method("textDocument/inlayHint", ev.buf) then
-      vim.keymap.set("n", "<leader>uh", function()
+      map("<leader>uh", function()
         vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = ev.buf }))
-      end, { desc = "Toggle inlay hints", buffer = ev.buf })
+      end, "Toggle inlay hints")
     end
   end,
 })
@@ -281,21 +294,53 @@ vim.api.nvim_create_autocmd("LspAttach", {
 -- Formatting -----------------------------------------------------------------
 vim.pack.add({ gh("stevearc/conform.nvim") })
 require("conform").setup({
-  formatters_by_ft = {},
+  formatters_by_ft = {
+    lua = { "stylua" },
+  },
   default_format_opts = {
     lsp_format = "fallback",
   },
+  -- stylua: ignore
   format_on_save = function(bufnr)
-    return { timeout_ms = 500 }
+    if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then return end
+    return { timeout_ms = 500, lsp_format = "fallback" }
   end,
 })
-vim.keymap.set("n", "<leader>f", function() require("conform").format({ async = true }) end, { desc = "Format buffer" })
+vim.g.disable_autoformat = false
+vim.api.nvim_create_user_command("FormatToggle", function(args)
+  if args.bang then
+    vim.b.disable_autoformat = not vim.b.disable_autoformat
+    vim.notify("Buffer autoformat: " .. (vim.b.disable_autoformat and "OFF" or "ON"))
+  else
+    vim.g.disable_autoformat = not vim.g.disable_autoformat
+    vim.notify("Global autoformat: " .. (vim.g.disable_autoformat and "OFF" or "ON"))
+  end
+end, { desc = "Toggle autoformat", bang = true })
+vim.keymap.set("n", "<leader>f", function()
+  require("conform").format({ async = true })
+end, { desc = "Format buffer" })
+vim.keymap.set("n", "<leader>uf", "<cmd>FormatToggle<cr>")
+vim.keymap.set("n", "<leader>uF", "<cmd>FormatToggle!<cr>")
 
 -- Linting --------------------------------------------------------------------
 -- TODO: linting
 
+-- Language-specific ----------------------------------------------------------
+vim.g.db_ui_use_nerd_fonts = 1
+vim.g.db_ui_show_database_icons = 1
+vim.pack.add({
+  gh("tpope/vim-dadbod"),
+  gh("kristijanhusak/vim-dadbod-ui"),
+  gh("kristijanhusak/vim-dadbod-completion"),
+  gh("mfussenegger/nvim-jdtls"),
+})
+
 -- Completion/Snippets --------------------------------------------------------
-vim.pack.add({ { src = gh("L3MON4D3/LuaSnip"), version = vim.version.range("2.*") } })
+vim.pack.add({
+  { src = gh("L3MON4D3/LuaSnip"), version = vim.version.range("2.*") },
+  gh("rafamadriz/friendly-snippets"),
+})
+require("luasnip.loaders.from_vscode").lazy_load()
 require("luasnip").setup({})
 
 vim.pack.add({ { src = gh("saghen/blink.cmp"), version = vim.version.range("1.*") } })
@@ -318,6 +363,15 @@ require("blink.cmp").setup({
   },
   sources = {
     default = { "lsp", "path", "snippets", "buffer" },
+    per_filetype = {
+      sql = { "dadbod" },
+    },
+    providers = {
+      dadbod = {
+        name = "Dadbod",
+        module = "vim_dadbod_completion.blink",
+      },
+    },
   },
   fuzzy = { implementation = "lua" },
   signature = { enabled = true },
@@ -329,7 +383,9 @@ local telescope_plugins = {
   gh("nvim-telescope/telescope.nvim"),
   gh("nvim-telescope/telescope-ui-select.nvim"),
 }
-if vim.fn.executable("make") == 1 then table.insert(telescope_plugins, gh("nvim-telescope/telescope-fzf-native.nvim")) end
+if vim.fn.executable("make") == 1 then
+  table.insert(telescope_plugins, gh("nvim-telescope/telescope-fzf-native.nvim"))
+end
 vim.pack.add(telescope_plugins)
 
 require("telescope").setup({
@@ -361,12 +417,15 @@ vim.keymap.set("n", "<leader>gs", builtin.git_status, { desc = "Git status" })
 vim.api.nvim_create_autocmd("LspAttach", {
   group = group,
   callback = function(ev)
-    vim.keymap.set("n", "grr", builtin.lsp_references, { desc = "Goto references", buffer = ev.buf })
-    vim.keymap.set("n", "gri", builtin.lsp_implementations, { desc = "Goto implementation", buffer = ev.buf })
-    vim.keymap.set("n", "grd", builtin.lsp_definitions, { desc = "Goto definition", buffer = ev.buf })
-    vim.keymap.set("n", "gO", builtin.lsp_document_symbols, { desc = "Open document symbols", buffer = ev.buf })
-    vim.keymap.set("n", "gW", builtin.lsp_dynamic_workspace_symbols, { desc = "Open workspace symbols", buffer = ev.buf })
-    vim.keymap.set("n", "grt", builtin.lsp_type_definitions, { desc = "Goto type definition", buffer = ev.buf })
+    local function map(lhs, rhs, desc)
+      vim.keymap.set("n", lhs, rhs, { desc = desc, buffer = ev.buf })
+    end
+    map("grr", builtin.lsp_references, "Goto references")
+    map("gri", builtin.lsp_implementations, "Goto implementation")
+    map("grd", builtin.lsp_definitions, "Goto definition")
+    map("gO", builtin.lsp_document_symbols, "Open document symbols")
+    map("gW", builtin.lsp_dynamic_workspace_symbols, "Open workspace symbols")
+    map("grt", builtin.lsp_type_definitions, "Goto type definition")
   end,
 })
 
@@ -374,7 +433,10 @@ vim.api.nvim_create_autocmd("LspAttach", {
 vim.pack.add({
   gh("tpope/vim-fugitive"),
   gh("lewis6991/gitsigns.nvim"),
+  gh("pwntester/octo.nvim"),
 })
+
+vim.keymap.set("n", "<leader>gb", "<cmd>Git blame<cr>", { desc = "Git blame" })
 
 local gitsigns = require("gitsigns")
 gitsigns.setup({
@@ -418,7 +480,17 @@ gitsigns.setup({
     vim.keymap.set("n", "<leader>hq", gitsigns.setqflist, { desc = "Diff buffer hunks to quickfix", buf = bufnr })
     vim.keymap.set({ "o", "x" }, "ih", gitsigns.select_hunk, { desc = "inside hunk", buf = bufnr })
   end
+,
 })
+
+require("octo").setup({
+  picker = "telescope",
+  enable_builtin = true,
+})
+vim.keymap.set("n", "<leader>gi", "<cmd>Octo issue list<cr>", { desc = "List issues" })
+vim.keymap.set("n", "<leader>gp", "<cmd>Octo pr list<cr>", { desc = "List PRs" })
+vim.keymap.set("n", "<leader>gd", "<cmd>Octo discussion list<cr>", { desc = "List discussions" })
+vim.keymap.set("n", "<leader>gn", "<cmd>Octo notification list<cr>", { desc = "List notifications" })
 
 -- Debugging ------------------------------------------------------------------
 vim.pack.add({
@@ -428,15 +500,35 @@ vim.pack.add({
 local dap, dv = require("dap"), require("dap-view")
 dv.setup({})
 
+-- stylua: ignore start
 dap.listeners.before.initialize["dap-view-hooks"] = function() dv.open() end
 dap.listeners.after.event_terminated["dap-view-hooks"] = function() dv.close() end
 dap.listeners.after.event_exited["dap-view-hooks"] = function() dv.close() end
+-- stylua: ignore end
 
 -- TODO: debugging adapters
 -- TODO: debugging keymaps
 
 -- Testing --------------------------------------------------------------------
 -- TODO: testing
+vim.pack.add({
+  gh("nvim-neotest/nvim-nio"),
+  gh("nvim-neotest/neotest"),
+  gh("nvim-neotest/neotest-python"),
+})
+local neotest = require("neotest")
+neotest.setup({
+  adapters = {
+    require("neotest-python"),
+  },
+})
+
+-- stylua: ignore start
+vim.keymap.set("n", "<leader>tc", function() neotest.run.run() end, { desc = "Run nearest" })
+vim.keymap.set("n", "<leader>tf", function() neotest.run.run(vim.fn.expand("%")) end, { desc = "Run file" })
+vim.keymap.set("n", "<leader>ts", function() neotest.summary.toggle() end, { desc = "Toggle summary" })
+vim.keymap.set("n", "<leader>to", function() neotest.output_panel.toggle() end, { desc = "Toggle output" })
+-- stylua: ignore end
 
 -- Misc -----------------------------------------------------------------------
 vim.pack.add({
@@ -445,8 +537,27 @@ vim.pack.add({
   gh("christoomey/vim-tmux-navigator"),
 })
 
+vim.pack.add({ gh("lukas-reineke/indent-blankline.nvim") })
+require("ibl").setup({})
+
+vim.pack.add({ gh("j-hui/fidget.nvim") })
+require("fidget").setup({})
+
 vim.pack.add({ gh("folke/which-key.nvim") })
-require("which-key").setup({})
+require("which-key").setup({
+  delay = 0,
+  spec = {
+    { "<leader>b", group = "Buffer" },
+    { "<leader>c", group = "Code" },
+    { "<leader>d", group = "Debug" },
+    { "<leader>g", group = "Git" },
+    { "<leader>h", group = "Hunk" },
+    { "<leader>s", group = "Search" },
+    { "<leader>t", group = "Tet" },
+    { "<leader>u", group = "Settings" },
+    { "<leader>x", group = "Diagnostics" },
+  },
+})
 
 vim.pack.add({ gh("folke/todo-comments.nvim") })
 require("todo-comments").setup({ signs = false })
@@ -461,4 +572,6 @@ require("mini.surround").setup()
 
 local statusline = require("mini.statusline")
 statusline.setup()
-statusline.section_location = function() return "%2l:%-2v" end
+statusline.section_location = function()
+  return "%2l:%-2v"
+end
