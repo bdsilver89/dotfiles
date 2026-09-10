@@ -189,12 +189,8 @@ vim.api.nvim_create_autocmd("PackChanged", {
   end,
 })
 
-local function gh(repo)
-  return "https://github.com/" .. repo
-end
-
 -- Colorscheme ----------------------------------------------------------------
-vim.pack.add({ { src = gh("catppuccin/nvim"), name = "catppuccin" } })
+vim.pack.add({ { src = "https://github.com/catppuccin/nvim", name = "catppuccin" } })
 require("catppuccin").setup({
   integrations = {
     mini = { enabled = true },
@@ -203,7 +199,11 @@ require("catppuccin").setup({
 vim.cmd.colorscheme("catppuccin")
 
 -- Treesitter -----------------------------------------------------------------
-vim.pack.add({ gh("nvim-treesitter/nvim-treesitter") })
+vim.pack.add({
+  "https://github.com/nvim-treesitter/nvim-treesitter",
+  "https://github.com/nvim-treesitter/nvim-treesitter-textobjects",
+  "https://github.com/windwp/nvim-ts-autotag",
+})
 
 -- stylua: ignore
 local parsers = {
@@ -212,6 +212,64 @@ local parsers = {
 }
 
 require("nvim-treesitter").install(parsers)
+require("nvim-ts-autotag").setup({})
+require("nvim-treesitter-textobjects").setup({
+  select = {
+    lookahead = true,
+  },
+  move = {
+    enable = true,
+    set_jumps = true,
+  },
+})
+
+local ts_modes = { select = { "x", "o" }, move = { "n", "x", "o" }, swap = "n" }
+-- stylua: ignore
+local textobjects = {
+  { "ik", "select.select_textobject", "@block.inner", "Inside block" },
+  { "ak", "select.select_textobject", "@block.outer", "Around block" },
+  { "ic", "select.select_textobject", "@class.inner", "Inside class" },
+  { "ac", "select.select_textobject", "@class.outer", "Around class" },
+  { "if", "select.select_textobject", "@function.inner", "Inside function" },
+  { "af", "select.select_textobject", "@function.outer", "Around function" },
+  { "io", "select.select_textobject", "@loop.inner", "Inside loop" },
+  { "ao", "select.select_textobject", "@loop.outer", "Around loop" },
+  { "i?", "select.select_textobject", "@conditional.inner", "Inside conditional" },
+  { "a?", "select.select_textobject", "@conditional.outer", "Around conditional" },
+  { "ia", "select.select_textobject", "@parameter.inner", "Inside argument" },
+  { "aa", "select.select_textobject", "@parameter.outer", "Around argument" },
+
+  { "]k", "move.goto_next_start",     "@block.outer", "Next block start" },
+  { "]f", "move.goto_next_start",     "@function.outer", "Next function start" },
+  { "]a", "move.goto_next_start",     "@parameter.outer", "Next parameter start" },
+
+  { "]K", "move.goto_next_end",       "@block.outer", "Next block end" },
+  { "]F", "move.goto_next_end",       "@function.outer", "Next function end" },
+  { "]a", "move.goto_next_end",       "@parameter.outer", "Next parameter end" },
+
+  { "[k", "move.goto_previous_start", "@block.outer", "Previous block start" },
+  { "[f", "move.goto_previous_start", "@function.outer", "Previous function start" },
+  { "[a", "move.goto_previous_start", "@parameter.outer", "Previous parameter start" },
+
+  { "[K", "move.goto_previous_end",   "@block.outer", "Previous block end" },
+  { "[F", "move.goto_previous_end",   "@function.outer", "Previous function end" },
+  { "[A", "move.goto_previous_end",   "@parameter.outer", "Previous parameter end" },
+
+  { ">K", "swap.swap_next",           "@block.outer", "Swap next block" },
+  { ">F", "swap.swap_next",           "@function.outer", "Swap next function" },
+  { ">A", "swap.swap_next",           "@parameter.outer", "Swap next argument" },
+
+  { "<K", "swap.swap_previous",       "@block.outer", "Swap previous block" },
+  { "<F", "swap.swap_previous",       "@function.outer", "Swap previous function" },
+  { "<A", "swap.swap_previous",       "@parameter.outer", "Swap previous argument" },
+}
+for _, spec in ipairs(textobjects) do
+  local key, path, query, desc = unpack(spec)
+  local mod, method = path:match("^(%w+)%.(.+)$")
+  vim.keymap.set(ts_modes[mod], key, function()
+    require("nvim-treesitter-textobjects." .. mod)[method](query)
+  end, { desc = desc })
+end
 
 vim.api.nvim_create_autocmd("FileType", {
   group = group,
@@ -219,8 +277,11 @@ vim.api.nvim_create_autocmd("FileType", {
   callback = function(ev)
     local buf, filetype = ev.buf, ev.match
     local lang = vim.treesitter.language.get_lang(filetype)
+
     if not lang then return end
     if not vim.treesitter.language.add(lang) then return end
+    if not vim.api.nvim_buf_is_valid(buf) then return end
+
     vim.treesitter.start(buf, lang)
     if vim.treesitter.query.get(lang, "indents") ~= nil then
       vim.bo[buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
@@ -246,10 +307,10 @@ local servers = {
   },
 }
 vim.pack.add({
-  gh("neovim/nvim-lspconfig"),
-  gh("mason-org/mason.nvim"),
-  gh("mason-org/mason-lspconfig.nvim"),
-  gh("WhoIsSethDaniel/mason-tool-installer.nvim"),
+  "https://github.com/neovim/nvim-lspconfig",
+  "https://github.com/mason-org/mason.nvim",
+  "https://github.com/mason-org/mason-lspconfig.nvim",
+  "https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim",
 })
 
 require("mason").setup({})
@@ -292,7 +353,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
 })
 
 -- Formatting -----------------------------------------------------------------
-vim.pack.add({ gh("stevearc/conform.nvim") })
+vim.pack.add({ "https://github.com/stevearc/conform.nvim" })
 require("conform").setup({
   formatters_by_ft = {
     lua = { "stylua" },
@@ -329,21 +390,21 @@ vim.keymap.set("n", "<leader>uF", "<cmd>FormatToggle!<cr>")
 vim.g.db_ui_use_nerd_fonts = 1
 vim.g.db_ui_show_database_icons = 1
 vim.pack.add({
-  gh("tpope/vim-dadbod"),
-  gh("kristijanhusak/vim-dadbod-ui"),
-  gh("kristijanhusak/vim-dadbod-completion"),
-  gh("mfussenegger/nvim-jdtls"),
+  "https://github.com/tpope/vim-dadbod",
+  "https://github.com/kristijanhusak/vim-dadbod-ui",
+  "https://github.com/kristijanhusak/vim-dadbod-completion",
+  "https://github.com/mfussenegger/nvim-jdtls",
 })
 
 -- Completion/Snippets --------------------------------------------------------
 vim.pack.add({
-  { src = gh("L3MON4D3/LuaSnip"), version = vim.version.range("2.*") },
-  gh("rafamadriz/friendly-snippets"),
+  { src = "https://github.com/L3MON4D3/LuaSnip", version = vim.version.range("2.*") },
+  "https://github.com/rafamadriz/friendly-snippets",
 })
 require("luasnip.loaders.from_vscode").lazy_load()
 require("luasnip").setup({})
 
-vim.pack.add({ { src = gh("saghen/blink.cmp"), version = vim.version.range("1.*") } })
+vim.pack.add({ { src = "https://github.com/saghen/blink.cmp", version = vim.version.range("1.*") } })
 require("blink.cmp").setup({
   keymap = {
     ["<cr>"] = { "accept", "fallback" },
@@ -381,12 +442,12 @@ require("blink.cmp").setup({
 
 -- Picker ---------------------------------------------------------------------
 local telescope_plugins = {
-  gh("nvim-lua/plenary.nvim"),
-  gh("nvim-telescope/telescope.nvim"),
-  gh("nvim-telescope/telescope-ui-select.nvim"),
+  "https://github.com/nvim-lua/plenary.nvim",
+  "https://github.com/nvim-telescope/telescope.nvim",
+  "https://github.com/nvim-telescope/telescope-ui-select.nvim",
 }
 if vim.fn.executable("make") == 1 then
-  table.insert(telescope_plugins, gh("nvim-telescope/telescope-fzf-native.nvim"))
+  table.insert(telescope_plugins, "https://github.com/nvim-telescope/telescope-fzf-native.nvim")
 end
 vim.pack.add(telescope_plugins)
 
@@ -433,9 +494,9 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
 -- Git ------------------------------------------------------------------------
 vim.pack.add({
-  gh("tpope/vim-fugitive"),
-  gh("lewis6991/gitsigns.nvim"),
-  gh("pwntester/octo.nvim"),
+  "https://github.com/tpope/vim-fugitive",
+  "https://github.com/lewis6991/gitsigns.nvim",
+  "https://github.com/pwntester/octo.nvim",
 })
 
 vim.keymap.set("n", "<leader>gb", "<cmd>Git blame<cr>", { desc = "Git blame" })
@@ -496,8 +557,8 @@ vim.keymap.set("n", "<leader>gn", "<cmd>Octo notification list<cr>", { desc = "L
 
 -- Debugging ------------------------------------------------------------------
 vim.pack.add({
-  gh("mfussenegger/nvim-dap"),
-  gh("igorlfs/nvim-dap-view"),
+  "https://github.com/mfussenegger/nvim-dap",
+  "https://github.com/igorlfs/nvim-dap-view",
 })
 local dap, dv = require("dap"), require("dap-view")
 dv.setup({})
@@ -514,9 +575,9 @@ dap.listeners.after.event_exited["dap-view-hooks"] = function() dv.close() end
 -- Testing --------------------------------------------------------------------
 -- TODO: testing
 vim.pack.add({
-  gh("nvim-neotest/nvim-nio"),
-  gh("nvim-neotest/neotest"),
-  gh("nvim-neotest/neotest-python"),
+  "https://github.com/nvim-neotest/nvim-nio",
+  "https://github.com/nvim-neotest/neotest",
+  "https://github.com/nvim-neotest/neotest-python",
 })
 local neotest = require("neotest")
 neotest.setup({
@@ -534,18 +595,18 @@ vim.keymap.set("n", "<leader>to", function() neotest.output_panel.toggle() end, 
 
 -- Misc -----------------------------------------------------------------------
 vim.pack.add({
-  gh("tpope/vim-sleuth"),
-  gh("tpope/vim-dispatch"),
-  gh("christoomey/vim-tmux-navigator"),
+  "https://github.com/tpope/vim-sleuth",
+  "https://github.com/tpope/vim-dispatch",
+  "https://github.com/christoomey/vim-tmux-navigator",
 })
 
-vim.pack.add({ gh("lukas-reineke/indent-blankline.nvim") })
+vim.pack.add({ "https://github.com/lukas-reineke/indent-blankline.nvim" })
 require("ibl").setup({})
 
-vim.pack.add({ gh("j-hui/fidget.nvim") })
+vim.pack.add({ "https://github.com/j-hui/fidget.nvim" })
 require("fidget").setup({})
 
-vim.pack.add({ gh("folke/which-key.nvim") })
+vim.pack.add({ "https://github.com/folke/which-key.nvim" })
 require("which-key").setup({
   delay = 0,
   spec = {
@@ -561,10 +622,10 @@ require("which-key").setup({
   },
 })
 
-vim.pack.add({ gh("folke/todo-comments.nvim") })
+vim.pack.add({ "https://github.com/folke/todo-comments.nvim" })
 require("todo-comments").setup({ signs = false })
 
-vim.pack.add({ gh("nvim-mini/mini.nvim") })
+vim.pack.add({ "https://github.com/nvim-mini/mini.nvim" })
 require("mini.icons").setup()
 MiniIcons.mock_nvim_web_devicons()
 MiniIcons.tweak_lsp_kind()
