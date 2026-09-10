@@ -294,7 +294,6 @@ local servers = {
   basedpyright = {},
   clangd = {},
   tsc = {},
-  jdtls = {},
   rust_analyzer = {},
   lua_ls = {
     settings = {
@@ -319,6 +318,9 @@ require("mason-lspconfig").setup({ automatic_enable = false })
 local ensure_installed = vim.tbl_keys(servers)
 vim.list_extend(ensure_installed, {
   "stylua",
+  "codelldb",
+  "jdtls",
+  "java-debug-adapter",
 })
 
 require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
@@ -569,8 +571,58 @@ dap.listeners.after.event_terminated["dap-view-hooks"] = function() dv.close() e
 dap.listeners.after.event_exited["dap-view-hooks"] = function() dv.close() end
 -- stylua: ignore end
 
--- TODO: debugging adapters
--- TODO: debugging keymaps
+dap.adapters.codelldb = {
+  type = "server",
+  host = "localhost",
+  port = "${port}",
+  executable = {
+    command = "codelldb",
+    args = { "--port", "${port}" },
+  },
+}
+
+local dap_utils = require("dap.utils")
+for _, lang in ipairs({ "c", "cpp" }) do
+  dap.configurations[lang] = {
+    {
+      type = "codelldb",
+      request = "launch",
+      name = "Launch file",
+      program = function()
+        return dap_utils.pick_file({ executables = true })
+      end,
+      args = function()
+        return dap_utils.splitstr(vim.fn.input("Args: "))
+      end,
+      cwd = "${workspaceFolder}",
+      stopOnEntry = false,
+    },
+    {
+      type = "codelldb",
+      request = "attach",
+      name = "Attach to process",
+      pid = dap_utils.pick_process,
+    },
+  }
+end
+
+dap.configurations.java = {
+  {
+    type = "java",
+    request = "attach",
+    name = "Attach to JVM (5005)",
+    hostName = "127.0.0.1",
+    port = 5005,
+  },
+}
+
+-- stylua: ignore start
+vim.keymap.set("n", "<leader>db", function() require("dap").toggle_breakpoint() end, { desc = "Toggle breakpoint" })
+vim.keymap.set("n", "<leader>dc", function() require("dap").continue() end, { desc = "Continue" })
+vim.keymap.set("n", "<leader>do", function() require("dap").step_over() end, { desc = "Step over" })
+vim.keymap.set("n", "<leader>dO", function() require("dap").step_out() end, { desc = "Step out" })
+vim.keymap.set("n", "<leader>di", function() require("dap").step_into() end, { desc = "Step into" })
+-- stylua: ignore end
 
 -- Testing --------------------------------------------------------------------
 -- TODO: testing
@@ -589,6 +641,7 @@ neotest.setup({
 -- stylua: ignore start
 vim.keymap.set("n", "<leader>tc", function() neotest.run.run() end, { desc = "Run nearest" })
 vim.keymap.set("n", "<leader>tf", function() neotest.run.run(vim.fn.expand("%")) end, { desc = "Run file" })
+vim.keymap.set("n", "<leader>tF", function() neotest.run.run(vim.uv.cwd()) end, { desc = "Run all files" })
 vim.keymap.set("n", "<leader>ts", function() neotest.summary.toggle() end, { desc = "Toggle summary" })
 vim.keymap.set("n", "<leader>to", function() neotest.output_panel.toggle() end, { desc = "Toggle output" })
 -- stylua: ignore end
