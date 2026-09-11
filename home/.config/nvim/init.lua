@@ -167,7 +167,15 @@ vim.api.nvim_create_autocmd("FileType", {
 vim.cmd.packadd("nvim.difftool")
 vim.cmd.packadd("nvim.undotree")
 
-require("vim._core.ui2").enable({})
+require("vim._core.ui2").enable({
+  enable = true,
+  msg = {
+    targets = {
+      default = "cmd",
+      progress = "msg",
+    },
+  },
+})
 
 vim.api.nvim_create_autocmd("PackChanged", {
   group = group,
@@ -289,12 +297,22 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
+-- Language-specific ----------------------------------------------------------
+vim.pack.add({
+  "https://github.com/mfussenegger/nvim-jdtls",
+  "https://github.com/nanotee/sqls.nvim",
+})
+vim.cmd.packadd("sqls.nvim")
+
 -- LSP ------------------------------------------------------------------------
 local servers = {
   basedpyright = {},
   clangd = {},
   tsc = {},
   rust_analyzer = {},
+  sqls = {
+    cmd = { "sqls", "-config", vim.fn.expand("~/.config/sqls/config.yml") },
+  },
   lua_ls = {
     settings = {
       Lua = {
@@ -329,6 +347,27 @@ for name, opts in pairs(servers) do
   vim.lsp.config(name, opts)
   vim.lsp.enable(name)
 end
+
+vim.api.nvim_create_autocmd("LspProgress", {
+  group = group,
+  callback = function(ev)
+    local client = vim.lsp.get_client_by_id(ev.data.client_id)
+    local value = ev.data.params.value
+    local token = ev.data.params.token or "default"
+    local icon = value.kind == "end" and "" or ""
+    local text = value.message or (value.kind == "end" and "Done" or "Loading...")
+    local client_name = client and client.name or "LSP"
+    local display_str = string.format("[%s] %s %s: %s", client_name, icon, value.title or "", text)
+    vim.api.nvim_echo({ { display_str } }, false, {
+      id = "lsp_progress_" .. ev.data.client_id .. "_" .. tostring(token),
+      kind = "progress",
+      source = "vim.lsp",
+      title = value.title,
+      status = value.kind ~= "end" and "running" or "success",
+      percent = value.percent,
+    })
+  end,
+})
 
 vim.api.nvim_create_autocmd("LspAttach", {
   group = group,
@@ -388,16 +427,6 @@ vim.keymap.set("n", "<leader>uF", "<cmd>FormatToggle!<cr>")
 -- Linting --------------------------------------------------------------------
 -- TODO: linting
 
--- Language-specific ----------------------------------------------------------
-vim.g.db_ui_use_nerd_fonts = 1
-vim.g.db_ui_show_database_icons = 1
-vim.pack.add({
-  "https://github.com/tpope/vim-dadbod",
-  "https://github.com/kristijanhusak/vim-dadbod-ui",
-  "https://github.com/kristijanhusak/vim-dadbod-completion",
-  "https://github.com/mfussenegger/nvim-jdtls",
-})
-
 -- Completion/Snippets --------------------------------------------------------
 vim.pack.add({
   { src = "https://github.com/L3MON4D3/LuaSnip", version = vim.version.range("2.*") },
@@ -426,17 +455,6 @@ require("blink.cmp").setup({
   },
   sources = {
     default = { "lsp", "path", "snippets", "buffer" },
-    per_filetype = {
-      sql = { "snippets", "dadbod", "buffer" },
-      mysql = { "snippets", "dadbod", "buffer" },
-      plsql = { "snippets", "dadbod", "buffer" },
-    },
-    providers = {
-      dadbod = {
-        name = "Dadbod",
-        module = "vim_dadbod_completion.blink",
-      },
-    },
   },
   fuzzy = { implementation = "lua" },
   signature = { enabled = true },
@@ -498,7 +516,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
 vim.pack.add({
   "https://github.com/tpope/vim-fugitive",
   "https://github.com/lewis6991/gitsigns.nvim",
-  "https://github.com/pwntester/octo.nvim",
 })
 
 vim.keymap.set("n", "<leader>gb", "<cmd>Git blame<cr>", { desc = "Git blame" })
@@ -547,15 +564,6 @@ gitsigns.setup({
   end
 ,
 })
-
-require("octo").setup({
-  picker = "telescope",
-  enable_builtin = true,
-})
-vim.keymap.set("n", "<leader>gi", "<cmd>Octo issue list<cr>", { desc = "List issues" })
-vim.keymap.set("n", "<leader>gp", "<cmd>Octo pr list<cr>", { desc = "List PRs" })
-vim.keymap.set("n", "<leader>gd", "<cmd>Octo discussion list<cr>", { desc = "List discussions" })
-vim.keymap.set("n", "<leader>gn", "<cmd>Octo notification list<cr>", { desc = "List notifications" })
 
 -- Debugging ------------------------------------------------------------------
 vim.pack.add({
@@ -655,9 +663,6 @@ vim.pack.add({
 
 vim.pack.add({ "https://github.com/lukas-reineke/indent-blankline.nvim" })
 require("ibl").setup({})
-
-vim.pack.add({ "https://github.com/j-hui/fidget.nvim" })
-require("fidget").setup({})
 
 vim.pack.add({ "https://github.com/folke/which-key.nvim" })
 require("which-key").setup({
