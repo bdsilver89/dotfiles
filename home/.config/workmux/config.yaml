@@ -1,13 +1,17 @@
+mode: session
 status_format: false
 nerdfont: true
 agent: claude
+
 worktree_dir: "../{project}.worktrees"
 worktree_naming: basename
+
+window_prefix: "{project}  "
 
 windows:
   - name: editor
     panes:
       - command: nvim
         focus: true
-      - command: claude
+      - command: opencode
         split: horizontal
