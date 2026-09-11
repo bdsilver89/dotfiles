@@ -550,6 +550,7 @@ build_link_map() {
     # npm project, and ~/.pi's auth, sessions and skills.
     add_files ".config/sh"
     add_files ".config/tmux"
+    add_files ".config/tuicr"
     add_files ".config/opencode"
     add_files ".pi"
     add_files ".vim"

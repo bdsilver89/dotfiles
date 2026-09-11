@@ -4,6 +4,8 @@
 #
 # Applied with `brew bundle`. Casks are skipped on a headless install.
 
+brew "tuicr"
+
 cask "alacritty"
 cask "ghostty"
 cask "visual-studio-code"
