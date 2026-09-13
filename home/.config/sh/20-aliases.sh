@@ -20,6 +20,8 @@ else
     command -v tree >/dev/null 2>&1 && alias lt="tree"
 fi
 
+command -v nvim >/dev/null && alias nv="nvim"
+command -v vim >/dev/null && alias v="vim"
 command -v fzf >/dev/null 2>&1 && alias f='$EDITOR "$(fzf)"'
 
 command -v lazygit >/dev/null 2>&1 && alias gg="lazygit"
