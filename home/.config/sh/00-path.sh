@@ -8,6 +8,7 @@ _prepend_path() {
 _prepend_path "$HOME/.local/bin"
 _prepend_path "$HOME/bin"
 [ -d /opt/homebrew/bin ] && _prepend_path "/opt/homebrew/bin"
+_prepend_path "${XDG_DATA_HOME:-$HOME/.local/share}/mise/shims"
 
 export PATH
 unset -f _prepend_path

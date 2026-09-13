@@ -1060,7 +1060,7 @@ parse_args() {
     esac
 }
 
-PHASES="packages mise links tmux-plugins zsh-plugins vendor gh claude skills rtk"
+PHASES="packages links mise tmux-plugins zsh-plugins vendor gh claude skills rtk"
 
 # Opt-in only: an automatic pull would clobber uncommitted local work.
 OPTIN_PHASES="update prune-backups"
@@ -1109,8 +1109,8 @@ main() {
     run_phase update        update_repo
     run_phase prune-backups prune_backups
     run_phase packages    install_packages
-    run_phase mise        install_mise
     run_phase links       link_dotfiles
+    run_phase mise        install_mise
     run_phase tmux-plugins install_tmux_plugins
     run_phase zsh-plugins install_zsh_plugins
     run_phase vendor      install_vendor
