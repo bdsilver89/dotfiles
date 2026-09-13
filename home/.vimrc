@@ -1,374 +1,295 @@
 set nocompatible
+scriptencoding utf-8
 
-" --- capabilities ------------------------------------------------------------
-function! VimrcPatch(v) abort
-    return v:version >= 704 && has('patch-' . a:v)
+" =============================================================================
+" Helpers
+" =============================================================================
+function! s:Enable(name) abort
+    if exists('+' . a:name)
+        execute 'set ' . a:name
+    endif
 endfunction
 
-let g:vimrc_async = has('job') && has('channel') && has('timers')
-let g:vimrc_pack = has('packages')
-let g:vimrc_popup = has('popupwin')
-let g:vimrc_fuzzy = exists('*matchfuzzy')
+function! s:Disable(name) abort
+    if exists('+' . a:name)
+        execute 'set no' . a:name
+    endif
+endfunction
 
-" --- base options ------------------------------------------------------------
-let mapleader = ' '
-let maplocalleader = ' '
+function! s:Set(name, value) abort
+    if exists('+' . a:name)
+        execute 'let &' . a:name . ' = ' . string(a:value)
+    endif
+endfunction
 
-if has('multi_byte')
-    set encoding=utf-8
-    set fileencodings=ucs-bom,utf-8,latin1
+" =============================================================================
+" Encoding and file formats
+" =============================================================================
+call s:Enable('hidden')
+call s:Enable('autoread')
+call s:Enable('confirm')
+call s:Enable('swapfile')
+call s:Set('updatetime', 300)
+call s:Disable('backup')
+call s:Disable('writebackup')
+call s:Disable('modeline')
+call s:Disable('writeany')
+
+" =============================================================================
+" State directories
+" =============================================================================
+if exists('*mkdir') && exists('*isdirectory')
+    let s:state_dir = expand('~/.vim/state')
+    let s:swap_dir = s:state_dir . '/swap'
+    let s:undo_dir = s:state_dir . '/undo'
+    let s:backup_dir = s:state_dir . '/backup'
+
+    for s:dir in [s:swap_dir, s:undo_dir, s:backup_dir]
+        if !isdirectory(s:dir)
+            silent! call mkdir(s:dir, 'p')
+        endif
+    endfor
+
+    if isdirectory(s:swap_dir) && exists('+directory')
+        let &directory = s:swap_dir . '//'
+    endif
+    if isdirectory(s:backup_dir) && exists('+directory')
+        let &directory = s:backup_dir . '//'
+    endif
+    if has('persistent_undo') && isdirectory(s:undo_dir)
+        if exists('+undodir')
+            let &undodir = s:undo_dir . '//'
+        endif
+        call s:Enable('undofile')
+    endif
 endif
 
-filetype plugin indent on
+" =============================================================================
+" Editing behavior
+" =============================================================================
+call s:Set('backspace', 'indent,eol,start')
+call s:Set('history', 1000)
+call s:Set('undolevels', 1000)
+
+call s:Enable('expandtab')
+call s:Set('tabstop', 4)
+call s:Set('softtabstop', 4)
+call s:Set('shiftwidth', 4)
+call s:Enable('shiftround')
+
+call s:Enable('autoindent')
+call s:Disable('smartindent')
+call s:Disable('cindent')
+
+call s:Disable('wrap')
+call s:Enable('linebreak')
+call s:Enable('breakindent')
+
+call s:Set('scrolloff', 8)
+call s:Set('sidescrolloff', 8)
+
+call s:Enable('ttimeout')
+call s:Set('tttimeoutlen', 50)
+
+call s:Set('mouse', 'nvi')
+
+" =============================================================================
+" Search
+" =============================================================================
+call s:Enable('incsearch')
+call s:Enable('hlsearch')
+call s:Enable('ignorecase')
+call s:Enable('smartcase')
+call s:Enable('magic')
+call s:Set('path', '.,,**')
+
+if exists('+inccommand')
+    call s:Set('inccommand', 'split')
+endif
+
+" =============================================================================
+" Command-line completion
+" =============================================================================
+call s:Enable('wildmenu')
+call s:Set('wildmode', 'longest:full,full')
+
+" =============================================================================
+" UI
+" =============================================================================
+call s:Enable('number')
+call s:Enable('relativenumber')
+call s:Enable('ruler')
+call s:Enable('showcmd')
+call s:Enable('showmode')
+call s:Set('laststatus', 2)
+call s:Enable('cursorline')
+call s:Set('signcolumn', 'yes')
+call s:Enable('list')
+call s:Set('listchars', 'tab:>-,trail:-,extends:>,precedes:<,nbsp:+')
+call s:Enable('splitbelow')
+call s:Enable('splitright')
+call s:Enable('lazyredraw')
+call s:Set('belloff', 'all')
+call s:Disable('errorbells')
+call s:Enable('visualbell')
+
+" =============================================================================
+" Colors
+" =============================================================================
+call s:Set('background', 'dark')
+
+if exists('+termguicolors') && (has('gui_running') || $COLORTERM =~? 'truecolor\|24bit')
+    set termguicolors
+endif
+
 if has('syntax')
     syntax enable
-    set cursorline
 endif
 
-" --- plugins -----------------------------------------------------------------
-call plug#begin('~/.vim/plugged')
+silent! colorscheme default
 
-Plug 'catppuccin/vim', { 'as': 'catppuccin' }
-Plug 'preservim/nerdtree'
-Plug 'mbbill/undotree'
-Plug 'vim-airline/vim-airline'
-Plug 'airblade/vim-gitgutter'
-Plug 'tpope/vim-commentary'
-Plug 'tpope/vim-surround'
-Plug 'tpope/vim-dispatch'
-Plug 'tpope/vim-vinegar'
-Plug 'tpope/vim-eunuch'
-Plug 'tpope/vim-sleuth'
-Plug 'tpope/vim-fugitive'
-Plug 'tpope/vim-unimpaired'
-Plug 'junegunn/fzf'
-Plug 'junegunn/fzf.vim'
-
-call plug#end()
-
-if VimrcPatch('9.0.1799')
-    let g:editorconfig = 1
-endif
-
-" --- ui ----------------------------------------------------------------------
-set number relativenumber
-set showcmd ruler
-set laststatus=2
-set scrolloff=8 sidescrolloff=8
-set splitbelow splitright
-set hidden autoread
-set lazyredraw
-set noerrorbells novisualbell t_vb=
-set backspace=indent,eol,start
-set ttimeout ttimeoutlen=50
-set updatetime=300
-set display=lastline
-set list listchars=tab:>\ ,trail:-,extends:>,precedes:<,nbsp:+
-set shortmess+=I
-set confirm
-set mouse=nvi
-
-if exists('+breakindent')
-    set breakindent
-endif
-if exists('+signcolumn')
-    set signcolumn=yes
-endif
-if has('cmdline_info')
-    set showcmd
-endif
-
-" --- colors  -----------------------------------------------------------------
-if has('termguicolors') && ($COLORTERM =~# 'truecolor\|24bit' || &term =~# 'kitty\|wezterm\|alacritty\|foot\|xterm-ghostty')
-    if &term !=# 'win32'
-        let &t_8f="\<Esc>[38;2;%lu;%lu;%lum"
-        let &t_8b="\<Esc>[48;2;%lu;%lu;%lum"
+" =============================================================================
+" Clipboard
+" =============================================================================
+if has('clipboard') && exists('+clipboard')
+    if has('unnamedplus')
+        set clipboard^=unnamedplus
+    elseif has('gui_macvim')
+        set clipboard^=unnamed
     endif
-    set termguicolors
-elseif &term =~# '256color'
-    set t_Co=256
-endif
-set background=dark
-silent! colorscheme catppuccin
-
-" --- finding files -----------------------------------------------------------
-set path=.,,**
-set suffixesadd=.h,.hpp,.c,.cc,.cpp,.java,.rs,.py,.ts,.js
-set wildmenu
-set wildmode=longest:full,full
-set wildignore+=*.o,*.a,*.so,*.pyc,*.class,*/.git/*,*/node_modules/*,*/target/*,*/build/*
-if exists('+wildignorecase')
-    set wildignorecase
-endif
-if VimrcPatch('8.2.4325') && exists('+wildoptions')
-    set wildoptions=pum,fuzzy
 endif
 
-" --- searching ---------------------------------------------------------------
-set ignorecase smartcase
-if has('extra_search')
-    set hlsearch incsearch
-endif
-if exists('+inccommand')
-    set inccommand=nosplit
-endif
+" =============================================================================
+" External CLI tools
+" =============================================================================
+if executable('rg') && exists('+grepprg')
+    set grepprg=rg\ --vimgrep\ --smart-case
 
-if executable('rg')
-    set grepprg=rg\ --vimgrep\ --smart-case\ --hidden\ --glob\ !.git
-    set grepformat=%f:%l:%c:%m
-else
-    set grepprg=grep\ -RIn\ --exclude-dir=.git\ $*\ /dev/null
-    set grepformat=%f:%l:%m
-endif
-
-command! -nargs=+ -complete=file Grep silent! grep! <args> | redraw!
-
-" --- indent ------------------------------------------------------------------
-set autoindent smartindent
-set expandtab
-set tabstop=4 softtabstop=4 shiftwidth=4
-set shiftround
-if v:version > 703
-    set formatoptions+=j
-endif
-
-" --- completion --------------------------------------------------------------
-set complete=.,w,b,u,t
-set completeopt=menu,menuone
-if VimrcPatch('8.1.1882')
-    set completeopt+=popup
-elseif v:version >= 800
-    set completeopt+=preview
-endif
-set pumheight=10
-set infercase
-
-" --- files -------------------------------------------------------------------
-set nobackup nowritebackup
-set history=1000
-set undolevels=1000
-set sessionoptions-=options
-set viewoptions-=options
-
-function! s:ensuredir(path) abort
-    if !isdirectory(expand(a:path)) && exists("*mkdir")
-        silent! call mkdir(expand(a:path), 'p', 0700)
+    if exists('+grepformat')
+        set grepformat=%f:%l:%c:%m
     endif
-    return isdirectory(expand(a:path))
-endfunction
-
-if s:ensuredir('~/.vim/swap')
-    set directory=~/.vim/swap//,.
-endif
-if has('persistent_undo') && s:ensuredir('~/.vim/undo')
-    set undodir=~/.vim/undo
-    set undofile
 endif
 
-" --- netrw -------------------------------------------------------------------
-let g:netrw_banner = 0
-let g:netrw_liststyle = 3
-let g:netrw_altv = 1
-let g:netrw_winsize = 25
-let g:netrw_list_hide = '^\.\.\=/\=$'
+" =============================================================================
+" Filetype Support
+" =============================================================================
+if has('autocmd')
+    filetype plugin indent on
+endif
 
-" --- autocmds ----------------------------------------------------------------
-augroup vimrc_core
-    autocmd!
-    autocmd BufReadPost * if line("'\"") > 0 && line("'\"") <= line('$')
-        \ | execute 'normal! g`"' | endif
-    autocmd QuickFixCmdPost [^l]* nested cwindow
-    autocmd QuickFixCmdPost l* nested lwindow
-    autocmd InsertEnter * setlocal nolist
-    autocmd InsertLeave * setlocal list
-augroup END
+" =============================================================================
+" Keymaps
+" =============================================================================
+let mapleader = ' '
+let maplocalleader = ','
 
-" --- keymaps -----------------------------------------------------------------
-nnoremap <Space> <Nop>
+nnoremap <silent> <leader>w :write<CR>
+nnoremap <silent> <leader>q :quit<CR>
 
-nnoremap <expr> j v:count == 0 ? 'gj' : 'j'
-nnoremap <expr> k v:count == 0 ? 'gk' : 'k'
-xnoremap <expr> j v:count == 0 ? 'gj' : 'j'
-xnoremap <expr> k v:count == 0 ? 'gk' : 'k'
-nnoremap <C-d> <C-d>zz
-nnoremap <C-u> <C-u>zz
-nnoremap n nzzzv
-nnoremap N Nzzzv
-
-xnoremap < <gv
-xnoremap > >gv
-xnoremap <silent> J :move '>+1<CR>gv=gv
-xnoremap <silent> K :move '<-2<CR>gv=gv
-nnoremap Y y$
-nnoremap <silent> <leader>h :nohlsearch<CR>
+nnoremap <silent> <Esc> :nohlsearch<CR>
 
 nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
 
-nnoremap <leader>w :write<CR>
-nnoremap <leader>q :quit<CR>
-nnoremap <leader>e :Explore<CR>
-nnoremap <leader><Space> :find<Space>
-nnoremap <leader>, :buffer<Space>
-nnoremap <leader>bd :bdelete<CR>
+xnoremap < <gv
+xnoremap > >gv
 
-command! -nargs=+ -complete=file Grep silent! grep! <args> | redraw!
-nnoremap <leader>/ :Grep<Space>
-nnoremap <leader>* :Grep <C-r><C-w><CR>
-xnoremap <leader>* y:Grep <C-r>"<CR>
+" =============================================================================
+" Autocmds
+" =============================================================================
+if has('autocmd')
+    augroup config
+        autocmd!
 
-nmap <leader>e -
-
-nnoremap <leader>gs :Git<CR>
-nnoremap <leader>gb :Git blame<CR>
-nnoremap <leader>gd :Gvdiffsplit<CR>
-nnoremap <leader>gl :Git log --oneline<CR>
-
-let g:fzf_layout = {'down': '40%'}
-let $FZF_DEFAULT_COMMAND = executable('rg')
-        \ ? 'rg --files --hidden --glob !.git'
-        \ : 'find . -type f -not -path "*/.git/*"'
-nnoremap <leader><space> :Files<CR>
-nnoremap <leader>, :Buffers<CR>
-nnoremap <leader>/ :Rg<CR>
-
-function! s:toggle_qf(which) abort
-    let l:loclist = a:which !=# 'c'
-    for l:w in range(1, winnr('$'))
-        if getwinvar(l:w, '&buftype') ==# 'quickfix'
-                    \ && (!empty(getloclist(l:w))) == l:loclist
-            execute l:loclist ? 'lclose' : 'cclose'
-            return
+        if exists('##FocusGained')
+            autocmd FocusGained * silent! checktime
         endif
-    endfor
-    if l:loclist && empty(getloclist(0))
-        echohl WarningMsg | echomsg 'no location list' | echohl None
-        return
-    endif
-    execute l:loclist ? 'lopen' : 'botright copen'
-endfunction
-nnoremap <silent> <leader>xq :call <SID>toggle_qf('c')<CR>
-nnoremap <silent> <leader>xl :call <SID>toggle_qf('l')<CR>
 
-inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<CR>"
-
-if exists(':terminal') == 2
-    tnoremap <Esc><Esc> <C-\><C-n>
-    nnoremap <leader>t :terminal<CR>
+        autocmd FileType make setlocal noexpandtab
+        autocmd FileType gitcommit,markdown,text setlocal wrap linebreak
+    augroup END
 endif
 
-" --- statusline --------------------------------------------------------------
-function! VimrcMode() abort
-    let l:m = mode()
-    let l:map = {'n': 'NORMAL', 'i': 'INSERT', 'R': 'REPLACE', 'v': 'VISUAL',
-        \ 'V': 'V-LINE', "\<C-v>": 'V-BLOCK', 'c': 'COMMAND', 's': 'SELECT',
-        \ 'S': 'S-LINE', "\<C-s>": 'S-BLOCK', 't': 'TERMINAL', '!': 'SHELL'}
-    return get(l:map, l:m, toupper(l:m))
-endfunction
-
-function! VimrcGitBranch() abort
-    if !exists('b:vimrc_branch')
-        let b:vimrc_branch = ''
-        if exists('*FugitiveHead')
-            let b:vimrc_branch = FugitiveHead()
-        elseif executable('git')
-            let l:dir = expand('%:p:h')
-            if l:dir !=# ''
-                let l:out = system('git -C ' . shellescape(l:dir) . ' rev-parse --abbrev-ref HEAD 2>/dev/null')
-                if v:shell_error == 0
-                    let b:vimrc_branch = substitute(l:out, '\n', '', 'g')
-                endif
-            endif
-        endif
-    endif
-    return b:vimrc_branch ==# '' ? '' : ' ' . b:vimrc_branch . ' '
-endfunction
-
-augroup vimrc_statusline
-    autocmd!
-    autocmd BufEnter,BufWritePost * unlet! b:vimrc_branch
-augroup END
-
-set laststatus=2
-set noshowmode
-set statusline=
-set statusline+=%#PmenuSel#\ %{VimrcMode()}\ %*
-set statusline+=%{VimrcGitBranch()}
-set statusline+=\ %f
-set statusline+=%m%r%h%w
-set statusline+=%=
-set statusline+=%{&filetype}\ 
-set statusline+=%{&fileformat}\ 
-set statusline+=%{(&fileencoding!=''?&fileencoding:&encoding)}\ 
-set statusline+=%#PmenuSel#\ %2l:%-2v\ %3p%%\ %*
-
-" --- clipboard ---------------------------------------------------------------
-if has('clipboard') && empty($SSH_TTY) && empty($SSH_CONNECTION)
-    set clipboard=unnamed
-    if has('unnamedplus')
-        set clipboard=unnamedplus
-    endif
+" =============================================================================
+" Plugins
+" =============================================================================
+let s:has_vim_plug = 0
+if exists('*globpath')
+    let s:has_vim_plug = !empty(globpath(&runtimepath, 'autoload/plug.vim'))
 endif
 
-let s:b64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+if s:has_vim_plug
+    call plug#begin(expand('~/.vim/plugged'))
 
-function! s:b64encode(str) abort
-    let l:bytes = []
-    for l:i in range(len(a:str))
-        call add(l:bytes, char2nr(a:str[l:i]))
-    endfor
-    let l:out = ''
-    let l:i = 0
-    let l:n = len(l:bytes)
-    while l:i < l:n
-        let l:b0 = l:bytes[l:i]
-        let l:b1 = (l:i + 1 < l:n) ? l:bytes[l:i + 1] : 0
-        let l:b2 = (l:i + 2 < l:n) ? l:bytes[l:i + 2] : 0
-        let l:out .= s:b64[l:b0 / 4]
-        let l:out .= s:b64[(l:b0 % 4) * 16 + l:b1 / 16]
-        let l:out .= (l:i + 1 < l:n) ? s:b64[(l:b1 % 16) * 4 + l:b2 / 64] : '='
-        let l:out .= (l:i + 2 < l:n) ? s:b64[l:b2 % 64] : '='
-        let l:i += 3
-    endwhile
-    return l:out
-endfunction
+    Plug 'catppuccin/vim', { 'as': 'catppuccin' }
+    Plug 'tpope/vim-commentary'
+    Plug 'tpope/vim-surround'
+    Plug 'tpope/vim-dispatch'
+    Plug 'tpope/vim-sleuth'
+    Plug 'tpope/vim-unimpaired'
+    Plug 'tpope/vim-fugitive'
+    Plug 'airblade/vim-gitgutter'
+    Plug 'christoomey/vim-tmux-navigator'
+    Plug 'junegunn/fzf'
+    Plug 'junegunn/fzf.vim'
+    Plug 'preservim/nerdtree', { 'on': 'NERDTreeToggle' }
+    Plug 'neoclide/coc.nvim', { 'branch': 'release' }
 
-function! VimrcOsc52(text) abort
-    let l:seq = "\<Esc>]52;c;" . s:b64encode(a:text) . "\<Esc>\\"
-    if !empty($TMUX)
-        let l:seq = "\<Esc>Ptmux;" . substitute(l:seq, "\<Esc>", "\<Esc>\<Esc>", 'g') . "\<Esc>\\"
-    elseif &term =~# '^screen'
-        let l:seq = "\<Esc>P" . substitute(l:seq, "\<Esc>", "\<Esc>\<Esc>", 'g') . "\<Esc>\\"
-    endif
-    if filewritable('/dev/tty')
-        call writefile([l:seq], '/dev/tty', 'b')
+    call plug#end()
+
+    silent! colorscheme catppuccin_mocha
+
+    nnoremap <silent> <leader>sf :Files<CR>
+    nnoremap <silent> <leader>gs :Git<CR>
+
+    nnoremap <silent> <leader>e :NERDTreeToggle<CR>
+
+    inoremap <silent><expr> <TAB>
+        \ coc#pum#visible() ? coc#pum#next(1) :
+        \ CheckBackspace() ? "\<Tab>" :
+        \ coc#refresh()
+    inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
+    inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
+        \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
+
+    function! CheckBackspace() abort
+        let col = col('.') - 1
+        return !col || getline('.')[col - 1]  =~# '\s'
+    endfunction
+
+    nnoremap <silent> K :call ShowDocumentation()\<CR>
+
+    function! ShowDocumentation()
+    if index(['vim','help'], &filetype) >= 0
+        execute 'h '.expand('<cword>')
+    elseif coc#rpc#ready()
+        call CocActionAsync('doHover')
     else
-        silent! execute "!printf '%s' " . shellescape(l:seq)
-        redraw!
+        execute '!' . &keywordprg . " " . expand('<cword>')
     endif
-endfunction
+    endfunction
 
-function! s:yank_osc52(type) abort
-    let l:save = @@
-    if a:type ==# 'line'
-        silent normal! '[V']y
-    elseif a:type ==# 'visual'
-        silent normal! gvy
-    elseif a:type ==# 'block'
-        silent execute "normal! `[\<C-v>`]y"
-    else
-        silent normal! `[v`]y
-    endif
-    call VimrcOsc52(@@)
-    let @@ = l:save
-endfunction
+    nmap <silent> gd <Plug>(coc-definition)
+    nmap <silent> gy <Plug>(coc-type-definition)
+    nmap <silent> gi <Plug>(coc-implementation)
+    nmap <silent> gr <Plug>(coc-references)
 
-nnoremap <silent> <leader>y :set operatorfunc=<SID>yank_osc52<CR>g@
-nnoremap <silent> <leader>yy :call <SID>yank_osc52('line')<CR>
-xnoremap <silent> <leader>y :<C-u>call <SID>yank_osc52('visual')<CR>
-command! -range=% Copy silent execute <line1> . ',' . <line2> . 'yank' |
-            \ call VimrcOsc52(@@)
+    nmap <leader>rn <Plug>(coc-rename)
+
+    xmap <leader>f  <Plug>(coc-format-selected)
+    nmap <leader>f  <Plug>(coc-format-selected)
+
+    autocmd CursorHold * silent call CocActionAsync('highlight')
+endif
+
+" =============================================================================
+" Cleanup
+" =============================================================================
+unlet! s:has_vim_plug
+unlet! s:state_dir
+unlet! s:swap_dir
+unlet! s:undo_dir
+unlet! s:backup_dir
