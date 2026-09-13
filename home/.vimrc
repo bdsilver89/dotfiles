@@ -32,6 +32,7 @@ Plug 'catppuccin/vim', { 'as': 'catppuccin' }
 Plug 'preservim/nerdtree'
 Plug 'mbbill/undotree'
 Plug 'vim-airline/vim-airline'
+Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-dispatch'
