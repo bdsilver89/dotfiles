@@ -88,6 +88,11 @@ set background=dark
 
 if exists('+termguicolors') && (has('gui_running') || $COLORTERM =~? 'truecolor\|24bit')
     set termguicolors
+
+    if &term =~# '256color' || &term =~# 'tmux'
+        let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+        let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+    endif
 endif
 
 if has('syntax')
@@ -154,7 +159,7 @@ nnoremap <silent> <leader>q :quit<CR>
 nnoremap <silent> <leader>w :write<CR>
 nnoremap <silent> <leader>bd :bd<CR>
 
-nnoremap <silent> <Esc> :nohlsearch<CR>
+nnoremap <silent> <Esc><Esc> :nohlsearch<CR>
 
 nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
@@ -265,9 +270,7 @@ if s:has_vim_plug
         Plug 'junegunn/fzf.vim'
 
         Plug 'vim-polyglot/vim-polyglot'
-        if has('patch-9.0.0438') && executable('node')
-            Plug 'neoclide/coc.nvim', { 'branch': 'release' }
-        endif
+        Plug 'dense-analysis/ale'
         Plug 'vim-test/vim-test'
     endif
 
@@ -297,35 +300,42 @@ if s:has_vim_plug
     endif
 endif
 
-let s:has_coc = s:has_vim_plug
-            \ && s:PluginInstalled('coc.nvim')
-            \ && has('patch-9.0.0438')
-            \ && executable('node')
-if s:has_coc
-    let g:coc_global_extensions = [
-                \ 'coc-clangd',
-                \ 'coc-java',
-                \ 'coc-pyright',
-                \ 'coc-rust-analyzer',
-                \ ]
-    let g:coc_format_on_save = 1
+let s:has_ale = s:has_vim_plug && s:PluginInstalled('ale')
+if s:has_ale
+    let g:ale_completion_enabled = 1
+    let g:ale_fix_on_save = 1
+    let g:ale_linters_explicit = 1
+    let g:ale_linters = {
+                \ 'c': ['clangd'],
+                \ 'cpp': ['clangd'],
+                \ 'java': ['eclipselsp'],
+                \ 'python': ['pyright'],
+                \ 'rust': ['analyzer'],
+                \ }
+    let g:ale_fixers = {
+                \ 'c': ['clang-format'],
+                \ 'cpp': ['clang-format'],
+                \ 'java': ['google_java_format'],
+                \ 'python': ['black'],
+                \ 'rust': ['rustfmt'],
+                \ }
+    set completeopt=menu,menuone,noselect,noinsert
 
     inoremap <silent><expr> <Tab>
-        \ coc#pum#visible() ? coc#pum#next(1) :
+        \ pumvisible() ? "\<C-n>" :
         \ <SID>CheckBackspace() ? "\<Tab>" :
-        \ coc#refresh()
-    inoremap <expr><S-Tab> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
-    inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
-        \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+        \ "\<C-x>\<C-o>"
+    inoremap <expr><S-Tab> pumvisible() ? "\<C-p>" : "\<C-h>"
+    inoremap <silent><expr> <CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
     function! s:CheckBackspace() abort
         let l:column = col('.') - 1
         return !l:column || getline('.')[l:column - 1] =~# '\s'
     endfunction
 
-    function! s:ToggleCocFormatOnSave() abort
-        let g:coc_format_on_save = !get(g:, 'coc_format_on_save', 0)
-        echo 'Coc format on save ' . (g:coc_format_on_save ? 'enabled' : 'disabled')
+    function! s:ToggleAleFixOnSave() abort
+        let g:ale_fix_on_save = !get(g:, 'ale_fix_on_save', 0)
+        echo 'ALE fix on save ' . (g:ale_fix_on_save ? 'enabled' : 'disabled')
     endfunction
 
     nnoremap <silent> K :call <SID>ShowDocumentation()<CR>
@@ -333,35 +343,24 @@ if s:has_coc
     function! s:ShowDocumentation() abort
         if index(['vim', 'help'], &filetype) >= 0
             execute 'help ' . expand('<cword>')
-        elseif coc#rpc#ready()
-            call CocActionAsync('doHover')
+        elseif exists(':ALEHover') == 2
+            ALEHover
         else
             execute '!' . &keywordprg . ' ' . shellescape(expand('<cword>'))
         endif
     endfunction
 
-    " Match Neovim 0.12's built-in LSP mappings.
-    nmap <silent> gd  <Plug>(coc-definition)
-    nmap <silent> gri <Plug>(coc-implementation)
-    nmap <silent> grn <Plug>(coc-rename)
-    nmap <silent> grr <Plug>(coc-references)
-    nmap <silent> grt <Plug>(coc-type-definition)
-    nmap <silent> grx <Plug>(coc-codelens-action)
-    nmap <silent> gra <Plug>(coc-codeaction-cursor)
-    xmap <silent> gra <Plug>(coc-codeaction-selected)
-    nnoremap <silent> gO :call CocActionAsync('showOutline')<CR>
+    nmap <silent> gd  <Plug>(ale_go_to_definition)
+    nmap <silent> gri <Plug>(ale_go_to_implementation)
+    nnoremap <silent> grn :ALERename<CR>
+    nmap <silent> grr <Plug>(ale_find_references)
+    nmap <silent> grt <Plug>(ale_go_to_type_definition)
+    nnoremap <silent> gra :ALECodeAction<CR>
+    xnoremap <silent> gra :ALECodeAction<CR>
 
-    nmap <silent> [d <Plug>(coc-diagnostic-prev)
-    nmap <silent> ]d <Plug>(coc-diagnostic-next)
+    nmap <silent> [d <Plug>(ale_previous_wrap)
+    nmap <silent> ]d <Plug>(ale_next_wrap)
 
-    xmap <leader>f <Plug>(coc-format-selected)
-    nmap <leader>f <Plug>(coc-format-selected)
-    nnoremap <silent> <leader>uf :call <SID>ToggleCocFormatOnSave()<CR>
-
-    if has('autocmd')
-        augroup coc_format_on_save
-            autocmd!
-            autocmd BufWritePre * if get(g:, 'coc_format_on_save', 0) && coc#rpc#ready() | silent call CocAction('format') | endif
-        augroup END
-    endif
+    nmap <leader>f <Plug>(ale_fix)
+    nnoremap <silent> <leader>uf :call <SID>ToggleAleFixOnSave()<CR>
 endif
