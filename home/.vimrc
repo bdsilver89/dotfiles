@@ -293,7 +293,10 @@ if s:has_vim_plug
         nnoremap <silent> <leader>sb :Buffers<CR>
     endif
     if s:PluginInstalled('vim-fugitive')
+        nnoremap <silent> <leader>gg :!lazygit<CR>
         nnoremap <silent> <leader>gs :Git<CR>
+        nnoremap <silent> <leader>gl :Commits<CR>
+        nnoremap <silent> <leader>gf :BCommits<CR>
     endif
     if s:PluginInstalled('vim-vinegar')
         nmap <silent> - <Plug>VinegarUp
@@ -305,6 +308,9 @@ if s:has_ale
     let g:ale_completion_enabled = 1
     let g:ale_fix_on_save = 1
     let g:ale_linters_explicit = 1
+    let g:ale_java_eclipselsp_path =
+                \ (empty($XDG_DATA_HOME) ? expand('~/.local/share') : $XDG_DATA_HOME)
+                \ . '/jdtls/current'
     let g:ale_linters = {
                 \ 'c': ['clangd'],
                 \ 'cpp': ['clangd'],
