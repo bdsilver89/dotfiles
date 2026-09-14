@@ -7,6 +7,7 @@ vim.g.maplocalleader = " "
 vim.o.autocomplete = true
 vim.o.autocompletedelay = 200
 vim.o.clipboard = "unnamedplus"
+vim.o.cmdheight = 0
 vim.o.complete = ".,w,b,o"
 vim.o.completeopt = "menu,menuone,noselect,preview,fuzzy"
 vim.o.confirm = true
@@ -35,20 +36,7 @@ vim.o.undofile = true
 vim.o.virtualedit = "block"
 vim.o.wrap = false
 
-vim.diagnostic.config({
-  severity_sort = true,
-  virtual_lines = { current_line = true },
-  signs = {
-    text = {
-      [vim.diagnostic.severity.ERROR] = " ",
-      [vim.diagnostic.severity.WARN] = " ",
-      [vim.diagnostic.severity.HINT] = " ",
-      [vim.diagnostic.severity.INFO] = " ",
-    },
-  },
-})
-
-require("vim._core.ui2").enable({})
+require("vim._core.ui2").enable({ msg = { targets = "msg" } })
 
 -- ============================================================================
 -- Keymaps
@@ -110,33 +98,10 @@ vim.api.nvim_create_autocmd("VimResized", {
   command = "wincmd =",
 })
 
-vim.api.nvim_create_autocmd("LspAttach", {
+vim.api.nvim_create_autocmd("Filetype", {
   group = group,
-  callback = function(ev)
-    local client = vim.lsp.get_client_by_id(ev.data.client_id)
-
-    vim.keymap.set("n", "gd", vim.lsp.buf.definition, { desc = "vim.lsp.buf.definition()", buffer = ev.buf })
-    vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { desc = "vim.lsp.buf.declaration()", buffer = ev.buf })
-    vim.keymap.set("n", "gW", vim.lsp.buf.workspace_symbol, { desc = "vim.lsp.buf.workspace_symbol()", buffer = ev.buf })
-
-    if client and client:supports_method("textDocument/completion") then
-      vim.lsp.completion.enable(true, client.id, ev.buf)
-    end
-  end,
-})
-
-vim.api.nvim_create_autocmd("PackChanged", {
-  group = group,
-  callback = function(ev)
-    local name, kind = ev.data.spec.name, ev.data.kind
-    if kind ~= "install" and kind ~= "update" then
-      return
-    end
-    if name == "nvim-treesitter" then
-      if not ev.data.active then vim.cmd.packadd("nvim-treesitter") end
-      vim.cmd("TSUpdate")
-    end
-  end,
+  pattern = "directory",
+  callback = function() vim.opt_local.bufhidden = "wipe" end,
 })
 
 -- ============================================================================
@@ -152,6 +117,7 @@ vim.pack.add({
   "https://github.com/tpope/vim-dispatch",
   "https://github.com/tpope/vim-sleuth",
   "https://github.com/christoomey/vim-tmux-navigator",
+  "https://github.com/vim-test/vim-test",
 })
 
 vim.cmd.colorscheme("catppuccin")
@@ -176,6 +142,10 @@ vim.api.nvim_create_autocmd("FileType", {
   group = group,
   callback = function(ev) pcall(vim.treesitter.start, ev.buf) end,
 })
+vim.api.nvim_create_autocmd("PackChanged", {
+  pattern = "nvim-treesitter",
+  command = "TSUpdate"
+})
 
 require("fzf-lua").setup({
   keymap = {
@@ -185,10 +155,64 @@ require("fzf-lua").setup({
 require("fzf-lua").register_ui_select()
 
 vim.keymap.set("n", "<leader>sf", "<cmd>FzfLua files<cr>")
+vim.keymap.set("n", "<leader>sg", "<cmd>FzfLua live_grep<cr>")
 vim.keymap.set("n", "<leader>sb", "<cmd>FzfLua buffers<cr>")
 
 vim.keymap.set("n", "<leader>gb", "<cmd>FzfLua git_branches<cr>")
 vim.keymap.set("n", "<leader>gl", "<cmd>FzfLua git_commits<cr>")
 vim.keymap.set("n", "<leader>gs", "<cmd>FzfLua git_status<cr>")
 
-vim.lsp.enable({ "clangd" })
+
+-- ============================================================================
+-- LSP
+-- ============================================================================
+vim.diagnostic.config({
+  severity_sort = true,
+  virtual_lines = { current_line = true },
+  signs = {
+    text = {
+      [vim.diagnostic.severity.ERROR] = " ",
+      [vim.diagnostic.severity.WARN] = " ",
+      [vim.diagnostic.severity.HINT] = " ",
+      [vim.diagnostic.severity.INFO] = " ",
+    },
+  },
+})
+
+vim.lsp.enable({ "basedpyright", "clangd", "jdtls", "rust_analyzer" })
+
+vim.api.nvim_create_autocmd("LspProgress", {
+  group = group,
+  callback = function(ev)
+    local client = vim.lsp.get_client_by_id(ev.data.client_id)
+    local value = ev.data.params.value
+    local token = ev.data.params.token or "default"
+    local icon = value.kind == "end" and "" or ""
+    local text = value.message or (value.kind == "end" and "Done" or "Loading...")
+    local client_name = client and client.name or "LSP"
+    local display_str = string.format("[%s] %s %s: %s", client_name, icon, value.title or "", text)
+    vim.api.nvim_echo({ { display_str } }, false, {
+      id = "lsp_progress_" .. ev.data.client_id .. "_" .. tostring(token),
+      kind = "progress",
+      source = "vim.lsp",
+      title = value.title,
+      status = value.kind ~= "end" and "running" or "success",
+      percent = value.percent,
+    })
+  end,
+})
+
+vim.api.nvim_create_autocmd("LspAttach", {
+  group = group,
+  callback = function(ev)
+    local client = vim.lsp.get_client_by_id(ev.data.client_id)
+
+    vim.keymap.set("n", "gd", vim.lsp.buf.definition, { desc = "vim.lsp.buf.definition()", buffer = ev.buf })
+    vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { desc = "vim.lsp.buf.declaration()", buffer = ev.buf })
+    vim.keymap.set("n", "gW", vim.lsp.buf.workspace_symbol, { desc = "vim.lsp.buf.workspace_symbol()", buffer = ev.buf })
+
+    if client and client:supports_method("textDocument/completion") then
+      vim.lsp.completion.enable(true, client.id, ev.buf)
+    end
+  end,
+})

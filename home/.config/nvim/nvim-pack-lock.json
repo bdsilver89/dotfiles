@@ -32,6 +32,10 @@
       "rev": "be69bff86754b1aa5adcbb527d7fcd1635a84080",
       "src": "https://github.com/tpope/vim-sleuth"
     },
+    "vim-test": {
+      "rev": "f688a3e084779aaaed01ddeba48a0a2164b228ef",
+      "src": "https://github.com/vim-test/vim-test"
+    },
     "vim-tmux-navigator": {
       "rev": "e41c431a0c7b7388ae7ba341f01a0d217eb3a432",
       "src": "https://github.com/christoomey/vim-tmux-navigator"
