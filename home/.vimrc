@@ -2,42 +2,11 @@ set nocompatible
 scriptencoding utf-8
 
 " =============================================================================
-" Helpers
-" =============================================================================
-function! s:Enable(name) abort
-    if exists('+' . a:name)
-        execute 'set ' . a:name
-    endif
-endfunction
-
-function! s:Disable(name) abort
-    if exists('+' . a:name)
-        execute 'set no' . a:name
-    endif
-endfunction
-
-function! s:Set(name, value) abort
-    if exists('+' . a:name)
-        execute 'let &' . a:name . ' = ' . string(a:value)
-    endif
-endfunction
-
-" =============================================================================
 " Encoding and file formats
 " =============================================================================
-call s:Set('encoding', 'utf-8')
-call s:Set('fileencodings', 'utf-8,latin1')
-call s:Set('fileformats', 'unix,dos')
-
-call s:Enable('hidden')
-call s:Enable('autoread')
-call s:Enable('confirm')
-call s:Enable('swapfile')
-call s:Set('updatetime', 300)
-call s:Disable('backup')
-call s:Enable('writebackup')
-call s:Disable('modeline')
-call s:Disable('writeany')
+set encoding=utf-8 fileencodings=utf-8,latin1 fileformats=unix,dos
+set hidden autoread confirm swapfile updatetime=300
+set nobackup writebackup nomodeline nowriteany
 
 " =============================================================================
 " State directories
@@ -64,86 +33,58 @@ if exists('*mkdir') && exists('*isdirectory')
         if exists('+undodir')
             let &undodir = s:undo_dir . '//'
         endif
-        call s:Enable('undofile')
+        set undofile
     endif
 endif
 
 " =============================================================================
 " Editing behavior
 " =============================================================================
-call s:Set('backspace', 'indent,eol,start')
-call s:Set('history', 1000)
-call s:Set('undolevels', 1000)
+set backspace=indent,eol,start history=1000 undolevels=1000
+set expandtab tabstop=4 softtabstop=4 shiftwidth=4 shiftround
+set autoindent nosmartindent nocindent
+set nowrap scrolloff=8 sidescrolloff=8
 
-call s:Enable('expandtab')
-call s:Set('tabstop', 4)
-call s:Set('softtabstop', 4)
-call s:Set('shiftwidth', 4)
-call s:Enable('shiftround')
+if exists('+linebreak') | set linebreak | endif
+if exists('+breakindent') | set breakindent | endif
 
-call s:Enable('autoindent')
-call s:Disable('smartindent')
-call s:Disable('cindent')
-
-call s:Disable('wrap')
-call s:Enable('linebreak')
-call s:Enable('breakindent')
-
-call s:Set('scrolloff', 8)
-call s:Set('sidescrolloff', 8)
-
-call s:Enable('ttimeout')
-call s:Set('ttimeoutlen', 50)
-
-call s:Set('mouse', 'nvi')
+set ttimeout ttimeoutlen=50 mouse=nvi
 
 " =============================================================================
 " Search
 " =============================================================================
-call s:Enable('incsearch')
-call s:Enable('hlsearch')
-call s:Enable('ignorecase')
-call s:Enable('smartcase')
-call s:Enable('magic')
+set incsearch hlsearch ignorecase smartcase magic
 
 if exists('+inccommand')
-    call s:Set('inccommand', 'split')
+    set inccommand=split
 endif
 
 " =============================================================================
 " Command-line completion
 " =============================================================================
-call s:Enable('wildmenu')
-call s:Set('wildmode', 'longest:full,full')
+set wildmenu wildmode=longest:full,full
 
 " =============================================================================
 " UI
 " =============================================================================
-call s:Enable('number')
-call s:Enable('relativenumber')
-call s:Enable('ruler')
-call s:Enable('showcmd')
-call s:Enable('showmode')
-call s:Set('laststatus', 2)
-call s:Enable('cursorline')
-call s:Set('signcolumn', 'yes')
-call s:Enable('list')
-call s:Set('listchars', 'tab:>-,trail:-,extends:>,precedes:<,nbsp:+')
-call s:Enable('splitbelow')
-call s:Enable('splitright')
-call s:Enable('lazyredraw')
-if exists('+belloff')
-    call s:Set('belloff', 'all')
-else
-    call s:Disable('errorbells')
-    call s:Enable('visualbell')
+set number relativenumber ruler showcmd showmode laststatus=2
+set cursorline list listchars=tab:>-,trail:-,extends:>,precedes:<,nbsp:+
+set splitbelow splitright lazyredraw pumheight=10
+
+if exists('+signcolumn')
+    set signcolumn=yes
 endif
-call s:Set('pumheight', 10)
+
+if exists('+belloff')
+    set belloff=all
+else
+    set noerrorbells visualbell
+endif
 
 " =============================================================================
 " Colors
 " =============================================================================
-call s:Set('background', 'dark')
+set background=dark
 
 if exists('+termguicolors') && (has('gui_running') || $COLORTERM =~? 'truecolor\|24bit')
     set termguicolors
@@ -287,13 +228,15 @@ if has('patch-9.0.1799') && exists(':packadd') == 2 && exists('*globpath')
 endif
 
 if s:has_vim_plug
-    call s:Enable('loadplugins')
+    set loadplugins
 else
-    call s:Disable('loadplugins')
+    set noloadplugins
 endif
 
 if s:has_vim_plug
     call plug#begin(expand('~/.vim/plugged'))
+
+    let g:lightline = { 'colorscheme': 'catppuccin' }
 
     " Current plugin releases target modern Vim. Vim 7 keeps core config only.
     if v:version >= 800
@@ -301,24 +244,31 @@ if s:has_vim_plug
             Plug 'editorconfig/editorconfig-vim'
         endif
         Plug 'catppuccin/vim', { 'as': 'catppuccin' }
+        Plug 'Yggdroot/indentLine'
+        " Plug 'vim-airline/vim-airline'
+        Plug 'itchyny/lightline.vim'
+        Plug 'machakann/vim-highlightedyank'
+
+        Plug 'mbbill/undotree'
         Plug 'tpope/vim-commentary'
         Plug 'tpope/vim-surround'
         Plug 'tpope/vim-dispatch'
         Plug 'tpope/vim-sleuth'
         Plug 'tpope/vim-unimpaired'
+        Plug 'tpope/vim-vinegar'
+
         Plug 'tpope/vim-fugitive'
         Plug 'airblade/vim-gitgutter'
-        Plug 'vim-airline/vim-airline'
+
         Plug 'christoomey/vim-tmux-navigator'
         Plug 'junegunn/fzf'
         Plug 'junegunn/fzf.vim'
-        Plug 'tpope/vim-vinegar'
-        Plug 'machakann/vim-highlightedyank'
-        Plug 'vim-test/vim-test'
-    endif
 
-    if has('patch-9.0.0438') && executable('node')
-        Plug 'neoclide/coc.nvim', { 'branch': 'release' }
+        Plug 'vim-polyglot/vim-polyglot'
+        if has('patch-9.0.0438') && executable('node')
+            Plug 'neoclide/coc.nvim', { 'branch': 'release' }
+        endif
+        Plug 'vim-test/vim-test'
     endif
 
     call plug#end()
@@ -352,76 +302,30 @@ let s:has_coc = s:has_vim_plug
             \ && has('patch-9.0.0438')
             \ && executable('node')
 if s:has_coc
-    function! s:EnsureCocExtensions(extensions) abort
-        let l:data_home = get(g:, 'coc_data_home', '')
-        if empty(l:data_home)
-            let l:data_home = empty($XDG_CONFIG_HOME)
-                        \ ? expand('~/.config/coc')
-                        \ : expand($XDG_CONFIG_HOME . '/coc')
-        endif
-        let l:root = l:data_home . '/extensions'
-        if !isdirectory(l:root)
-            call mkdir(l:root, 'p')
-        endif
-
-        let l:package_json = l:root . '/package.json'
-        if !filereadable(l:package_json)
-            call writefile(['{"dependencies":{}}'], l:package_json)
-        endif
-
-        let l:missing = []
-        for l:extension in a:extensions
-            if !filereadable(l:root . '/node_modules/' . l:extension . '/package.json')
-                call add(l:missing, l:extension)
-            endif
-        endfor
-
-        if !empty(l:missing) && executable('npm')
-            echom 'Installing Coc extensions: ' . join(l:missing, ', ')
-            redraw
-            let l:command = 'npm install --prefix ' . shellescape(l:root)
-                        \ . ' --ignore-scripts --no-package-lock --omit=dev'
-                        \ . ' --legacy-peer-deps --no-global'
-            for l:extension in l:missing
-                let l:command .= ' ' . shellescape(l:extension)
-            endfor
-            let l:output = system(l:command)
-            if v:shell_error
-                echohl WarningMsg
-                echom 'Coc extension install failed: ' . substitute(l:output, '\n\+$', '', '')
-                echohl None
-            endif
-        endif
-
-        let l:installed = []
-        for l:extension in a:extensions
-            if filereadable(l:root . '/node_modules/' . l:extension . '/package.json')
-                call add(l:installed, l:extension)
-            endif
-        endfor
-        return l:installed
-    endfunction
-
-    let s:coc_extensions = [
+    let g:coc_global_extensions = [
                 \ 'coc-clangd',
                 \ 'coc-java',
                 \ 'coc-pyright',
                 \ 'coc-rust-analyzer',
                 \ ]
-    let g:coc_global_extensions = s:EnsureCocExtensions(s:coc_extensions)
+    let g:coc_format_on_save = 1
 
-    inoremap <silent><expr> <TAB>
+    inoremap <silent><expr> <Tab>
         \ coc#pum#visible() ? coc#pum#next(1) :
         \ <SID>CheckBackspace() ? "\<Tab>" :
         \ coc#refresh()
-    inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
+    inoremap <expr><S-Tab> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
     inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
         \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
-
     function! s:CheckBackspace() abort
-        let col = col('.') - 1
-        return !col || getline('.')[col - 1]  =~# '\s'
+        let l:column = col('.') - 1
+        return !l:column || getline('.')[l:column - 1] =~# '\s'
+    endfunction
+
+    function! s:ToggleCocFormatOnSave() abort
+        let g:coc_format_on_save = !get(g:, 'coc_format_on_save', 0)
+        echo 'Coc format on save ' . (g:coc_format_on_save ? 'enabled' : 'disabled')
     endfunction
 
     nnoremap <silent> K :call <SID>ShowDocumentation()<CR>
@@ -450,27 +354,14 @@ if s:has_coc
     nmap <silent> [d <Plug>(coc-diagnostic-prev)
     nmap <silent> ]d <Plug>(coc-diagnostic-next)
 
-    xmap <leader>f  <Plug>(coc-format-selected)
-    nmap <leader>f  <Plug>(coc-format-selected)
-endif
+    xmap <leader>f <Plug>(coc-format-selected)
+    nmap <leader>f <Plug>(coc-format-selected)
+    nnoremap <silent> <leader>uf :call <SID>ToggleCocFormatOnSave()<CR>
 
-if has('autocmd')
-    augroup coc_config
-        autocmd!
-        if s:has_coc
-            autocmd CursorHold * silent call CocActionAsync('highlight')
-        endif
-    augroup END
+    if has('autocmd')
+        augroup coc_format_on_save
+            autocmd!
+            autocmd BufWritePre * if get(g:, 'coc_format_on_save', 0) && coc#rpc#ready() | silent call CocAction('format') | endif
+        augroup END
+    endif
 endif
-
-" =============================================================================
-" Cleanup
-" =============================================================================
-unlet! s:has_vim_plug
-unlet! s:has_builtin_editorconfig
-unlet! s:has_coc
-unlet! s:coc_extensions
-unlet! s:state_dir
-unlet! s:swap_dir
-unlet! s:undo_dir
-unlet! s:backup_dir
