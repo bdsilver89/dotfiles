@@ -185,6 +185,13 @@ if has('autocmd')
 endif
 
 " =============================================================================
+" Netrw
+" =============================================================================
+let g:netrw_banner = 0
+let g:netrw_liststyle = 0
+let g:netrw_browse_split = 0
+
+" =============================================================================
 " Keymaps
 " =============================================================================
 let mapleader = ' '
@@ -212,6 +219,8 @@ nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
+
+nnoremap <silent><expr> - :Ex<CR>
 
 xnoremap < <gv
 xnoremap > >gv
@@ -303,7 +312,7 @@ if s:has_vim_plug
         Plug 'christoomey/vim-tmux-navigator'
         Plug 'junegunn/fzf'
         Plug 'junegunn/fzf.vim'
-        Plug 'preservim/nerdtree', { 'on': 'NERDTreeToggle' }
+        Plug 'tpope/vim-vinegar'
         Plug 'machakann/vim-highlightedyank'
         Plug 'vim-test/vim-test'
     endif
@@ -327,12 +336,14 @@ if s:has_vim_plug
 
     if s:PluginInstalled('fzf.vim')
         nnoremap <silent> <leader>sf :Files<CR>
+        nnoremap <silent> <leader>sg :Rg<CR>
+        nnoremap <silent> <leader>sb :Buffers<CR>
     endif
     if s:PluginInstalled('vim-fugitive')
         nnoremap <silent> <leader>gs :Git<CR>
     endif
-    if s:PluginInstalled('nerdtree')
-        nnoremap <silent> <leader>e :NERDTreeToggle<CR>
+    if s:PluginInstalled('vim-vinegar')
+        nmap <silent> - <Plug>VinegarUp
     endif
 endif
 
