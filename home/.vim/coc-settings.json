@@ -1,8 +1,3 @@
 {
-    "languageserver": {
-        "cpp": {
-            "command": "clangd",
-            "filetypes": ["c", "cpp"]
-        }
-    }
+    "codeLens.enable": true
 }
