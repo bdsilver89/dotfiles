@@ -248,6 +248,9 @@ bootstrap_repo() {
 
 PKGS_CORE="git tmux fzf ripgrep bat eza zoxide jq zsh"
 
+JDTLS_MILESTONES="https://download.eclipse.org/jdtls/milestones"
+JDTLS_DOWNLOADS="https://www.eclipse.org/downloads/download.php"
+
 # The mise tool list is not here: it lives in home/.config/mise/config.toml,
 # which is symlinked into place. Only the one platform conditional is generated,
 # by write_mise_platform_config below.
@@ -316,6 +319,8 @@ install_packages() {
         apt)  packages_debian ;;
         dnf)  packages_rhel ;;
     esac
+
+    install_jdtls
 }
 
 packages_darwin() {
@@ -416,6 +421,123 @@ packages_rhel() {
         else
             warn "desktop package install failed"
         fi
+    fi
+    return 0
+}
+
+# JDTLS has no consistent package across supported platforms. Install the
+# newest milestone from Eclipse beside other user-owned application data.
+install_jdtls() {
+    local root="$XDG_DATA_HOME/jdtls"
+    local current="$root/current"
+    local page version artifact installed=""
+
+    have curl || { warn "curl not found, skipping jdtls"; return 0; }
+
+    page="$(curl -fsSL "$JDTLS_MILESTONES/" 2>/dev/null)" || {
+        warn "could not check latest jdtls milestone"
+        return 0
+    }
+    version="$(printf '%s\n' "$page" |
+        grep -Eo '/jdtls/milestones/[0-9]+\.[0-9]+\.[0-9]+' |
+        sed 's|.*/||' |
+        LC_ALL=C sort -t. -k1,1n -k2,2n -k3,3n |
+        tail -n 1)" || true
+    [ -n "$version" ] || { warn "could not identify latest jdtls milestone"; return 0; }
+
+    if [ -f "$current/.version" ]; then
+        installed="$(cat "$current/.version")"
+    fi
+    if [ "$installed" = "$version" ] && [ -x "$current/bin/jdtls" ]; then
+        vsay "Current" "jdtls $version"
+        return 0
+    fi
+
+    artifact="$(curl -fsSL "$JDTLS_MILESTONES/$version/latest.txt" 2>/dev/null | tr -d '\r\n')" || {
+        warn "could not resolve jdtls $version archive"
+        return 0
+    }
+    case "$artifact" in
+        "jdt-language-server-$version-"*.tar.gz) ;;
+        *) warn "invalid jdtls archive name: $artifact"; return 0 ;;
+    esac
+
+    if [ "$DRY_RUN" -eq 1 ]; then
+        note "Would install" "jdtls $version"
+        return 0
+    fi
+    if [ -e "$current" ] && [ ! -L "$current" ]; then
+        warn "$(tilde "$current") exists and is not a symlink"
+        return 0
+    fi
+
+    local tmp archive expected actual extract dest link
+    ensure_dir "$root"
+    tmp="$(mktemp -d "$root/.install.XXXXXX")"
+    archive="$tmp/$artifact"
+    extract="$tmp/extract"
+    dest="$root/$version"
+
+    expected="$(curl -fsSL "$JDTLS_MILESTONES/$version/$artifact.sha256" 2>/dev/null | tr -d '[:space:]')" || {
+        rm -rf "$tmp"
+        warn "could not download jdtls $version checksum"
+        return 0
+    }
+    case "$expected" in
+        *[!0-9a-fA-F]*|'')
+            rm -rf "$tmp"
+            warn "invalid jdtls $version checksum"
+            return 0
+            ;;
+    esac
+    [ "${#expected}" -eq 64 ] || {
+        rm -rf "$tmp"
+        warn "invalid jdtls $version checksum"
+        return 0
+    }
+
+    local url="$JDTLS_DOWNLOADS?file=/jdtls/milestones/$version/$artifact&r=1"
+    if ! quietly curl -fsSL "$url" -o "$archive"; then
+        rm -rf "$tmp"
+        warn "jdtls $version download failed"
+        return 0
+    fi
+
+    if have shasum; then
+        actual="$(shasum -a 256 "$archive" | cut -d ' ' -f 1)"
+    elif have sha256sum; then
+        actual="$(sha256sum "$archive" | cut -d ' ' -f 1)"
+    else
+        rm -rf "$tmp"
+        warn "no SHA-256 tool found, skipping jdtls"
+        return 0
+    fi
+    if [ "$actual" != "$expected" ]; then
+        rm -rf "$tmp"
+        warn "jdtls $version checksum mismatch"
+        return 0
+    fi
+
+    mkdir "$extract"
+    if ! tar -xzf "$archive" -C "$extract" || [ ! -x "$extract/bin/jdtls" ]; then
+        rm -rf "$tmp"
+        warn "jdtls $version archive is invalid"
+        return 0
+    fi
+    printf '%s\n' "$version" >"$extract/.version"
+
+    rm -rf "$dest"
+    mv "$extract" "$dest"
+    link="$root/.current.$$"
+    rm -f "$link"
+    ln -s "$version" "$link"
+    mv -f "$link" "$current"
+    rm -rf "$tmp"
+
+    if [ -n "$installed" ]; then
+        say "Updated" "jdtls $installed -> $version"
+    else
+        say "Installed" "jdtls $version"
     fi
     return 0
 }
@@ -768,8 +890,8 @@ install_tmux_plugins() {
     fi
 
     # install_plugins reads the plugin list from a tmux server it starts itself.
-    # TMUX_TMPDIR gives it a private one: the session the installer is being run
-    # from would answer out of an environment predating this config.
+    # Clear TMUX so the inherited client does not select the current server;
+    # TMUX_TMPDIR then gives the installer a private one with the current config.
     if [ "$DRY_RUN" -eq 1 ]; then
         note "Would install" "tmux plugins"
         return 0
@@ -777,12 +899,12 @@ install_tmux_plugins() {
 
     local socket
     socket="$(mktemp -d)"
-    if quietly env TMUX_TMPDIR="$socket" "$tpm/bin/install_plugins"; then
+    if quietly env -u TMUX TMUX_TMPDIR="$socket" "$tpm/bin/install_plugins"; then
         say "Installed" "tmux plugins"
     else
         warn "tmux plugin install failed"
     fi
-    env TMUX_TMPDIR="$socket" tmux kill-server >/dev/null 2>&1 || true
+    env -u TMUX TMUX_TMPDIR="$socket" tmux kill-server >/dev/null 2>&1 || true
     rm -rf "$socket"
     return 0
 }

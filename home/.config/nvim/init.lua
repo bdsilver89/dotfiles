@@ -6,6 +6,7 @@ vim.g.maplocalleader = " "
 
 vim.o.autocomplete = true
 vim.o.autocompletedelay = 200
+vim.o.breakindent = true
 vim.o.clipboard = "unnamedplus"
 vim.o.cmdheight = 0
 vim.o.complete = ".,w,b,o"
@@ -17,6 +18,7 @@ vim.o.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 vim.o.foldlevel = 99
 vim.o.foldmethod = "expr"
 vim.o.ignorecase = true
+vim.o.inccommand = "split"
 vim.o.laststatus = 3
 vim.o.list = true
 vim.o.listchars = "tab:» ,trail:·,nbsp:␣"
@@ -36,7 +38,15 @@ vim.o.undofile = true
 vim.o.virtualedit = "block"
 vim.o.wrap = false
 
-require("vim._core.ui2").enable({ msg = { targets = "msg" } })
+require("vim._core.ui2").enable({
+  enable = true,
+  msg = {
+    targets = {
+      default = "cmd",
+      progress = "msg",
+    },
+  },
+})
 
 -- ============================================================================
 -- Keymaps
@@ -109,15 +119,21 @@ vim.api.nvim_create_autocmd("Filetype", {
 -- ============================================================================
 vim.pack.add({
   { src = "https://github.com/catppuccin/nvim", name = "catppuccin" },
+  "https://github.com/Bekaboo/dropbar.nvim",
+
   "https://github.com/nvim-treesitter/nvim-treesitter",
   "https://github.com/neovim/nvim-lspconfig",
   "https://github.com/ibhagwan/fzf-lua",
+
   "https://github.com/lewis6991/gitsigns.nvim",
   "https://github.com/tpope/vim-fugitive",
+
+  "https://github.com/mfussenegger/nvim-jdtls",
+
   "https://github.com/tpope/vim-dispatch",
+
   "https://github.com/tpope/vim-sleuth",
   "https://github.com/christoomey/vim-tmux-navigator",
-  "https://github.com/vim-test/vim-test",
 })
 
 vim.cmd.colorscheme("catppuccin")
@@ -133,7 +149,7 @@ require("nvim-treesitter").install({
   "python",
   "query", "regex",
   "rust",
-  "typescript",
+  "typescript", "tsx",
   "vim", "vimdoc",
   "xml",
   "yaml",
@@ -169,17 +185,17 @@ vim.keymap.set("n", "<leader>gs", "<cmd>FzfLua git_status<cr>")
 vim.diagnostic.config({
   severity_sort = true,
   virtual_lines = { current_line = true },
-  signs = {
-    text = {
-      [vim.diagnostic.severity.ERROR] = " ",
-      [vim.diagnostic.severity.WARN] = " ",
-      [vim.diagnostic.severity.HINT] = " ",
-      [vim.diagnostic.severity.INFO] = " ",
-    },
-  },
+  -- signs = {
+  --   text = {
+  --     [vim.diagnostic.severity.ERROR] = " ",
+  --     [vim.diagnostic.severity.WARN] = " ",
+  --     [vim.diagnostic.severity.HINT] = " ",
+  --     [vim.diagnostic.severity.INFO] = " ",
+  --   },
+  -- },
 })
 
-vim.lsp.enable({ "basedpyright", "clangd", "jdtls", "rust_analyzer" })
+vim.lsp.enable({ "basedpyright", "clangd", "rust_analyzer" })
 
 vim.api.nvim_create_autocmd("LspProgress", {
   group = group,
@@ -211,8 +227,15 @@ vim.api.nvim_create_autocmd("LspAttach", {
     vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { desc = "vim.lsp.buf.declaration()", buffer = ev.buf })
     vim.keymap.set("n", "gW", vim.lsp.buf.workspace_symbol, { desc = "vim.lsp.buf.workspace_symbol()", buffer = ev.buf })
 
-    if client and client:supports_method("textDocument/completion") then
+    if client and client:supports_method("textDocument/completion", ev.buf) then
       vim.lsp.completion.enable(true, client.id, ev.buf)
+    end
+
+    if client and client:supports_method("textDocument/inlayHint", ev.buf) then
+      vim.lsp.inlay_hint.enable(true)
+      vim.keymap.set("n", "<leader>uh", function()
+        vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = ev.buf }))
+      end, { desc = "Toggle inlay hints", buffer = ev.buf })
     end
   end,
 })
