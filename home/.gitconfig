@@ -35,27 +35,29 @@
   enabled = true
   autoupdate = true
 
-[merge]
-  conflictstyle = zdiff3
-  tool = nvimdiff
-
-[mergetool]
-  prompt = false
-  keepBackup = false
+[color]
+  ui = auto
 
 [diff]
   algorithm = histogram
   colorMoved = default
-  tool = nvim_difftool
-
-[color]
-  ui = auto
+  ; tool = nvim_difftool
+  tool = vimdiff
 
 [difftool]
   prompt = false
 
-[difftool "nvim_difftool"]
-  cmd = nvim -c \"packadd nvim.difftool\" -c \"DiffTool $LOCAL $REMOTE\"
+; [difftool "nvim_difftool"]
+;   cmd = nvim -c \"packadd nvim.difftool\" -c \"DiffTool $LOCAL $REMOTE\"
+
+[merge]
+  conflictstyle = zdiff3
+  ; tool = nvimdiff
+  tool = vimdiff
+
+[mergetool]
+  prompt = false
+  keepBackup = false
 
 [alias]
   dt = difftool -d
