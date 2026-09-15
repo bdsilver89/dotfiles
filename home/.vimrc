@@ -1,194 +1,647 @@
-set nocompatible
 scriptencoding utf-8
 
-" =============================================================================
-" Encoding and file formats
-" =============================================================================
-set encoding=utf-8 fileencodings=utf-8,latin1 fileformats=unix,dos
-set hidden autoread confirm swapfile updatetime=300
-set nobackup writebackup nomodeline nowriteany
+" ============================================================================
+" Requirements
+" ============================================================================
+if !has('patch-8.2.0750')
+    echoerr 'This configuration requires Vim 8.2.0750 or newer'
+    finish
+endif
 
-" =============================================================================
-" State directories
-" =============================================================================
-if exists('*mkdir') && exists('*isdirectory')
-    let s:state_dir = expand('~/.vim/state')
-    let s:swap_dir = s:state_dir . '/swap'
-    let s:undo_dir = s:state_dir . '/undo'
-    let s:backup_dir = s:state_dir . '/backup'
-
-    for s:dir in [s:swap_dir, s:undo_dir, s:backup_dir]
-        if !isdirectory(s:dir)
-            silent! call mkdir(s:dir, 'p')
-        endif
-    endfor
-
-    if isdirectory(s:swap_dir) && exists('+directory')
-        let &directory = s:swap_dir . '//'
+for s:tool in ['git', 'rg', 'fzf', 'node']
+    if !executable(s:tool)
+        call add(s:missing_tools, s:tool)
+        echohl WarningMsg
+        echom 'vimrc: optional tools missing: ' . s:tool
+        echohl None
+        finish
     endif
-    if isdirectory(s:backup_dir) && exists('+backupdir')
-        let &backupdir = s:backup_dir . '//'
-    endif
-    if has('persistent_undo') && isdirectory(s:undo_dir)
-        if exists('+undodir')
-            let &undodir = s:undo_dir . '//'
-        endif
-        set undofile
-    endif
-endif
+endfor
 
-" =============================================================================
-" Editing behavior
-" =============================================================================
-set backspace=indent,eol,start history=1000 undolevels=1000
-set expandtab tabstop=4 softtabstop=4 shiftwidth=4 shiftround
-set autoindent nosmartindent nocindent
-set nowrap scrolloff=8 sidescrolloff=8
-
-if exists('+linebreak') | set linebreak | endif
-if exists('+breakindent') | set breakindent | endif
-
-set ttimeout ttimeoutlen=50 mouse=nvi
-
-" =============================================================================
-" Search
-" =============================================================================
-set incsearch hlsearch ignorecase smartcase magic
-
-if exists('+inccommand')
-    set inccommand=split
-endif
-
-" =============================================================================
-" Command-line completion
-" =============================================================================
-set wildmenu wildmode=longest:full,full
-
-" =============================================================================
-" UI
-" =============================================================================
-set number relativenumber ruler showcmd showmode laststatus=2
-set cursorline list listchars=tab:>-,trail:-,extends:>,precedes:<,nbsp:+
-set splitbelow splitright lazyredraw pumheight=10
-
-if exists('+signcolumn')
-    set signcolumn=yes
-endif
-
-if exists('+belloff')
-    set belloff=all
-else
-    set noerrorbells visualbell
-endif
-
-" =============================================================================
-" Colors
-" =============================================================================
-set background=dark
-
-if exists('+termguicolors') && (has('gui_running') || $COLORTERM =~? 'truecolor\|24bit')
-    set termguicolors
-
-    if &term =~# '256color' || &term =~# 'tmux'
-        let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-        let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-    endif
-endif
-
-if has('syntax')
-    syntax enable
-endif
-
-silent! colorscheme default
-
-" =============================================================================
-" Clipboard
-" =============================================================================
-if has('clipboard') && exists('+clipboard')
-    if has('unnamedplus')
-        set clipboard^=unnamedplus
-    elseif has('gui_macvim')
-        set clipboard^=unnamed
-    endif
-endif
-
-" =============================================================================
-" External CLI tools
-" =============================================================================
-if executable('rg') && exists('+grepprg')
-    set grepprg=rg\ --vimgrep\ --smart-case
-
-    if exists('+grepformat')
-        set grepformat=%f:%l:%c:%m
-    endif
-endif
-
-" =============================================================================
-" Filetype Support
-" =============================================================================
-if has('autocmd')
-    filetype plugin indent on
-endif
-
-" =============================================================================
-" Netrw
-" =============================================================================
-let g:netrw_banner = 0
-let g:netrw_liststyle = 0
-let g:netrw_browse_split = 0
-
-" =============================================================================
-" Keymaps
-" =============================================================================
+set nocompatible
 let mapleader = ' '
 let maplocalleader = ','
 
+" Coc needs these features
+let s:coc_supported =
+            \ has('job') &&
+            \ has('popupwin') &&
+            \ has('textprop')
+
+" Older Vim runtimes need compiler parsers for Maven and pytest.
+let s:maven_compiler_bundled =
+      \ !empty(globpath(&runtimepath, 'compiler/maven.vim'))
+let s:pytest_compiler_bundled =
+      \ !empty(globpath(&runtimepath, 'compiler/pytest.vim'))
+
+" Select vimspector version
+let s:vimspector_current = 0
+let s:vimspector_legacy = 0
+
+if has('huge') && has('python3')
+    if has('patch-8.2.4797') &&
+                \ py3eval('__import__("sys").version_info >= (3, 10)')
+        let s:vimspector_current = 1
+    elseif py3eval('__import__("sys").version_info >= (3, 6)')
+        let s:vimspector_legacy = 1
+    endif
+endif
+
+" ============================================================================
+" Plugin bootstrap
+" ============================================================================
+let s:plug_path = expand('~/.vim/autoload/plug.vim')
+let s:plugins_enabled = filereadable(s:plug_path)
+
+if !s:plugins_enabled && executable('curl')
+    let s:plug_url =
+                \ 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+    call system(
+                \ 'curl --fail --location --create-dirs --output ' .
+                \ shellescape(s:plug_path) . ' ' .
+                \ shellescape(s:plug_url))
+
+    let s:plugins_enabled = v:shell_error == 0 && filereadable(s:plug_path)
+endif
+
+if s:plugins_enabled
+    call plug#begin(expand('~/.vim/plugged'))
+
+    " UI
+    Plug 'catppuccin/vim', {'as': 'catppuccin', 'branch': 'main' }
+    Plug 'itchyny/lightline.vim'
+    Plug 'Yggdroot/indentline'
+    Plug 'mbbill/undotree'
+
+    " Search and navigation
+    Plug 'junegunn/fzf'
+    Plug 'junegunn/fzf.vim'
+    Plug 'tpope/vim-vinegar'
+    Plug 'christoomey/vim-tmux-navigator'
+
+    " Git
+    Plug 'tpope/vim-fugitive'
+    Plug 'airblade/vim-gitgutter'
+
+    " Editing
+    Plug 'tpope/vim-surround'
+    Plug 'tpope/vim-repeat'
+    Plug 'tpope/vim-commentary'
+    Plug 'tpope/vim-unimpaired'
+    Plug 'tpope/vim-sleuth'
+
+    if !has('patch-9.0.1799')
+        Plug 'editorconfig/editorconfig-vim'
+    endif
+
+    " LSP and completion
+    if s:coc_supported
+        if has('patch-9.0.0438')
+            Plug 'neoclide/coc.nvim', {'branch': 'release'}
+        else
+            Plug 'neoclide/coc.nvim', {
+                        \ 'commit': 'f0ce9ae23d6ce9d0cbabe73bdb738e45accc6f08'
+                        \ }
+        endif
+    endif
+
+    " Testing and builds
+    Plug 'tpope/vim-dispatch'
+    Plug 'vim-test/vim-test'
+
+    if !s:maven_compiler_bundled
+        Plug 'mikelue/vim-maven-plugin'
+    endif
+
+    if !s:pytest_compiler_bundled
+        Plug '5long/pytest-vim-compiler'
+    endif
+
+    " Debugging
+    if s:vimspector_current
+        Plug 'puremourning/vimspector'
+    elseif s:vimspector_legacy
+        Plug 'puremourning/vimspector', {'tag': '4722501279'}
+    endif
+
+    call plug#end()
+
+    let s:missing_plugins =
+                \ !empty(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
+
+    if s:missing_plugins
+        function! s:InstallPlugins() abort
+            PlugInstall --sync
+            execute 'source ' . fnameescape($MYVIMRC)
+        endfunction
+
+        augroup vimrc_bootstrap
+            autocmd!
+            autocmd VimEnter * ++once call <SID>InstallPlugins()
+        augroup END
+    endif
+endif
+
+filetype plugin indent on
+syntax on
+
+let s:coc_enabled = s:plugins_enabled && s:coc_supported
+let s:vimspector_enabled = s:plugins_enabled &&
+          \ (s:vimspector_current || s:vimspector_legacy)
+
+" ============================================================================
+" Core options
+" ============================================================================
+set encoding=utf-8
+set hidden
+set autoread
+set backspace=indent,eol,start
+
+set number
+set relativenumber
+set cursorline
+set nowrap
+set scrolloff=5
+set sidescrolloff=5
+
+set list
+set listchars=tab:»·,trail:·,extends:›,precedes:‹,nbsp:+
+set signcolumn=yes
+
+set splitbelow
+set splitright
+
+set ignorecase
+set smartcase
+set incsearch
+set hlsearch
+
+set wildmenu
+set wildignorecase
+
+set showcmd
+set noshowmode
+set noruler
+set laststatus=2
+
+set updatetime=300
+set timeout
+set ttimeout
+set ttimeoutlen=200
+
+set pumheight=10
+set mouse=a
+set noexrc
+
+set expandtab
+set shiftwidth=4
+set tabstop=4
+set softtabstop=4
+
+if has('unnamedplus')
+    set clipboard=unnamedplus
+elseif has('clipboard')
+    set clipboard=unnamed
+endif
+
+" ============================================================================
+" Persistent state
+" ============================================================================
+let s:state_root = expand('~/.vim/state')
+let s:undo_dir = s:state_root . '/undo'
+let s:swap_dir = s:state_root . '/swap'
+let s:backup_dir = s:state_root . '/backup'
+
+for s:directory in [s:undo_dir, s:swap_dir, s:backup_dir]
+    if !isdirectory(s:directory)
+        call mkdir(s:directory, 'p', 0700)
+    endif
+endfor
+
+let &undodir = s:undo_dir . '//'
+let &directory = s:swap_dir . '//'
+let &backupdir = s:backup_dir . '//'
+
+set undofile
+set undolevels=1000
+set backup
+set nowritebackup
+
+" ============================================================================
+" UI
+" ============================================================================
+set background=dark
+
+if exists('+termguicolors')
+    set termguicolors
+endif
+
+silent! colorscheme catppuccin_mocha
+
+function! LightlineGitBranch() abort
+    return exists('*FugitiveHead') ? FugitiveHead() : ''
+endfunction
+
+function! LightlineCocStatus() abort
+    if get(g:, 'coc_service_initialized', 0)
+        return coc#status()
+    endif
+    return ''
+endfunction
+
+let g:lightline = {
+            \
+            \ 'colorscheme': 'catppuccin_mocha',
+            \ 'active': {
+            \   'left': [
+            \     ['mode', 'paste'],
+            \     ['gitbranch', 'readonly', 'filename', 'modified']
+            \   ],
+            \   'right': [
+            \     ['lineinfo'],
+            \     ['percent'],
+            \     ['cocstatus', 'filetype', 'fileencoding', 'fileformat']
+            \   ]
+            \ },
+            \ 'component_function': {
+            \   'gitbranch': 'LightlineGitBranch',
+            \   'cocstatus': 'LightlineCocStatus'
+            \ }
+            \ }
+
+" ============================================================================
+" Plugin settings
+" ============================================================================
+" Keep JSON and Markdown punctuation visible.
+let g:indentLine_setColors = 0
+let g:indentLine_char = '┊'
+let g:vim_json_conceal = 0
+let g:markdown_syntax_conceal = 0
+
+let g:undotree_WindowLayout = 3
+let g:undotree_SetFocusWhenToggle = 0
+let g:undotree_SplitWidth = 30
+
+let g:netrw_banner = 0
+
+let g:EditorConfig_exclude_patterns = [
+            \ 'fugitive://.*',
+            \ 'scp://.*'
+            \ ]
+
+let g:fzf_vim = {
+            \ 'buffers_jump': 1,
+            \ 'preview_window': ['hidden,right,50%,<70(up,40%)', 'ctrl-/']
+            \ }
+
+let $FZF_DEFAULT_COMMAND =
+            \ "rg --files --hidden --glob '!.git/*'"
+let $FZF_CTRL_T_COMMAND = $FZF_DEFAULT_COMMAND
+
+let test#strategy = 'dispatch'
+let test#python#runner = 'pytest'
+let g:dispatch_compilers = {
+            \ 'pytest': 'pytest',
+            \ 'python -m pytest': 'pytest'
+            \ }
+
+let g:maven_auto_chdir = 0
+let g:maven_auto_set_path = 0
+let g:maven_keymaps = 0
+
+if s:coc_enabled
+    let g:coc_global_extensions = [
+                \ 'coc-clangd',
+                \ 'coc-java',
+                \ 'coc-basedpyright',
+                \ 'coc-rust-analyzer',
+                \ 'coc-json',
+                \ 'coc-snippets'
+                \ ]
+
+    let g:coc_snippet_next = '<C-j>'
+    let g:coc_snippet_prev = '<C-k>'
+endif
+
+if s:vimspector_enabled
+    let g:vimspector_install_gadgets = [
+                \ 'CodeLLDB',
+                \ 'debugpy',
+                \ 'vscode-java-debug'
+                \ ]
+endif
+
+" ============================================================================
+" Project helpers
+" ============================================================================
+function! ProjectRoot() abort
+    let l:start = expand('%:p:h')
+
+    if empty(l:start) || !isdirectory(l:start)
+        let l:start = getcwd()
+    endif
+
+    if executable('git')
+        let l:root = systemlist(
+                    \ 'git -C ' . shellescape(l:start) .
+                    \ ' rev-parse --show-toplevel 2>/dev/null')
+
+        if v:shell_error == 0 && !empty(l:root)
+            return l:root[0]
+        endif
+    endif
+
+    return getcwd()
+endfunction
+
+" vim-test runs without changing Vim's working directory
+let test#project_root = function('ProjectRoot')
+
+function! s:ProjectFiles(fullscreen) abort
+    let l:root = ProjectRoot()
+    let l:is_git = executable('git') &&
+                \ system(
+                \     'git -C ' . shellescape(l:root) .
+                \     ' rev-parse --is-inside-work-tree 2>/dev/null'
+                \ ) =~# 'true'
+
+    let l:options = fzf#vim#with_preview({'dir': l:root})
+
+    if l:is_git
+        call fzf#vim#gitfiles('', l:options, a:fullscreen)
+    else
+        call fzf#vim#files(l:root, l:options, a:fullscreen)
+    endif
+endfunction
+
+command! -bang ProjectFiles call <SID>ProjectFiles(<bang>0)
+
+function! s:FindBuildProject() abort
+    let l:directory = expand('%:p:h')
+
+    if empty(l:directory) || !isdirectory(l:directory)
+        let l:directory = getcwd()
+    endif
+
+    let l:markers = [
+                \ 'pom.xml',
+                \ 'Cargo.toml',
+                \ 'CMakeLists.txt',
+                \ 'Makefile',
+                \ ]
+
+    while 1
+        for l:marker in l:markers
+            if filereadable(l:directory . '/' . l:marker)
+                return {'root': l:directory, 'marker': l:marker}
+            endif
+        endfor
+
+        let l:parent = fnamemodify(l:directory, ':h')
+        if l:parent ==# l:directory
+            return {}
+        endif
+        let l:directory = l:parent
+    endwhile
+endfunction
+
+function! s:SetCompiler(name) abort
+    try
+        execute 'compiler ' . a:name
+        return 1
+    catch /^Vim\%((\a\+)\)\=:E666:/
+        echohl WarningMsg
+        echom 'vimrc: compiler unavailable: ' . a:name
+        echohl None
+        return 0
+    endtry
+endfunction
+
+function! s:ConfigureBuild() abort
+    if &l:buftype !=# ''
+        return 0
+    endif
+
+    let l:project = s:FindBuildProject()
+    if empty(l:project)
+        if exists('b:build_root')
+            unlet! b:build_marker b:build_root
+            unlet! b:current_compiler
+            setlocal makeprg< errorformat<
+        endif
+        return 0
+    endif
+
+    if get(b:, 'build_root', '') ==# l:project.root &&
+                \ get(b:, 'build_marker', '') ==# l:project.marker
+        return 1
+    endif
+
+    if l:project.marker ==# 'pom.xml'
+        if !s:SetCompiler('maven')
+            return 0
+        endif
+        let program = executable(l:project.root . '/mvnw')
+                    \ ? l:project.root . '/mvnw' : 'mvn'
+        let &l:makeprg = shellescape(l:program) . ' -B -f ' .
+                    \ shellescape(l:project.root . '/pom.xml') . ' $*'
+    elseif l:project.marker ==# 'Cargo.toml'
+        if !s:SetCompiler('cargo')
+            return 0
+        endif
+        let &l:makeprg = 'cargo --manifest-path ' .
+                    \ shellescape(l:project.root . '/Cargo.toml') . ' $*'
+    elseif l:project.marker ==# 'CMakeLists.txt'
+        if !s:SetCompiler('gcc')
+            return 0
+        endif
+        let l:build_directory = filereadable(l:project.root . '/CMakeCache.txt')
+                    \ ? l:project.root : l:project.root . '/build'
+        let &l:makeprg = 'cmake --build ' .
+                    \ shellescape(l:build_directory) . ' $*'
+    else
+        if !s:SetCompiler('gcc')
+            return 0
+        endif
+        let &l:makeprg = 'make -C ' . shellescape(l:project.root) . ' $*'
+    endif
+
+    let b:build_root = l:project.root
+    let b:build_marker = l:project.marker
+
+    return 1
+endfunction
+
+" ============================================================================
+" General mappings
+" ============================================================================
 nnoremap <silent><expr> j v:count == 0 ? 'gj' : 'j'
-nnoremap <silent><expr> <Down> v:count == 0 ? 'gj' : 'j'
 nnoremap <silent><expr> k v:count == 0 ? 'gk' : 'k'
-nnoremap <silent><expr> <Up> v:count == 0 ? 'gk' : 'k'
 
 nnoremap <silent> <C-d> <C-d>zz
 nnoremap <silent> <C-u> <C-u>zz
-nnoremap <silent> N Nzzzv
 nnoremap <silent> n nzzzv
+nnoremap <silent> N Nzzzv
+nnoremap <silent> <Esc> :nohlsearch<CR>
 
-nnoremap <silent> <leader>- <C-w>s
-nnoremap <silent> <leader><Bar> <C-w>v
-nnoremap <silent> <leader>q :quit<CR>
-nnoremap <silent> <leader>w :write<CR>
-nnoremap <silent> <leader>bd :bd<CR>
-
-nnoremap <silent> <Esc><Esc> :nohlsearch<CR>
-
-nnoremap <C-h> <C-w>h
-nnoremap <C-j> <C-w>j
-nnoremap <C-k> <C-w>k
-nnoremap <C-l> <C-w>l
-
-nnoremap <silent><expr> - :Ex<CR>
+nnoremap <silent> <leader>- :split<CR>
+nnoremap <silent> <leader><Bar> :vsplit<CR>
+nnoremap <leader>w :w<CR>
+nnoremap <leader>q :q<CR>
 
 xnoremap < <gv
 xnoremap > >gv
 
-if exists(':tnoremap') == 2
-    tnoremap <silent> <Esc><Esc> <C-\><C-n>
+if has('terminal')
+    tnoremap <Esc><Esc> <C-\><C-n>
 endif
 
-function! s:ToggleQuickfix() abort
-    let l:window_count = winnr('$')
-    silent! cclose
+" ============================================================================
+" LSP and completion
+" ============================================================================
+if s:coc_enabled
+    function! s:CheckBackspace() abort
+        let l:column = col('.') - 1
+        return !l:column || getline('.')[l:column - 1] =~# '\s'
+    endfunction
 
-    if winnr('$') == l:window_count
-        silent! copen
-    endif
+    function! s:ShowDocumentation() abort
+        if CocAction('hasProvider', 'hover')
+            call CocActionAsync('definitionHover')
+        else
+            normal! K
+        endif
+    endfunction
+
+    inoremap <silent><expr> <Tab>
+                \ coc#pum#visible() ? coc#pum#next(1) :
+                \ <SID>CheckBackspace() ? "\<Tab>" :
+                \ coc#refresh()
+
+    inoremap <silent><expr> <S-Tab>
+                \ coc#pum#visible() ? coc#pum#prev(1) :
+                \ "\<C-h>"
+
+    inoremap <silent><expr> <CR>
+                \ coc#pum#visible() ? coc#pum#select_confirm() :
+                \ "\<C-g>u\<CR>\<C-r>=coc#on_enter()\<CR>"
+
+    " Vim receives Ctrl-Space as Ctrl-@ in terminal input.
+    inoremap <silent><expr> <C-@> coc#refresh()
+    inoremap <silent> <C-s>
+                \ <C-r>=CocActionAsync('showSignatureHelp')<CR>
+
+    nmap <silent> gd  <Plug>(coc-definition)
+    nmap <silent> gD  <Plug>(coc-declaration)
+    nmap <silent> gri <Plug>(coc-implementation)
+    nmap <silent> grn <Plug>(coc-rename)
+    nmap <silent> grr <Plug>(coc-references)
+    nmap <silent> grt <Plug>(coc-type-definition)
+
+    nmap <silent> gra <Plug>(coc-codeaction-cursor)
+    xmap <silent> gra <Plug>(coc-codeaction-selected)
+
+    nnoremap <silent> gO :CocList outline<CR>
+    nnoremap <silent> K :call <SID>ShowDocumentation()<CR>
+
+    nmap <silent> [d <Plug>(coc-diagnostic-prev)
+    nmap <silent> ]d <Plug>(coc-diagnostic-next)
+
+    nnoremap <silent> <leader>lf
+                \ :call CocActionAsync('format')<CR>
+    nnoremap <silent> <leader>lS
+                \ :CocList -I symbols<CR>
+    nnoremap <silent> <leader>ld
+                \ :CocList diagnostics<CR>
+
+    command! Format call CocActionAsync('format')
+endif
+
+" ============================================================================
+" Finder mappings
+" ============================================================================
+if s:plugins_enabled
+    nnoremap <silent> <leader>sf :Files<CR>
+    nnoremap <silent> <leader>sg :RG<CR>
+    nnoremap <silent> <leader>sb :Buffers<CR>
+    nnoremap <silent> <leader>sh :History<CR>
+    nnoremap <silent> <leader>sl :BLines<CR>
+    nnoremap <silent> <leader>sL :Lines<CR>
+    nnoremap <silent> <leader>sc :Commands<CR>
+endif
+
+" ============================================================================
+" Git mappings
+" ============================================================================
+if s:plugins_enabled
+    nnoremap <silent> <leader>gs :Git<CR>
+    nnoremap <silent> <leader>ga :Git add %<CR>
+    nnoremap <silent> <leader>gu :Git reset -q %<CR>
+    nnoremap <silent> <leader>gc :Git commit<CR>
+    nnoremap <silent> <leader>gp :Git push<CR>
+    nnoremap <silent> <leader>gd :Gdiffsplit<CR>
+    nnoremap <silent> <leader>gb :Git blame<CR>
+
+    nmap <silent> <leader>hp <Plug>(GitGutterPreviewHunk)
+    nmap <silent> <leader>hs <Plug>(GitGutterStageHunk)
+    nmap <silent> <leader>hu <Plug>(GitGutterUndoHunk)
+endif
+
+" ============================================================================
+" Test and build mappings
+" ============================================================================
+if s:plugins_enabled
+    nnoremap <silent> <leader>tn :TestNearest<CR>
+    nnoremap <silent> <leader>tf :TestFile<CR>
+    nnoremap <silent> <leader>ts :TestSuite<CR>
+    nnoremap <silent> <leader>tl :TestLast<CR>
+    nnoremap <silent> <leader>tv :TestVisit<CR>
+endif
+
+" ============================================================================
+" Debug mappings
+" ============================================================================
+if s:vimspector_enabled
+    nmap <silent> <leader>dc <Plug>VimspectorContinue
+    nmap <silent> <leader>dq <Plug>VimspectorStop
+    nmap <silent> <leader>dr <Plug>VimspectorRestart
+    nmap <silent> <leader>dp <Plug>VimspectorPause
+    nmap <silent> <leader>db <Plug>VimspectorToggleBreakpoint
+    nmap <silent> <leader>dB <Plug>VimspectorToggleConditionalBreakpoint
+    nmap <silent> <leader>do <Plug>VimspectorStepOver
+    nmap <silent> <leader>di <Plug>VimspectorStepInto
+    nmap <silent> <leader>du <Plug>VimspectorStepOut
+    nmap <silent> <leader>dt <Plug>VimspectorRunToCursor
+    nmap <silent> <leader>de <Plug>VimspectorBalloonEval
+    xmap <silent> <leader>de <Plug>VimspectorBalloonEval
+    nmap <silent> <leader>df <Plug>VimspectorUpFrame
+    nmap <silent> <leader>dF <Plug>VimspectorDownFrame
+endif
+
+" ============================================================================
+" UI and list mappings
+" ============================================================================
+nnoremap <silent> <leader>ui :IndentLinesToggle<CR>
+nnoremap <silent> <leader>uu :UndotreeToggle<CR>
+
+function! s:ToggleQuickfix() abort
+    for l:window in getwininfo()
+        if get(l:window, 'quickfix', 0) &&
+                    \ !get(l:window, 'loclist', 0)
+            cclose
+            return
+        endif
+    endfor
+
+    copen
 endfunction
 
 function! s:ToggleLocationList() abort
-    let l:window_count = winnr('$')
-    silent! lclose
+    let l:list = getloclist(0, {'winid': 0})
 
-    if winnr('$') == l:window_count
+    if get(l:list, 'winid', 0)
+        lclose
+    else
         silent! lopen
     endif
 endfunction
@@ -196,177 +649,20 @@ endfunction
 nnoremap <silent> <leader>xq :call <SID>ToggleQuickfix()<CR>
 nnoremap <silent> <leader>xl :call <SID>ToggleLocationList()<CR>
 
-" =============================================================================
-" Autocmds
-" =============================================================================
-if has('autocmd')
-    augroup config
-        autocmd!
+" ============================================================================
+" Commands and autocmds
+" ============================================================================
+augroup init
+    autocmd!
 
-        if exists('##FocusGained')
-            autocmd FocusGained * silent! checktime
-        endif
-        if exists('##VimResized')
-            autocmd VimResized * silent! wincmd =
-        endif
+    autocmd VimResized * wincmd =
 
-        autocmd FileType make setlocal noexpandtab
-        autocmd FileType gitcommit,markdown,text setlocal wrap linebreak
-    augroup END
-endif
+    autocmd BufEnter * call <SID>ConfigureBuild()
 
-" =============================================================================
-" Plugins
-" =============================================================================
-let s:has_vim_plug = 0
-if exists('*globpath')
-    let s:has_vim_plug = !empty(globpath(&runtimepath, 'autoload/plug.vim'))
-endif
-
-let s:has_builtin_editorconfig = 0
-if has('patch-9.0.1799') && exists(':packadd') == 2 && exists('*globpath')
-    let s:has_builtin_editorconfig =
-                \ !empty(globpath(&packpath, 'pack/*/opt/editorconfig'))
-    if s:has_builtin_editorconfig
-        packadd! editorconfig
+    if s:coc_enabled
+        autocmd CursorHold *
+                    \ silent call CocActionAsync('highlight')
+        autocmd User CocStatusChange,CocDiagnosticChange
+                    \ call lightline#update()
     endif
-endif
-
-if s:has_vim_plug
-    set loadplugins
-else
-    set noloadplugins
-endif
-
-if s:has_vim_plug
-    call plug#begin(expand('~/.vim/plugged'))
-
-    let g:lightline = { 'colorscheme': 'catppuccin' }
-
-    " Current plugin releases target modern Vim. Vim 7 keeps core config only.
-    if v:version >= 800
-        if !s:has_builtin_editorconfig
-            Plug 'editorconfig/editorconfig-vim'
-        endif
-        Plug 'catppuccin/vim', { 'as': 'catppuccin' }
-        Plug 'Yggdroot/indentLine'
-        " Plug 'vim-airline/vim-airline'
-        Plug 'itchyny/lightline.vim'
-        Plug 'machakann/vim-highlightedyank'
-
-        Plug 'mbbill/undotree'
-        Plug 'tpope/vim-commentary'
-        Plug 'tpope/vim-surround'
-        Plug 'tpope/vim-dispatch'
-        Plug 'tpope/vim-sleuth'
-        Plug 'tpope/vim-unimpaired'
-        Plug 'tpope/vim-vinegar'
-
-        Plug 'tpope/vim-fugitive'
-        Plug 'airblade/vim-gitgutter'
-
-        Plug 'christoomey/vim-tmux-navigator'
-        Plug 'junegunn/fzf'
-        Plug 'junegunn/fzf.vim'
-
-        Plug 'vim-polyglot/vim-polyglot'
-        Plug 'dense-analysis/ale'
-        Plug 'vim-test/vim-test'
-    endif
-
-    call plug#end()
-
-    function! s:PluginInstalled(name) abort
-        return exists('g:plugs')
-                    \ && has_key(g:plugs, a:name)
-                    \ && isdirectory(g:plugs[a:name].dir)
-    endfunction
-
-    if exists('*globpath')
-                \ && !empty(globpath(&runtimepath, 'colors/catppuccin_mocha.vim'))
-        colorscheme catppuccin_mocha
-    endif
-
-    if s:PluginInstalled('fzf.vim')
-        nnoremap <silent> <leader>sf :Files<CR>
-        nnoremap <silent> <leader>sg :Rg<CR>
-        nnoremap <silent> <leader>sb :Buffers<CR>
-    endif
-    if s:PluginInstalled('vim-fugitive')
-        nnoremap <silent> <leader>gg :!lazygit<CR>
-        nnoremap <silent> <leader>gs :Git<CR>
-        nnoremap <silent> <leader>gl :Commits<CR>
-        nnoremap <silent> <leader>gf :BCommits<CR>
-    endif
-    if s:PluginInstalled('vim-vinegar')
-        nmap <silent> - <Plug>VinegarUp
-    endif
-endif
-
-let s:has_ale = s:has_vim_plug && s:PluginInstalled('ale')
-if s:has_ale
-    let g:ale_completion_enabled = 1
-    let g:ale_fix_on_save = 1
-    let g:ale_linters_explicit = 1
-    let g:ale_java_eclipselsp_path =
-                \ (empty($XDG_DATA_HOME) ? expand('~/.local/share') : $XDG_DATA_HOME)
-                \ . '/jdtls/current'
-    let g:ale_linters = {
-                \ 'c': ['clangd'],
-                \ 'cpp': ['clangd'],
-                \ 'java': ['eclipselsp'],
-                \ 'python': ['pyright'],
-                \ 'rust': ['analyzer'],
-                \ }
-    let g:ale_fixers = {
-                \ 'c': ['clang-format'],
-                \ 'cpp': ['clang-format'],
-                \ 'java': ['google_java_format'],
-                \ 'python': ['black'],
-                \ 'rust': ['rustfmt'],
-                \ }
-    set completeopt=menu,menuone,noselect,noinsert
-
-    inoremap <silent><expr> <Tab>
-        \ pumvisible() ? "\<C-n>" :
-        \ <SID>CheckBackspace() ? "\<Tab>" :
-        \ "\<C-x>\<C-o>"
-    inoremap <expr><S-Tab> pumvisible() ? "\<C-p>" : "\<C-h>"
-    inoremap <silent><expr> <CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-
-    function! s:CheckBackspace() abort
-        let l:column = col('.') - 1
-        return !l:column || getline('.')[l:column - 1] =~# '\s'
-    endfunction
-
-    function! s:ToggleAleFixOnSave() abort
-        let g:ale_fix_on_save = !get(g:, 'ale_fix_on_save', 0)
-        echo 'ALE fix on save ' . (g:ale_fix_on_save ? 'enabled' : 'disabled')
-    endfunction
-
-    nnoremap <silent> K :call <SID>ShowDocumentation()<CR>
-
-    function! s:ShowDocumentation() abort
-        if index(['vim', 'help'], &filetype) >= 0
-            execute 'help ' . expand('<cword>')
-        elseif exists(':ALEHover') == 2
-            ALEHover
-        else
-            execute '!' . &keywordprg . ' ' . shellescape(expand('<cword>'))
-        endif
-    endfunction
-
-    nmap <silent> gd  <Plug>(ale_go_to_definition)
-    nmap <silent> gri <Plug>(ale_go_to_implementation)
-    nnoremap <silent> grn :ALERename<CR>
-    nmap <silent> grr <Plug>(ale_find_references)
-    nmap <silent> grt <Plug>(ale_go_to_type_definition)
-    nnoremap <silent> gra :ALECodeAction<CR>
-    xnoremap <silent> gra :ALECodeAction<CR>
-
-    nmap <silent> [d <Plug>(ale_previous_wrap)
-    nmap <silent> ]d <Plug>(ale_next_wrap)
-
-    nmap <leader>f <Plug>(ale_fix)
-    nnoremap <silent> <leader>uf :call <SID>ToggleAleFixOnSave()<CR>
-endif
+augroup END

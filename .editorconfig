@@ -3,6 +3,9 @@ root = true
 [*.lua]
 indent_size = 2
 
+[*.vim]
+indent_size = 4
+
 [*.{sh,bash,zsh}]
 indent_size = 4
 
