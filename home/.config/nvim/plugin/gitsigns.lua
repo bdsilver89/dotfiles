@@ -56,6 +56,7 @@ vim.api.nvim_create_autocmd({ "BufReadPre", "BufNewFile" }, {
         map("n", "<leader>hb", function()
           gitsigns.blame_line({ full = true })
         end)
+        map("n", "<leader>hB", gitsigns.blame)
 
         map("n", "<leader>hd", gitsigns.diffthis)
 

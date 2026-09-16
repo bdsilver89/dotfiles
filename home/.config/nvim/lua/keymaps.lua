@@ -12,7 +12,10 @@ vim.keymap.set("n", "<leader>-", "<c-w>s")
 vim.keymap.set("n", "<leader>|", "<c-w>v")
 vim.keymap.set("n", "<leader>w", "<cmd>w<cr>")
 vim.keymap.set("n", "<leader>q", "<cmd>q<cr>")
+
 vim.keymap.set("n", "<leader>bd", "<cmd>bd<cr>")
+vim.keymap.set("n", "<leader>bb", "<cmd>e #<cr>")
+
 vim.keymap.set("n", "<leader>xq", function()
   local success, err = pcall(vim.fn.getqflist({ winid = 0 }).winid ~= 0 and vim.cmd.cclose or vim.cmd.copen)
   if not success and err then
@@ -29,13 +32,18 @@ end)
 vim.keymap.set("x", "<", "<gv")
 vim.keymap.set("x", ">", ">gv")
 
+vim.keymap.set("i", ",", ",<c-g>u")
+vim.keymap.set("i", ".", ".<c-g>u")
+vim.keymap.set("i", ";", ";<c-g>u")
+
 vim.keymap.set("t", "<esc><esc>", "<c-\\><c-n>")
 
-vim.keymap.set("n", "<esc>", function()
+vim.keymap.set({ "i", "s", "n" }, "<esc>", function()
+  vim.cmd("noh")
+  return "<esc>"
+end, { expr = true })
+
+vim.keymap.set("n", "<c-q>", function()
   local ns = vim.api.nvim_create_namespace("nvim.multicursor")
-  if #vim.api.nvim_buf_get_extmarks(0, ns, 0, -1, { limit = 1 }) > 0 then
-    vim.api.nvim_buf_clear_namespace(0, ns, 0, -1)
-  else
-    vim.cmd("noh")
-  end
+  vim.api.nvim_buf_clear_namespace(0, ns, 0, -1)
 end)

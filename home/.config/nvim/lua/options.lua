@@ -6,33 +6,29 @@ vim.g.loaded_node_provider = 0
 vim.g.loaded_perl_provider = 0
 vim.g.loaded_ruby_provider = 0
 
-vim.o.number = true
-vim.o.relativenumber = true
-
-vim.o.splitbelow = true
-vim.o.splitright = true
-
-vim.o.wrap = false
-
+vim.o.clipboard = "unnamedplus"
+vim.o.confirm = true
+vim.o.expandtab = true
+vim.o.exrc = true
+vim.o.foldlevel = 99
+vim.o.ignorecase = true
+vim.o.laststatus = 3
 vim.o.list = true
 vim.o.listchars = "tab:» ,trail:·,nbsp:␣"
-
-vim.o.clipboard = "unnamedplus"
-
-vim.o.undofile = true
-
-vim.o.exrc = true
-
-vim.o.ignorecase = true
-vim.o.smartcase = true
-
-vim.o.signcolumn = "yes"
-
-vim.o.updatetime = 250
-vim.o.timeoutlen = 500
-
+vim.o.number = true
 vim.o.pumheight = 10
-
-vim.o.laststatus = 3
-
-vim.o.foldlevel = 99
+vim.o.pummaxwidth = 100
+vim.o.relativenumber = true
+vim.o.shiftwidth = 2
+vim.o.signcolumn = "yes"
+vim.o.smartcase = true
+vim.o.smoothscroll = true
+vim.o.softtabstop = 2
+vim.o.splitbelow = true
+vim.o.splitright = true
+vim.o.tabstop = 2
+vim.o.timeoutlen = 500
+vim.o.undofile = true
+vim.o.updatetime = 250
+vim.o.virtualedit = "block"
+vim.o.wrap = false
