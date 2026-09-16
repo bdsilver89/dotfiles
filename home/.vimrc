@@ -234,6 +234,11 @@ set background=dark
 
 if exists('+termguicolors')
     set termguicolors
+
+    if &term =~# '256color' || &term =~# 'tmux'
+        let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+        let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+    endif
 endif
 
 silent! colorscheme catppuccin_mocha
@@ -354,8 +359,9 @@ function! ProjectRoot() abort
     return getcwd()
 endfunction
 
-" vim-test runs without changing Vim's working directory
-let test#project_root = function('ProjectRoot')
+" vim-test runs without changing Vim's working directory.
+" Use a string because Vim before 9.0.0355 rejects Funcrefs here.
+let test#project_root = ProjectRoot()
 
 function! s:ProjectFiles(fullscreen) abort
     let l:root = ProjectRoot()
@@ -657,6 +663,7 @@ augroup init
 
     autocmd VimResized * wincmd =
 
+    autocmd BufEnter * let test#project_root = ProjectRoot()
     autocmd BufEnter * call <SID>ConfigureBuild()
 
     if s:coc_enabled
