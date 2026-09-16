@@ -28,4 +28,5 @@ return {
   { import = "astrocommunity.pack.toml" },
   { import = "astrocommunity.pack.xml" },
   { import = "astrocommunity.pack.yaml" },
+  { import = "astrocommunity.test/neotest" },
 }
