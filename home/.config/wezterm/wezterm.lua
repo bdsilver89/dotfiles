@@ -13,7 +13,7 @@ local function appearance()
 	return "Dark"
 end
 
-config.color_scheme = appearance():find("Dark") and "Catppuccin Mocha" or "Catppuccin Latte"
+config.color_scheme = appearance():find("Dark") and "Gruvbox Dark (Gogh)" or "Gruvbox (Gogh)"
 
 config.font = wezterm.font_with_fallback({
 	"JetBrains Mono",

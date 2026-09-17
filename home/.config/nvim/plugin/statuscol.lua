@@ -1,0 +1,27 @@
+-- vim.pack.add({
+--   "https://github.com/luukvbaal/statuscol.nvim",
+-- })
+--
+-- local builtin = require("statuscol.builtin")
+--
+-- vim.o.foldcolumn = "1"
+--
+-- require("statuscol").setup({
+--   relculright = true,
+--   segments = {
+--     {
+--       sign = { namespace = { "diagnostic.signs" }, maxwidth = 1 },
+--       click = "v:lua.ScSa",
+--     },
+--     { text = { builtin.foldfunc }, click = "v:lua.ScFa" },
+--     {
+--       text = { builtin.lnumfunc, " " },
+--       condition = { true, builtin.not_empty },
+--       click = "v:lua.ScLa",
+--     },
+--     {
+--       sign = { namespace = { "gitsigns" }, maxwidth = 1, colwidth = 1, wrap = true },
+--       click = "v:lua.ScSa",
+--     },
+--   },
+-- })
