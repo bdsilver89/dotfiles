@@ -68,7 +68,8 @@ if s:plugins_enabled
     call plug#begin(expand('~/.vim/plugged'))
 
     " UI
-    Plug 'catppuccin/vim', {'as': 'catppuccin', 'branch': 'main' }
+    " Plug 'catppuccin/vim', {'as': 'catppuccin', 'branch': 'main' }
+    Plug 'sainnhe/everforest'
     Plug 'itchyny/lightline.vim'
     Plug 'Yggdroot/indentline'
     Plug 'mbbill/undotree'
@@ -241,7 +242,8 @@ if exists('+termguicolors')
     endif
 endif
 
-silent! colorscheme catppuccin_mocha
+" silent! colorscheme catppuccin_mocha
+silent! colorscheme everforest
 
 function! LightlineGitBranch() abort
     return exists('*FugitiveHead') ? FugitiveHead() : ''
