@@ -6,6 +6,11 @@ local triple = wezterm.target_triple
 local is_windows = triple:find("windows") ~= nil
 local is_mac = triple:find("darwin") ~= nil
 
+local colors = {
+  dark = "Everforest Dark (Gogh)",
+  light = "Everforest Light (Gogh)",
+}
+
 local function appearance()
 	if wezterm.gui then
 		return wezterm.gui.get_appearance()
@@ -13,7 +18,7 @@ local function appearance()
 	return "Dark"
 end
 
-config.color_scheme = appearance():find("Dark") and "Gruvbox Dark (Gogh)" or "Gruvbox (Gogh)"
+config.color_scheme = appearance():find("Dark") and colors.dark or colors.light
 
 config.font = wezterm.font_with_fallback({
 	"JetBrains Mono",

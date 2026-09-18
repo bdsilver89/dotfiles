@@ -2,9 +2,10 @@ vim.pack.add({
   "https://github.com/nvim-mini/mini.nvim",
 })
 
-require("mini.icons").setup()
-MiniIcons.mock_nvim_web_devicons()
-MiniIcons.tweak_lsp_kind()
+local icons = require("mini.icons")
+icons.setup()
+icons.mock_nvim_web_devicons()
+icons.tweak_lsp_kind()
 
 require("mini.pairs").setup()
 require("mini.surround").setup()
@@ -14,3 +15,11 @@ require("mini.surround").setup()
 -- statusline.section_location = function()
 --   return "%2l:%-2v"
 -- end
+
+-- local statuscolumn = require("mini.statuscolumn")
+-- statuscolumn.setup({
+--   dim_inactive = false,
+--   content = statuscolumn.gen_content.main({
+--     { format = "sfl", lnum = "%4l", sep = "" },
+--   }),
+-- })

@@ -14,7 +14,12 @@ vim.api.nvim_create_autocmd("VimResized", {
 
 vim.api.nvim_create_autocmd("FileType", {
   group = group,
-  pattern = { "checkhealth, gitsigns-blame", "help", "qf" },
+  pattern = {
+    "checkhealth",
+    "gitsigns-blame",
+    "help",
+    "qf"
+  },
   callback = function(ev)
     vim.bo[ev.buf].buflisted = false
     vim.schedule(function()

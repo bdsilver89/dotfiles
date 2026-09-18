@@ -3,7 +3,7 @@ vim.pack.add({
 }, { load = false })
 
 local function start_jdtls()
-  local jdtls = vim.fs.normalize(vim.fn.stdpath("data") .. "/../jdtls/current/bin/jdtls")
+  local jdtls = vim.fs.normalize(vim.fn.stdpath("data") .. "/mason/packages/jdtls/bin/jdtls")
   local cmd = {
     jdtls,
   }
