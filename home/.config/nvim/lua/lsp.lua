@@ -25,26 +25,26 @@ vim.diagnostic.config({
 
 local group = vim.api.nvim_create_augroup("configlsp", { clear = true })
 
-vim.api.nvim_create_autocmd("LspProgress", {
-  group = group,
-  callback = function(ev)
-    local client = vim.lsp.get_client_by_id(ev.data.client_id)
-    local value = ev.data.params.value
-    local token = ev.data.params.token or "default"
-    local icon = value.kind == "end" and "" or ""
-    local text = value.message or (value.kind == "end" and "Done" or "Loading...")
-    local client_name = client and client.name or "LSP"
-    local display_str = string.format("[%s] %s %s: %s", client_name, icon, value.title or "", text)
-    vim.api.nvim_echo({ { display_str } }, false, {
-      id = "lsp_progress_" .. ev.data.client_id .. "_" ..tostring(token),
-      kind = "progress",
-      source = "vim.lsp",
-      title = value.title,
-      status = value.kind ~= "end" and "running" or "success",
-      percent = value.percent,
-    })
-  end,
-})
+-- vim.api.nvim_create_autocmd("LspProgress", {
+--   group = group,
+--   callback = function(ev)
+--     local client = vim.lsp.get_client_by_id(ev.data.client_id)
+--     local value = ev.data.params.value
+--     local token = ev.data.params.token or "default"
+--     local icon = value.kind == "end" and "" or ""
+--     local text = value.message or (value.kind == "end" and "Done" or "Loading...")
+--     local client_name = client and client.name or "LSP"
+--     local display_str = string.format("[%s] %s %s: %s", client_name, icon, value.title or "", text)
+--     vim.api.nvim_echo({ { display_str } }, false, {
+--       id = "lsp_progress_" .. ev.data.client_id .. "_" ..tostring(token),
+--       kind = "progress",
+--       source = "vim.lsp",
+--       title = value.title,
+--       status = value.kind ~= "end" and "running" or "success",
+--       percent = value.percent,
+--     })
+--   end,
+-- })
 
 vim.api.nvim_create_autocmd("LspAttach", {
   group = group,
@@ -82,6 +82,10 @@ vim.api.nvim_create_autocmd({ "BufReadPre", "BufNewFile" }, {
         return server ~= "jdtls"
       end)
       :totable()
+    vim.list_extend(servers, {
+      "tsc",
+      "tailwindcss",
+    })
     vim.lsp.enable(servers)
   end,
 })
