@@ -1,0 +1,8 @@
+{
+    "shellcheck.enable": true,
+    "shellcheck.run": "onSave",
+    "[shellscript]": {
+        "editor.defaultFormatter": "foxundermoon.shell-format",
+        "editor.formatOnSave": true
+    }
+}

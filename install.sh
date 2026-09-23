@@ -869,12 +869,18 @@ install_gh_extensions() {
 # VS Code
 # =============================================================================
 
-# Repository settings are strict JSON. Missing/empty files are empty objects.
+# Repository settings use VS Code's JSONC format. Missing/empty files are empty
+# objects. The repository's JSONC is intentionally limited to full-line comments
+# and trailing commas so it can be normalized before jq parses it.
 # jq's * recursively merges objects and replaces arrays and scalar values.
+vscode_json() {
+    sed -E '/^[[:space:]]*\/\//d; s/,[[:space:]]*([}\]])/\1/g' "$1"
+}
+
 vscode_settings() {
     local base='{}' extra='{}'
-    [ ! -s "$1" ] || base="$(cat "$1")"
-    [ ! -s "$2" ] || extra="$(cat "$2")"
+    [ ! -s "$1" ] || base="$(vscode_json "$1")"
+    [ ! -s "$2" ] || extra="$(vscode_json "$2")"
     jq -en --argjson base "$base" --argjson extra "$extra" '
         if ($base | type) == "object" and ($extra | type) == "object"
         then $base * $extra else error("settings must be objects") end'
@@ -937,6 +943,49 @@ vscode_write() {
     say "Wrote" "$(tilde "$dst")"
 }
 
+# Base VS Code settings are tracked directly. Unlike profile files, these have
+# stable native paths and should remain live links to the repository.
+vscode_link() {
+    local src="$1" dst="$2" rel="${2#"$HOME/"}" bak=""
+
+    [ -f "$src" ] || { warn "missing VS Code source: $(tilde "$src")"; return 0; }
+
+    if [ -L "$dst" ] && [ "$(readlink "$dst")" = "$src" ]; then
+        N_UNCHANGED=$((N_UNCHANGED + 1))
+        vsay "Unchanged" "$(tilde "$dst")"
+        return 0
+    fi
+
+    if [ -f "$dst" ] && [ ! -L "$dst" ] && cmp -s "$src" "$dst"; then
+        run rm -f "$dst"
+        ensure_dir "$(dirname "$dst")"
+        run ln -s "$src" "$dst"
+        N_LINKED=$((N_LINKED + 1))
+        vsay "Linked" "$(tilde "$dst") (was identical)"
+        return 0
+    fi
+
+    if [ -e "$dst" ] || [ -L "$dst" ]; then
+        resolve_conflict "$rel" "$src"
+        case "$RESOLUTION" in
+            quit) die "aborted at $(tilde "$dst")" ;;
+            skip) N_UNCHANGED=$((N_UNCHANGED + 1)); vsay "Skipped" "$(tilde "$dst")"; return 0 ;;
+            backup) backup_path "$rel"; bak="$BAK" ;;
+            overwrite) run rm -rf "$dst" ;;
+        esac
+    fi
+
+    ensure_dir "$(dirname "$dst")"
+    run ln -s "$src" "$dst"
+    N_LINKED=$((N_LINKED + 1))
+    if [ -n "$bak" ]; then
+        N_BACKED_UP=$((N_BACKED_UP + 1))
+        say "Backed up" "$(tilde "$bak")"
+    else
+        say "Linked" "$(tilde "$dst")"
+    fi
+}
+
 install_vscode_profile() {
     local name="$1" dir="$2" target="$VSCODE_USER" settings keys extensions
     local entry id attempt installed ext
@@ -994,11 +1043,15 @@ install_vscode_profile() {
         fi
     fi
 
-    vscode_write "$settings" "$target/settings.json"
-    if [ -n "${entry:-}" ] && printf '%s' "$entry" | jq -e '.useDefaultFlags.keybindings == true' >/dev/null; then
-        vscode_write "$keys" "$VSCODE_USER/keybindings.json"
+    if [ "$name" = "Default" ]; then
+        vscode_link "$VSCODE_CONFIG/settings.json" "$VSCODE_USER/settings.json"
+        [ -f "$VSCODE_CONFIG/keybindings.json" ] &&
+            vscode_link "$VSCODE_CONFIG/keybindings.json" "$VSCODE_USER/keybindings.json"
     else
-        vscode_write "$keys" "$target/keybindings.json"
+        vscode_write "$settings" "$target/settings.json"
+        if [ -z "${entry:-}" ] || ! printf '%s' "$entry" | jq -e '.useDefaultFlags.keybindings == true' >/dev/null; then
+            vscode_write "$keys" "$target/keybindings.json"
+        fi
     fi
     [ -n "$extensions" ] || return 0
     # Even --list-extensions writes VS Code logs: no code invocations in dry-run.
@@ -1230,7 +1283,8 @@ Usage: install.sh [options]
 VS Code (desktop, or --only=vscode):
     Reads home/.config/vscode/{settings.json,keybindings.json,extensions.txt}
     and profiles/<name>/{settings.json,extensions.txt}. Requires jq and code.
-    Settings are strict JSON; objects merge recursively, arrays replace.
+    Default settings.json and keybindings.json are symlinked directly.
+    Settings use VS Code JSONC; objects merge recursively, arrays replace.
     Common extensions and keybindings apply to every profile. Extensions are
     additive: removing an entry does not uninstall it. Rerun to apply changes.
     Missing profiles open a VS Code window. Generated files preserve local

@@ -1,0 +1,12 @@
+aaron-bond.better-comments
+alefragnani.project-manager
+EditorConfig.EditorConfig
+github.github-vscode-theme
+ms-azuretools.vscode-containers
+ms-azuretools.vscode-docker
+ms-vscode-remote.vscode-remote-extensionpack
+redhat.vscode-yaml
+sst-dev.opencode
+streetsidesoftware.code-spell-checker
+tamasfe.even-better-toml
+vscodevim.vim
