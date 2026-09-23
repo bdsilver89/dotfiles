@@ -24,15 +24,40 @@ $Packages = @(
 
 # Target under $HOME -> source under $RepoDir
 $Links = [ordered]@{
-    ".gitconfig"  = "home\.gitconfig"
-    ".vimrc"      = "home\.vimrc"
+    ".gitconfig" = "home\.gitconfig"
+    ".vimrc"     = "home\.vimrc"
 }
 
+# Target under %APPDATA% -> portable source under $RepoDir
 $AppDataLinks = [ordered]@{
-    "alacritty"   = "AppData\Roaming\alacritty"
+    "alacritty" = "home\.config\alacritty"
 }
+
+# Portable VS Code configuration:
+#
+# home/.config/vscode/
+#   settings.json
+#   keybindings.json
+#   extensions.txt
+#   profiles/
+#     cpp/
+#       settings.json
+#       extensions.txt
+#     java/
+#       settings.json
+#       extensions.txt
+#     python/
+#       settings.json
+#       extensions.txt
+#     rust/
+#       settings.json
+#       extensions.txt
+#
+$VSCodeConfigDir = Join-Path $RepoDir "home\.config\vscode"
+$VSCodeUserDir   = Join-Path $env:APPDATA "Code\User"
 
 $script:Linked    = 0
+$script:Copied    = 0
 $script:Unchanged = 0
 $script:Warnings  = 0
 $script:Start     = Get-Date
@@ -45,8 +70,14 @@ $Gutter = 11
 $UseColor = $Host.UI.SupportsVirtualTerminal -and -not $env:NO_COLOR
 
 function Emit {
-    param([string]$Color, [string]$Verb, [string]$Message)
+    param(
+        [string]$Color,
+        [string]$Verb,
+        [string]$Message
+    )
+
     $pad = $Verb.PadLeft($Gutter)
+
     if ($UseColor) {
         Write-Host "$Color$pad$([char]27)[0m $Message"
     } else {
@@ -54,33 +85,86 @@ function Emit {
     }
 }
 
-function Banner { param([string]$Message)
+function Banner {
+    param([string]$Message)
+
     Write-Host ""
     Write-Host "dotfiles  $Message"
 }
-function Phase { param([string]$Name)
+
+function Phase {
+    param([string]$Name)
+
     Write-Host ""
     Write-Host $Name.PadLeft($Gutter)
 }
-function Say  { param([string]$Verb, [string]$Message) Emit "$([char]27)[32m" $Verb $Message }
-function Note { param([string]$Verb, [string]$Message) Emit "$([char]27)[2m"  $Verb $Message }
-function Warn { param([string]$Message)
+
+function Say {
+    param(
+        [string]$Verb,
+        [string]$Message
+    )
+
+    Emit "$([char]27)[32m" $Verb $Message
+}
+
+function Note {
+    param(
+        [string]$Verb,
+        [string]$Message
+    )
+
+    Emit "$([char]27)[2m" $Verb $Message
+}
+
+function Warn {
+    param([string]$Message)
+
     $script:Warnings++
     Emit "$([char]27)[33m" "Warning" $Message
 }
-function Fail { param([string]$Message)
+
+function Fail {
+    param([string]$Message)
+
     Emit "$([char]27)[31m" "Error" $Message
     exit 1
 }
-function VSay { param([string]$Verb, [string]$Message)
-    if ($Verbose) { Note $Verb $Message }
+
+function VSay {
+    param(
+        [string]$Verb,
+        [string]$Message
+    )
+
+    if ($Verbose) {
+        Note $Verb $Message
+    }
 }
-function Cont { param([string]$Message) Write-Host "$("".PadLeft($Gutter)) $Message" }
 
-function Tilde { param([string]$Path) $Path -replace [regex]::Escape($HOME), "~" }
+function Cont {
+    param([string]$Message)
 
-function Plural { param([int]$N, [string]$Word)
-    if ($N -eq 1) { "$N $Word" } else { "$N ${Word}s" }
+    Write-Host ("{0} {1}" -f "".PadLeft($Gutter), $Message)
+}
+
+function Tilde {
+    param([string]$Path)
+
+    $Path -replace [regex]::Escape($HOME), "~"
+}
+
+function Plural {
+    param(
+        [int]$N,
+        [string]$Word
+    )
+
+    if ($N -eq 1) {
+        "$N $Word"
+    } else {
+        "$N ${Word}s"
+    }
 }
 
 # =============================================================================
@@ -96,9 +180,13 @@ function Install-Packages {
 
     foreach ($id in $Packages) {
         # Native commands ignore $ErrorActionPreference, so exit codes are
-        # checked by hand. `winget install` on an already-installed package
-        # exits non-zero, hence the probe.
-        winget list --id $id --exact --accept-source-agreements *> $null
+        # checked by hand. Probe first so already-installed packages do not
+        # generate errors.
+        winget list `
+            --id $id `
+            --exact `
+            --accept-source-agreements *> $null
+
         if ($LASTEXITCODE -eq 0) {
             VSay "Present" $id
             continue
@@ -109,8 +197,13 @@ function Install-Packages {
             continue
         }
 
-        winget install --id $id --exact --silent `
-            --accept-package-agreements --accept-source-agreements *> $null
+        winget install `
+            --id $id `
+            --exact `
+            --silent `
+            --accept-package-agreements `
+            --accept-source-agreements *> $null
+
         if ($LASTEXITCODE -ne 0) {
             Warn "winget install $id failed ($LASTEXITCODE)"
         } else {
@@ -120,74 +213,293 @@ function Install-Packages {
 }
 
 # =============================================================================
-# Symlinks
+# File comparison
 # =============================================================================
 
 function Test-Symlink {
     param([string]$Path)
-    $item = Get-Item -LiteralPath $Path -Force -ErrorAction SilentlyContinue
-    if (-not $item) { return $false }
+
+    $item = Get-Item `
+        -LiteralPath $Path `
+        -Force `
+        -ErrorAction SilentlyContinue
+
+    if (-not $item) {
+        return $false
+    }
+
     return $item.LinkType -eq "SymbolicLink"
 }
 
+function Test-SameFile {
+    param(
+        [string]$Left,
+        [string]$Right
+    )
+
+    if (-not (Test-Path -LiteralPath $Left -PathType Leaf)) {
+        return $false
+    }
+
+    if (-not (Test-Path -LiteralPath $Right -PathType Leaf)) {
+        return $false
+    }
+
+    $leftHash = (
+        Get-FileHash `
+            -LiteralPath $Left `
+            -Algorithm SHA256
+    ).Hash
+
+    $rightHash = (
+        Get-FileHash `
+            -LiteralPath $Right `
+            -Algorithm SHA256
+    ).Hash
+
+    return $leftHash -eq $rightHash
+}
+
+function Get-RelativeFiles {
+    param([string]$Root)
+
+    $resolved = (Resolve-Path -LiteralPath $Root).Path
+
+    return @(
+        Get-ChildItem `
+            -LiteralPath $resolved `
+            -File `
+            -Recurse |
+            ForEach-Object {
+                $_.FullName.Substring($resolved.Length).TrimStart('\', '/')
+            } |
+            Sort-Object
+    )
+}
+
+function Test-SameDirectory {
+    param(
+        [string]$Left,
+        [string]$Right
+    )
+
+    if (-not (Test-Path -LiteralPath $Left -PathType Container)) {
+        return $false
+    }
+
+    if (-not (Test-Path -LiteralPath $Right -PathType Container)) {
+        return $false
+    }
+
+    $leftRoot  = (Resolve-Path -LiteralPath $Left).Path
+    $rightRoot = (Resolve-Path -LiteralPath $Right).Path
+
+    $leftFiles  = @(Get-RelativeFiles $leftRoot)
+    $rightFiles = @(Get-RelativeFiles $rightRoot)
+
+    if (Compare-Object $leftFiles $rightFiles) {
+        return $false
+    }
+
+    foreach ($relative in $leftFiles) {
+        $leftFile  = Join-Path $leftRoot $relative
+        $rightFile = Join-Path $rightRoot $relative
+
+        if (-not (Test-SameFile $leftFile $rightFile)) {
+            return $false
+        }
+    }
+
+    return $true
+}
+
+function Test-SameContent {
+    param(
+        [string]$Left,
+        [string]$Right
+    )
+
+    $leftItem = Get-Item `
+        -LiteralPath $Left `
+        -Force `
+        -ErrorAction SilentlyContinue
+
+    $rightItem = Get-Item `
+        -LiteralPath $Right `
+        -Force `
+        -ErrorAction SilentlyContinue
+
+    if (-not $leftItem -or -not $rightItem) {
+        return $false
+    }
+
+    if ($leftItem.PSIsContainer -ne $rightItem.PSIsContainer) {
+        return $false
+    }
+
+    if ($leftItem.PSIsContainer) {
+        return Test-SameDirectory $Left $Right
+    }
+
+    return Test-SameFile $Left $Right
+}
+
+# =============================================================================
+# Diff
+# =============================================================================
+
+function Show-Diff {
+    param(
+        [string]$Source,
+        [string]$Target
+    )
+
+    Note "Different" (Tilde $Target)
+
+    if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
+        Cont "git not found; cannot show diff"
+        return
+    }
+
+    Write-Host ""
+
+    # git diff --no-index supports both files and directory trees.
+    & git --no-pager diff `
+        --no-index `
+        -- `
+        $Source `
+        $Target
+
+    # git diff returns:
+    #   0 = identical
+    #   1 = differences
+    #  >1 = actual error
+    if ($LASTEXITCODE -gt 1) {
+        Warn "could not diff $(Tilde $Target)"
+    }
+}
+
+# =============================================================================
+# Links / copy fallback
+# =============================================================================
+
+function Copy-One {
+    param(
+        [string]$Target,
+        [string]$Source
+    )
+
+    $parent = Split-Path -Parent $Target
+
+    if ($parent -and -not (Test-Path -LiteralPath $parent)) {
+        New-Item `
+            -ItemType Directory `
+            -Force `
+            -Path $parent | Out-Null
+    }
+
+    Copy-Item `
+        -LiteralPath $Source `
+        -Destination $Target `
+        -Recurse `
+        -Force
+
+    $script:Copied++
+    Say "Copied" (Tilde $Target)
+}
+
+function Install-LinkOrCopy {
+    param(
+        [string]$Target,
+        [string]$Source
+    )
+
+    $parent = Split-Path -Parent $Target
+
+    if ($parent -and -not (Test-Path -LiteralPath $parent)) {
+        New-Item `
+            -ItemType Directory `
+            -Force `
+            -Path $parent | Out-Null
+    }
+
+    try {
+        New-Item `
+            -ItemType SymbolicLink `
+            -Path $Target `
+            -Target $Source `
+            -ErrorAction Stop | Out-Null
+
+        $script:Linked++
+        Say "Linked" (Tilde $Target)
+    } catch {
+        VSay "Fallback" "symlink unavailable for $(Tilde $Target)"
+        Copy-One $Target $Source
+    }
+}
+
 function Link-One {
-    param([string]$Target, [string]$Source)
+    param(
+        [string]$Target,
+        [string]$Source
+    )
 
     if (-not (Test-Path -LiteralPath $Source)) {
         Warn "missing in repo: $Source"
         return
     }
 
-    if ((Test-Symlink $Target) -and
-        ((Get-Item -LiteralPath $Target -Force).Target -eq $Source)) {
-        $script:Unchanged++
-        VSay "Unchanged" (Tilde $Target)
+    # Already a symlink.
+    if (Test-Symlink $Target) {
+        $item = Get-Item -LiteralPath $Target -Force
+
+        if ($item.Target -eq $Source) {
+            $script:Unchanged++
+            VSay "Unchanged" (Tilde $Target)
+            return
+        }
+
+        Warn "$(Tilde $Target) links to unexpected target: $($item.Target)"
         return
     }
 
+    # Existing regular file/directory.
     if (Test-Path -LiteralPath $Target) {
-        $backup = Join-Path $HOME ".dotfiles-backup\$($script:Start.ToString('yyyyMMdd-HHmmss'))"
-        if ($DryRun) {
-            Note "Would back up" (Tilde $Target)
-        } else {
-            New-Item -ItemType Directory -Force -Path $backup | Out-Null
-            Move-Item -LiteralPath $Target -Destination $backup -Force
-            Say "Backed up" "$(Tilde $Target) -> $(Tilde $backup)"
+        if (Test-SameContent $Source $Target) {
+            $script:Unchanged++
+            VSay "Unchanged" "$(Tilde $Target) (copy)"
+            return
         }
+
+        # Do not overwrite a divergent copy. It may contain local changes that
+        # should be brought back into the dotfiles repository.
+        Show-Diff $Source $Target
+        $script:Warnings++
+        return
     }
 
+    # Missing target.
     if ($DryRun) {
         Note "Would link" (Tilde $Target)
         return
     }
 
-    $parent = Split-Path -Parent $Target
-    if ($parent -and -not (Test-Path -LiteralPath $parent)) {
-        New-Item -ItemType Directory -Force -Path $parent | Out-Null
-    }
-
-    try {
-        New-Item -ItemType SymbolicLink -Force -Path $Target -Target $Source | Out-Null
-        $script:Linked++
-        Say "Linked" (Tilde $Target)
-    } catch {
-        # Symlinks need Developer Mode or an elevated shell.
-        Warn "could not link $(Tilde $Target): $($_.Exception.Message)"
-    }
+    Install-LinkOrCopy $Target $Source
 }
 
 function Link-Dotfiles {
     Phase "Linking"
 
     foreach ($target in $Links.Keys) {
-        Link-One (Join-Path $HOME $target) (Join-Path $RepoDir $Links[$target])
-    }
-    foreach ($target in $AppDataLinks.Keys) {
-        Link-One (Join-Path $env:APPDATA $target) (Join-Path $RepoDir $AppDataLinks[$target])
+        Link-One `
+            (Join-Path $HOME $target) `
+            (Join-Path $RepoDir $Links[$target])
     }
 
-    if ($script:Linked -eq 0) {
-        Note "Unchanged" "$(Plural $script:Unchanged 'file') already linked"
+    foreach ($target in $AppDataLinks.Keys) {
+        Link-One `
+            (Join-Path $env:APPDATA $target) `
+            (Join-Path $RepoDir $AppDataLinks[$target])
     }
 }
 
@@ -212,13 +524,327 @@ function Set-GitLocal {
         VSay "Current" "core.autocrlf"
         return
     }
+
     if ($DryRun) {
         Note "Would set" "core.autocrlf=input in $(Tilde $local)"
         return
     }
 
     git config --file $local core.autocrlf input
+
+    if ($LASTEXITCODE -ne 0) {
+        Warn "could not write $(Tilde $local)"
+        return
+    }
+
     Say "Wrote" "$(Tilde $local)"
+}
+
+# =============================================================================
+# VS Code helpers
+# =============================================================================
+
+function Get-ExtensionList {
+    param([string]$Path)
+
+    if (-not (Test-Path -LiteralPath $Path)) {
+        return @()
+    }
+
+    return @(
+        Get-Content -LiteralPath $Path |
+            ForEach-Object {
+                $_.Trim()
+            } |
+            Where-Object {
+                $_ -and -not $_.StartsWith("#")
+            }
+    )
+}
+
+function Get-VSCodeProfiles {
+    $profilesDir = Join-Path $VSCodeConfigDir "profiles"
+
+    if (-not (Test-Path -LiteralPath $profilesDir)) {
+        return @()
+    }
+
+    return @(
+        Get-ChildItem `
+            -LiteralPath $profilesDir `
+            -Directory |
+            Sort-Object Name
+    )
+}
+
+function Get-VSCodeExtensions {
+    param([string]$Profile)
+
+    $args = @("--list-extensions")
+
+    if ($Profile) {
+        $args += @(
+            "--profile",
+            $Profile
+        )
+    }
+
+    return @(
+        & code @args 2>$null |
+            ForEach-Object {
+                $_.Trim()
+            } |
+            Where-Object {
+                $_
+            }
+    )
+}
+
+function Install-VSCodeExtensions {
+    param(
+        [string]$Path,
+        [string]$Profile
+    )
+
+    $extensions = @(Get-ExtensionList $Path)
+
+    if ($extensions.Count -eq 0) {
+        return
+    }
+
+    $installed = @(Get-VSCodeExtensions $Profile)
+
+    foreach ($extension in $extensions) {
+        $label = $extension
+
+        if ($Profile) {
+            $label += " [$Profile]"
+        }
+
+        if ($installed -contains $extension) {
+            VSay "Present" $label
+            continue
+        }
+
+        if ($DryRun) {
+            Note "Would install" $label
+            continue
+        }
+
+        $args = @(
+            "--install-extension",
+            $extension
+        )
+
+        if ($Profile) {
+            $args += @(
+                "--profile",
+                $Profile
+            )
+        }
+
+        & code @args *> $null
+
+        if ($LASTEXITCODE -ne 0) {
+            Warn "could not install $label"
+        } else {
+            Say "Installed" $label
+        }
+    }
+}
+
+# =============================================================================
+# VS Code profile settings
+# =============================================================================
+
+function Get-VSCodeProfileEntries {
+    $profilesFile = Join-Path $VSCodeUserDir "profiles\profiles.json"
+
+    if (-not (Test-Path -LiteralPath $profilesFile)) {
+        return @()
+    }
+
+    try {
+        $profiles = Get-Content `
+            -LiteralPath $profilesFile `
+            -Raw |
+            ConvertFrom-Json
+
+        return @($profiles.profiles)
+    } catch {
+        Warn "could not read VS Code profiles: $profilesFile"
+        return @()
+    }
+}
+
+function Get-VSCodeProfileId {
+    param([string]$Name)
+
+    $profiles = @(Get-VSCodeProfileEntries)
+
+    foreach ($profile in $profiles) {
+        if ($profile.name -eq $Name) {
+            return $profile.location
+        }
+    }
+
+    return $null
+}
+
+function Ensure-VSCodeProfile {
+    param(
+        [string]$Name,
+        [string]$Path
+    )
+
+    $profileId = Get-VSCodeProfileId $Name
+
+    if ($profileId) {
+        return $profileId
+    }
+
+    # Installing an extension with --profile causes VS Code to create the
+    # profile if it does not already exist.
+    $extensions = @(Get-ExtensionList (Join-Path $Path "extensions.txt"))
+
+    if ($extensions.Count -gt 0) {
+        if ($DryRun) {
+            Note "Would create" "VS Code profile $Name"
+            return $null
+        }
+
+        & code `
+            --profile $Name `
+            --install-extension $extensions[0] *> $null
+
+        if ($LASTEXITCODE -ne 0) {
+            Warn "could not create VS Code profile $Name"
+            return $null
+        }
+    } else {
+        # There is no dedicated `code --create-profile` command. A profile with
+        # no extensions cannot be reliably created through the CLI alone.
+        Warn "profile $Name has no extensions; cannot create it through code CLI"
+        return $null
+    }
+
+    return Get-VSCodeProfileId $Name
+}
+
+function Install-VSCodeProfile {
+    param(
+        [string]$Name,
+        [string]$Path
+    )
+
+    VSay "Profile" $Name
+
+    # Install profile-specific extensions. Passing --profile causes VS Code
+    # to create the named profile when necessary.
+    Install-VSCodeExtensions `
+        (Join-Path $Path "extensions.txt") `
+        $Name
+
+    $settings = Join-Path $Path "settings.json"
+
+    if (-not (Test-Path -LiteralPath $settings)) {
+        return
+    }
+
+    $profileId = Get-VSCodeProfileId $Name
+
+    if (-not $profileId) {
+        $profileId = Ensure-VSCodeProfile $Name $Path
+    }
+
+    if (-not $profileId) {
+        Warn "could not determine VS Code profile ID for $Name"
+        return
+    }
+
+    # VS Code stores named profile settings under:
+    #
+    #   %APPDATA%\Code\User\profiles\<profile-id>\settings.json
+    #
+    # Keep that implementation detail here so the repository can retain the
+    # portable representation:
+    #
+    #   home/.config/vscode/profiles/<name>/settings.json
+    #
+    $profileId = Split-Path $profileId -Leaf
+
+    $profileDir = Join-Path $VSCodeUserDir "profiles\$profileId"
+    $target     = Join-Path $profileDir "settings.json"
+
+    Link-One $target $settings
+}
+
+# =============================================================================
+# VS Code
+# =============================================================================
+
+function Install-VSCode {
+    Phase "VS Code"
+
+    if (-not (Test-Path -LiteralPath $VSCodeConfigDir)) {
+        Warn "VS Code config not found: $VSCodeConfigDir"
+        return
+    }
+
+    if (-not (Get-Command code -ErrorAction SilentlyContinue)) {
+        Warn "code not found, skipping"
+        return
+    }
+
+    # -------------------------------------------------------------------------
+    # Default profile settings
+    # -------------------------------------------------------------------------
+
+    $settings = Join-Path $VSCodeConfigDir "settings.json"
+
+    if (Test-Path -LiteralPath $settings) {
+        Link-One `
+            (Join-Path $VSCodeUserDir "settings.json") `
+            $settings
+    }
+
+    # -------------------------------------------------------------------------
+    # Default profile keybindings
+    # -------------------------------------------------------------------------
+
+    $keybindings = Join-Path $VSCodeConfigDir "keybindings.json"
+
+    if (Test-Path -LiteralPath $keybindings) {
+        Link-One `
+            (Join-Path $VSCodeUserDir "keybindings.json") `
+            $keybindings
+    }
+
+    # -------------------------------------------------------------------------
+    # Default profile extensions
+    # -------------------------------------------------------------------------
+
+    Install-VSCodeExtensions `
+        (Join-Path $VSCodeConfigDir "extensions.txt")
+
+    # -------------------------------------------------------------------------
+    # Named profiles
+    #
+    # Profiles are discovered automatically from:
+    #
+    #   home/.config/vscode/profiles/<name>/
+    #
+    # Each profile may contain:
+    #
+    #   settings.json
+    #   extensions.txt
+    # -------------------------------------------------------------------------
+
+    foreach ($profile in Get-VSCodeProfiles) {
+        Install-VSCodeProfile `
+            $profile.Name `
+            $profile.FullName
+    }
 }
 
 # =============================================================================
@@ -229,31 +855,79 @@ function Show-Usage {
     @"
 Usage: install.ps1 [options]
 
-    -Only PHASE     run one phase: packages links git
+    -Only PHASE     run one phase: packages links git vscode
     -DryRun         print what would run without running it
     -Verbose        show unchanged items
     -Help           print this message
+
+Portable VS Code configuration:
+
+    home/.config/vscode/
+        settings.json
+        keybindings.json
+        extensions.txt
+        profiles/
+            <profile>/
+                settings.json
+                extensions.txt
+
+Examples:
+
+    .\install.ps1
+    .\install.ps1 -DryRun
+    .\install.ps1 -Verbose
+    .\install.ps1 -Only vscode
+    .\install.ps1 -Only vscode -DryRun -Verbose
 
 "@ | Write-Host
 }
 
 function Main {
-    if ($Help) { Show-Usage; return }
+    if ($Help) {
+        Show-Usage
+        return
+    }
 
-    $phases = @("packages", "links", "git")
+    $phases = @(
+        "packages",
+        "links",
+        "git",
+        "vscode"
+    )
+
     if ($Only -and $phases -notcontains $Only) {
         Fail "-Only must be one of: $($phases -join ', ')"
     }
 
     Banner "windows - $(Tilde $RepoDir)$(if ($DryRun) { ' - dry run' })"
 
-    if (-not $Only -or $Only -eq "packages") { Install-Packages }
-    if (-not $Only -or $Only -eq "links")    { Link-Dotfiles }
-    if (-not $Only -or $Only -eq "git")      { Set-GitLocal }
+    if (-not $Only -or $Only -eq "packages") {
+        Install-Packages
+    }
+
+    if (-not $Only -or $Only -eq "links") {
+        Link-Dotfiles
+    }
+
+    if (-not $Only -or $Only -eq "git") {
+        Set-GitLocal
+    }
+
+    if (-not $Only -or $Only -eq "vscode") {
+        Install-VSCode
+    }
 
     $elapsed = [int]((Get-Date) - $script:Start).TotalSeconds
-    $parts = "$script:Linked linked - $script:Unchanged unchanged"
-    if ($script:Warnings -gt 0) { $parts += " - $(Plural $script:Warnings 'warning')" }
+
+    $parts = @(
+        "$(Plural $script:Linked 'link')"
+        "$(Plural $script:Copied 'copy')"
+        "$(Plural $script:Unchanged 'unchanged item')"
+    ) -join " - "
+
+    if ($script:Warnings -gt 0) {
+        $parts += " - $(Plural $script:Warnings 'warning')"
+    }
 
     Write-Host ""
     Say "Finished" "$parts - ${elapsed}s"
