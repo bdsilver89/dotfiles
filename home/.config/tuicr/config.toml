@@ -1,4 +1,4 @@
-theme = "everforest-dark"
+theme = "github-dark"
 mouse = true
 leader = " "
 cursor_line = true

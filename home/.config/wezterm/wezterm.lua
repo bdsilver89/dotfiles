@@ -7,8 +7,8 @@ local is_windows = triple:find("windows") ~= nil
 local is_mac = triple:find("darwin") ~= nil
 
 local colors = {
-  dark = "Everforest Dark (Gogh)",
-  light = "Everforest Light (Gogh)",
+  dark = "Github Dark Default",
+  light = "Github Dark Default",
 }
 
 local function appearance()
