@@ -3,5 +3,15 @@
         "key": "shift+;",
         "command": "vim.showQuickpickCmdLine",
         "when": "editorTextFocus && vim.mode != 'Insert'"
+    },
+    {
+        "key": "] c",
+        "command": "workbench.action.compareEditor.nextChange",
+        "when": "editorTextFocus && vim.mode == 'Normal' && activeEditor == 'workbench.editors.textDiffEditor'"
+    },
+    {
+        "key": "[ c",
+        "command": "workbench.action.compareEditor.previousChange",
+        "when": "editorTextFocus && vim.mode == 'Normal' && activeEditor == 'workbench.editors.textDiffEditor'"
     }
 ]

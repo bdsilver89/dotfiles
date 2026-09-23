@@ -1,6 +1,0 @@
-{
-    "sqltools.useNodeRuntime": true,
-    "[sql]": {
-        "editor.formatOnSave": true
-    }
-}

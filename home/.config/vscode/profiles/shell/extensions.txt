@@ -1,2 +1,0 @@
-foxundermoon.shell-format
-timonwong.shellcheck

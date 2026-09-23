@@ -1,2 +1,0 @@
-ms-vscode.cpptools
-ms-vscode.cmake-tools

@@ -1,2 +1,0 @@
-mtxr.sqltools
-mtxr.sqltools-driver-sqlite
