@@ -2,6 +2,8 @@
 
 param(
     [string]$Only,
+    [ValidateSet('prompt', 'overwrite', 'backup', 'capture', 'skip')]
+    [string]$OnConflict = 'prompt',
     [switch]$DryRun,
     [switch]$Verbose,
     [switch]$Help
@@ -18,6 +20,7 @@ $RepoDir = Split-Path -Parent $PSCommandPath
 $Packages = @(
     "Alacritty.Alacritty",
     "Microsoft.VisualStudioCode",
+    "Microsoft.PowerShell",
     "ZedIndustries.Zed",
     "DEVCOM.JetBrainsMonoNerdFont"
 )
@@ -471,10 +474,7 @@ function Link-One {
             return
         }
 
-        # Do not overwrite a divergent copy. It may contain local changes that
-        # should be brought back into the dotfiles repository.
-        Show-Diff $Source $Target
-        $script:Warnings++
+        Resolve-LinkConflict $Target $Source
         return
     }
 
@@ -485,6 +485,114 @@ function Link-One {
     }
 
     Install-LinkOrCopy $Target $Source
+}
+
+function Resolve-LinkConflict {
+    param(
+        [string]$Target,
+        [string]$Source
+    )
+
+    if ($DryRun) {
+        Note "Conflict" "$(Tilde $Target) ($OnConflict; no changes)"
+        return
+    }
+
+    $action = $OnConflict
+    while ($action -eq 'prompt') {
+        Note "Conflict" (Tilde $Target)
+        Cont "Choose which version to keep."
+        try {
+            $choice = Read-Host '[o] Overwrite local / [b] Backup local and replace / [u] Update repo from local / [d] Diff / [s] Skip (default)'
+        } catch {
+            Warn "cannot prompt; skipping $(Tilde $Target). Use -OnConflict for unattended runs."
+            return
+        }
+
+        switch ($choice.Trim().ToLowerInvariant()) {
+            'o' { $action = 'overwrite' }
+            'b' { $action = 'backup' }
+            'u' { $action = 'capture' }
+            'd' {
+                Cont "Diff: - repo content, + local content"
+                Show-Diff $Source $Target | Out-Host
+            }
+            's' { $action = 'skip' }
+            ''  { $action = 'skip' }
+            default { Cont "Choose o, b, u, d, or s." }
+        }
+    }
+
+    if ($action -eq 'skip') {
+        Warn "skipped $(Tilde $Target)"
+        return
+    }
+
+    if ($action -eq 'capture') {
+        # Reverse the copy direction; Git manages the repo version.
+        # Always copy: linking the repo to a machine-local file is not portable.
+        $local = $Target
+        $Target = $Source
+        $Source = $local
+    }
+
+    # Only replace ordinary files/directories, never traverse a junction or
+    # another reparse point. Unexpected symlinks are handled by Link-One.
+    $item = Get-Item -LiteralPath $Target -Force
+    if ($item.Attributes -band [IO.FileAttributes]::ReparsePoint) {
+        Warn "refusing to replace reparse point: $(Tilde $Target)"
+        return
+    }
+
+    $targetPath = $item.FullName
+    $sourceItem = Get-Item -LiteralPath $Source -Force
+    $sourcePath = $sourceItem.FullName
+    if ($sourcePath -eq $targetPath -or
+        $sourcePath.StartsWith($targetPath.TrimEnd('\') + '\', [StringComparison]::OrdinalIgnoreCase)) {
+        Warn "refusing to replace a directory containing the repo source: $(Tilde $Target)"
+        return
+    }
+
+    if ($action -eq 'capture') {
+        # Replace directory trees rather than merging stale repo files into
+        # the captured version. Paths above are resolved and checked first.
+        if ($targetPath.StartsWith($sourcePath.TrimEnd('\') + '\', [StringComparison]::OrdinalIgnoreCase)) {
+            Warn "refusing to copy a directory into itself: $(Tilde $Source)"
+            return
+        }
+        if ($item.PSIsContainer -or $sourceItem.PSIsContainer) {
+            Remove-Item -LiteralPath $targetPath -Recurse -Force
+        }
+        Copy-One $targetPath $Source
+        return
+    }
+
+    # Move aside first so a failed installation preserves the original.
+    # Number backups instead of overwriting an earlier backup.
+    $backup = "$targetPath.backup"
+    $suffix = 0
+    while (Get-Item -LiteralPath $backup -Force -ErrorAction SilentlyContinue) {
+        $suffix++
+        $backup = "$targetPath.backup.$suffix"
+    }
+    Move-Item -LiteralPath $targetPath -Destination $backup
+    try {
+        Install-LinkOrCopy $targetPath $Source
+    } catch {
+        # A partial copy may exist. Keep both it and the original for recovery.
+        Warn "replacement failed; original preserved at $(Tilde $backup)"
+        throw
+    }
+
+    if ($action -eq 'backup') {
+        Say "Backed up" (Tilde $backup)
+    } else {
+        # The backup is the exact adjacent path created above, not a glob.
+        if ((Split-Path -Parent $backup) -ne (Split-Path -Parent $targetPath)) {
+            throw "Unexpected backup location: $backup"
+        }
+        Remove-Item -LiteralPath $backup -Recurse -Force
+    }
 }
 
 function Link-Dotfiles {
@@ -856,6 +964,9 @@ function Show-Usage {
 Usage: install.ps1 [options]
 
     -Only PHASE     run one phase: packages links git vscode
+    -OnConflict MODE  prompt (default), overwrite, backup, capture, or skip
+                      backup preserves local content in an adjacent .backup file
+                      capture updates the repo from local content without a backup
     -DryRun         print what would run without running it
     -Verbose        show unchanged items
     -Help           print this message
@@ -877,6 +988,7 @@ Examples:
     .\install.ps1 -DryRun
     .\install.ps1 -Verbose
     .\install.ps1 -Only vscode
+    .\install.ps1 -Only vscode -OnConflict backup
     .\install.ps1 -Only vscode -DryRun -Verbose
 
 "@ | Write-Host
