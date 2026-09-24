@@ -1,10 +1,14 @@
-aaron-bond.better-comments
+formulahendry.auto-rename-tag
+EditorConfig.EditorConfig
 alefragnani.project-manager
+alefragnani.bookmarks
+aaron-bond.better-comments
+streetsidesoftware.code-spell-checker
+usernamehw.errorlens
+asvetliakov.vscode-neovim
 bradlc.vscode-tailwindcss
 dbaeumer.vscode-eslint
-EditorConfig.EditorConfig
 esbenp.prettier-vscode
-formulahendry.auto-rename-tag
 foxundermoon.shell-format
 github.github-vscode-theme
 ms-azuretools.vscode-containers
@@ -21,7 +25,6 @@ redhat.java
 redhat.vscode-yaml
 rust-lang.rust-analyzer
 sst-dev.opencode
-streetsidesoftware.code-spell-checker
 tamasfe.even-better-toml
 timonwong.shellcheck
 vscjava.vscode-java-debug

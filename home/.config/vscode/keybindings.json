@@ -1,17 +1,145 @@
 [
     {
-        "key": "shift+;",
-        "command": "vim.showQuickpickCmdLine",
-        "when": "editorTextFocus && vim.mode != 'Insert'"
+        "key": "a",
+        "command": "workbench.files.action.createFileFromExplorer",
+        "when": "filesExplorerFocus && foldersViewVisible && !explorerResourceIsRoot && !explorerResourceReadonly && !inputFocus"
     },
     {
-        "key": "] c",
-        "command": "workbench.action.compareEditor.nextChange",
-        "when": "editorTextFocus && vim.mode == 'Normal' && activeEditor == 'workbench.editors.textDiffEditor'"
+        "key": "c",
+        "command": "filesExplorer.copy",
+        "when": "filesExplorerFocus && foldersViewVisible && !explorerResourceIsRoot && !explorerResourceReadonly && !inputFocus"
     },
     {
-        "key": "[ c",
-        "command": "workbench.action.compareEditor.previousChange",
-        "when": "editorTextFocus && vim.mode == 'Normal' && activeEditor == 'workbench.editors.textDiffEditor'"
+        "key": "x",
+        "command": "filesExplorer.cut",
+        "when": "filesExplorerFocus && foldersViewVisible && !explorerResourceIsRoot && !explorerResourceReadonly && !inputFocus"
+    },
+    {
+        "key": "p",
+        "command": "filesExplorer.paste",
+        "when": "filesExplorerFocus && foldersViewVisible && !explorerResourceIsRoot && !explorerResourceReadonly && !inputFocus"
+    },
+    {
+        "key": "d",
+        "command": "deleteFile",
+        "when": "filesExplorerFocus && foldersViewVisible && !explorerResourceIsRoot && !explorerResourceReadonly && !inputFocus"
+    },
+    {
+        "key": "r",
+        "command": "renameFile",
+        "when": "filesExplorerFocus && foldersViewVisible && !explorerResourceIsRoot && !explorerResourceReadonly && !inputFocus"
+    },
+    {
+        "key": "enter",
+        "command": "list.select",
+        "when": "filesExplorerFocus && foldersViewVisible && !explorerResourceIsRoot && !explorerResourceReadonly && !inputFocus"
+    },
+    {
+        "key": "enter",
+        "command": "-renameFile",
+        "when": "filesExplorerFocus && foldersViewVisible && !explorerResourceIsRoot && !explorerResourceReadonly && !inputFocus"
+    },
+    // scm
+    {
+        "key": "j",
+        "command": "list.focusDown",
+        "when": "focusedView == 'workbench.scm' && listFocus && !inputFocus"
+    },
+    {
+        "key": "k",
+        "command": "list.focusUp",
+        "when": "focusedView == 'workbench.scm' && listFocus && !inputFocus"
+    },
+    {
+        "key": "h",
+        "command": "list.collapse",
+        "when": "focusedView == 'workbench.scm' && listFocus && !inputFocus"
+    },
+    {
+        "key": "l",
+        "command": "list.expand",
+        "when": "focusedView == 'workbench.scm' && listFocus && !inputFocus"
+    },
+    {
+        "key": "space",
+        "command": "git.stageFile",
+        "when": "editorTextFocus && isInDiffEditor && isInDiffRightEditor && resourceScheme == file && (vim.mode == 'Normal' || neovim.mode == normal)"
+    },
+    {
+        "key": "space",
+        "command": "git.unstageFile",
+        "when": "editorTextFocus && isInDiffEditor && isInDiffRightEditor && resourceScheme == git && (vim.mode == 'Normal' || neovim.mode == normal)"
+    },
+    {
+        "key": "enter",
+        "command": "list.select",
+        "when": "focusedView == 'workbench.scm' && listFocus && !inputFocus"
+    },
+    {
+        "key": "c",
+        "command": "workbench.scm.action.focusNextInput",
+        "when": "focusedView == 'workbench.scm' && listFocus && !inputFocus"
+    },
+    {
+        "key": "ctrl+enter",
+        "command": "git.commitStaged",
+        "when": "scmRepository && inputFocus"
+    },
+    {
+        "key": "escape",
+        "command": "workbench.scm.action.focusNextResourceGroup",
+        "when": "scmRepository && inputFocus && !suggestWidgetVisible && !inlineSuggestionVisible"
+    },
+    {
+        "key": "d",
+        "command": "git.clean",
+        "when": "editorTextFocus && isInDiffEditor && isInDiffRightEditor && resourceScheme == file && (vim.mode == 'Normal' || neovim.mode == normal)"
+    },
+    {
+        "key": "a",
+        "command": "git.stageAll",
+        "when": "focusedView == 'workbench.scm' && listFocus && !inputFocus"
+    },
+    {
+        "key": "shift+a",
+        "command": "git.unstageAll",
+        "when": "focusedView == 'workbench.scm' && listFocus && !inputFocus"
+    },
+    {
+        "key": "p",
+        "command": "git.pull",
+        "when": "focusedView == 'workbench.scm' && listFocus && !inputFocus"
+    },
+    {
+        "key": "shift+p",
+        "command": "git.push",
+        "when": "focusedView == 'workbench.scm' && listFocus && !inputFocus"
+    },
+    {
+        "key": "shift+r",
+        "command": "git.refresh",
+        "when": "focusedView == 'workbench.scm' && listFocus && !inputFocus"
+    },
+    // pane navigation out of the terminal (vim handles the editor side)
+    {
+        "key": "ctrl+h",
+        "command": "workbench.action.navigateLeft",
+    },
+    {
+        "key": "ctrl+j",
+        "command": "workbench.action.navigateDown",
+    },
+    {
+        "key": "ctrl+k",
+        "command": "workbench.action.navigateUp",
+    },
+    {
+        "key": "ctrl+l",
+        "command": "workbench.action.navigateRight",
+    },
+    {
+        "key": "escape",
+        "command": "closeMarkersNavigation",
+        "when": "editorFocus && markersNavigationVisible"
     }
 ]
