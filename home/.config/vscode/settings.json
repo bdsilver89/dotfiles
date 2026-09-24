@@ -33,6 +33,7 @@
     "workbench.settings.editor": "json",
     "window.menuBarVisibility": "classic",
     "window.commandCenter": false,
+    "workbench.colorTheme": "GitHub Dark Default",
 
     // git
     "git.autofetch": true,
@@ -357,5 +358,13 @@
             "before": ["g", "r", "f"],
             "commands": ["editor.action.formatSelection"]
         }
+    ],
+    "yaml.disableSchemaDetection": [
+        "**/.github/workflows/*.yml",
+        "**/.github/workflows/*.yaml",
+        "**/.gitea/workflows/*.yml",
+        "**/.gitea/workflows/*.yaml",
+        "**/.forgejo/workflows/*.yml",
+        "**/.forgejo/workflows/*.yaml"
     ]
 }
