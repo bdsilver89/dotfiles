@@ -11,6 +11,10 @@ param(
 
 $ErrorActionPreference = "Stop"
 
+# Windows PowerShell 5.1 turns redirected native stderr into error records.
+# Use Continue only around native calls, then restore Stop for PowerShell work.
+# Native command success is determined by $LASTEXITCODE, not stderr output.
+
 # =============================================================================
 # Globals
 # =============================================================================
@@ -182,13 +186,17 @@ function Install-Packages {
     }
 
     foreach ($id in $Packages) {
-        # Native commands ignore $ErrorActionPreference, so exit codes are
-        # checked by hand. Probe first so already-installed packages do not
-        # generate errors.
-        winget list `
-            --id $id `
-            --exact `
-            --accept-source-agreements *> $null
+        # Probe first so already-installed packages do not generate errors.
+        $previousErrorAction = $ErrorActionPreference
+        try {
+            $ErrorActionPreference = "Continue"
+            winget list `
+                --id $id `
+                --exact `
+                --accept-source-agreements *> $null
+        } finally {
+            $ErrorActionPreference = $previousErrorAction
+        }
 
         if ($LASTEXITCODE -eq 0) {
             VSay "Present" $id
@@ -200,12 +208,18 @@ function Install-Packages {
             continue
         }
 
-        winget install `
-            --id $id `
-            --exact `
-            --silent `
-            --accept-package-agreements `
-            --accept-source-agreements *> $null
+        $previousErrorAction = $ErrorActionPreference
+        try {
+            $ErrorActionPreference = "Continue"
+            winget install `
+                --id $id `
+                --exact `
+                --silent `
+                --accept-package-agreements `
+                --accept-source-agreements *> $null
+        } finally {
+            $ErrorActionPreference = $previousErrorAction
+        }
 
         if ($LASTEXITCODE -ne 0) {
             Warn "winget install $id failed ($LASTEXITCODE)"
@@ -367,11 +381,17 @@ function Show-Diff {
     Write-Host ""
 
     # git diff --no-index supports both files and directory trees.
-    & git --no-pager diff `
-        --no-index `
-        -- `
-        $Source `
-        $Target
+    $previousErrorAction = $ErrorActionPreference
+    try {
+        $ErrorActionPreference = "Continue"
+        & git --no-pager diff `
+            --no-index `
+            -- `
+            $Source `
+            $Target
+    } finally {
+        $ErrorActionPreference = $previousErrorAction
+    }
 
     # git diff returns:
     #   0 = identical
@@ -626,7 +646,13 @@ function Set-GitLocal {
     }
 
     $local = Join-Path $HOME ".gitconfig.local"
-    $current = git config --file $local core.autocrlf 2>$null
+    $previousErrorAction = $ErrorActionPreference
+    try {
+        $ErrorActionPreference = "Continue"
+        $current = git config --file $local core.autocrlf 2>$null
+    } finally {
+        $ErrorActionPreference = $previousErrorAction
+    }
 
     if ($current -eq "input") {
         VSay "Current" "core.autocrlf"
@@ -638,7 +664,13 @@ function Set-GitLocal {
         return
     }
 
-    git config --file $local core.autocrlf input
+    $previousErrorAction = $ErrorActionPreference
+    try {
+        $ErrorActionPreference = "Continue"
+        git config --file $local core.autocrlf input
+    } finally {
+        $ErrorActionPreference = $previousErrorAction
+    }
 
     if ($LASTEXITCODE -ne 0) {
         Warn "could not write $(Tilde $local)"
@@ -697,8 +729,16 @@ function Get-VSCodeExtensions {
         )
     }
 
+    $previousErrorAction = $ErrorActionPreference
+    try {
+        $ErrorActionPreference = "Continue"
+        $extensions = @(& code @args 2>$null)
+    } finally {
+        $ErrorActionPreference = $previousErrorAction
+    }
+
     return @(
-        & code @args 2>$null |
+        $extensions |
             ForEach-Object {
                 $_.Trim()
             } |
@@ -751,7 +791,13 @@ function Install-VSCodeExtensions {
             )
         }
 
-        & code @args *> $null
+        $previousErrorAction = $ErrorActionPreference
+        try {
+            $ErrorActionPreference = "Continue"
+            & code @args *> $null
+        } finally {
+            $ErrorActionPreference = $previousErrorAction
+        }
 
         if ($LASTEXITCODE -ne 0) {
             Warn "could not install $label"
@@ -821,9 +867,15 @@ function Ensure-VSCodeProfile {
             return $null
         }
 
-        & code `
-            --profile $Name `
-            --install-extension $extensions[0] *> $null
+        $previousErrorAction = $ErrorActionPreference
+        try {
+            $ErrorActionPreference = "Continue"
+            & code `
+                --profile $Name `
+                --install-extension $extensions[0] *> $null
+        } finally {
+            $ErrorActionPreference = $previousErrorAction
+        }
 
         if ($LASTEXITCODE -ne 0) {
             Warn "could not create VS Code profile $Name"
