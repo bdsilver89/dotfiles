@@ -50,7 +50,6 @@
     "scm.defaultViewMode": "tree",
 
     // terminal
-    "terminal.integrated.fontSize": 14,
     "terminal.integrated.tabs.enabled": true,
 
     // emmet
@@ -64,7 +63,7 @@
         ],
         "alefragnani.Bookmarks": [
             "workspace"
-        ],
+        ]
     },
 
     // project manager
@@ -111,37 +110,37 @@
 
     "emmet.includeLanguages": {
         "javascript": "javascriptreact",
-        "typescript": "typescriptreact",
+        "typescript": "typescriptreact"
     },
     "eslint.validate": [
         "javascript",
         "javascriptreact",
         "typescript",
-        "typescriptreact",
+        "typescriptreact"
     ],
 
     "[javascript]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode",
-        "editor.formatOnSave": true,
+        "editor.formatOnSave": true
     },
     "[javascriptreact]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode",
-        "editor.formatOnSave": true,
+        "editor.formatOnSave": true
     },
     "[typescript]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode",
-        "editor.formatOnSave": true,
+        "editor.formatOnSave": true
     },
     "[typescriptreact]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode",
-        "editor.formatOnSave": true,
+        "editor.formatOnSave": true
     },
     "[shellscript]": {
         "editor.defaultFormatter": "foxundermoon.shell-format",
-        "editor.formatOnSave": true,
+        "editor.formatOnSave": true
     },
     "[sql]": {
-        "editor.formatOnSave": true,
+        "editor.formatOnSave": true
     },
 
     // vim
@@ -312,7 +311,7 @@
         {
             "before": ["K"],
             "commands": ["editor.action.showHover"]
-        },
+        }
     ],
     "vim.visualModeKeyBindingsNonRecursive": [
         {
@@ -357,6 +356,6 @@
         {
             "before": ["g", "r", "f"],
             "commands": ["editor.action.formatSelection"]
-        },
+        }
     ]
 }
