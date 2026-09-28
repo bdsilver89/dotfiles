@@ -1,11 +1,18 @@
 [
   {
-    "context": "Dock || Terminal || Editor",
+    "context": "Dock || Terminal || EmptyPane || (Editor && vim_mode == normal && !menu)",
     "bindings": {
       "ctrl-h": "workspace::ActivatePaneLeft",
       "ctrl-j": "workspace::ActivatePaneDown",
       "ctrl-k": "workspace::ActivatePaneUp",
       "ctrl-l": "workspace::ActivatePaneRight"
+    }
+  },
+  {
+    "context": "Terminal || EmptyPane || (Editor && vim_mode == normal && !menu)",
+    "bindings": {
+      "ctrl-/": "terminal_panel::Toggle",
+      "ctrl-_": "terminal_panel::Toggle"
     }
   },
   {
@@ -18,32 +25,112 @@
     "context": "ProjectPanel && not_editing",
     "bindings": {
       "a": "project_panel::NewFile",
-      "A": "project_panel::NewDirectory",
+      "shift-a": "project_panel::NewDirectory",
       "r": "project_panel::Rename",
       "d": "project_panel::Delete",
       "x": "project_panel::Cut",
       "c": "project_panel::Copy",
       "p": "project_panel::Paste",
+      "space e": "project_panel::ToggleFocus",
+      "space f e": "project_panel::ToggleFocus"
     }
   },
   {
-    "context": "Editor && VimControl && !VimWaiting && !menu",
+    // LazyVim uses Space as leader. Zed tabs stand in for Neovim buffers.
+    // https://www.lazyvim.org/keymaps
+    "context": "EmptyPane || (Editor && vim_mode == normal && !menu)",
     "bindings": {
       "space -": "pane::SplitDown",
       "space |": "pane::SplitRight",
+      "space w m": "workspace::ToggleZoom",
 
       "space ,": "tab_switcher::Toggle",
-      "space /": "workspace::NewSearch",
+      "space /": "pane::DeploySearch",
       "space space": "file_finder::Toggle",
+      "space e": "project_panel::ToggleFocus",
+      "space f b": "tab_switcher::Toggle",
+      "space f e": "project_panel::ToggleFocus",
+      "space f f": "file_finder::Toggle",
+      "space f n": "workspace::NewFile",
+      "space f p": "projects::OpenRecent",
+      // Uses Zed's configured terminal working directory.
+      "space f t": "terminal_panel::Toggle",
 
-      "space g b": "git::Blame",
+      "space b b": "pane::AlternateFile",
+      "space `": "pane::AlternateFile",
+      "space b d": "pane::CloseActiveItem",
+      "space b o": ["pane::CloseOtherItems", { "close_pinned": false }],
+      "space b l": ["pane::CloseItemsToTheLeft", { "close_pinned": false }],
+      "space b r": ["pane::CloseItemsToTheRight", { "close_pinned": false }],
+      "space b p": "pane::TogglePinTab",
 
+      // Zed's Git panel and diagnostics multibuffer are the closest equivalents.
+      "space g s": "git_panel::ToggleFocus",
+      "space g d": "git::Diff",
+      "space s g": "pane::DeploySearch",
+      "space s r": ["pane::DeploySearch", { "replace_enabled": true }],
+      "space s shift-c": "command_palette::Toggle",
+      "space s d": "diagnostics::Deploy",
+      "space s shift-s": "project_symbols::Toggle",
+      "space x x": "diagnostics::Deploy",
+      "space u shift-c": "theme_selector::Toggle"
+    }
+  },
+  {
+    "context": "Editor && vim_mode == normal && !menu",
+    "bindings": {
+      "shift-h": "pane::ActivatePreviousItem",
+      "shift-l": "pane::ActivateNextItem",
+      "[ b": "pane::ActivatePreviousItem",
+      "] b": "pane::ActivateNextItem",
+
+      "ctrl-up": "vim::ResizePaneUp",
+      "ctrl-down": "vim::ResizePaneDown",
+      "ctrl-left": "vim::ResizePaneLeft",
+      "ctrl-right": "vim::ResizePaneRight",
+
+      // gd, gD, gI, gy and K already match in Zed's Vim keymap.
+      "g r": "editor::FindAllReferences",
+      "g shift-k": "editor::ShowSignatureHelp",
+      "space c r": "editor::Rename",
+      "space c f": "editor::Format",
+      "space c s": "outline_panel::ToggleFocus",
+      "space s s": "outline::Toggle",
+      "space g b": "editor::BlameHover",
+      "space u w": "editor::ToggleSoftWrap",
+      "space u h": "editor::ToggleInlayHints",
+
+      // Keep the existing hunk and excerpt navigation shortcuts.
       "] c": "editor::GoToHunk",
       "[ c": "editor::GoToPreviousHunk",
       "] d": "editor::GoToDiagnostic",
       "[ d": "editor::GoToPreviousDiagnostic",
+      "] e": ["editor::GoToDiagnostic", { "severity": { "min": "error", "max": "error" } }],
+      "[ e": ["editor::GoToPreviousDiagnostic", { "severity": { "min": "error", "max": "error" } }],
+      "] w": ["editor::GoToDiagnostic", { "severity": { "min": "warning", "max": "warning" } }],
+      "[ w": ["editor::GoToPreviousDiagnostic", { "severity": { "min": "warning", "max": "warning" } }],
       "] q": "editor::MoveToStartOfNextExcerpt",
       "[ q": "editor::MoveToStartOfExcerpt"
+    }
+  },
+  {
+    "context": "Editor && (vim_mode == normal || vim_mode == visual) && !menu",
+    "bindings": {
+      "space c a": "editor::ToggleCodeActions"
+    }
+  },
+  {
+    "context": "Editor && (vim_mode == normal || vim_mode == visual || vim_mode == insert) && !menu",
+    "bindings": {
+      "ctrl-s": "workspace::Save",
+      "alt-j": "editor::MoveLineDown",
+      "alt-k": "editor::MoveLineUp"
+    }
+  },
+  {
+    "context": "Editor && vim_mode == insert && !menu",
+    "bindings": {
+      "ctrl-k": "editor::ShowSignatureHelp"
     }
   }
 ]
