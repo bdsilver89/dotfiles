@@ -17,6 +17,7 @@
     "editor.minimap.enabled": false,
     "editor.linkedEditing": true,
     "editor.wordWrap": "on",
+    "editor.wordWrapIndicator": true,
     "editor.bracketPairColorization.enabled": true,
     "editor.guides.bracketPairs": "active",
     "editor.formatOnSave": true,
