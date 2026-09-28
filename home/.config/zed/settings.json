@@ -1,0 +1,103 @@
+{
+  "auto_install_extensions": {
+    // languages
+    "csv": true,
+    "dockerfile": true,
+    "editorconfig": true,
+    "env": true,
+    "flatbuffers": true,
+    "git-firefly": true,
+    "github-actions": true,
+    "html": true,
+    "http": true,
+    "ini": true,
+    "java": true,
+    "log": true,
+    "lua": true,
+    "make": true,
+    "meson": true,
+    "neocmake": true,
+    "proto": true,
+    "sql": true,
+    "ssh-config": true,
+    "tmux": true,
+    "toml": true,
+    "xml": true,
+    // themes
+    "github-theme": true
+  },
+
+  "theme": {
+    "mode": "system",
+    "dark": "GitHub Dark",
+    "light": "GitHub Light"
+  },
+  "ui_font_size": 14,
+  "buffer_font_size": 14,
+  "show_wrap_guides": true,
+  "soft_wrap": "bounded",
+  "colorize_brackets": true,
+  "rounded_selection": true,
+  "minimap": {
+    "show": "never"
+  },
+  "title_bar": {
+    "show_sign_in": false,
+    "show_user_picture": false,
+    "show_onboarding_banner": false
+  },
+  "tabs": {
+    "file_icons": true,
+    "git_status": true,
+    "show_diagnostics": "all",
+    "close_position": "right"
+  },
+  "status_bar": {
+    "active_language_button": true,
+    "cursor_position_button": true
+  },
+  "toolbar": {
+    "quick_actions": true,
+  },
+
+  "git": {
+    "git_gutter": "tracked_files",
+    "inline_blame": {
+      "enabled": true,
+      "location": "inline"
+    },
+    "worktree_directory": "../worktrees"
+  },
+
+  "project_panel": {
+    "dock": "left"
+  },
+  "outline_panel": {
+    "dock": "left"
+  },
+  "collaboration_panel": {
+    "dock": "left",
+    "button": false
+  },
+  "git_panel": {
+    "dock": "left",
+    "tree_view": true
+  },
+  "agent": {
+    "sidebar_side": "right",
+    "dock": "right"
+  },
+
+  "telemetry": {
+    "diagnostics": false,
+    "metrics": false,
+    "anthropic_retention": false
+  },
+
+  "vim_mode": true,
+  "vim": {
+    "use_system_clipboard": "always",
+    "use_smartcase_find": true,
+    "toggle_relative_line_numbers": true
+  }
+}

@@ -53,6 +53,7 @@ options include `--dry-run`, `--verbose`, `--on-conflict=backup`, and
 | `Brewfile` | macOS formulae and desktop casks |
 | `home/.config/mise/config.toml` | Cross-platform tool inventory |
 | `home/.config/vscode/` | Shared VS Code settings, keybindings, and extensions |
+| `home/.config/zed/` | Zed settings and keymap, initially empty |
 | `home/.config/nvim/` | LazyVim/Neovim configuration |
 | `home/.config/{alacritty,wezterm,ghostty}/` | Terminal configuration |
 | `home/.agents/skills/` | Skills linked into Claude Code and OpenCode |
@@ -63,17 +64,34 @@ source the sorted `~/.config/sh/*.sh` files, while zsh-only behavior lives in
 
 ## VS Code
 
-The root configuration is shared across VS Code profiles and includes the
+The VS Code configuration includes the
 GitHub Dark theme, VSCodeVim mappings, editor behavior, language tooling, and
 extensions for C/C++, Java, Python, Rust, shell, SQL, and web development.
-The installer links the default settings and installs extensions additively.
-It also supports optional `home/.config/vscode/profiles/<name>/` directories;
-profile settings are merged over the shared configuration.
+Both installers link settings and keybindings to the repository and install
+extensions additively. On Windows, links fall back to copies when symlinks
+are unavailable.
 
 Run only this phase after installing VS Code:
 
 ```sh
 ./install.sh --only=vscode
+```
+
+## Zed
+
+Edit `home/.config/zed/settings.json` and `home/.config/zed/keymap.json` to add
+preferences and keybindings. They start as an empty object and array.
+The installers link these files individually, preserving other Zed files.
+Windows falls back to copies when symlinks are unavailable.
+
+Run just the configuration phase:
+
+```sh
+./install.sh --only=zed
+```
+
+```powershell
+.\install.ps1 -Only zed
 ```
 
 ## Local Overrides

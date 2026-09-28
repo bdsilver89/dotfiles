@@ -1,0 +1,49 @@
+[
+  {
+    "context": "Dock || Terminal || Editor",
+    "bindings": {
+      "ctrl-h": "workspace::ActivatePaneLeft",
+      "ctrl-j": "workspace::ActivatePaneDown",
+      "ctrl-k": "workspace::ActivatePaneUp",
+      "ctrl-l": "workspace::ActivatePaneRight"
+    }
+  },
+  {
+    "context": "GitPanel",
+    "bindings": {
+      "q": "git_panel::Close"
+    }
+  },
+  {
+    "context": "ProjectPanel && not_editing",
+    "bindings": {
+      "a": "project_panel::NewFile",
+      "A": "project_panel::NewDirectory",
+      "r": "project_panel::Rename",
+      "d": "project_panel::Delete",
+      "x": "project_panel::Cut",
+      "c": "project_panel::Copy",
+      "p": "project_panel::Paste",
+    }
+  },
+  {
+    "context": "Editor && VimControl && !VimWaiting && !menu",
+    "bindings": {
+      "space -": "pane::SplitDown",
+      "space |": "pane::SplitRight",
+
+      "space ,": "tab_switcher::Toggle",
+      "space /": "workspace::NewSearch",
+      "space space": "file_finder::Toggle",
+
+      "space g b": "git::Blame",
+
+      "] c": "editor::GoToHunk",
+      "[ c": "editor::GoToPreviousHunk",
+      "] d": "editor::GoToDiagnostic",
+      "[ d": "editor::GoToPreviousDiagnostic",
+      "] q": "editor::MoveToStartOfNextExcerpt",
+      "[ q": "editor::MoveToStartOfExcerpt"
+    }
+  }
+]

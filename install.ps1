@@ -46,22 +46,11 @@ $AppDataLinks = [ordered]@{
 #   settings.json
 #   keybindings.json
 #   extensions.txt
-#   profiles/
-#     cpp/
-#       settings.json
-#       extensions.txt
-#     java/
-#       settings.json
-#       extensions.txt
-#     python/
-#       settings.json
-#       extensions.txt
-#     rust/
-#       settings.json
-#       extensions.txt
 #
 $VSCodeConfigDir = Join-Path $RepoDir "home\.config\vscode"
 $VSCodeUserDir   = Join-Path $env:APPDATA "Code\User"
+$ZedConfigDir    = Join-Path $RepoDir "home\.config\zed"
+$ZedUserDir      = Join-Path $env:APPDATA "Zed"
 
 $script:Linked    = 0
 $script:Copied    = 0
@@ -702,37 +691,11 @@ function Get-ExtensionList {
     )
 }
 
-function Get-VSCodeProfiles {
-    $profilesDir = Join-Path $VSCodeConfigDir "profiles"
-
-    if (-not (Test-Path -LiteralPath $profilesDir)) {
-        return @()
-    }
-
-    return @(
-        Get-ChildItem `
-            -LiteralPath $profilesDir `
-            -Directory |
-            Sort-Object Name
-    )
-}
-
 function Get-VSCodeExtensions {
-    param([string]$Profile)
-
-    $args = @("--list-extensions")
-
-    if ($Profile) {
-        $args += @(
-            "--profile",
-            $Profile
-        )
-    }
-
     $previousErrorAction = $ErrorActionPreference
     try {
         $ErrorActionPreference = "Continue"
-        $extensions = @(& code @args 2>$null)
+        $extensions = @(& code --list-extensions 2>$null)
     } finally {
         $ErrorActionPreference = $previousErrorAction
     }
@@ -749,10 +712,7 @@ function Get-VSCodeExtensions {
 }
 
 function Install-VSCodeExtensions {
-    param(
-        [string]$Path,
-        [string]$Profile
-    )
+    param([string]$Path)
 
     $extensions = @(Get-ExtensionList $Path)
 
@@ -760,183 +720,37 @@ function Install-VSCodeExtensions {
         return
     }
 
-    $installed = @(Get-VSCodeExtensions $Profile)
+    # Listing extensions writes VS Code logs, so avoid code calls in dry-run.
+    $installed = @()
+    if (-not $DryRun) {
+        $installed = @(Get-VSCodeExtensions)
+    }
 
     foreach ($extension in $extensions) {
-        $label = $extension
-
-        if ($Profile) {
-            $label += " [$Profile]"
-        }
-
         if ($installed -contains $extension) {
-            VSay "Present" $label
+            VSay "Present" $extension
             continue
         }
 
         if ($DryRun) {
-            Note "Would install" $label
+            Note "Would install" $extension
             continue
-        }
-
-        $args = @(
-            "--install-extension",
-            $extension
-        )
-
-        if ($Profile) {
-            $args += @(
-                "--profile",
-                $Profile
-            )
         }
 
         $previousErrorAction = $ErrorActionPreference
         try {
             $ErrorActionPreference = "Continue"
-            & code @args *> $null
+            & code --install-extension $extension *> $null
         } finally {
             $ErrorActionPreference = $previousErrorAction
         }
 
         if ($LASTEXITCODE -ne 0) {
-            Warn "could not install $label"
+            Warn "could not install $extension"
         } else {
-            Say "Installed" $label
+            Say "Installed" $extension
         }
     }
-}
-
-# =============================================================================
-# VS Code profile settings
-# =============================================================================
-
-function Get-VSCodeProfileEntries {
-    $profilesFile = Join-Path $VSCodeUserDir "profiles\profiles.json"
-
-    if (-not (Test-Path -LiteralPath $profilesFile)) {
-        return @()
-    }
-
-    try {
-        $profiles = Get-Content `
-            -LiteralPath $profilesFile `
-            -Raw |
-            ConvertFrom-Json
-
-        return @($profiles.profiles)
-    } catch {
-        Warn "could not read VS Code profiles: $profilesFile"
-        return @()
-    }
-}
-
-function Get-VSCodeProfileId {
-    param([string]$Name)
-
-    $profiles = @(Get-VSCodeProfileEntries)
-
-    foreach ($profile in $profiles) {
-        if ($profile.name -eq $Name) {
-            return $profile.location
-        }
-    }
-
-    return $null
-}
-
-function Ensure-VSCodeProfile {
-    param(
-        [string]$Name,
-        [string]$Path
-    )
-
-    $profileId = Get-VSCodeProfileId $Name
-
-    if ($profileId) {
-        return $profileId
-    }
-
-    # Installing an extension with --profile causes VS Code to create the
-    # profile if it does not already exist.
-    $extensions = @(Get-ExtensionList (Join-Path $Path "extensions.txt"))
-
-    if ($extensions.Count -gt 0) {
-        if ($DryRun) {
-            Note "Would create" "VS Code profile $Name"
-            return $null
-        }
-
-        $previousErrorAction = $ErrorActionPreference
-        try {
-            $ErrorActionPreference = "Continue"
-            & code `
-                --profile $Name `
-                --install-extension $extensions[0] *> $null
-        } finally {
-            $ErrorActionPreference = $previousErrorAction
-        }
-
-        if ($LASTEXITCODE -ne 0) {
-            Warn "could not create VS Code profile $Name"
-            return $null
-        }
-    } else {
-        # There is no dedicated `code --create-profile` command. A profile with
-        # no extensions cannot be reliably created through the CLI alone.
-        Warn "profile $Name has no extensions; cannot create it through code CLI"
-        return $null
-    }
-
-    return Get-VSCodeProfileId $Name
-}
-
-function Install-VSCodeProfile {
-    param(
-        [string]$Name,
-        [string]$Path
-    )
-
-    VSay "Profile" $Name
-
-    # Install profile-specific extensions. Passing --profile causes VS Code
-    # to create the named profile when necessary.
-    Install-VSCodeExtensions `
-        (Join-Path $Path "extensions.txt") `
-        $Name
-
-    $settings = Join-Path $Path "settings.json"
-
-    if (-not (Test-Path -LiteralPath $settings)) {
-        return
-    }
-
-    $profileId = Get-VSCodeProfileId $Name
-
-    if (-not $profileId) {
-        $profileId = Ensure-VSCodeProfile $Name $Path
-    }
-
-    if (-not $profileId) {
-        Warn "could not determine VS Code profile ID for $Name"
-        return
-    }
-
-    # VS Code stores named profile settings under:
-    #
-    #   %APPDATA%\Code\User\profiles\<profile-id>\settings.json
-    #
-    # Keep that implementation detail here so the repository can retain the
-    # portable representation:
-    #
-    #   home/.config/vscode/profiles/<name>/settings.json
-    #
-    $profileId = Split-Path $profileId -Leaf
-
-    $profileDir = Join-Path $VSCodeUserDir "profiles\$profileId"
-    $target     = Join-Path $profileDir "settings.json"
-
-    Link-One $target $settings
 }
 
 # =============================================================================
@@ -956,10 +770,6 @@ function Install-VSCode {
         return
     }
 
-    # -------------------------------------------------------------------------
-    # Default profile settings
-    # -------------------------------------------------------------------------
-
     $settings = Join-Path $VSCodeConfigDir "settings.json"
 
     if (Test-Path -LiteralPath $settings) {
@@ -967,10 +777,6 @@ function Install-VSCode {
             (Join-Path $VSCodeUserDir "settings.json") `
             $settings
     }
-
-    # -------------------------------------------------------------------------
-    # Default profile keybindings
-    # -------------------------------------------------------------------------
 
     $keybindings = Join-Path $VSCodeConfigDir "keybindings.json"
 
@@ -980,30 +786,21 @@ function Install-VSCode {
             $keybindings
     }
 
-    # -------------------------------------------------------------------------
-    # Default profile extensions
-    # -------------------------------------------------------------------------
-
     Install-VSCodeExtensions `
         (Join-Path $VSCodeConfigDir "extensions.txt")
+}
 
-    # -------------------------------------------------------------------------
-    # Named profiles
-    #
-    # Profiles are discovered automatically from:
-    #
-    #   home/.config/vscode/profiles/<name>/
-    #
-    # Each profile may contain:
-    #
-    #   settings.json
-    #   extensions.txt
-    # -------------------------------------------------------------------------
+# =============================================================================
+# Zed
+# =============================================================================
 
-    foreach ($profile in Get-VSCodeProfiles) {
-        Install-VSCodeProfile `
-            $profile.Name `
-            $profile.FullName
+function Install-Zed {
+    Phase "Zed"
+
+    foreach ($file in @("settings.json", "keymap.json")) {
+        Link-One `
+            (Join-Path $ZedUserDir $file) `
+            (Join-Path $ZedConfigDir $file)
     }
 }
 
@@ -1015,7 +812,7 @@ function Show-Usage {
     @"
 Usage: install.ps1 [options]
 
-    -Only PHASE     run one phase: packages links git vscode
+    -Only PHASE     run one phase: packages links git vscode zed
     -OnConflict MODE  prompt (default), overwrite, backup, capture, or skip
                       backup preserves local content in an adjacent .backup file
                       capture updates the repo from local content without a backup
@@ -1029,10 +826,12 @@ Portable VS Code configuration:
         settings.json
         keybindings.json
         extensions.txt
-        profiles/
-            <profile>/
-                settings.json
-                extensions.txt
+
+Portable Zed configuration:
+
+    home/.config/zed/
+        settings.json
+        keymap.json
 
 Examples:
 
@@ -1040,6 +839,7 @@ Examples:
     .\install.ps1 -DryRun
     .\install.ps1 -Verbose
     .\install.ps1 -Only vscode
+    .\install.ps1 -Only zed
     .\install.ps1 -Only vscode -OnConflict backup
     .\install.ps1 -Only vscode -DryRun -Verbose
 
@@ -1056,7 +856,8 @@ function Main {
         "packages",
         "links",
         "git",
-        "vscode"
+        "vscode",
+        "zed"
     )
 
     if ($Only -and $phases -notcontains $Only) {
@@ -1079,6 +880,10 @@ function Main {
 
     if (-not $Only -or $Only -eq "vscode") {
         Install-VSCode
+    }
+
+    if (-not $Only -or $Only -eq "zed") {
+        Install-Zed
     }
 
     $elapsed = [int]((Get-Date) - $script:Start).TotalSeconds

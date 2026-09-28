@@ -566,10 +566,11 @@ build_link_map() {
 
 # Adjacent, like the old bootstrap.sh: the backup sits next to what it replaced
 # instead of in a directory you have to go find. Sets BAK rather than echoing,
-# so log output cannot end up captured as the path.
+# so log output cannot end up captured as the path. An optional absolute target
+# supports editor config directories outside HOME.
 backup_path() {
-    local dst="$HOME/$1"
-    BAK="$HOME/$1.backup"
+    local dst="${2:-$HOME/$1}"
+    BAK="$dst.backup"
     [ -e "$BAK" ] && BAK="$BAK.$(date +%Y%m%d-%H%M%S)"
     run mv "$dst" "$BAK"
 }
@@ -592,7 +593,9 @@ same_content() {
 
 # Sets RESOLUTION rather than echoing: a $() subshell would discard CONFLICT_ALL.
 resolve_conflict() {
-    local rel="$1" src="$2" dst="$HOME/$1" kind reply
+    local rel="$1" src="$2" dst="${3:-$HOME/$1}" kind reply
+    local display
+    display="$(tilde "$dst")"
 
     if [ -n "$CONFLICT_ALL" ]; then RESOLUTION="$CONFLICT_ALL"; return 0; fi
     if [ "$CONFLICT_MODE" != "prompt" ]; then RESOLUTION="$CONFLICT_MODE"; return 0; fi
@@ -604,9 +607,9 @@ resolve_conflict() {
 
     while :; do
         {
-            printf '\n%*s %s~/%s%s\n' "$GUTTER" "Conflict" "$C_BOLD" "$rel" "$C_RESET"
+            printf '\n%*s %s%s%s\n' "$GUTTER" "Conflict" "$C_BOLD" "$display" "$C_RESET"
             printf '%*s exists as a %s\n' "$GUTTER" "" "$kind"
-            printf '%*s  b  back up to ~/%s.backup\n' "$GUTTER" "" "$rel"
+            printf '%*s  b  back up to %s.backup\n' "$GUTTER" "" "$display"
             printf '%*s  o  overwrite               s  skip\n' "$GUTTER" ""
             printf '%*s  d  show diff               q  quit\n' "$GUTTER" ""
             printf '%*s  B / O / S  same for all remaining\n' "$GUTTER" ""
@@ -869,23 +872,6 @@ install_gh_extensions() {
 # VS Code
 # =============================================================================
 
-# Repository settings use VS Code's JSONC format. Missing/empty files are empty
-# objects. The repository's JSONC is intentionally limited to full-line comments
-# and trailing commas so it can be normalized before jq parses it.
-# jq's * recursively merges objects and replaces arrays and scalar values.
-vscode_json() {
-    sed -E '/^[[:space:]]*\/\//d; s/,[[:space:]]*([}\]])/\1/g' "$1"
-}
-
-vscode_settings() {
-    local base='{}' extra='{}'
-    [ ! -s "$1" ] || base="$(vscode_json "$1")"
-    [ ! -s "$2" ] || extra="$(vscode_json "$2")"
-    jq -en --argjson base "$base" --argjson extra "$extra" '
-        if ($base | type) == "object" and ($extra | type) == "object"
-        then $base * $extra else error("settings must be objects") end'
-}
-
 vscode_extensions() {
     local file
     for file in "$@"; do
@@ -895,60 +881,11 @@ vscode_extensions() {
         NF && !/^#/ { id=tolower($0); if (!seen[id]++) print id }'
 }
 
-# Read VS Code's registry, never write it ourselves. This internal format is
-# isolated here; unsupported formats fail closed instead of guessing an ID.
-vscode_profile_entry() {
-    [ -f "$VSCODE_USER/globalStorage/storage.json" ] || return 1
-    jq -ce --arg name "$1" '
-        [.userDataProfiles[]? | select(.name == $name)] |
-        if length == 1 then .[0] else empty end
-    ' "$VSCODE_USER/globalStorage/storage.json"
-}
-
-# Generated copies have a last-installed snapshot. Repository changes update
-# clean copies automatically; local edits are backed up (or skipped on request).
-vscode_write() {
-    local content="$1" dst="$2" snapshot="$2.dotfiles-last" tmp backup
-    if [ -L "$dst" ] || { [ -e "$dst" ] && [ ! -f "$dst" ]; }; then
-        warn "$(tilde "$dst") is not a regular file; leaving it untouched"
-        return 0
-    fi
-    if [ -f "$dst" ] && [ "$(cat "$dst")" = "$content" ]; then
-        N_UNCHANGED=$((N_UNCHANGED + 1))
-        vsay "Unchanged" "$(tilde "$dst")"
-        return 0
-    fi
-    if [ "$DRY_RUN" -eq 1 ]; then
-        note "Would write" "$(tilde "$dst") (preserving conflicting content)"
-        return 0
-    fi
-    mkdir -p "$(dirname "$dst")"
-    if [ -e "$dst" ] && ! cmp -s "$dst" "$snapshot"; then
-        if [ "${CONFLICT_ALL:-$CONFLICT_MODE}" = "skip" ]; then
-            warn "local VS Code configuration left untouched: $(tilde "$dst")"
-            return 0
-        fi
-        backup="$(mktemp "${dst}.backup.XXXXXX")"
-        cp "$dst" "$backup"
-        N_BACKED_UP=$((N_BACKED_UP + 1))
-        say "Backed up" "$(tilde "$backup")"
-    fi
-    tmp="$(mktemp "${dst}.XXXXXX")"
-    printf '%s\n' "$content" >"$tmp"
-    mv "$tmp" "$dst"
-    # Replace the snapshot atomically too; never follow a snapshot symlink.
-    tmp="$(mktemp "${dst}.XXXXXX")"
-    printf '%s\n' "$content" >"$tmp"
-    mv -f "$tmp" "$snapshot"
-    say "Wrote" "$(tilde "$dst")"
-}
-
-# Base VS Code settings are tracked directly. Unlike profile files, these have
-# stable native paths and should remain live links to the repository.
-vscode_link() {
+# Keep editor configuration files linked directly to the repository.
+editor_config_link() {
     local src="$1" dst="$2" rel="${2#"$HOME/"}" bak=""
 
-    [ -f "$src" ] || { warn "missing VS Code source: $(tilde "$src")"; return 0; }
+    [ -f "$src" ] || { warn "missing editor config source: $(tilde "$src")"; return 0; }
 
     if [ -L "$dst" ] && [ "$(readlink "$dst")" = "$src" ]; then
         N_UNCHANGED=$((N_UNCHANGED + 1))
@@ -966,11 +903,11 @@ vscode_link() {
     fi
 
     if [ -e "$dst" ] || [ -L "$dst" ]; then
-        resolve_conflict "$rel" "$src"
+        resolve_conflict "$rel" "$src" "$dst"
         case "$RESOLUTION" in
             quit) die "aborted at $(tilde "$dst")" ;;
             skip) N_UNCHANGED=$((N_UNCHANGED + 1)); vsay "Skipped" "$(tilde "$dst")"; return 0 ;;
-            backup) backup_path "$rel"; bak="$BAK" ;;
+            backup) backup_path "$rel" "$dst"; bak="$BAK" ;;
             overwrite) run rm -rf "$dst" ;;
         esac
     fi
@@ -986,91 +923,27 @@ vscode_link() {
     fi
 }
 
-install_vscode_profile() {
-    local name="$1" dir="$2" target="$VSCODE_USER" settings keys extensions
-    local entry id attempt installed ext
-    set -- --user-data-dir "$VSCODE_DATA"
-    settings="$(vscode_settings "$VSCODE_CONFIG/settings.json" "$dir/settings.json")" || {
-        warn "invalid settings for $name; skipping profile"; return 0;
-    }
-    keys='[]'
-    if [ -s "$VSCODE_CONFIG/keybindings.json" ]; then
-        keys="$(jq -e 'if type == "array" then . else error("keybindings must be an array") end' \
-            "$VSCODE_CONFIG/keybindings.json")" || {
-            warn "invalid shared keybindings; skipping $name"; return 0;
-        }
-    fi
-    extensions="$(vscode_extensions "$VSCODE_CONFIG/extensions.txt" "$dir/extensions.txt")"
-
-    if [ "$name" != "Default" ]; then
-        set -- "$@" --profile "$name"
-        entry="$(vscode_profile_entry "$name")" || entry=""
-        if [ -z "$entry" ]; then
-            if [ "$DRY_RUN" -eq 1 ]; then
-                note "Would create" "VS Code profile $name (opens a window)"
-            else
-                note "Creating" "VS Code profile $name (opens a window)"
-                quietly code --user-data-dir "$VSCODE_DATA" --new-window --profile "$name" || {
-                    warn "could not create profile $name"; return 0;
-                }
-                attempt=0
-                while [ "$attempt" -lt 15 ]; do
-                    entry="$(vscode_profile_entry "$name")" && break
-                    sleep 1
-                    attempt=$((attempt + 1))
-                done
-                [ -n "$entry" ] || {
-                    warn "profile $name not registered yet; rerun after VS Code opens"; return 0;
-                }
-            fi
-        fi
-        if [ -n "$entry" ]; then
-            # Settings/extensions inheritance would pollute Default with the
-            # language additions. Require these resources to belong to the profile.
-            if ! printf '%s' "$entry" | jq -e '
-                (.useDefaultFlags.settings != true) and
-                (.useDefaultFlags.extensions != true)' >/dev/null; then
-                warn "$name inherits settings/extensions; disable that inheritance in VS Code first"
-                return 0
-            fi
-            id="$(printf '%s' "$entry" | jq -er '.location | select(type == "string")')" || id=""
-            case "$id" in
-                ''|.|..|*[!a-zA-Z0-9_-]*) warn "unsupported profile location for $name"; return 0 ;;
-            esac
-            target="$VSCODE_USER/profiles/$id"
-        else
-            target="$VSCODE_USER/profiles/<$name-id>"
-        fi
-    fi
-
-    if [ "$name" = "Default" ]; then
-        vscode_link "$VSCODE_CONFIG/settings.json" "$VSCODE_USER/settings.json"
-        [ -f "$VSCODE_CONFIG/keybindings.json" ] &&
-            vscode_link "$VSCODE_CONFIG/keybindings.json" "$VSCODE_USER/keybindings.json"
-    else
-        vscode_write "$settings" "$target/settings.json"
-        if [ -z "${entry:-}" ] || ! printf '%s' "$entry" | jq -e '.useDefaultFlags.keybindings == true' >/dev/null; then
-            vscode_write "$keys" "$target/keybindings.json"
-        fi
-    fi
+install_vscode_extensions() {
+    local extensions installed ext
+    extensions="$(vscode_extensions "$VSCODE_CONFIG/extensions.txt")"
     [ -n "$extensions" ] || return 0
     # Even --list-extensions writes VS Code logs: no code invocations in dry-run.
     installed=""
     if [ "$DRY_RUN" -eq 0 ]; then
-        installed="$(code "$@" --list-extensions)" || {
-            warn "could not list extensions for $name"; return 0;
+        installed="$(code --user-data-dir "$VSCODE_DATA" --list-extensions)" || {
+            warn "could not list VS Code extensions"; return 0;
         }
     fi
     while IFS= read -r ext; do
         [ -n "$ext" ] || continue
         if printf '%s\n' "$installed" | tr -d '\r' | grep -Fxiq -- "$ext"; then
-            vsay "Present" "$ext [$name]"
+            vsay "Present" "$ext"
         elif [ "$DRY_RUN" -eq 1 ]; then
-            note "Would ensure" "$ext [$name]"
-        elif quietly code "$@" --install-extension "$ext"; then
-            say "Installed" "$ext [$name]"
+            note "Would ensure" "$ext"
+        elif quietly code --user-data-dir "$VSCODE_DATA" --install-extension "$ext"; then
+            say "Installed" "$ext"
         else
-            warn "could not install $ext [$name]"
+            warn "could not install $ext"
         fi
     done <<EOF
 $extensions
@@ -1087,7 +960,6 @@ install_vscode() {
     if is_wsl; then
         warn "configure Windows VS Code with install.ps1 outside WSL"; return 0
     fi
-    have jq || { warn "jq not found, skipping VS Code"; return 0; }
     have code || { warn "code not found, skipping VS Code"; return 0; }
     VSCODE_CONFIG="$REPO_DIR/home/.config/vscode"
     [ -d "$VSCODE_CONFIG" ] || { warn "VS Code configuration missing"; return 0; }
@@ -1097,15 +969,35 @@ install_vscode() {
         *) warn "unsupported VS Code platform: $OS"; return 0 ;;
     esac
     VSCODE_USER="$VSCODE_DATA/User"
-    install_vscode_profile Default "$VSCODE_CONFIG"
-    local dir name
-    for dir in "$VSCODE_CONFIG/profiles/"*; do
-        [ -d "$dir" ] || continue
-        name="$(basename "$dir")"
-        if [ "$name" = "Default" ]; then
-            warn "Default is reserved; use the root VS Code configuration"; continue
-        fi
-        install_vscode_profile "$name" "$dir"
+    editor_config_link "$VSCODE_CONFIG/settings.json" "$VSCODE_USER/settings.json"
+    if [ -f "$VSCODE_CONFIG/keybindings.json" ]; then
+        editor_config_link "$VSCODE_CONFIG/keybindings.json" "$VSCODE_USER/keybindings.json"
+    fi
+    install_vscode_extensions
+    return 0
+}
+
+# =============================================================================
+# Zed
+# =============================================================================
+
+install_zed() {
+    phase "Zed"
+    if [ "$ROLE" != "desktop" ] && [ "$ONLY" != "zed" ]; then
+        vsay "Skipped" "Zed (headless)"; return 0
+    fi
+    if is_wsl; then
+        warn "configure Windows Zed with install.ps1 outside WSL"; return 0
+    fi
+
+    local config="$REPO_DIR/home/.config/zed" target file
+    case "$OS" in
+        darwin) target="$HOME/.config/zed" ;;
+        linux) target="$XDG_CONFIG_HOME/zed" ;;
+        *) warn "unsupported Zed platform: $OS"; return 0 ;;
+    esac
+    for file in settings.json keymap.json; do
+        editor_config_link "$config/$file" "$target/$file"
     done
     return 0
 }
@@ -1271,7 +1163,7 @@ Usage: install.sh [options]
     --on-conflict=MODE    prompt (default) | backup | skip | overwrite
                           backup writes ~/<file>.backup beside the original
     --only=PHASE          run one phase: packages mise links tmux-plugins
-                          zsh-plugins vendor gh claude skills rtk vscode
+                          zsh-plugins vendor gh claude skills rtk vscode zed
                           or, never run by default:
                             update         git pull in the repo
                             prune-backups  delete *.backup files whose content
@@ -1282,13 +1174,12 @@ Usage: install.sh [options]
 
 VS Code (desktop, or --only=vscode):
     Reads home/.config/vscode/{settings.json,keybindings.json,extensions.txt}
-    and profiles/<name>/{settings.json,extensions.txt}. Requires jq and code.
-    Default settings.json and keybindings.json are symlinked directly.
-    Settings use VS Code JSONC; objects merge recursively, arrays replace.
-    Common extensions and keybindings apply to every profile. Extensions are
-    additive: removing an entry does not uninstall it. Rerun to apply changes.
-    Missing profiles open a VS Code window. Generated files preserve local
-    edits in adjacent backups; --on-conflict=skip leaves local edits intact.
+    Requires code. Settings and keybindings are symlinked directly.
+    Extensions are additive: removing an entry does not uninstall it.
+    Rerun to apply extension changes.
+
+Zed (desktop, or --only=zed):
+    Links home/.config/zed/{settings.json,keymap.json} to Zed's config directory.
 
 EOF
 }
@@ -1314,7 +1205,7 @@ parse_args() {
     esac
 }
 
-PHASES="packages links mise tmux-plugins zsh-plugins vendor gh claude skills rtk vscode"
+PHASES="packages links mise tmux-plugins zsh-plugins vendor gh claude skills rtk vscode zed"
 
 # Opt-in only: an automatic pull would clobber uncommitted local work.
 OPTIN_PHASES="update prune-backups"
@@ -1373,6 +1264,7 @@ main() {
     run_phase skills      link_skills
     run_phase rtk         init_rtk
     run_phase vscode      install_vscode
+    run_phase zed         install_zed
 
     finish
 }
