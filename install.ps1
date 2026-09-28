@@ -31,8 +31,9 @@ $Packages = @(
 
 # Target under $HOME -> source under $RepoDir
 $Links = [ordered]@{
-    ".gitconfig" = "home\.gitconfig"
-    ".vimrc"     = "home\.vimrc"
+    ".gitconfig"     = "home\.gitconfig"
+    ".vimrc"         = "home\.vimrc"
+    ".agents\skills" = "home\.agents\skills"
 }
 
 # Target under %APPDATA% -> portable source under $RepoDir
@@ -819,6 +820,11 @@ Usage: install.ps1 [options]
     -DryRun         print what would run without running it
     -Verbose        show unchanged items
     -Help           print this message
+
+Shared agent skills:
+
+    Links home/.agents/skills/ to $HOME/.agents/skills/ during the links phase.
+    Falls back to copying when symlinks are unavailable.
 
 Portable VS Code configuration:
 

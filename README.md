@@ -56,7 +56,7 @@ options include `--dry-run`, `--verbose`, `--on-conflict=backup`, and
 | `home/.config/zed/` | Zed settings and keymap, initially empty |
 | `home/.config/nvim/` | LazyVim/Neovim configuration |
 | `home/.config/{alacritty,wezterm,ghostty}/` | Terminal configuration |
-| `home/.agents/skills/` | Skills linked into Claude Code and OpenCode |
+| `home/.agents/skills/` | Shared agent skills; also linked into Claude Code and OpenCode on macOS/Linux |
 
 Shell startup files are thin loaders. `.profile`, `.bashrc`, and `.zshrc`
 source the sorted `~/.config/sh/*.sh` files, while zsh-only behavior lives in
@@ -92,6 +92,16 @@ Run just the configuration phase:
 
 ```powershell
 .\install.ps1 -Only zed
+```
+
+## Agent Skills on Windows
+
+The Windows links phase installs `home/.agents/skills/` at
+`$HOME\.agents\skills`, using a symlink or a copy if symlinks are unavailable.
+Existing content follows the selected `-OnConflict` policy.
+
+```powershell
+.\install.ps1 -Only links
 ```
 
 ## Local Overrides
