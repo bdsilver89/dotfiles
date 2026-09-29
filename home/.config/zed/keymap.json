@@ -120,6 +120,14 @@
     }
   },
   {
+    // xnoremap < <gv / xnoremap > >gv — vim::Indent/Outdent reselect natively.
+    "context": "Editor && vim_mode == visual && !menu",
+    "bindings": {
+      "<": "vim::Outdent",
+      ">": "vim::Indent"
+    }
+  },
+  {
     "context": "Editor && (vim_mode == normal || vim_mode == visual || vim_mode == insert) && !menu",
     "bindings": {
       "ctrl-s": "workspace::Save",
