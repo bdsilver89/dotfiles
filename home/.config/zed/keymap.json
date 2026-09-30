@@ -16,7 +16,7 @@
     }
   },
   {
-    "context": "GitPanel",
+    "context": "GitPanel && !Editor",
     "bindings": {
       "q": "git_panel::Close"
     }
