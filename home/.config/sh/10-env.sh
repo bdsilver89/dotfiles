@@ -15,3 +15,5 @@ export LESS='-FRX'
 
 export CMAKE_COLOR_DIAGNOSTICS="ON"
 export CMAKE_EXPORT_COMPILE_COMMANDS="ON"
+
+[ -d "$HOME/vcpkg" ] && export VCPKG_ROOT="$HOME/vcpkg"
