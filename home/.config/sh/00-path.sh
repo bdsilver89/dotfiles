@@ -10,5 +10,7 @@ _prepend_path "$HOME/bin"
 [ -d /opt/homebrew/bin ] && _prepend_path "/opt/homebrew/bin"
 _prepend_path "${XDG_DATA_HOME:-$HOME/.local/share}/mise/shims"
 
+[ -d "$HOME/vcpkg" ] && export VCPKG_ROOT="$HOME/vcpkg" && _prepend_path "$VCPKG_ROOT"
+
 export PATH
 unset -f _prepend_path
