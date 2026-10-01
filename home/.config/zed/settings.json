@@ -1,4 +1,13 @@
 {
+  "agent_servers": {
+    "claude-acp": {
+      "type": "registry"
+    },
+    "codex-acp": {
+      "type": "registry"
+    }
+  },
+  "cli_default_open_behavior": "new_window",
   "auto_install_extensions": {
     // languages
     "csv": true,
@@ -35,7 +44,7 @@
   "ui_font_size": 14,
   "buffer_font_size": 14,
   "show_wrap_guides": true,
-  "soft_wrap": "bounded",
+  "soft_wrap": "none",
   "colorize_brackets": true,
   "rounded_selection": true,
   "minimap": {
