@@ -1,2 +1,7 @@
--- bootstrap lazy.nvim, LazyVim and your plugins
-require("config.lazy")
+vim.loader.enable()
+
+require("options")
+require("keymaps")
+require("autocmds")
+require("lsp")
+require("plugins")
