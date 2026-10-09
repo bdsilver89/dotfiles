@@ -1,0 +1,149 @@
+" IdeaVim configuration for JetBrains IDES.
+let mapleader = ' '
+
+set number
+set relativenumber
+set cursorline
+set showcmd
+set showmode
+set scrolloff=5
+set sidescrolloff=5
+set ignorecase
+set smartcase
+set incsearch
+set hlsearch
+set clipboard=unnamedplus,ideaput
+
+" Extensions bundled with IdeaVim.
+set surround
+set commentary
+set highlightedyank
+set matchit
+set argtextobj
+let g:highlightedyank_highlight_duration = 200
+
+" Requires the IdeaVim-EasyMotion and AceJump plugins to be installed.
+set easymotion
+
+" JetBrains integration.
+set ideajoin
+set ideamarks
+
+" Vim scrolling in Normal mode; retain IDE shortcuts in Insert mode.
+sethandler <C-d> n:vim i:ide
+sethandler <C-u> n:vim i:ide
+
+" Editing and search.
+nnoremap <silent> <C-d> <C-d>zz
+nnoremap <silent> <C-u> <C-u>zz
+nnoremap <silent> n nzzzv
+nnoremap <silent> N Nzzzv
+nnoremap <silent> <Esc> :nohlsearch<CR>
+" Keep the existing single-key save and close shortcuts.
+nnoremap <leader>w :w<CR>
+nnoremap <leader>q :q<CR>
+nnoremap <leader>fs :w<CR>
+nnoremap <leader>- :split<CR>
+nnoremap <leader><Bar> :vsplit<CR>
+
+xnoremap < <gv
+xnoremap > >gv
+
+" IDE actions and extension targets require recursive mappings, not noremap.
+" LazyVim-style file/search groups; RecentFiles also includes closed files.
+nmap <leader><space> <Action>(GotoFile)
+nmap <leader>/ <Action>(FindInPath)
+nmap <leader>, <Action>(RecentFiles)
+nmap <leader>ff <Action>(GotoFile)
+nmap <leader>fr <Action>(RecentFiles)
+nmap <leader>fb <Action>(RecentFiles)
+nmap <leader>sg <Action>(FindInPath)
+nmap <leader>ss <Action>(FileStructurePopup)
+nmap <leader>sS <Action>(GotoSymbol)
+nmap <leader>so <Action>(FileStructurePopup)
+nmap <leader>e <Action>(ActivateProjectToolWindow)
+
+" LazyVim buffers, represented by editor tabs in the IDE.
+nmap H <Action>(PreviousTab)
+nmap L <Action>(NextTab)
+nmap [b <Action>(PreviousTab)
+nmap ]b <Action>(NextTab)
+nnoremap <leader>bb :e #<CR>
+nmap <leader>bd <Action>(CloseContent)
+nmap <leader>bo <Action>(CloseAllEditorsButActive)
+
+" Use native <C-w> commands for windows; <leader>- and <leader>| split.
+
+" LazyVim UI toggles supported by IdeaVim.
+nnoremap <leader>uw :set invwrap<CR>
+nnoremap <leader>ul :set invnumber<CR>
+nnoremap <leader>uL :set invrelativenumber<CR>
+
+" Neovim built-in LSP keys take precedence over LazyVim's LSP bindings.
+" gd is a conventional convenience; <C-]> matches Neovim's LSP tag lookup.
+nmap gd <Action>(GotoDeclaration)
+nmap <C-]> <Action>(GotoDeclaration)
+nmap K <Action>(QuickJavaDoc)
+nmap gO <Action>(FileStructurePopup)
+nmap gri <Action>(GotoImplementation)
+nmap grt <Action>(GotoTypeDeclaration)
+nmap grr <Action>(FindUsages)
+nmap grn <Action>(RenameElement)
+nmap gra <Action>(ShowIntentionActions)
+xmap gra <Action>(ShowIntentionActions)
+imap <C-s> <Action>(ShowParameterInfo)
+sethandler <C-s> n:ide i:vim
+" No direct IDE equivalent is assigned for Neovim's grx (run code lens).
+
+" Formatting and diagnostics.
+nmap <leader>cf <Action>(ReformatCode)
+xmap <leader>cf <Action>(ReformatCode)
+nmap ]d <Action>(GotoNextError)
+nmap [d <Action>(GotoPreviousError)
+nmap <leader>cd <Action>(ShowErrorDescription)
+
+" Git: match the Neovim gitsigns keys. Annotate toggles file-wide blame.
+nmap ]c <Action>(VcsShowNextChangeMarker)
+nmap [c <Action>(VcsShowPrevChangeMarker)
+nmap <leader>gp <Action>(VcsShowCurrentChangeMarker)
+nmap <leader>gb <Action>(Annotate)
+nmap <leader>gf <Action>(Vcs.ShowTabbedFileHistory)
+
+" Unimpaired-style pairs. IDE actions move one step, regardless of Vim count.
+" [q/]q navigate results in the active IDE tool window, not a Vim quickfix list.
+nmap [q <Action>(PreviousOccurence)
+nmap ]q <Action>(NextOccurence)
+" Prefer Unimpaired line exchange over LazyVim's error-only [e/]e mappings.
+nmap [e <Action>(MoveLineUp)
+nmap ]e <Action>(MoveLineDown)
+xmap [e <Action>(MoveLineUp)
+xmap ]e <Action>(MoveLineDown)
+" Insert a blank line without staying in Insert mode (one line per invocation).
+nnoremap [<Space> O<Esc>j
+nnoremap ]<Space> o<Esc>k
+
+" Unimpaired option triples: [o enables, ]o disables, yo toggles.
+nnoremap [on :set number<CR>
+nnoremap ]on :set nonumber<CR>
+nnoremap yon :set invnumber<CR>
+nnoremap [ol :set list<CR>
+nnoremap ]ol :set nolist<CR>
+nnoremap yol :set invlist<CR>
+nnoremap [ow :set wrap<CR>
+nnoremap ]ow :set nowrap<CR>
+nnoremap yow :set invwrap<CR>
+" Cursorline only; IdeaVim does not provide Unimpaired's cursorcolumn toggle.
+nnoremap [ox :set cursorline<CR>
+nnoremap ]ox :set nocursorline<CR>
+nnoremap yox :set invcursorline<CR>
+
+" EasyMotion: search for a target, then jump using its label.
+nmap <leader>j <Plug>(easymotion-s)
+
+" Optional structural text objects, if supported by your IdeaVim version:
+" set functextobj  " am: whole method; im: method body
+" set classtextobj " ac: whole class
+
+" Optional Which-Key: install the Which-Key plugin before enabling.
+" set which-key
+" set timeoutlen=5000

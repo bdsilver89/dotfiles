@@ -33,6 +33,7 @@ $Packages = @(
 $Links = [ordered]@{
     ".gitconfig"     = "home\.gitconfig"
     ".vimrc"         = "home\.vimrc"
+    ".ideavimrc"     = "home\.ideavimrc"
     ".agents\skills" = "home\.agents\skills"
 }
 
@@ -825,6 +826,12 @@ Shared agent skills:
 
     Links home/.agents/skills/ to $HOME/.agents/skills/ during the links phase.
     Falls back to copying when symlinks are unavailable.
+
+IdeaVim configuration:
+
+    Links home/.ideavimrc to $HOME/.ideavimrc during the links phase.
+    Falls back to copying when symlinks are unavailable.
+    Requires the IdeaVim plugin in your JetBrains IDE.
 
 Portable VS Code configuration:
 
