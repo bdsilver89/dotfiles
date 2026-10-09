@@ -5,7 +5,6 @@ alefragnani.bookmarks
 aaron-bond.better-comments
 streetsidesoftware.code-spell-checker
 usernamehw.errorlens
-asvetliakov.vscode-neovim
 bradlc.vscode-tailwindcss
 dbaeumer.vscode-eslint
 esbenp.prettier-vscode
