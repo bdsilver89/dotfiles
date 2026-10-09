@@ -38,6 +38,12 @@ options include `--dry-run`, `--verbose`, `--on-conflict=backup`, and
 - mise-managed tools and runtimes from `home/.config/mise/config.toml`,
   including Neovim, Starship, Lazygit, Workmux, gh, Node, Python, Rust,
   OpenCode, Pi, Lazydocker, and pnpm.
+- Fedora/RHEL prefer dnf for CLI tools, including Vim (`vim-enhanced`) and
+  fd (`fd-find`), and fall back to mise when a package is unavailable in the
+  enabled repositories. Node, Python, Rust, and Neovim nightly stay in mise.
+  The installer regenerates `~/.config/mise/conf.d/00-platform.toml` to select
+  system versions without removing any existing mise installations. A dnf
+  installation failure is reported rather than treated as package absence.
 - GUI applications on desktop machines from `Brewfile` or winget. Linux GUI
   installs currently include Alacritty.
 - Shell plugins, tmux plugins, GitHub CLI extensions, Claude Code, rtk, and

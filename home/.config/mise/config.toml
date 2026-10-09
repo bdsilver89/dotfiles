@@ -9,8 +9,8 @@ starship = "latest"
 lazygit = "latest"
 workmux = "latest"
 
-# Prefer these over the distro packages: identical versions everywhere, and
-# RHEL rebuilds have no gh package and name fd "fd-find".
+# Fedora/RHEL override CLI tools with "system" in conf.d/00-platform.toml
+# when dnf supplies them; missing packages fall back to mise.
 fd = "latest"
 gh = "latest"
 
