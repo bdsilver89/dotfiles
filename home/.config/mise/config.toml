@@ -16,6 +16,7 @@ gh = "latest"
 
 node = "lts"
 python = "3.14"
+uv = "latest"
 rust = "stable"
 lazydocker = "latest"
 pnpm = "latest"

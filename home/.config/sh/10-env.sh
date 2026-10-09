@@ -13,5 +13,6 @@ fi
 export PAGER=less
 export LESS='-FRX'
 
-export CMAKE_COLOR_DIAGNOSTICS="ON"
+# Leave CMAKE_COLOR_DIAGNOSTICS unset so compilers detect terminal colors
+# automatically and omit escape codes from captured output (e.g. VS Code).
 export CMAKE_EXPORT_COMPILE_COMMANDS="ON"

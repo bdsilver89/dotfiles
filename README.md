@@ -36,11 +36,12 @@ options include `--dry-run`, `--verbose`, `--on-conflict=backup`, and
 - Core CLI tools such as git, tmux, fzf, ripgrep, bat, eza, zoxide, jq, and
   zsh.
 - mise-managed tools and runtimes from `home/.config/mise/config.toml`,
-  including Neovim, Starship, Lazygit, Workmux, gh, Node, Python, Rust,
+  including Neovim, Starship, Lazygit, Workmux, gh, Node, Python, uv, Rust,
   OpenCode, Pi, Lazydocker, and pnpm.
 - Fedora/RHEL prefer dnf for CLI tools, including Vim (`vim-enhanced`) and
   fd (`fd-find`), and fall back to mise when a package is unavailable in the
-  enabled repositories. Node, Python, Rust, and Neovim nightly stay in mise.
+  enabled repositories. Python (`python3`) and uv also prefer native packages,
+  with mise as the fallback. Node, Rust, and Neovim nightly stay in mise.
   The installer regenerates `~/.config/mise/conf.d/00-platform.toml` with
   `settings.disable_tools` for distro-provided tools, allowing them to resolve
   from the system PATH without removing existing mise installations. A dnf
