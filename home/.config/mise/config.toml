@@ -9,7 +9,7 @@ starship = "latest"
 lazygit = "latest"
 workmux = "latest"
 
-# Fedora/RHEL override CLI tools with "system" in conf.d/00-platform.toml
+# Fedora/RHEL disable distro-provided CLI tools in conf.d/00-platform.toml
 # when dnf supplies them; missing packages fall back to mise.
 fd = "latest"
 gh = "latest"
