@@ -255,7 +255,7 @@ RHEL_MISE_CONFIG=""
 RHEL_RESOLVED=0
 
 # mise tool|dnf package|optional fallback version.
-# Node, Rust, and Neovim nightly stay in the shared config.
+# Rust and Neovim nightly stay in the shared config.
 # pi is the coding agent, not an unrelated package named pi.
 RHEL_TOOLS="tmux|tmux
 fzf|fzf
@@ -275,7 +275,8 @@ pi|pi-coding-agent
 lazydocker|lazydocker
 pnpm|pnpm
 python|python3|3.14
-uv|uv"
+uv|uv
+node|nodejs|lts"
 
 # macOS-only packages live in ./Brewfile, applied with `brew bundle`.
 PKGS_DESKTOP_LINUX="alacritty"
@@ -297,7 +298,7 @@ TPM_URL="https://github.com/tmux-plugins/tpm.git"
 pkg_available() {
     case "$PKG" in
         apt) apt-cache show "$1" >/dev/null 2>&1 ;;
-        dnf) rpm -q "$1" >/dev/null 2>&1 ||
+        dnf) rpm -q --whatprovides "$1" >/dev/null 2>&1 ||
              dnf -q list --available "$1" >/dev/null 2>&1 ;;
         *)   return 0 ;;
     esac
