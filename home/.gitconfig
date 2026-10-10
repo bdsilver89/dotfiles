@@ -41,19 +41,17 @@
 [diff]
   algorithm = histogram
   colorMoved = default
-  ; tool = nvim_difftool
-  tool = vimdiff
+  tool = nvim_difftool
 
 [difftool]
   prompt = false
 
-; [difftool "nvim_difftool"]
-;   cmd = nvim -c \"packadd nvim.difftool\" -c \"DiffTool $LOCAL $REMOTE\"
+[difftool "nvim_difftool"]
+  cmd = nvim -c \"packadd nvim.difftool\" -c \"DiffTool $LOCAL $REMOTE\"
 
 [merge]
   conflictstyle = zdiff3
-  ; tool = nvimdiff
-  tool = vimdiff
+  tool = nvimdiff
 
 [mergetool]
   prompt = false
