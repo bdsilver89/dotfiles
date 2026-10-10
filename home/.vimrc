@@ -27,6 +27,7 @@ set hlsearch
 set wildmenu
 set wildignorecase
 set wildmode=longest:full,full
+set path+=**
 set showcmd
 set showmode
 set ruler
@@ -54,6 +55,10 @@ elseif has('clipboard')
     set clipboard=unnamed
 endif
 
+let g:netrw_banner = 0
+let g:netrw_liststyle = 3
+let g:netrw_winstyle = 25
+
 let s:state_root = expand('~/.vim/state')
 for s:directory in ['undo', 'swap', 'backup']
     call mkdir(s:state_root . '/' . s:directory, 'p', 0700)
@@ -77,6 +82,23 @@ nnoremap <leader>w :w<CR>
 nnoremap <leader>q :q<CR>
 nnoremap <silent> <leader>- :split<CR>
 nnoremap <silent> <leader><Bar> :vsplit<CR>
+
+nnoremap <leader>e :Lexplore<CR>
+
+nnoremap [b :bprev<CR>
+nnoremap ]b :bnext<CR>
+nnoremap [B :bfirst<CR>
+nnoremap ]B :blast<CR>
+
+nnoremap [q :cprev<CR>
+nnoremap ]q :cnext<CR>
+nnoremap [Q :cfirst<CR>
+nnoremap ]Q :clast<CR>
+
+nnoremap [l :lprev<CR>
+nnoremap ]l :lnext<CR>
+nnoremap [l :lfirst<CR>
+nnoremap ]l :llast<CR>
 
 if has('terminal')
     tnoremap <Esc><Esc> <C-\><C-n>
