@@ -81,13 +81,34 @@ later(function() vim.o.clipboard = "unnamedplus" end)
 -- ============================================================================
 new_autocmd("TextYankPost", "*", function() vim.hl.hl_op() end, "Highlight yank")
 new_autocmd("VimResized", "*", function() vim.cmd("tabdo wincmd =") end, "Resize splits")
-new_autocmd("FileType", "directory", function() vim.opt_local.bufhidden = true end, "Directory hidden")
+new_autocmd("FileType", "directory", function() vim.opt_local.bufhidden = "wipe" end, "Wipe directory buffers on leave")
 
 -- ============================================================================
 -- Keymaps
 -- ============================================================================
 nmap("j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
 nmap("k", "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
+
+local navigate = function(direction, wincmd)
+  if vim.env.TMUX then
+    local win = vim.api.nvim_get_current_win()
+    vim.cmd("wincmd " .. wincmd)
+    if win == vim.api.nvim_get_current_win() then
+      vim.system({ "tmux", "select-pane", "-" .. direction })
+    end
+  else
+    vim.cmd("wincmd " .. wincmd)
+  end
+end
+nmap("<c-h>", function() navigate("L", "h") end)
+nmap("<c-j>", function() navigate("D", "j") end)
+nmap("<c-k>", function() navigate("U", "k") end)
+nmap("<c-l>", function() navigate("R", "l") end)
+
+nmap("<c-left>", function() vim.cmd("vertical resize -" .. vim.v.count1) end)
+nmap("<c-down>", function() vim.cmd("resize -" .. vim.v.count1) end)
+nmap("<c-up>", function() vim.cmd("resize +" .. vim.v.count1) end)
+nmap("<c-right>", function() vim.cmd("vertical resize +" .. vim.v.count1) end)
 
 nmap("<c-d>", "<c-d>zz")
 nmap("<c-u>", "<c-u>zz")
@@ -106,30 +127,24 @@ nmap_leader("w", "<cmd>w<cr>")
 nmap_leader("q", "<cmd>q<cr>")
 nmap_leader("bd", "<cmd>bd<cr>")
 
--- nmap_leader("<space>", "<cmd>Pick files<cr>")
--- nmap_leader("/", "<cmd>Pick grep_live<cr>")
--- nmap_leader(",", "<cmd>Pick buffers<cr>")
---
--- nmap_leader("gc", "<cmd>Git commit<cr>")
--- nmap_leader("gd", "<cmd>Git diff<cr>")
--- nmap_leader("gl", "<cmd>Pick git_commits<cr>")
--- nmap_leader("gb", "<cmd>Pick git_branches<cr>")
--- nmap_leader("gh", "<cmd>Pick git_hunks<cr>")
+nmap_leader("xL", vim.diagnostic.setloclist)
+nmap_leader("xl", function() vim.cmd(vim.fn.getloclist(0, { winid = 0 }).winid ~= 0 and "lclose" or "lopen") end)
+nmap_leader("xQ", vim.diagnostic.setqflist)
+nmap_leader("xq", function() vim.cmd(vim.fn.getqflist({ winid = 0 }).winid ~= 0 and "cclose" or "copen") end)
 
-nmap_leader("xl", function()
-  if vim.fn.getloclist(0, { winid = 0 }).winid ~= 0 then
-    vim.cmd.lclose()
-  else
-    vim.cmd.lopen()
-  end
-end)
-nmap_leader("xq", function()
-  if vim.fn.getqflist({ winid = 0 }).winid ~= 0 then
-    vim.cmd.cclose()
-  else
-    vim.cmd.copen()
-  end
-end)
+nmap_leader("<space>", "<cmd>Pick files<cr>")
+nmap_leader("/", "<cmd>Pick grep_live<cr>")
+nmap_leader(",", "<cmd>Pick buffers<cr>")
+
+nmap_leader("gc", "<cmd>Git commit<cr>")
+nmap_leader("gd", "<cmd>Git diff<cr>")
+nmap_leader("gl", "<cmd>Pick git_commits<cr>")
+nmap_leader("gL", "<cmd>Pick git_commits path='%'<cr>")
+nmap_leader("gb", "<cmd>Pick git_branches<cr>")
+nmap_leader("gh", "<cmd>Pick git_hunks<cr>")
+
+nmap_leader("xx", "<cmd>Pick diagnostic scope='current'<cr>")
+nmap_leader("xX", "<cmd>Pick diagnostic scope='all'<cr>")
 
 xmap("<", "<gv")
 xmap(">", ">gv")
@@ -284,3 +299,4 @@ local on_progress = function(ev)
   })
 end
 new_autocmd("LspProgress", "*", on_progress, "LSP progress")
+
