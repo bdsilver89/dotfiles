@@ -20,12 +20,17 @@ local on_packchanged = function(plugin_name, kinds, callback, desc)
   new_autocmd("PackChanged", "*", f, desc)
 end
 
+local report = function(task)
+  task:on_complete(function(err)
+    if err == nil then return end
+    local msg = task:traceback(tostring(err))
+    vim.schedule(function() vim.notify(msg, vim.log.levels.WARN) end)
+  end)
+  return task
+end
+
 local now = function(f)
-  local ok, err = xpcall(f, debug.traceback)
-  if not ok then
-    vim.schedule(function() vim.notify(tostring(err), vim.log.levels.WARN) end)
-  end
-  return ok
+  return report(vim.async.run(f))
 end
 
 local later = function(f) vim.schedule(function() now(f) end) end
@@ -154,8 +159,10 @@ tmap("<esc><esc>", "<c-\\><c-n>")
 -- ============================================================================
 -- Plugins
 -- ============================================================================
-vim.cmd.packadd("nvim.difftool")
-vim.cmd.packadd("nvim.undotree")
+later(function()
+  vim.cmd.packadd("nvim.difftool")
+  vim.cmd.packadd("nvim.undotree")
+end)
 
 require("vim._core.ui2").enable({
   enable = true,
@@ -166,7 +173,7 @@ require("vim._core.ui2").enable({
   },
 })
 
-local setup_treesitter = function()
+now_if_args(function()
   local ts_update = function() vim.cmd("TSUpdate") end
   on_packchanged("nvim-treesitter", { "update" }, ts_update, ":TSUpdate")
 
@@ -207,10 +214,9 @@ local setup_treesitter = function()
   end
   local ts_start = function(ev) vim.treesitter.start(ev.buf) end
   new_autocmd("FileType", filetypes, ts_start, "Start tree-sitter")
-end
-now_if_args(setup_treesitter)
+end)
 
-local setup_mini = function()
+now(function()
   add({ gh("nvim-mini/mini.nvim") })
 
   now(function()
@@ -238,8 +244,39 @@ local setup_mini = function()
   later(function() require("mini.jump").setup() end)
   later(function() require("mini.jump").setup() end)
   later(function() require("mini.jump2d").setup() end)
-end
-now(setup_mini)
+  later(function()
+    local clue = require("mini.clue")
+    clue.setup({
+      clues = {
+        {
+          { mode = "n", keys = "<leader>b", desc = "+Buffer" },
+        },
+        clue.gen_clues.builtin_completion(),
+        clue.gen_clues.g(),
+        clue.gen_clues.marks(),
+        clue.gen_clues.registers(),
+        clue.gen_clues.square_brackets(),
+        clue.gen_clues.windows({ submode_resize = true }),
+        clue.gen_clues.z(),
+      },
+      triggers = {
+        { mode = { "n", "x" }, keys = "<leader>" },
+        { mode = "n", keys = "\\" },
+        { mode = { "n", "x" }, keys = "[" },
+        { mode = { "n", "x" }, keys = "]" },
+        { mode = "i", keys = "<c-x>" },
+        { mode = { "n", "x" }, keys = "g" },
+        { mode = { "n", "x" }, keys = "'" },
+        { mode = { "n", "x" }, keys = '`' },
+        { mode = { "n", "x" }, keys = '"' },
+        { mode = { "i", "c" }, keys = "<c-r>" },
+        { mode = "n", keys = "<c-w>" },
+        { mode = { "n", "x" }, keys = "s" },
+        { mode = { "n", "x" }, keys = "z" },
+      },
+    })
+  end)
+end)
 
 -- ============================================================================
 -- LSP
