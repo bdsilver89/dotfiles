@@ -34,7 +34,6 @@ $Links = [ordered]@{
     ".gitconfig"     = "home\.gitconfig"
     ".vimrc"         = "home\.vimrc"
     ".ideavimrc"     = "home\.ideavimrc"
-    ".agents\skills" = "home\.agents\skills"
 }
 
 # Target under %APPDATA% -> portable source under $RepoDir
@@ -606,8 +605,40 @@ function Resolve-LinkConflict {
     }
 }
 
+function Prepare-SkillsDirectory {
+    $store = Join-Path $HOME ".agents\skills"
+    $legacy = Join-Path $RepoDir "home\.agents\skills"
+    if (Test-Symlink $store) {
+        $item = Get-Item -LiteralPath $store -Force
+        if ($item.Target -eq $legacy) {
+            if (-not $DryRun) {
+                # Delete the directory link itself, never traverse its target.
+                [IO.Directory]::Delete($store)
+            }
+            Say "Unlinked" "~/.agents/skills (legacy whole-directory link)"
+        } else {
+            Warn "unexpected skills directory symlink: $store"
+            return $false
+        }
+    }
+    if (-not $DryRun) {
+        New-Item -ItemType Directory -Force -Path $store | Out-Null
+    }
+    return $true
+}
+
+function Link-LocalSkills {
+    $source = Join-Path $RepoDir "home\.agents\skills"
+    foreach ($skill in Get-ChildItem -LiteralPath $source -Directory) {
+        Link-One (Join-Path $HOME ".agents\skills\$($skill.Name)") $skill.FullName
+    }
+}
+
 function Link-Dotfiles {
     Phase "Linking"
+    if (Prepare-SkillsDirectory) {
+        Link-LocalSkills
+    }
 
     foreach ($target in $Links.Keys) {
         Link-One `
@@ -619,6 +650,57 @@ function Link-Dotfiles {
         Link-One `
             (Join-Path $env:APPDATA $target) `
             (Join-Path $RepoDir $AppDataLinks[$target])
+    }
+}
+
+# =============================================================================
+# Skills
+# =============================================================================
+
+function Install-Skills {
+    Phase "Skills"
+    if (-not (Get-Command npx -ErrorAction SilentlyContinue)) {
+        Warn "npx not found; install Node.js and rerun -Only skills"
+        return
+    }
+    if (-not (Prepare-SkillsDirectory)) { return }
+    Link-LocalSkills
+
+    # Keep the upstream installation list here; never vendor downloaded skills.
+    $commands = @(
+        @('--yes', '@caveman-ai/cli@latest', 'tools', 'skills', 'install',
+          '--suite', 'output', '--dir', (Join-Path $HOME '.agents\skills'), '--no-pixel'),
+        @('--yes', 'skills@latest', 'add', 'mattpocock/skills', '--global',
+          '--agent', 'claude-code', 'codex', 'opencode', 'pi', '--skill', '*', '--yes')
+    )
+    foreach ($arguments in $commands) {
+        if ($DryRun) {
+            Note "Would run" "npx $($arguments -join ' ')"
+            continue
+        }
+        $previousErrorAction = $ErrorActionPreference
+        try {
+            $ErrorActionPreference = "Continue"
+            & npx @arguments
+        } finally {
+            $ErrorActionPreference = $previousErrorAction
+        }
+        if ($LASTEXITCODE -ne 0) {
+            Warn "skills installation failed ($LASTEXITCODE): $($arguments[1])"
+        } else {
+            Say "Installed" $arguments[1]
+        }
+    }
+
+    # Link shared/local skills as well as those installed by the Skills CLI.
+    # Link-One preserves unrelated entries and falls back to copies on Windows.
+    $store = Join-Path $HOME '.agents\skills'
+    if (Test-Path -LiteralPath $store) {
+        foreach ($client in @('.claude', '.codex', '.config\opencode', '.pi\agent')) {
+            foreach ($skill in Get-ChildItem -LiteralPath $store -Directory) {
+                Link-One (Join-Path $HOME "$client\skills\$($skill.Name)") $skill.FullName
+            }
+        }
     }
 }
 
@@ -814,7 +896,7 @@ function Show-Usage {
     @"
 Usage: install.ps1 [options]
 
-    -Only PHASE     run one phase: packages links git vscode zed
+    -Only PHASE     run one phase: packages links skills git vscode zed
     -OnConflict MODE  prompt (default), overwrite, backup, capture, or skip
                       backup preserves local content in an adjacent .backup file
                       capture updates the repo from local content without a backup
@@ -824,8 +906,10 @@ Usage: install.ps1 [options]
 
 Shared agent skills:
 
-    Links home/.agents/skills/ to $HOME/.agents/skills/ during the links phase.
-    Falls back to copying when symlinks are unavailable.
+    Keeps $HOME/.agents/skills/ as a real directory; links local skills individually.
+    The skills phase installs Caveman output skills and mattpocock/skills globally
+    for Claude Code, Codex, OpenCode, and Pi. Requires Node.js/npx and Git.
+    Falls back to copying agent skill links when symlinks are unavailable.
 
 IdeaVim configuration:
 
@@ -868,6 +952,7 @@ function Main {
     $phases = @(
         "packages",
         "links",
+        "skills",
         "git",
         "vscode",
         "zed"
@@ -885,6 +970,10 @@ function Main {
 
     if (-not $Only -or $Only -eq "links") {
         Link-Dotfiles
+    }
+
+    if (-not $Only -or $Only -eq "skills") {
+        Install-Skills
     }
 
     if (-not $Only -or $Only -eq "git") {

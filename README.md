@@ -65,7 +65,7 @@ options include `--dry-run`, `--verbose`, `--on-conflict=backup`, and
 | `home/.config/zed/` | Zed settings and keymap, initially empty |
 | `home/.config/nvim/` | LazyVim/Neovim configuration |
 | `home/.config/{alacritty,wezterm,ghostty}/` | Terminal configuration |
-| `home/.agents/skills/` | Shared agent skills; also linked into Claude Code and OpenCode on macOS/Linux |
+| `home/.agents/skills/` | Locally maintained skills, linked individually into the shared skill store |
 
 Shell startup files are thin loaders. `.profile`, `.bashrc`, and `.zshrc`
 source the sorted `~/.config/sh/*.sh` files, while zsh-only behavior lives in
@@ -103,15 +103,40 @@ Run just the configuration phase:
 .\install.ps1 -Only zed
 ```
 
-## Agent Skills on Windows
+## Agent Skills
 
-The Windows links phase installs `home/.agents/skills/` at
-`$HOME\.agents\skills`, using a symlink or a copy if symlinks are unavailable.
-Existing content follows the selected `-OnConflict` policy.
+Third-party skills are installed from upstream, not vendored or forked here.
+The installation list lives directly in `install.sh` and `install.ps1`:
+
+- `@caveman-ai/cli@latest`: the `output` suite (`caveman`, `ultracave`,
+  `megacave`), installed as plain text without pixel conversion, proxy setup,
+  or agent hooks. This replaces the older copied Caveman skill bundle.
+- `skills@latest add mattpocock/skills`: all skills, installed globally for
+  Claude Code, Codex, OpenCode, and Pi.
+
+The skills phase requires Node.js/npx and Git. The Unix installer installs Node
+through mise; Windows users must provide Node and Git first. Both installers run
+this phase by default. To run it separately:
+
+```sh
+./install.sh --only=skills
+```
 
 ```powershell
-.\install.ps1 -Only links
+.\install.ps1 -Only skills
 ```
+
+`~/.agents/skills/` stays a real, machine-local directory so upstream installers
+cannot write into this checkout. The installers detach the old dotfiles-owned
+whole-directory symlink automatically. Local skills remaining in
+`home/.agents/skills/` are linked individually; Windows falls back to copies
+when symlinks are unavailable. Other local skills are preserved.
+
+These commands intentionally use the latest upstream releases. Rerunning the
+skills phase fetches current content; it is not a pinned installation or a prune
+operation. Existing Windows copies follow `-OnConflict` (use `backup` to preserve
+and replace older content). Removed skills may need manual cleanup, especially
+on machines that used copies rather than symlinks.
 
 ## Local Overrides
 
@@ -132,6 +157,7 @@ From the repository root:
 
 ```sh
 bash -n install.sh
+bash tests/skills-install.sh
 bash -n home/.bashrc home/.bash_profile home/.profile home/.config/sh/*.sh home/.config/tmux/*.sh
 zsh -n home/.zshrc home/.config/zsh/*.zsh
 ./install.sh --dry-run --headless

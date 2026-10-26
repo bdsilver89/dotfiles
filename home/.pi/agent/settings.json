@@ -1,7 +1,13 @@
 {
   "defaultProvider": "anthropic",
   "defaultModel": "claude-sonnet-4-5",
-  "lastChangelogVersion": "0.84.4",
+  "lastChangelogVersion": "1.4.0",
   "theme": "github-dark-default",
-  "packages": ["npm:pi-claude-bridge"]
+  "packages": [
+    "npm:pi-claude-bridge",
+    "npm:pi-obsidian",
+    "npm:pi-vimmode",
+    "npm:pi-subagents"
+  ],
+  "deviceId": "c6e0610b-dbce-4288-84dd-6ff17ec429e7"
 }

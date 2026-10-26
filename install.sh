@@ -593,7 +593,8 @@ build_link_map() {
     # ~/.local/bin is shared with brew, mise and vendor shims.
     add_entries ".local/bin"
 
-    add_tree ".agents/skills"
+    # Keep this real: upstream skill installers write alongside our local skills.
+    add_entries ".agents/skills"
 }
 
 # Adjacent, like the old bootstrap.sh: the backup sits next to what it replaced
@@ -728,6 +729,7 @@ link_one() {
 
 link_dotfiles() {
     phase "Linking"
+    prepare_skills_dir
     build_link_map
 
     local record src dst
@@ -1078,16 +1080,63 @@ merge_claude_settings() {
     return 0
 }
 
-# ~/.claude/skills and ~/.opencode/skills also hold local/work-only skills, so
-# unexpected entries are left alone rather than clobbered.
-link_skills() {
-    phase "Skills"
+# Detach only the whole-directory link created by older dotfiles installs.
+# Never remove a real directory or an unrelated link.
+prepare_skills_dir() {
+    local store="$HOME/.agents/skills"
+    if [ -L "$store" ]; then
+        [ "$(readlink "$store")" = "$REPO_DIR/home/.agents/skills" ] || \
+            die "unexpected skills directory symlink: $store"
+        run rm "$store"
+        say "Unlinked" "~/.agents/skills (legacy whole-directory link)"
+    fi
+    ensure_dir "$store"
+}
 
+install_skills() {
+    phase "Skills"
+    have npx || { warn "npx not found; install Node.js and rerun --only=skills"; return 0; }
+    prepare_skills_dir
+    # --only=skills must also restore our local skill links after migration.
+    local target
+    for target in "$REPO_DIR/home/.agents/skills"/*; do
+        [ -d "$target" ] || continue
+        link_one ".agents/skills/$(basename "$target")" ".agents/skills/$(basename "$target")"
+    done
+
+    # Upstream content stays outside the checkout. Keep sources here, not vendored.
+    if quietly npx --yes @caveman-ai/cli@latest tools skills install \
+        --suite output --dir "$HOME/.agents/skills" --no-pixel; then
+        say "Installed" "Caveman output skills"
+    else
+        warn "Caveman skills install failed"
+    fi
+    if quietly npx --yes skills@latest add mattpocock/skills --global \
+        --agent claude-code codex opencode pi --skill '*' --yes; then
+        say "Installed" "Matt Pocock skills"
+    else
+        warn "Matt Pocock skills install failed"
+    fi
+    link_skills
+}
+
+# Agent directories may also contain local/work-only skills; leave those alone.
+link_skills() {
     local store="$HOME/.agents/skills"
     [ -d "$store" ] || { warn "$(tilde "$store") missing, skipping"; return 0; }
 
     local target skill client dst n
+    # Remove only dangling links made by the old installer, not local skills.
     for client in .claude .opencode; do
+        for dst in "$HOME/$client/skills"/*; do
+            [ -L "$dst" ] && [ ! -e "$dst" ] || continue
+            case "$(readlink "$dst")" in
+                "$store/"*) run rm "$dst" ;;
+            esac
+        done
+    done
+
+    for client in .claude .codex .config/opencode .pi/agent; do
         ensure_dir "$HOME/$client/skills"
         n=0
 
@@ -1293,7 +1342,7 @@ main() {
     run_phase vendor      install_vendor
     run_phase gh          install_gh_extensions
     run_phase claude      merge_claude_settings
-    run_phase skills      link_skills
+    run_phase skills      install_skills
     run_phase rtk         init_rtk
     run_phase vscode      install_vscode
     run_phase zed         install_zed
