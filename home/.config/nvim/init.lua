@@ -41,6 +41,7 @@ local map = function(mode, lhs, rhs, opts)
   vim.keymap.set(mode, lhs, rhs, opts)
 end
 local nmap = function(lhs, rhs, opts) map("n", lhs, rhs, opts) end
+local imap = function(lhs, rhs, opts) map("i", lhs, rhs, opts) end
 local xmap = function(lhs, rhs, opts) map("x", lhs, rhs, opts) end
 local tmap = function(lhs, rhs, opts) map("t", lhs, rhs, opts) end
 local map_leader = function(mode, lhs, rhs, opts) map(mode, "<leader>" .. lhs, rhs, opts) end
@@ -120,11 +121,52 @@ nmap("<c-u>", "<c-u>zz")
 nmap("n", "nzzzv")
 nmap("N", "Nzzzv")
 
+nmap("-", "<Plug>(nvim-dir-up)")
+
 nmap("<esc>", function()
   local ns = vim.api.nvim_create_namespace("nvim.multicursor")
   vim.api.nvim_buf_clear_namespace(0, ns, 0, -1)
   vim.cmd.nohlsearch()
 end)
+
+local function has_words_before()
+  local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+  return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)
+end
+
+map({ "i", "s" }, "<tab>", function()
+  if vim.fn.pumvisible() == 1 then
+    return "<c-n>"
+  elseif vim.snippet.active({ direction = 1 }) then
+    vim.snippet.jump(1)
+  elseif has_words_before() then
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<c-x><c-o>", true, true, true), "n", true)
+  else
+    return "<tab>"
+  end
+end, { expr = true, silent = true })
+
+map({ "i", "s" }, "<s-tab>", function()
+  if vim.fn.pumvisible() == 1 then
+    return "<c-p>"
+  elseif vim.snippet.active({ direction = -1 }) then
+    vim.snippet.jump(-1)
+  else
+    return "<tab>"
+  end
+end, { expr = true, silent = true })
+
+imap("<cr>", function()
+  if vim.fn.pumvisible() == 1 then
+    if vim.fn.complete_info().selected ~= -1 then
+      return "<c-y>"
+    else
+      return "<c-e><cr>"
+    end
+  end
+  return "<cr>"
+end, { expr = true, silent = true })
+
 
 nmap_leader("-", "<c-w>s")
 nmap_leader("|", "<c-w>v")
@@ -172,6 +214,16 @@ require("vim._core.ui2").enable({
     },
   },
 })
+
+now(function()
+  add({ gh("projekt0n/github-nvim-theme") })
+  require("github-theme").setup()
+  vim.cmd.colorscheme("github_dark_default")
+end)
+
+later(function()
+  add({ gh("tpope/vim-sleuth") })
+end)
 
 now_if_args(function()
   local ts_update = function() vim.cmd("TSUpdate") end
@@ -278,6 +330,7 @@ now(function()
   end)
 end)
 
+
 -- ============================================================================
 -- LSP
 -- ============================================================================
@@ -315,8 +368,17 @@ local on_attach = function(ev)
   nmap("gD", vim.lsp.buf.declaration, { buffer = ev.buf })
   nmap("gW", vim.lsp.buf.workspace_symbol, { buffer = ev.buf })
 
+  nmap("grf", vim.lsp.buf.format, { buffer = ev.buf })
+
   if client:supports_method("textDocument/completion") then
     vim.lsp.completion.enable(true, client.id, ev.buf, { autotrigger = false })
+  end
+
+  if client:supports_method("textDocument/inlayHint") then
+    vim.lsp.inlay_hint.enable(true, { bufnr = ev.buf })
+    nmap_leader("uh", function()
+      vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+    end)
   end
 end
 new_autocmd("LspAttach", "*", on_attach, "LSP attach")
