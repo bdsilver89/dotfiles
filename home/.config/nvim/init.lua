@@ -1,4 +1,5 @@
-vim.g.mapleader = " "
-vim.g.maplocalleader = " "
+vim.loader.enable()
 
-vim.o.number = true
+require("options")
+require("autocmds")
+require("keymaps")

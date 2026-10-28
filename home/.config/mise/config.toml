@@ -3,28 +3,40 @@ lockfile = true
 lockfile_mode = "generate"
 
 [tools]
+# AI
 claude-code = "latest"
 codex = "latest"
 opencode = "latest"
 pi = "latest"
 
+# Tools
 direnv = "latest"
 eza = "latest"
 fd = "latest"
 fzf = "latest"
-jq = "latest"
 gh = "latest"
-lazygit = "latest"
+herdr = "latest"
+jq = "latest"
 lazydocker = "latest"
+lazygit = "latest"
 neovim = "nightly"
 ripgrep = "latest"
 starship = "latest"
 tree-sitter = "latest"
-uv = "latest"
+"github:agavra/tuicr" = "latest"
 zoxide = "latest"
 
+# Package managers
+uv = "latest"
+
+# Languages
 node = "lts"
 python = "3.14"
+rust = "stable"
+
+# LSP
+lua-language-server = "latest"
+"vfox:tinnet/vfox-jdtls" = "1.63.0"
 
 [bootstrap.packages]
 "brew:git" = { os = "macos" }

@@ -1,0 +1,5 @@
+theme = "catppuccin-mocha"
+mouse = true
+leader = " "
+cursor_line = true
+comment_vim = true
