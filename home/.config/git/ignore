@@ -1,0 +1,8 @@
+.envrc
+.direnv
+.idea
+.DS_Store
+mise.local.toml
+mise.local.lock
+**/.agents/*.local.json
+**/.claude/settings.local.json

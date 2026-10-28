@@ -6,24 +6,17 @@ case $- in *i*) ;; *) return ;; esac
 # /etc/passwd entry, so chsh can never work on those boxes.
 # Escape hatch: ssh host -t bash --noprofile
 if [ -z "$ZSH_VERSION" ] && command -v zsh >/dev/null 2>&1; then
-    # /etc/profile.d has alread run by now so skip it for zsh
+    # /etc/profile.d has already run by now so skip it for zsh
     export ETC_PROFILE_SOURCED=1
     exec zsh -l
 fi
 
+. "$HOME/.config/shell/env.sh"
+
 # Unquoted so the glob expands. A quoted glob does not expand — it would loop
 # once over the literal pattern and source nothing at all.
-for f in "$HOME"/.config/sh/*.sh; do
+for f in "$HOME"/.config/shell/interactive/*.sh "$HOME"/.config/shell/bash/*.bash; do
     # shellcheck source=/dev/null  # glob target, not knowable statically
     [ -r "$f" ] && . "$f"
 done
 unset f
-
-# The only bash-specific lines permitted in this repo.
-shopt -s histappend checkwinsize
-HISTSIZE=100000
-HISTFILESIZE=100000
-HISTCONTROL=ignoredups:erasedups
-set -o vi
-# shellcheck source=/dev/null  # written by fzf's installer, absent in this repo
-[ -f "$HOME/.fzf.bash" ] && . "$HOME/.fzf.bash"

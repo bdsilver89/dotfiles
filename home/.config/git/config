@@ -1,0 +1,28 @@
+[user]
+    name = Brian Silver
+    email = github@briansilver.net
+
+[color]
+    ui = auto
+
+[core]
+    editor = vim
+    ignorecase = false
+
+[init]
+    defaultBranch = main
+
+[push]
+    default = simple
+    followTags = true
+    autoSetupRemote = true
+
+[pull]
+    rebase = true
+
+[merge]
+    conflictStyle = "zdiff3"
+
+[rerere]
+    enabled = true
+    

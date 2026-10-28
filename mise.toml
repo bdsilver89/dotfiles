@@ -1,0 +1,17 @@
+[settings]
+dotfiles.root = "."
+
+# Most files are linked individually; frequently changing configuration
+# directoes are linked whole so adding/removing files needs no reinstall.
+[dotfile_groups.home]
+root = "home"
+target = "~"
+mode = "symlink-each"
+exclude = [
+    ".config/nvim",
+    ".config/shell",
+]
+
+[dotfiles]
+"~/.config/nvim" = { source = "home/.config/nvim", mode = "symlink" }
+"~/.config/shell" = { source = "home/.config/shell", mode = "symlink" }

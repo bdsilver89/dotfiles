@@ -1,27 +1,38 @@
-# Global mise tools. `mise use -g` writes here through the symlink, so anything
-# it adds shows up as a normal diff in this repo.
-#
-# Machine-local additions go in ~/.config/mise/conf.d/*.toml, which mise merges
-# with this file and which is not tracked.
-[tools]
-neovim = "nightly"
-starship = "latest"
-lazygit = "latest"
-workmux = "latest"
+[settings]
+lockfile = true
+lockfile_mode = "generate"
 
-# Fedora/RHEL disable distro-provided CLI tools in conf.d/00-platform.toml
-# when dnf supplies them; missing packages fall back to mise.
+[tools]
+claude-code = "latest"
+codex = "latest"
+opencode = "latest"
+pi = "latest"
+
+direnv = "latest"
+eza = "latest"
 fd = "latest"
+fzf = "latest"
+jq = "latest"
 gh = "latest"
+lazygit = "latest"
+lazydocker = "latest"
+neovim = "nightly"
+ripgrep = "latest"
+starship = "latest"
+tree-sitter = "latest"
+uv = "latest"
+zoxide = "latest"
 
 node = "lts"
 python = "3.14"
-uv = "latest"
-rust = "stable"
-lazydocker = "latest"
-pnpm = "latest"
 
-opencode = "latest"
-codex = "latest"
-claude-code = "latest"
-pi = "latest"
+[bootstrap.packages]
+"brew:git" = { os = "macos" }
+"brew-cask:discord" = "latest"
+"brew-cask:docker-desktop" = "latest"
+"brew-cask:ghostty" = "latest"
+"brew-cask:linear" = "latest"
+"brew-cask:google-chrome" = "latest"
+
+"winget:Git.Git" = "latest"
+"winget:Microsoft.PowerToys" = "latest"
