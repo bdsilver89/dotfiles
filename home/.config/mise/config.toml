@@ -40,11 +40,11 @@ lua-language-server = "latest"
 
 [bootstrap.packages]
 "brew:git" = { os = "macos" }
-"brew-cask:discord" = "latest"
-"brew-cask:docker-desktop" = "latest"
-"brew-cask:ghostty" = "latest"
-"brew-cask:linear" = "latest"
-"brew-cask:google-chrome" = "latest"
+"brew-cask:discord" = { version = "latest", os = "macos" }
+"brew-cask:docker-desktop" = { version = "latest", os = "macos" }
+"brew-cask:ghostty" = { version = "latest", os = "macos" }
+"brew-cask:linear" = { version = "latest", os = "macos" }
+"brew-cask:google-chrome" = { version = "latest", os = "macos" }
 
 "winget:Git.Git" = "latest"
 "winget:Microsoft.PowerToys" = "latest"
