@@ -4,3 +4,8 @@ vim.api.nvim_create_autocmd("TextYankPost", {
     vim.hl.hl_op()
   end,
 })
+
+vim.api.nvim_create_autocmd("VimResized", {
+  group = vim.api.nvim_create_augroup("config_resized", { clear = true }),
+  command = "tabdo wincmd =",
+})

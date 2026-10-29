@@ -41,4 +41,6 @@ vim.o.updatetime = 250
 
 vim.o.confirm = true
 
+vim.o.undofile = true
+
 vim.schedule(function() vim.o.clipboard = "unnamedplus" end)

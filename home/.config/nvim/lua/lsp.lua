@@ -10,6 +10,7 @@ vim.diagnostic.config({
 
 vim.lsp.enable({
   "clangd",
+  "jdtls",
   "lua_ls",
   "rust_analyzer",
 })
