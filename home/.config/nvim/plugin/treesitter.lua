@@ -44,8 +44,11 @@ local installed = require("nvim-treesitter.config").get_installed()
 local ts = require("nvim-treesitter")
 
 ts.setup({})
-ts.install(vim.iter(languages)
-  :filter(function(lang) return not vim.tbl_contains(installed, lang) end)
+ts.install(vim
+  .iter(languages)
+  :filter(function(lang)
+    return not vim.tbl_contains(installed, lang)
+  end)
   :totable())
 
 local filetypes = {}
@@ -73,7 +76,6 @@ vim.api.nvim_create_autocmd("PackChanged", {
     end
   end,
 })
-
 
 require("nvim-treesitter-textobjects").setup({
   select = {

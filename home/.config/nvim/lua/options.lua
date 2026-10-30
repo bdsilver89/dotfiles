@@ -43,4 +43,6 @@ vim.o.confirm = true
 
 vim.o.undofile = true
 
-vim.schedule(function() vim.o.clipboard = "unnamedplus" end)
+vim.schedule(function()
+  vim.o.clipboard = "unnamedplus"
+end)

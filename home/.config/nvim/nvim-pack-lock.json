@@ -13,6 +13,10 @@
       "src": "https://github.com/saghen/blink.cmp",
       "version": ">=0.0.0"
     },
+    "conform.nvim": {
+      "rev": "016802de402556da54c36bd7359b441266b01cdd",
+      "src": "https://github.com/stevearc/conform.nvim"
+    },
     "friendly-snippets": {
       "rev": "b2ea5c41a150ba72fb656eedb4ed0a86d138d945",
       "src": "https://github.com/rafamadriz/friendly-snippets"
@@ -24,6 +28,10 @@
     "gitsigns.nvim": {
       "rev": "74bbddd4b698f4d763c88f2b3e80d421de6bcfe6",
       "src": "https://github.com/lewis6991/gitsigns.nvim"
+    },
+    "lualine.nvim": {
+      "rev": "221ce6b2d999187044529f49da6554a92f740a96",
+      "src": "https://github.com/nvim-lualine/lualine.nvim"
     },
     "nvim-treesitter": {
       "rev": "a2f694478be07f89c2d03cc17858a8745a400c4b",

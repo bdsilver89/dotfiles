@@ -212,13 +212,16 @@ function M.add(specs)
     return not s.path
   end, batch)
 
-  vim.pack.add(vim.tbl_map(function(s)
-    return { src = url(s[1]), name = s.name, version = s.version }
-  end, batch), {
-    load = function(p)
-      by_name[p.spec.name].path = p.path
-    end,
-  })
+  vim.pack.add(
+    vim.tbl_map(function(s)
+      return { src = url(s[1]), name = s.name, version = s.version }
+    end, batch),
+    {
+      load = function(p)
+        by_name[p.spec.name].path = p.path
+      end,
+    }
+  )
 
   for _, s in ipairs(batch) do
     if s.init then

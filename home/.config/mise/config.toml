@@ -36,6 +36,7 @@ rust = "stable"
 
 # LSP
 lua-language-server = "latest"
+stylua = "latest"
 "vfox:tinnet/vfox-jdtls" = "1.63.0"
 
 [bootstrap.packages]
