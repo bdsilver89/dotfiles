@@ -59,7 +59,7 @@ local missing = vim
   :totable()
 
 if #missing > 0 then
-  ts.installed(missing, { force = true })
+  ts.install(missing, { force = true })
 end
 
 local filetypes = {}
