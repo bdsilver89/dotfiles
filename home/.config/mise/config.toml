@@ -3,12 +3,6 @@ lockfile = true
 lockfile_mode = "generate"
 
 [tools]
-# AI
-claude-code = "latest"
-codex = "latest"
-opencode = "latest"
-pi = "latest"
-
 # Tools
 direnv = "latest"
 eza = "latest"
@@ -38,6 +32,15 @@ rust = "stable"
 lua-language-server = "latest"
 stylua = "latest"
 "vfox:tinnet/vfox-jdtls" = "1.63.0"
+
+# AI
+claude-code = "latest"
+codex = "latest"
+opencode = "latest"
+pi = "latest"
+
+"pypi:graphifyy" = "latest"
+"npm:openwiki" = { version = "latest", allow_builds = ["better-sqlite3"] }
 
 [bootstrap.packages]
 "brew:git" = { os = "macos" }
