@@ -40,6 +40,7 @@ return {
     })
   end,
   filetypes = { "java" },
+  workspace_required = true,
   root_markers = {
     {
       "mvnw",

@@ -14,17 +14,17 @@ require("gitsigns").setup({
       vim.keymap.set(mode, lhs, rhs, opts)
     end
 
-    map("n", "[c", function()
+    map("n", "]c", function()
       if vim.wo.diff then
-        vim.cmd.normal({ "[c", bang = true })
+        vim.cmd.normal({ "]c", bang = true })
       else
         gs.nav_hunk("next")
       end
     end)
 
-    map("n", "]c", function()
+    map("n", "[c", function()
       if vim.wo.diff then
-        vim.cmd.normal({ "]c", bang = true })
+        vim.cmd.normal({ "[c", bang = true })
       else
         gs.nav_hunk("prev")
       end

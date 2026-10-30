@@ -10,6 +10,12 @@ local languages = {
   "cpp",
   "css",
   "diff",
+  "dockerfile",
+  "gitcommit",
+  "git_config",
+  "git_rebase",
+  "gitignore",
+  "gitattributes",
   "go",
   "gomod",
   "gosum",
@@ -40,16 +46,21 @@ local languages = {
   "yaml",
 }
 
-local installed = require("nvim-treesitter.config").get_installed()
 local ts = require("nvim-treesitter")
 
 ts.setup({})
-ts.install(vim
+
+local installed = ts.get_installed("parsers")
+local missing = vim
   .iter(languages)
   :filter(function(lang)
-    return not vim.tbl_contains(installed, lang)
+    return not vim.list_contains(installed, lang)
   end)
-  :totable())
+  :totable()
+
+if #missing > 0 then
+  ts.installed(missing, { force = true })
+end
 
 local filetypes = {}
 for _, lang in ipairs(languages) do
@@ -72,7 +83,10 @@ vim.api.nvim_create_autocmd("PackChanged", {
   callback = function(ev)
     local name, kind = ev.data.spec.name, ev.data.kind
     if name == "nvim-treesitter" and (kind == "install" or kind == "update") then
-      vim.cmd("TSUpdate")
+      if not ev.data.active then
+        vim.cmd.packadd("nvim-treesitter")
+      end
+      require("nvim-treesitter").update()
     end
   end,
 })

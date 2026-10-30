@@ -10,5 +10,5 @@ return {
     "--function-arg-placeholders=false",
   },
   filetypes = { "c", "cpp" },
-  root_markers = { ".clangd" },
+  root_markers = { ".clangd", "compile_commands.json", "compile_flags.txt", ".git" },
 }
