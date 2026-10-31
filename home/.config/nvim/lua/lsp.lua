@@ -19,10 +19,14 @@ vim.diagnostic.config({
 })
 
 vim.lsp.enable({
+  -- "bash",
   "clangd",
   "jdtls",
+  -- "jsonls",
   "lua_ls",
   "rust_analyzer",
+  "tsc",
+  -- "yamlls",
 })
 
 vim.api.nvim_create_autocmd("LspAttach", {
