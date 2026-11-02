@@ -10,8 +10,10 @@ mode = "symlink-each"
 exclude = [
     ".config/nvim",
     ".config/shell",
+    ".pi",
 ]
 
 [dotfiles]
 "~/.config/nvim" = { source = "home/.config/nvim", mode = "symlink" }
 "~/.config/shell" = { source = "home/.config/shell", mode = "symlink" }
+"~/.pi" = { source = "home/.pi", mode = "symlink" }

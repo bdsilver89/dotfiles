@@ -1,0 +1,9 @@
+{
+  "lastChangelogVersion": "1.4.0",
+  "editorPaddingX": 1,
+  "treeFilterMode": "no-tools",
+  "defaultModel": "gpt-6.1-sol",
+  "collapseChangelog": true,
+  "defaultProvider": "openai",
+  "defaultTools": ["+codemode"]
+}

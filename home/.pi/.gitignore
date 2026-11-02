@@ -1,0 +1,9 @@
+# Local state
+/agent/sessions/
+/agent/models-store.json
+
+# Dependencies
+node_modules/
+
+# Sensitive
+/agent/auth.json
