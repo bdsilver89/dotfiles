@@ -13,6 +13,7 @@ vim.o.signcolumn = "yes"
 vim.o.laststatus = 3
 vim.o.showmode = false
 vim.o.ruler = false
+vim.o.cmdheight = 0
 
 vim.o.list = true
 vim.o.listchars = "tab:» ,trail:·,nbsp:␣"
