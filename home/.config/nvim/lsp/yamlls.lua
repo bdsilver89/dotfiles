@@ -4,7 +4,7 @@ return {
   filetypes = { "yaml" },
   settings = {
     yaml = {
-      schemastore = { enable = false, url = "" },
+      schemaStore = { enable = false, url = "" },
       schemas = require("schemastore").yaml.schemas(),
     },
   },

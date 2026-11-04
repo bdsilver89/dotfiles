@@ -18,15 +18,20 @@ vim.diagnostic.config({
   },
 })
 
+-- LSP configs are evaluated before plugin/ files load.
+vim.pack.add({ "https://github.com/b0o/SchemaStore.nvim" })
+
 vim.lsp.enable({
-  -- "bash",
+  "bashls",
   "clangd",
   "jdtls",
-  -- "jsonls",
+  "jsonls",
+  "lemminx",
   "lua_ls",
+  "neocmake",
   "rust_analyzer",
   "tsc",
-  -- "yamlls",
+  "yamlls",
 })
 
 vim.api.nvim_create_autocmd("LspAttach", {

@@ -32,6 +32,17 @@ rust = "stable"
 lua-language-server = "latest"
 stylua = "latest"
 "vfox:tinnet/vfox-jdtls" = "1.63.0"
+"npm:bash-language-server" = "latest"
+"npm:vscode-langservers-extracted" = "latest"
+"npm:yaml-language-server" = "latest"
+"github:redhat-developer/vscode-xml" = { version = "latest", asset_pattern = 'lemminx-{{ os(macos="osx") }}-{{ arch(x64="x86_64", arm64="aarch_64") }}.zip', rename_exe = "lemminx" }
+"cargo:neocmakelsp" = "latest"
+
+# Debug adapters
+"pypi:debugpy" = "latest"
+"github:vadimcn/codelldb" = { version = "latest", matching_regex = "^codelldb-(darwin|linux)-", format = "zip", bin_path = "extension/adapter" }
+"github:microsoft/vscode-js-debug" = { version = "latest", asset_pattern = "js-debug-dap-*.tar.gz", strip_components = 1 }
+"http:java-debug" = { version = "0.53.1", url = "https://repo.maven.apache.org/maven2/com/microsoft/java/com.microsoft.java.debug.plugin/{{ version }}/com.microsoft.java.debug.plugin-{{ version }}.jar", format = "raw", bin = "java-debug.jar" }
 
 # AI
 claude-code = "latest"
