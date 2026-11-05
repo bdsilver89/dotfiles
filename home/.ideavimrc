@@ -1,0 +1,128 @@
+let mapleader = " "
+let maplocalleader = ","
+
+set number
+set relativenumber
+set scrolloff=5
+set sidescrolloff=5
+set ignorecase
+set smartcase
+set incsearch
+set hlsearch
+set clipboard=unnamedplus,unnamed
+set showmode
+set showcmd
+set visualbell
+set noerrorbells
+
+set ideajoin
+set idearefactormode=keep
+set ideastatusicon=gray
+
+set surround
+set commentary
+set highlightedyank
+set multiple-cursors
+set argtextobj
+set textobj-entire
+set ReplaceWithRegister
+set exchange
+set matchit
+set which-key
+set notimeout
+
+nnoremap <C-d> <C-d>zz
+nnoremap <C-u> <C-u>zz
+nnoremap n nzzzv
+nnoremap N Nzzzv
+nnoremap <Esc> :nohlsearch<CR>
+
+nnoremap j gj
+nnoremap k gk
+
+xnoremap < <gv
+xnoremap > >gv
+
+nnoremap <leader>w :action SaveAll<CR>
+nnoremap <leader>q :action CloseContent<CR>
+nnoremap <leader>- :action SplitHorizontally<CR>
+nnoremap <leader><Bar> :action SplitVertically<CR>
+
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
+
+nnoremap <leader>p "_dP
+nnoremap <leader>y "+y
+vnoremap <leader>y "+y
+nnoremap <leader>Y "+Y
+
+nnoremap <leader><space> :action GotoFile<CR>
+nnoremap <leader>/ :action FindInPath<CR>
+nnoremap <leader>, :action RecentFiles<CR>
+nnoremap <leader>: :action GotoAction<CR>
+nnoremap <leader>e :action ActivateProjectToolWindow<CR>
+nnoremap <leader>E :action SelectInProjectView<CR>
+nnoremap <leader>bd :action CloseContent<CR>
+nnoremap <leader>bo :action CloseAllEditorsButActive<CR>
+
+nnoremap gd :action GotoDeclaration<CR>
+nnoremap gy :action GotoTypeDeclaration<CR>
+nnoremap gi :action GotoImplementation<CR>
+nnoremap gr :action FindUsages<CR>
+nnoremap gs :action FileStructurePopup<CR>
+nnoremap K :action QuickJavaDoc<CR>
+nnoremap gK :action ParameterInfo<CR>
+
+nnoremap <leader>ca :action ShowIntentionActions<CR>
+nnoremap <leader>cr :action RenameElement<CR>
+nnoremap <leader>cf :action ReformatCode<CR>
+nnoremap <leader>co :action OptimizeImports<CR>
+nnoremap <leader>cg :action Generate<CR>
+nnoremap <leader>cm :action ExtractMethod<CR>
+nnoremap <leader>cv :action IntroduceVariable<CR>
+xnoremap <leader>cf :action ReformatCode<CR>
+xnoremap <leader>cm :action ExtractMethod<CR>
+xnoremap <leader>cv :action IntroduceVariable<CR>
+
+nnoremap [d :action GotoPreviousError<CR>
+nnoremap ]d :action GotoNextError<CR>
+nnoremap [m :action MethodUp<CR>
+nnoremap ]m :action MethodDown<CR>
+nnoremap [c :action VcsShowPrevChangeMarker<CR>
+nnoremap ]c :action VcsShowNextChangeMarker<CR>
+nnoremap [b :action PreviousTab<CR>
+nnoremap ]b :action NextTab<CR>
+
+nnoremap <leader>xx :action ActivateProblemsViewToolWindow<CR>
+nnoremap <leader>xq :action ActivateFindToolWindow<CR>
+
+nnoremap <leader>db :action ToggleLineBreakpoint<CR>
+nnoremap <leader>dB :action EditBreakpoint<CR>
+nnoremap <leader>dc :action Resume<CR>
+nnoremap <leader>dn :action StepOver<CR>
+nnoremap <leader>di :action StepInto<CR>
+nnoremap <leader>do :action StepOut<CR>
+nnoremap <leader>dr :action Debug<CR>
+nnoremap <leader>dx :action Stop<CR>
+nnoremap <leader>dR :action RunToCursor<CR>
+nnoremap <leader>de :action EvaluateExpression<CR>
+
+nnoremap <leader>rr :action Run<CR>
+nnoremap <leader>rl :action Rerun<CR>
+nnoremap <leader>rt :action RunClass<CR>
+nnoremap <leader>rf :action RerunFailedTests<CR>
+
+nnoremap <leader>gg :action ActivateCommitToolWindow<CR>
+nnoremap <leader>gb :action Annotate<CR>
+nnoremap <leader>gh :action Vcs.ShowTabbedFileHistory<CR>
+nnoremap <leader>gd :action Compare.LastVersion<CR>
+nnoremap <leader>gr :action Vcs.RollbackChangedLines<CR>
+
+nnoremap <leader>tt :action ActivateTerminalToolWindow<CR>
+nnoremap <leader>z :action ToggleDistractionFreeMode<CR>
+nnoremap <leader>m :action HideAllWindows<CR>
+
+nnoremap <C-n> :action SelectNextOccurrence<CR>
+xnoremap <C-n> :action SelectNextOccurrence<CR>
