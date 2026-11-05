@@ -1,27 +1,3 @@
-vim.api.nvim_create_autocmd("PackChanged", {
-  group = vim.api.nvim_create_augroup("config_packchanged_telescope", { clear = true }),
-  callback = function(ev)
-    local name, kind = ev.data.spec.name, ev.data.kind
-    if name == "telescope-fzf-native.nvim" and (kind == "install" or kind == "update") then
-      if not ev.data.active then
-        vim.cmd.packadd("telescope-fzf-native.nvim")
-      end
-      local result = vim.system({ "make" }, { cwd = ev.data.path, text = true }):wait()
-      if result.code ~= 0 then
-        error("Failed to build telescope-fzf-native.nvim: " .. (result.stderr or result.stdout or ""))
-      end
-    end
-  end,
-})
-
-vim.pack.add({
-  "https://github.com/nvim-lua/plenary.nvim",
-  "https://github.com/nvim-telescope/telescope.nvim",
-  "https://github.com/nvim-telescope/telescope-fzf-native.nvim",
-  "https://github.com/nvim-telescope/telescope-ui-select.nvim",
-  "https://github.com/nvim-telescope/telescope-frecency.nvim",
-})
-
 require("telescope").setup({
   defaults = {
     layout_strategy = "horizontal",

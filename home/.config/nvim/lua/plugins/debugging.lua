@@ -1,9 +1,3 @@
-vim.pack.add({
-  "https://github.com/mfussenegger/nvim-dap",
-  "https://github.com/igorlfs/nvim-dap-view",
-  "https://github.com/theHamsta/nvim-dap-virtual-text",
-})
-
 local dv = require("dap-view")
 dv.setup({})
 

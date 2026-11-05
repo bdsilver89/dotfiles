@@ -1,7 +1,3 @@
-vim.pack.add({
-  "https://github.com/nvim-mini/mini.nvim",
-})
-
 local bufremove = require("mini.bufremove")
 bufremove.setup()
 vim.keymap.set("n", "<leader>bd", function()

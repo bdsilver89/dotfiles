@@ -13,3 +13,13 @@ vim.api.nvim_create_autocmd("VimResized", {
     vim.cmd("tabnext " .. current_tab)
   end,
 })
+
+local cursorline_group = vim.api.nvim_create_augroup("config_cursorline", { clear = true })
+vim.api.nvim_create_autocmd({ "VimEnter", "WinEnter", "BufWinEnter" }, {
+  group = cursorline_group,
+  command = "setlocal cursorline",
+})
+vim.api.nvim_create_autocmd("WinLeave", {
+  group = cursorline_group,
+  command = "setlocal nocursorline",
+})

@@ -1,9 +1,3 @@
-vim.pack.add({
-  { src = "https://github.com/saghen/blink.cmp", version = vim.version.range("*") },
-  "https://github.com/L3MON4D3/LuaSnip",
-  "https://github.com/rafamadriz/friendly-snippets",
-})
-
 require("luasnip.loaders.from_vscode").lazy_load({})
 
 require("blink.cmp").setup({
