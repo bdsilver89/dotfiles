@@ -22,6 +22,7 @@ vim.diagnostic.config({
 vim.pack.add({ "https://github.com/b0o/SchemaStore.nvim" })
 
 vim.lsp.enable({
+  "basedpyright",
   "bashls",
   "clangd",
   "jdtls",
@@ -29,6 +30,7 @@ vim.lsp.enable({
   "lemminx",
   "lua_ls",
   "neocmake",
+  "ruff",
   "rust_analyzer",
   "tsc",
   "yamlls",
@@ -51,6 +53,10 @@ vim.api.nvim_create_autocmd("LspAttach", {
       vim.keymap.set("n", "<leader>uh", function()
         vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = ev.buf }))
       end, { buffer = ev.buf })
+    end
+
+    if client.name == "ruff" then
+      client.server_capabilities.hoverProvider = false
     end
   end,
 })

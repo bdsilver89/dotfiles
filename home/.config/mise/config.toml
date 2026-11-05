@@ -37,6 +37,9 @@ stylua = "latest"
 "npm:yaml-language-server" = "latest"
 "github:redhat-developer/vscode-xml" = { version = "latest", asset_pattern = 'lemminx-{{ os(macos="osx") }}-{{ arch(x64="x86_64", arm64="aarch_64") }}.zip', rename_exe = "lemminx" }
 "cargo:neocmakelsp" = "latest"
+"pypi:basedpyright" = "latest"
+"pypi:ruff" = "latest"
+"npm:typescript" = "latest"
 
 # Debug adapters
 "pypi:debugpy" = "latest"
