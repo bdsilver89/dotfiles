@@ -70,7 +70,10 @@ nnoremap <leader>bo :action CloseAllEditorsButActive<CR>
 nnoremap gd :action GotoDeclaration<CR>
 nnoremap gy :action GotoTypeDeclaration<CR>
 nnoremap gi :action GotoImplementation<CR>
-nnoremap gr :action FindUsages<CR>
+nnoremap grr :action FindUsages<CR>
+nnoremap grn :action RenameElement<CR>
+nnoremap gra :action ShowIntentionActions<CR>
+xnoremap gra :action ShowIntentionActions<CR>
 nnoremap gs :action FileStructurePopup<CR>
 nnoremap K :action QuickJavaDoc<CR>
 nnoremap gK :action ParameterInfo<CR>
