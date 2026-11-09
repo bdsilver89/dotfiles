@@ -73,6 +73,16 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
+vim.api.nvim_create_autocmd("PackChanged", {
+  group = vim.api.nvim_create_augroup("config_packchanged_ts", { clear = true }),
+  callback = function(ev)
+    local name, kind = ev.data.spec.name, ev.data.kind
+    if name == "nvim-treesitter" and (kind == "install" or kind == "update") then
+      vim.cmd("TSUpdate")
+    end
+  end,
+})
+
 require("nvim-treesitter-textobjects").setup({
   select = {
     lookahead = true,

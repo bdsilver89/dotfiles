@@ -59,3 +59,4 @@ vim.keymap.set("n", "grf", function()
     lsp_format = "fallback",
   })
 end)
+

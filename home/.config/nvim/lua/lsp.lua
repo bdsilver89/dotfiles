@@ -1,11 +1,13 @@
 vim.diagnostic.config({
   update_in_insert = false,
   underline = true,
-  severity_sort = true,
-  virtual_text = true,
-  jump = {
-    on_jump = function(_, bufnr)
-      vim.diagnostic.open_float({ bufnr = bufnr, scope = "cursor", focus = false })
+  seveirty_sort = true,
+  virtual_text = {
+    spacing = 4,
+    source = "if_many",
+    prefix = "●",
+    format = function(diagnostic)
+      return string.format("%s (%s: %s)", diagnostic.message, diagnostic.source, diagnostic.code)
     end,
   },
   signs = {
@@ -41,15 +43,12 @@ vim.api.nvim_create_autocmd("LspAttach", {
       return
     end
 
-    vim.keymap.set("n", "gd", vim.lsp.buf.definition, { buffer = ev.buf })
-    vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { buffer = ev.buf })
-    vim.keymap.set("n", "gW", vim.lsp.buf.workspace_symbol, { buffer = ev.buf })
+    -- vim.keymap.set("n", "gd", vim.lsp.buf.definition, { buffer = ev.buf })
+    -- vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { buffer = ev.buf })
+    -- vim.keymap.set("n", "gW", vim.lsp.buf.workspace_symbol, { buffer = ev.buf })
 
     if client:supports_method("textDocument/inlayHint") then
       vim.lsp.inlay_hint.enable(true, { bufnr = ev.buf })
-      vim.keymap.set("n", "<leader>uh", function()
-        vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = ev.buf }))
-      end, { buffer = ev.buf })
     end
 
     if client.name == "ruff" then
