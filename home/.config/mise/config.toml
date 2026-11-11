@@ -63,6 +63,7 @@ pi = "latest"
 "brew-cask:ghostty" = { version = "latest", os = "macos" }
 "brew-cask:linear" = { version = "latest", os = "macos" }
 "brew-cask:google-chrome" = { version = "latest", os = "macos" }
+"brew-cask:herdr-app" = { version = "latest", os = "macos" }
 
 "winget:Git.Git" = "latest"
 "winget:Microsoft.PowerToys" = "latest"
