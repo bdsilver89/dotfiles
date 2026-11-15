@@ -7,6 +7,7 @@ vim.pack.add({
   { src = gh("nvim-treesitter/nvim-treesitter") },
   { src = gh("nvim-treesitter/nvim-treesitter-textobjects") },
   { src = gh("folke/snacks.nvim") },
+  { src = gh("folke/which-key.nvim") },
   { src = gh("nvim-mini/mini.nvim") },
   { src = gh("saghen/blink.cmp"), version = vim.version.range("^1") },
   { src = gh("nvim-lualine/lualine.nvim") },
@@ -29,6 +30,7 @@ vim.cmd.packadd("nvim.difftool")
 require("plugins.colorscheme")
 require("plugins.treesitter")
 require("plugins.snacks")
+require("plugins.which_key")
 require("plugins.mini")
 require("plugins.git")
 require("plugins.completion")

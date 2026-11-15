@@ -58,5 +58,4 @@ vim.keymap.set("n", "grf", function()
     async = true,
     lsp_format = "fallback",
   })
-end)
-
+end, { desc = "Foramt buffer" })
