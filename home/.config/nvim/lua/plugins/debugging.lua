@@ -140,6 +140,38 @@ for _, filetype in ipairs({ "javascript", "typescript" }) do
   }
 end
 
+-- delve for go
+dap.adapters.delve = {
+  type = "server",
+  port = "${port}",
+  executable = {
+    command = "dlv",
+    args = { "dap", "-l", "127.0.0.1:${port}" },
+  },
+}
+dap.configurations.go = {
+  {
+    name = "Delve: debug current package",
+    type = "delve",
+    request = "launch",
+    program = "${fileDirname}",
+  },
+  {
+    name = "Delve: debug test in current package",
+    type = "delve",
+    request = "launch",
+    mode = "test",
+    program = "${fileDirname}",
+  },
+  {
+    name = "Delve: attach to process",
+    type = "delve",
+    request = "attach",
+    mode = "local",
+    processId = require("dap.utils").pick_process,
+  },
+}
+
 -- java
 dap.adapters.java = function(callback)
   local bufnr = vim.api.nvim_get_current_buf()

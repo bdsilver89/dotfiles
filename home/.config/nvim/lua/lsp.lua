@@ -24,6 +24,7 @@ vim.lsp.enable({
   "basedpyright",
   "bashls",
   "clangd",
+  "gopls",
   "jdtls",
   "jsonls",
   "lemminx",
