@@ -25,9 +25,16 @@ uv = "latest"
 
 # Languages
 go = "latest"
+java = "temurin-25"
 node = "lts"
 python = "3.14"
 rust = "stable"
+
+# Build tools
+cmake = "latest"
+gradle = "latest"
+maven = "latest"
+ninja = "latest"
 
 # LSP
 lua-language-server = "latest"
@@ -68,6 +75,27 @@ pi = "latest"
 "brew-cask:linear" = { version = "latest", os = "macos" }
 "brew-cask:google-chrome" = { version = "latest", os = "macos" }
 "brew-cask:herdr-app" = { version = "latest", os = "macos" }
+
+"brew-cask:font-jetbrains-mono-nerd-font" = { version = "latest", os = "macos" }
+
+# Native build/runtime deps for the toolchain above (compiler for cargo/tree-sitter/node-gyp)
+"apt:build-essential"    = { os = "linux" }
+"apt:git"                = { os = "linux" }
+"apt:curl"               = { os = "linux" }
+"apt:unzip"              = { os = "linux" }
+"apt:xz-utils"           = { os = "linux" }
+"apt:ca-certificates"    = { os = "linux" }
+"apt:pkg-config"         = { os = "linux" }
+
+"dnf:gcc"                = { os = "linux" }
+"dnf:gcc-c++"            = { os = "linux" }
+"dnf:make"               = { os = "linux" }
+"dnf:git"                = { os = "linux" }
+"dnf:curl"               = { os = "linux" }
+"dnf:unzip"              = { os = "linux" }
+"dnf:xz"                 = { os = "linux" }
+"dnf:ca-certificates"    = { os = "linux" }
+"dnf:pkgconf-pkg-config" = { os = "linux" }
 
 "winget:Git.Git" = "latest"
 "winget:Microsoft.PowerToys" = "latest"
