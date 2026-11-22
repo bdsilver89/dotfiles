@@ -36,8 +36,14 @@ fi
 # Link dotfiles, including the global Mise configuration, without forcing conflicts.
 echo
 echo "🛠   Creating symlinks..."
-"$MISE" --cd "$DOTFILES" dot apply --yes
-echo "🛠   Creating symlinks... done."
+LINK_FAILED=0
+if "$MISE" --cd "$DOTFILES" dot apply --yes; then
+    echo "🛠   Creating symlinks... done."
+else
+    LINK_FAILED=1
+    echo "⚠️   Some symlinks could not be created (existing files, see above); continuing." >&2
+    echo "    Review them, then re-run with: mise --cd $DOTFILES dot apply --force" >&2
+fi
 
 # Run after linking so the global config's [bootstrap.packages] and [tools] are loaded.
 # Reconcile declared state without upgrades, repo updates, or local project builds.
@@ -45,3 +51,9 @@ echo
 echo "🛠   Applying Mise setup..."
 "$MISE" --cd "$DOTFILES" bootstrap --yes --skip-dirty --only packages,repos,tools
 echo "🛠   Applying Mise setup... done."
+
+if [[ "$LINK_FAILED" == "1" ]]; then
+    echo
+    echo "⚠️   Finished, but some dotfiles were not linked (see warning above)." >&2
+    exit 1
+fi
