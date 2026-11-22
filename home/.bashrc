@@ -11,6 +11,13 @@ if [ -z "$ZSH_VERSION" ] && command -v zsh >/dev/null 2>&1; then
     exec zsh -l
 fi
 
+# Staying in bash (no zsh): keep distro defaults (prompt, completion).
+# Fedora/RHEL: /etc/bashrc, Debian/Ubuntu: /etc/bash.bashrc
+for f in /etc/bashrc /etc/bash.bashrc; do
+    # shellcheck source=/dev/null  # system file, not knowable statically
+    [ -r "$f" ] && { . "$f"; break; }
+done
+
 . "$HOME/.config/shell/env.sh"
 
 # Unquoted so the glob expands. A quoted glob does not expand — it would loop
