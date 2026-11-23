@@ -32,6 +32,7 @@ rust = "stable"
 
 # Build tools
 cmake = "latest"
+terraform = "latest"
 gradle = "latest"
 maven = "latest"
 ninja = "latest"
@@ -50,6 +51,8 @@ stylua = "latest"
 "pypi:basedpyright" = "latest"
 "pypi:ruff" = "latest"
 "npm:typescript" = "latest"
+terraform-ls = "latest"
+tflint = "latest"
 
 # Debug adapters
 "pypi:debugpy" = "latest"

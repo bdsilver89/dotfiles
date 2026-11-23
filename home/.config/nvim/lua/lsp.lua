@@ -1,7 +1,7 @@
 vim.diagnostic.config({
   update_in_insert = false,
   underline = true,
-  seveirty_sort = true,
+  severity_sort = true,
   virtual_text = {
     spacing = 4,
     source = "if_many",
@@ -32,6 +32,7 @@ vim.lsp.enable({
   "neocmake",
   "ruff",
   "rust_analyzer",
+  "terraformls",
   "tsc",
   "yamlls",
 })

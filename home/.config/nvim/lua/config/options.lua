@@ -84,3 +84,4 @@ require("vim._core.ui2").enable({
     },
   },
 })
+vim.g.filetype_tf = "terraform"
